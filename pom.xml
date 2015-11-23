@@ -13,14 +13,11 @@
 	<version>4.4.0</version>
 
 	<properties>
-		<!-- JAULP PROJECT versions -->
-		<jaulp.core.version>4.4.0</jaulp.core.version>
-		<!-- PROJECT MODULES versions -->
-		<jaulp.time.version>${jaulp.core.version}</jaulp.time.version>
-		<jaulp.test.objects.version>${jaulp.core.version}</jaulp.test.objects.version>
 		<!-- EXTERNAL LIBRARIES versions -->
 		<commons-collections4.version>4.0</commons-collections4.version>
 		<commons-beanutils.version>1.9.2</commons-beanutils.version>
+		<vintage-time.version>4.4.0</vintage-time.version>
+		<test-objects.version>4.4.0</test-objects.version>
 	</properties>
 
 	<dependencyManagement>
@@ -37,19 +34,18 @@
 				<groupId>commons-beanutils</groupId>
 				<artifactId>commons-beanutils</artifactId>
 				<version>${commons-beanutils.version}</version>
-				<scope>compile</scope>
 			</dependency>
 
 			<dependency>
 				<groupId>de.alpharogroup</groupId>
-				<artifactId>jaulp.time</artifactId>
-				<version>${jaulp.time.version}</version>
+				<artifactId>vintage-time</artifactId>
+				<version>${vintage-time.version}</version>
 			</dependency>
 
 			<dependency>
 				<groupId>de.alpharogroup</groupId>
-				<artifactId>jaulp.test.objects</artifactId>
-				<version>${jaulp.test.objects.version}</version>
+				<artifactId>test-objects</artifactId>
+				<version>${test-objects.version}</version>
 			</dependency>
 
 		</dependencies>
@@ -70,12 +66,12 @@
 
 		<dependency>
 			<groupId>de.alpharogroup</groupId>
-			<artifactId>jaulp.time</artifactId>
+			<artifactId>vintage-time</artifactId>
 		</dependency>
 
 		<dependency>
 			<groupId>de.alpharogroup</groupId>
-			<artifactId>jaulp.test.objects</artifactId>
+			<artifactId>test-objects</artifactId>
 		</dependency>
 
 	</dependencies>
