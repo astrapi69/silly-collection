@@ -1,0 +1,20 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!DOCTYPE suite SYSTEM "http://testng.org/testng-1.0.dtd">
+<suite name="Suite">
+  <test name="Test">
+    <classes>
+    <class name="de.alpharogroup.collections.InsertionOrderMapTest"/>
+    <class name="de.alpharogroup.collections.InsertionOrderSetTest"/>
+    <class name="de.alpharogroup.collections.ListExtensionsTest"/>
+    <class name="de.alpharogroup.collections.MapExtensionsTest"/>
+    <class name="de.alpharogroup.collections.iterators.ArrayIteratorTest"/>
+    <class name="de.alpharogroup.collections.iterators.EnumerationIteratorTest"/>
+    <class name="de.alpharogroup.collections.modifications.ModifiedCollectionsTest"/>
+    <class name="de.alpharogroup.collections.modifications.ModifiedStateTest"/>
+    <class name="de.alpharogroup.collections.pairs.ValueBoxTest"/>
+    <class name="de.alpharogroup.comparators.DateComparatorTest"/>
+    <class name="de.alpharogroup.comparators.DescendingDateComparatorTest"/>
+    <class name="de.alpharogroup.comparators.HashCodeComparatorTest"/>
+    </classes>
+  </test> <!-- Test -->
+</suite> <!-- Suite -->
