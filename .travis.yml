@@ -1,0 +1,12 @@
+# silly-collections .travis.yml
+
+language: java
+
+jdk:
+    - oraclejdk8
+
+notifications:
+    email:
+        recipients:
+            - asterios.raptis@web.de
+        on_failure: always
