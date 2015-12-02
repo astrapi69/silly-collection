@@ -10,7 +10,7 @@
 	</parent>
 
 	<artifactId>silly-collections</artifactId>
-	<version>4.7.0</version>
+	<version>4.8.0</version>
 		
 	<name>${project.artifactId}</name>
 
@@ -38,8 +38,8 @@
 	
 
 	<properties>
-		<vintage-time.version>4.7.0</vintage-time.version>
-		<test-objects.version>4.7.0</test-objects.version>
+		<vintage-time.version>4.8.0</vintage-time.version>
+		<test-objects.version>4.8.0</test-objects.version>
 		<!-- EXTERNAL LIBRARIES versions -->
 		<commons-collections4.version>4.0</commons-collections4.version>
 		<commons-beanutils.version>1.9.2</commons-beanutils.version>
