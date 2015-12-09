@@ -27,9 +27,15 @@ package de.alpharogroup.collections.pairs;
 import org.testng.AssertJUnit;
 import org.testng.annotations.Test;
 
+/**
+ * The test class {@link ValueBoxTest} is for the class {@link ValueBox}.
+ */
 public class ValueBoxTest
 {
 
+	/**
+	 * Test method for {@link ValueBox#equals(Object)}
+	 */
 	@Test
 	public void testEqualsObject()
 	{
