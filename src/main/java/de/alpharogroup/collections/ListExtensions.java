@@ -87,7 +87,7 @@ public class ListExtensions
 	 */
 	public static <T> T getFirst(final List<T> list)
 	{
-		if (list != null && !list.isEmpty())
+		if (isNotEmpty(list))
 		{
 			return list.get(0);
 		}
