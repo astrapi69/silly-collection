@@ -99,19 +99,27 @@ public final class ArrayExtensions
 	 *            the element
 	 * @param count
 	 *            the count
-	 * @return the next indexes
+	 * @return the next indexes or null if there is no next indexes.
 	 */
 	public static <T> int[] getNextIndexes(final T[] array, final T element, final int count)
 	{
-		final int[] nextIndexes = new int[count];
-		T currentElement = element;
-		for (int i = 0; i < count; i++)
+		if (element != null)
 		{
-			final int nextIndex = getNextIndex(array, currentElement);
-			nextIndexes[i] = nextIndex;
-			currentElement = array[nextIndex];
+			final int[] nextIndexes = new int[count];
+			T currentElement = element;
+			for (int i = 0; i < count; i++)
+			{
+				final int nextIndex = getNextIndex(array, currentElement);
+				if (nextIndex == -1)
+				{
+					return null;
+				}
+				nextIndexes[i] = nextIndex;
+				currentElement = array[nextIndex];
+			}
+			return nextIndexes;
 		}
-		return nextIndexes;
+		return null;
 	}
 
 	/**
@@ -152,19 +160,27 @@ public final class ArrayExtensions
 	 *            the element
 	 * @param count
 	 *            the count
-	 * @return the previous indexes
+	 * @return the previous indexes or null if there is no previous indexes.
 	 */
 	public static <T> int[] getPreviousIndexes(final T[] array, final T element, final int count)
 	{
-		final int[] previousIndexes = new int[count];
-		T currentElement = element;
-		for (int i = 0; i < count; i++)
+		if (element != null)
 		{
-			final int previousIndex = getPreviousIndex(array, currentElement);
-			previousIndexes[i] = previousIndex;
-			currentElement = array[previousIndex];
+			final int[] previousIndexes = new int[count];
+			T currentElement = element;
+			for (int i = 0; i < count; i++)
+			{
+				final int previousIndex = getPreviousIndex(array, currentElement);
+				if (previousIndex == -1)
+				{
+					return null;
+				}
+				previousIndexes[i] = previousIndex;
+				currentElement = array[previousIndex];
+			}
+			return previousIndexes;
 		}
-		return previousIndexes;
+		return null;
 	}
 
 	/**

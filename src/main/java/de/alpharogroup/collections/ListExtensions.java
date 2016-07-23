@@ -51,6 +51,44 @@ public class ListExtensions
 {
 
 	/**
+	 * Checks if the given element is the first in the given list.
+	 *
+	 * @param <T>
+	 *            the generic type
+	 * @param list
+	 *            the list
+	 * @param element
+	 *            the element
+	 * @return true if the given element is the first otherwise false
+	 */
+	public static <T> boolean isFirst(final List<T> list, final T element)
+	{
+		final int indexOfElement = list.indexOf(element);
+		return indexOfElement == 0;
+	}
+
+	/**
+	 * Checks if the given element is the last in the given list.
+	 *
+	 * @param <T>
+	 *            the generic type
+	 * @param list
+	 *            the list
+	 * @param element
+	 *            the element
+	 * @return true if the given element is the last otherwise false
+	 */
+	public static <T> boolean isLast(final List<T> list, final T element)
+	{
+		final T last = getLast(list);
+		if (last != null)
+		{
+			return last == element;
+		}
+		return false;
+	}
+
+	/**
 	 * This Method look in the List toSearch if at least one Object exists in the List search.
 	 *
 	 * @param <T>
@@ -468,7 +506,7 @@ public class ListExtensions
 	 *            the generic type
 	 * @param t
 	 *            The objects that will be in the returned object array
-	 * 
+	 *
 	 * @return An Object array.
 	 */
 	@SafeVarargs
@@ -486,7 +524,7 @@ public class ListExtensions
 	 *            the generic type
 	 * @param enumaration
 	 *            The Enumeration to convert.
-	 * 
+	 *
 	 * @return A new Vector with the content of the given Enumeration.
 	 */
 	public static <T> Vector<T> toVector(final Enumeration<T> enumaration)
