@@ -33,7 +33,7 @@ import java.util.TreeSet;
 import java.util.Vector;
 
 /**
- * The Class SortedProperties extends Properties and adds sort functionality for the keys.
+ * The class SortedProperties extends Properties and adds sort functionality for the keys.
  */
 public class SortedProperties extends Properties
 {

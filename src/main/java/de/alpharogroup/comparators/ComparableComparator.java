@@ -28,7 +28,7 @@ import java.io.Serializable;
 import java.util.Comparator;
 
 /**
- * The Class ComparableComparator.
+ * The class ComparableComparator.
  *
  * @param <T>
  *            the generic type of the comparing object

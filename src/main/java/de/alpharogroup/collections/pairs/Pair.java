@@ -35,7 +35,7 @@ import lombok.Setter;
 import lombok.ToString;
 
 /**
- * The Class Pair holds two values.
+ * The class Pair holds two values.
  *
  *
  * @param <K>

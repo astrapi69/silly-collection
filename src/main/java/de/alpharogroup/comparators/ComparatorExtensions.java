@@ -25,7 +25,7 @@
 package de.alpharogroup.comparators;
 
 /**
- * The Class ComparatorExtensions have helper methods for comparators.
+ * The class ComparatorExtensions have helper methods for comparators.
  */
 public class ComparatorExtensions
 {

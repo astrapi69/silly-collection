@@ -29,7 +29,7 @@ import java.util.Collection;
 import java.util.Map;
 
 /**
- * The Class {@link Check} can validate arguments in a chained manner like a builder.
+ * The class {@link Check} can validate arguments in a chained manner like a builder.
  */
 public class Check implements Serializable
 {
