@@ -37,7 +37,7 @@ import org.testng.annotations.Test;
 import de.alpharogroup.date.CreateDateExtensions;
 
 /**
- * The Class DescendingDateComparatorTest.
+ * The class DescendingDateComparatorTest.
  */
 public class DescendingDateComparatorTest
 {

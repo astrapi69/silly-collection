@@ -35,7 +35,7 @@ import lombok.Setter;
 import lombok.ToString;
 
 /**
- * The Class Triple holds three values.
+ * The class Triple holds three values.
  *
  * @param <L>
  *            The type of the left content of this Triple.

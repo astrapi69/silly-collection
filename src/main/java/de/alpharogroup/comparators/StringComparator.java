@@ -28,7 +28,7 @@ import lombok.NoArgsConstructor;
 
 
 /**
- * The Class StringComparator sorts String object in ascending order as default or descending if the
+ * The class StringComparator sorts String object in ascending order as default or descending if the
  * {@link SortOrder} is set to {@link SortOrder#DESCENDING}.
  */
 @NoArgsConstructor

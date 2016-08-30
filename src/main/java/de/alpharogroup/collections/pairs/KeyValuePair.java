@@ -35,7 +35,7 @@ import lombok.Setter;
 import lombok.ToString;
 
 /**
- * The Class KeyValuePair.
+ * The class KeyValuePair.
  *
  *
  * @param <K>

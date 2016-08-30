@@ -56,10 +56,10 @@ public class HashCodeComparator<T> implements Comparator<T>, Serializable
 	@Override
 	public int compare(final T object, final T compareWithObject)
 	{
-		final Integer nc = ComparatorExtensions.nullCheck(object, compareWithObject);
-		if (nc != null)
+		final Integer nullCheck = ComparatorExtensions.nullCheck(object, compareWithObject);
+		if (nullCheck != null)
 		{
-			return nc;
+			return nullCheck;
 		}
 		return ComparatorExtensions.compare(object.hashCode(), compareWithObject.hashCode());
 	}

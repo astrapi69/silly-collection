@@ -24,12 +24,11 @@
  */
 package de.alpharogroup.comparators;
 
-import lombok.experimental.ExtensionMethod;
-
 import org.testng.AssertJUnit;
 import org.testng.annotations.Test;
 
 import de.alpharogroup.test.objects.Person;
+import lombok.experimental.ExtensionMethod;
 
 @ExtensionMethod({ ComparatorExtensions.class })
 public class ComparatorExtensionsTest

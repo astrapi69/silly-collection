@@ -31,7 +31,7 @@ import lombok.Getter;
 import lombok.NoArgsConstructor;
 
 /**
- * The Class ModifiedLists holds two collections. It is used as return type for finding from an old
+ * The class ModifiedLists holds two collections. It is used as return type for finding from an old
  * list which elements have removed and which have added.
  *
  * @param <T>

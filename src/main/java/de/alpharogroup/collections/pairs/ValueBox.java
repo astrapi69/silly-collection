@@ -34,7 +34,7 @@ import lombok.Setter;
 import lombok.ToString;
 
 /**
- * The Class ValueBox.
+ * The class ValueBox.
  *
  * @param <T>
  *            The type of the value.

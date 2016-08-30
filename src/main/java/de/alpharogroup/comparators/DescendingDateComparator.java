@@ -28,7 +28,7 @@ import java.util.Comparator;
 import java.util.Date;
 
 /**
- * The Class DescendingDateComparator sorts Date object in descending order.
+ * The class DescendingDateComparator sorts Date object in descending order.
  */
 public class DescendingDateComparator implements Comparator<Date>
 {
