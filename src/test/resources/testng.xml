@@ -12,6 +12,8 @@
     <class name="de.alpharogroup.collections.modifications.ModifiedCollectionsTest"/>
     <class name="de.alpharogroup.collections.modifications.ModifiedStateTest"/>
     <class name="de.alpharogroup.collections.pairs.ValueBoxTest"/>
+    <class name="de.alpharogroup.comparators.ComparableComparatorTest"/>
+    <class name="de.alpharogroup.comparators.ComparatorExtensionsTest"/>
     <class name="de.alpharogroup.comparators.DateComparatorTest"/>
     <class name="de.alpharogroup.comparators.DescendingDateComparatorTest"/>
     <class name="de.alpharogroup.comparators.HashCodeComparatorTest"/>
