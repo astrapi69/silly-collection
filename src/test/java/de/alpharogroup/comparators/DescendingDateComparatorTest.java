@@ -1,7 +1,7 @@
 /**
  * The MIT License
  *
- * Copyright (C) 2007 Asterios Raptis
+ * Copyright (C) 2015 Asterios Raptis
  *
  * Permission is hereby granted, free of charge, to any person obtaining
  * a copy of this software and associated documentation files (the
@@ -37,7 +37,7 @@ import org.testng.annotations.Test;
 import de.alpharogroup.date.CreateDateExtensions;
 
 /**
- * The Class DescendingDateComparatorTest.
+ * The class DescendingDateComparatorTest.
  */
 public class DescendingDateComparatorTest
 {

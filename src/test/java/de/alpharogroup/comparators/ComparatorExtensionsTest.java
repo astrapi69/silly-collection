@@ -1,7 +1,7 @@
 /**
  * The MIT License
  *
- * Copyright (C) 2007 Asterios Raptis
+ * Copyright (C) 2015 Asterios Raptis
  *
  * Permission is hereby granted, free of charge, to any person obtaining
  * a copy of this software and associated documentation files (the
@@ -24,12 +24,11 @@
  */
 package de.alpharogroup.comparators;
 
-import lombok.experimental.ExtensionMethod;
-
 import org.testng.AssertJUnit;
 import org.testng.annotations.Test;
 
 import de.alpharogroup.test.objects.Person;
+import lombok.experimental.ExtensionMethod;
 
 @ExtensionMethod({ ComparatorExtensions.class })
 public class ComparatorExtensionsTest

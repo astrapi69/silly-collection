@@ -1,7 +1,7 @@
 /**
  * The MIT License
  *
- * Copyright (C) 2007 Asterios Raptis
+ * Copyright (C) 2015 Asterios Raptis
  *
  * Permission is hereby granted, free of charge, to any person obtaining
  * a copy of this software and associated documentation files (the
@@ -33,7 +33,7 @@ import java.util.TreeSet;
 import java.util.Vector;
 
 /**
- * The Class SortedProperties extends Properties and adds sort functionality for the keys.
+ * The class SortedProperties extends Properties and adds sort functionality for the keys.
  */
 public class SortedProperties extends Properties
 {

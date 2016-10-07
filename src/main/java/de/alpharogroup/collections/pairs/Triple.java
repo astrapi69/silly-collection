@@ -1,7 +1,7 @@
 /**
  * The MIT License
  *
- * Copyright (C) 2007 Asterios Raptis
+ * Copyright (C) 2015 Asterios Raptis
  *
  * Permission is hereby granted, free of charge, to any person obtaining
  * a copy of this software and associated documentation files (the
@@ -35,7 +35,7 @@ import lombok.Setter;
 import lombok.ToString;
 
 /**
- * The Class Triple holds three values.
+ * The class Triple holds three values.
  *
  * @param <L>
  *            The type of the left content of this Triple.

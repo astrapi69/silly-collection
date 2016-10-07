@@ -1,7 +1,7 @@
 /**
  * The MIT License
  *
- * Copyright (C) 2007 Asterios Raptis
+ * Copyright (C) 2015 Asterios Raptis
  *
  * Permission is hereby granted, free of charge, to any person obtaining
  * a copy of this software and associated documentation files (the
@@ -25,7 +25,7 @@
 package de.alpharogroup.comparators;
 
 /**
- * The Class ComparatorExtensions have helper methods for comparators.
+ * The class ComparatorExtensions have helper methods for comparators.
  */
 public class ComparatorExtensions
 {
@@ -43,14 +43,13 @@ public class ComparatorExtensions
 	 */
 	public static <T extends Comparable<T>> int compare(final T object, final T compareWithObject)
 	{
-		final Integer nc = ComparatorExtensions.nullCheck(object, compareWithObject);
-		if (nc != null)
+		final Integer nullCheck = ComparatorExtensions.nullCheck(object, compareWithObject);
+		if (nullCheck != null)
 		{
-			return nc;
+			return nullCheck;
 		}
 		// Null check completed so we can compare the objects
 		return object.compareTo(compareWithObject);
-
 	}
 
 	/**

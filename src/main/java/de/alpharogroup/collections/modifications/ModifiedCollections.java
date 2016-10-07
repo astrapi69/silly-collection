@@ -1,7 +1,7 @@
 /**
  * The MIT License
  *
- * Copyright (C) 2007 Asterios Raptis
+ * Copyright (C) 2015 Asterios Raptis
  *
  * Permission is hereby granted, free of charge, to any person obtaining
  * a copy of this software and associated documentation files (the
@@ -31,7 +31,7 @@ import lombok.Getter;
 import lombok.NoArgsConstructor;
 
 /**
- * The Class ModifiedLists holds two collections. It is used as return type for finding from an old
+ * The class ModifiedLists holds two collections. It is used as return type for finding from an old
  * list which elements have removed and which have added.
  *
  * @param <T>

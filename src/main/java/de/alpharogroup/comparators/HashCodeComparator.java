@@ -1,7 +1,7 @@
 /**
  * The MIT License
  *
- * Copyright (C) 2007 Asterios Raptis
+ * Copyright (C) 2015 Asterios Raptis
  *
  * Permission is hereby granted, free of charge, to any person obtaining
  * a copy of this software and associated documentation files (the
@@ -56,10 +56,10 @@ public class HashCodeComparator<T> implements Comparator<T>, Serializable
 	@Override
 	public int compare(final T object, final T compareWithObject)
 	{
-		final Integer nc = ComparatorExtensions.nullCheck(object, compareWithObject);
-		if (nc != null)
+		final Integer nullCheck = ComparatorExtensions.nullCheck(object, compareWithObject);
+		if (nullCheck != null)
 		{
-			return nc;
+			return nullCheck;
 		}
 		return ComparatorExtensions.compare(object.hashCode(), compareWithObject.hashCode());
 	}

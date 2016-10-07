@@ -1,7 +1,7 @@
 /**
  * The MIT License
  *
- * Copyright (C) 2007 Asterios Raptis
+ * Copyright (C) 2015 Asterios Raptis
  *
  * Permission is hereby granted, free of charge, to any person obtaining
  * a copy of this software and associated documentation files (the
@@ -32,8 +32,6 @@ import java.util.List;
 import java.util.Set;
 import java.util.Vector;
 
-import lombok.experimental.ExtensionMethod;
-
 import org.testng.AssertJUnit;
 import org.testng.annotations.AfterMethod;
 import org.testng.annotations.BeforeMethod;
@@ -42,10 +40,11 @@ import org.testng.annotations.Test;
 import de.alpharogroup.collections.modifications.ModifiedCollections;
 import de.alpharogroup.test.objects.Gender;
 import de.alpharogroup.test.objects.Person;
+import lombok.experimental.ExtensionMethod;
 
 /**
  * Tests for the class ListExtensions.
- * 
+ *
  * @version 1.0
  * @author Asterios Raptis
  */
@@ -119,6 +118,24 @@ public class ListExtensionsTest
 	}
 
 	/**
+	 * Test method for {@link de.alpharogroup.collections.ListExtensions#isFirst(java.util.List)} .
+	 */
+	@Test
+	public void testIsFirst()
+	{
+		final String expected = "Leonidas";
+		final List<String> search = new ArrayList<>();
+		search.add(expected);
+		search.add("Berta");
+		search.add("Caesar");
+		search.add("Dora");
+		search.add("Emil");
+		search.add("Anton");
+		final boolean actual = search.isFirst(expected);
+		AssertJUnit.assertTrue("", actual);
+	}
+
+	/**
 	 * Test method for {@link de.alpharogroup.collections.ListExtensions#getLast(java.util.List)} .
 	 */
 	@Test
@@ -134,6 +151,24 @@ public class ListExtensionsTest
 		search.add(expected);
 		final String compare = ListExtensions.getLast(search);
 		AssertJUnit.assertTrue("", expected.equals(compare));
+	}
+
+	/**
+	 * Test method for {@link de.alpharogroup.collections.ListExtensions#isLast(java.util.List)} .
+	 */
+	@Test
+	public void testIsLast()
+	{
+		final String expected = "Leonidas";
+		final List<String> search = new ArrayList<>();
+		search.add("Anton");
+		search.add("Berta");
+		search.add("Caesar");
+		search.add("Dora");
+		search.add("Emil");
+		search.add(expected);
+		final boolean actual = search.isLast(expected);
+		AssertJUnit.assertTrue("", actual);
 	}
 
 	@Test
@@ -152,8 +187,8 @@ public class ListExtensionsTest
 		final List<String> expectedaddedList = Arrays.asList(expectedadded);
 		final List<String> expectedremovedList = Arrays.asList(expectedremoved);
 
-		final ModifiedCollections<String> result = ListExtensions.getModifiedCollections(
-			previousList, nextList);
+		final ModifiedCollections<String> result = ListExtensions
+			.getModifiedCollections(previousList, nextList);
 
 		AssertJUnit.assertTrue(result.getRemovedElements().equals(expectedremovedList));
 		AssertJUnit.assertTrue(result.getAddedElements().equals(expectedaddedList));
@@ -351,18 +386,16 @@ public class ListExtensionsTest
 		AssertJUnit.assertTrue(
 			"Index of person 'asterix' should be <1> but was <" + persons.indexOf(asterix) + ">.",
 			persons.indexOf(asterix) == 1);
-		AssertJUnit.assertTrue(
-			"Index of person 'miraculix' should be <2> but was <" + persons.indexOf(miraculix)
-				+ ">.", persons.indexOf(miraculix) == 2);
+		AssertJUnit.assertTrue("Index of person 'miraculix' should be <2> but was <"
+			+ persons.indexOf(miraculix) + ">.", persons.indexOf(miraculix) == 2);
 
 		ListExtensions.sortByProperty(persons, "name", true);
 		// Sorted Persons by name in ascending order...
 		AssertJUnit.assertTrue(
 			"Index of person 'obelix' should be <0> but was <" + persons.indexOf(obelix) + ">.",
 			persons.indexOf(obelix) == 0);
-		AssertJUnit.assertTrue(
-			"Index of person 'miraculix' should be <1> but was <" + persons.indexOf(miraculix)
-				+ ">.", persons.indexOf(miraculix) == 1);
+		AssertJUnit.assertTrue("Index of person 'miraculix' should be <1> but was <"
+			+ persons.indexOf(miraculix) + ">.", persons.indexOf(miraculix) == 1);
 		AssertJUnit.assertTrue(
 			"Index of person 'asterix' should be <2> but was <" + persons.indexOf(asterix) + ">.",
 			persons.indexOf(asterix) == 2);
@@ -372,9 +405,8 @@ public class ListExtensionsTest
 		AssertJUnit.assertTrue(
 			"Index of person 'asterix' should be <0> but was <" + persons.indexOf(asterix) + ">.",
 			persons.indexOf(asterix) == 0);
-		AssertJUnit.assertTrue(
-			"Index of person 'miraculix' should be <1> but was <" + persons.indexOf(miraculix)
-				+ ">.", persons.indexOf(miraculix) == 1);
+		AssertJUnit.assertTrue("Index of person 'miraculix' should be <1> but was <"
+			+ persons.indexOf(miraculix) + ">.", persons.indexOf(miraculix) == 1);
 		AssertJUnit.assertTrue(
 			"Index of person 'obelix' should be <2> but was <" + persons.indexOf(obelix) + ">.",
 			persons.indexOf(obelix) == 2);
@@ -386,9 +418,8 @@ public class ListExtensionsTest
 		AssertJUnit.assertTrue(
 			"Index of person 'obelix' should be <0> but was <" + persons.indexOf(obelix) + ">.",
 			persons.indexOf(obelix) == 0);
-		AssertJUnit.assertTrue(
-			"Index of person 'miraculix' should be <1> but was <" + persons.indexOf(miraculix)
-				+ ">.", persons.indexOf(miraculix) == 1);
+		AssertJUnit.assertTrue("Index of person 'miraculix' should be <1> but was <"
+			+ persons.indexOf(miraculix) + ">.", persons.indexOf(miraculix) == 1);
 		AssertJUnit.assertTrue(
 			"Index of person 'asterix' should be <2> but was <" + persons.indexOf(asterix) + ">.",
 			persons.indexOf(asterix) == 2);

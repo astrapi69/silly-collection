@@ -1,7 +1,7 @@
 /**
  * The MIT License
  *
- * Copyright (C) 2007 Asterios Raptis
+ * Copyright (C) 2015 Asterios Raptis
  *
  * Permission is hereby granted, free of charge, to any person obtaining
  * a copy of this software and associated documentation files (the
@@ -29,7 +29,7 @@ import java.util.Collection;
 import java.util.Map;
 
 /**
- * The Class {@link Check} can validate arguments in a chained manner like a builder.
+ * The class {@link Check} can validate arguments in a chained manner like a builder.
  */
 public class Check implements Serializable
 {

@@ -1,7 +1,7 @@
 /**
  * The MIT License
  *
- * Copyright (C) 2007 Asterios Raptis
+ * Copyright (C) 2015 Asterios Raptis
  *
  * Permission is hereby granted, free of charge, to any person obtaining
  * a copy of this software and associated documentation files (the
@@ -28,7 +28,7 @@ import java.util.Comparator;
 import java.util.Date;
 
 /**
- * The Class DescendingDateComparator sorts Date object in descending order.
+ * The class DescendingDateComparator sorts Date object in descending order.
  */
 public class DescendingDateComparator implements Comparator<Date>
 {
