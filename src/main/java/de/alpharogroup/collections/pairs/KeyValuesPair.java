@@ -25,6 +25,7 @@
 package de.alpharogroup.collections.pairs;
 
 import java.io.Serializable;
+import java.util.Collection;
 
 import lombok.AllArgsConstructor;
 import lombok.Builder;
@@ -32,16 +33,17 @@ import lombok.EqualsAndHashCode;
 import lombok.Getter;
 import lombok.NoArgsConstructor;
 import lombok.Setter;
+import lombok.Singular;
 import lombok.ToString;
 
 /**
- * The class {@link KeyValuePair} represents a key value pair with generic parameters for the key and value type.
+ * The class {@link KeyValuesPair} represents a key value pair where the value is a collection with generic parameters for the key and value type.
  *
  *
  * @param <K>
  *            The type of the key.
  * @param <V>
- *            The type of the value.
+ *            The type of the values in the collection.
  */
 @Getter
 @Setter
@@ -50,7 +52,7 @@ import lombok.ToString;
 @NoArgsConstructor
 @AllArgsConstructor
 @Builder
-public final class KeyValuePair<K, V> implements Serializable
+public final class KeyValuesPair<K, V> implements Serializable
 {
 
 	/**
@@ -61,7 +63,8 @@ public final class KeyValuePair<K, V> implements Serializable
 	/** The key. */
 	private K key;
 
-	/** The value. */
-	private V value;
+	/** The collection with the values. */
+	@Singular
+	private Collection<V> values;
 
 }
