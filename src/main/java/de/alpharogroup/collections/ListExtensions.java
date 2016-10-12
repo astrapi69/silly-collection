@@ -42,7 +42,7 @@ import de.alpharogroup.collections.modifications.ModifiedCollections;
 import de.alpharogroup.comparators.ComparableComparator;
 
 /**
- * Extensions class for use with List objects.
+ * Extensions class for use with {@link List} objects.
  *
  * @author Asterios Raptis
  * @version 1.0
