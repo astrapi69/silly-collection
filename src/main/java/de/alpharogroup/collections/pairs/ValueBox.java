@@ -34,7 +34,7 @@ import lombok.Setter;
 import lombok.ToString;
 
 /**
- * The class ValueBox.
+ * The class {@link ValueBox} represents one value with a generic parameter for the value.
  *
  * @param <T>
  *            The type of the value.
