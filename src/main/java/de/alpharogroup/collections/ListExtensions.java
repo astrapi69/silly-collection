@@ -143,7 +143,7 @@ public class ListExtensions
 	 */
 	public static <T> T getLast(final List<T> list)
 	{
-		if (!isEmpty(list) && 0 < list.size())
+		if (isNotEmpty(list))
 		{
 			return list.get(list.size() - 1);
 		}
