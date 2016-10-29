@@ -143,13 +143,15 @@ public class ListExtensionsTest
 	{
 		final String expected = "Leonidas";
 		final List<String> search = new ArrayList<>();
+		String compare = ListExtensions.getLast(search);
+		AssertJUnit.assertNull(compare);
 		search.add("Anton");
 		search.add("Berta");
 		search.add("Caesar");
 		search.add("Dora");
 		search.add("Emil");
 		search.add(expected);
-		final String compare = ListExtensions.getLast(search);
+		compare = ListExtensions.getLast(search);
 		AssertJUnit.assertTrue("", expected.equals(compare));
 	}
 
