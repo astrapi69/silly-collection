@@ -43,7 +43,7 @@ import de.alpharogroup.test.objects.Person;
 import lombok.experimental.ExtensionMethod;
 
 /**
- * Tests for the class ListExtensions.
+ * Tests for the class {@link ListExtensions}.
  *
  * @version 1.0
  * @author Asterios Raptis
@@ -143,13 +143,15 @@ public class ListExtensionsTest
 	{
 		final String expected = "Leonidas";
 		final List<String> search = new ArrayList<>();
+		String compare = ListExtensions.getLast(search);
+		AssertJUnit.assertNull(compare);
 		search.add("Anton");
 		search.add("Berta");
 		search.add("Caesar");
 		search.add("Dora");
 		search.add("Emil");
 		search.add(expected);
-		final String compare = ListExtensions.getLast(search);
+		compare = ListExtensions.getLast(search);
 		AssertJUnit.assertTrue("", expected.equals(compare));
 	}
 

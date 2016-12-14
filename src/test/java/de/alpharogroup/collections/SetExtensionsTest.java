@@ -24,32 +24,28 @@
  */
 package de.alpharogroup.collections;
 
-import java.util.Collections;
-import java.util.HashSet;
 import java.util.Set;
 
-import lombok.experimental.UtilityClass;
+import org.testng.AssertJUnit;
+import org.testng.annotations.Test;
 
 /**
- * Extensions class for use with {@link Set} objects.
+ * The class {@link SetExtensionsTest}.
  */
-@UtilityClass
-public class SetExtensions
+public class SetExtensionsTest
 {
 
+
 	/**
-	 * Factory method for create new {@link HashSet}.
-	 *
-	 * @param <T>            the generic type
-	 * @param elements the elements to add in the new {@link HashSet}.
-	 * @return the new {@link HashSet}.
+	 * Test for method {@link SetExtensions#newHashSet(Object...)}
 	 */
-	@SafeVarargs
-	public static final <T> Set<T> newHashSet(final T... elements)
+	@Test
+	public void testNewHashSet()
 	{
-		final Set<T> set = new HashSet<>();
-		Collections.addAll(set, elements);
-		return set;
+		Set<String> set = SetExtensions.newHashSet();
+		AssertJUnit.assertTrue(set.size() == 0);
+		set = SetExtensions.newHashSet("foo", "bar", "foo");
+		AssertJUnit.assertTrue(set.size() == 2);
 	}
 
 }

@@ -33,7 +33,7 @@ import org.testng.AssertJUnit;
 import org.testng.annotations.Test;
 
 /**
- * Test class for the class InsertionOrderMap.
+ * Test class for the class {@link InsertionOrderMap}.
  *
  * @version 1.0
  * @author Asterios Raptis
