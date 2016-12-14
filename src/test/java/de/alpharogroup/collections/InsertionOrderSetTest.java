@@ -33,7 +33,7 @@ import org.testng.annotations.BeforeMethod;
 import org.testng.annotations.Test;
 
 /**
- * Test class for the class InsertionOrderMap.
+ * Test class for the class {@link InsertionOrderSet}.
  *
  * @version 1.0
  * @author Asterios Raptis
