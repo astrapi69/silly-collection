@@ -7,6 +7,7 @@
     <class name="de.alpharogroup.collections.InsertionOrderSetTest"/>
     <class name="de.alpharogroup.collections.ListExtensionsTest"/>
     <class name="de.alpharogroup.collections.MapExtensionsTest"/>
+    <class name="de.alpharogroup.collections.SetExtensionsTest"/>
     <class name="de.alpharogroup.collections.iterators.ArrayIteratorTest"/>
     <class name="de.alpharogroup.collections.iterators.EnumerationIteratorTest"/>
     <class name="de.alpharogroup.collections.modifications.ModifiedCollectionsTest"/>

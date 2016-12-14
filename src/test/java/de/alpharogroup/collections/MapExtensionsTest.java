@@ -37,7 +37,7 @@ import org.testng.annotations.BeforeMethod;
 import org.testng.annotations.Test;
 
 /**
- * Test class for the class MapUtils.
+ * Test class for the class {@link MapExtensions}.
  *
  * @version 1.0
  * @author Asterios Raptis
@@ -68,7 +68,7 @@ public class MapExtensionsTest
 	}
 
 	/**
-	 * Test for the Method MapUtils.getKeyFromValue(Map, Object).
+	 * Test for the Method {@link MapExtensions#getKeyFromValue(Map, Object)}.
 	 */
 	@Test
 	public void testGetKeyFromValue()
@@ -87,7 +87,7 @@ public class MapExtensionsTest
 	}
 
 	/**
-	 * Test for the Method MapUtils.getKeysFromValue(Map, Object).
+	 * Test for the Method {@link MapExtensions#getKeysFromValue(Map, Object)}.
 	 */
 	@Test
 	public void testGetKeysFromValue()
@@ -111,7 +111,7 @@ public class MapExtensionsTest
 	}
 
 	/**
-	 * Test for the Method MapUtils.newAssosiativeArrayMap().
+	 * Test for the Method {@link MapExtensions#newAssosiativeArrayMap()}.
 	 */
 	@Test
 	public void testNewAssosiativeArrayMap()
@@ -152,7 +152,7 @@ public class MapExtensionsTest
 
 
 	/**
-	 * Test for the Method MapUtils.toMap(String [][]).
+	 * Test for the Method {@link MapExtensions#toMap(String[][])}.
 	 */
 	public void testToMap()
 	{

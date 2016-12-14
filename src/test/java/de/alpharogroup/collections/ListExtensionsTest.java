@@ -43,7 +43,7 @@ import de.alpharogroup.test.objects.Person;
 import lombok.experimental.ExtensionMethod;
 
 /**
- * Tests for the class ListExtensions.
+ * Tests for the class {@link ListExtensions}.
  *
  * @version 1.0
  * @author Asterios Raptis
