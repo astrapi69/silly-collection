@@ -24,9 +24,13 @@
  */
 package de.alpharogroup.collections;
 
+import java.util.Date;
+
 import org.testng.AssertJUnit;
 import org.testng.annotations.Test;
 
+import de.alpharogroup.date.CalculateDateExtensions;
+import de.alpharogroup.date.CreateDateExtensions;
 import lombok.experimental.ExtensionMethod;
 
 /**
@@ -313,6 +317,37 @@ public class ArrayExtensionsTest
 
 		actual = empty.getPreviousIndexes(null, 2);
 		AssertJUnit.assertEquals(expected, actual);
+	}
+
+
+	/**
+	 * Test for method {@link ArrayExtensions#splitInChunks(byte[], int)}
+	 */
+	@Test
+	public void testSplit()
+	{
+		final String byteString = "Lorem ipsum dolor sit amet, consectetur adipiscing elit.";
+//		final StringBuilder sb = new StringBuilder();
+//		for (int i = 0; i < 1000000; i++)
+//		{
+//			sb.append(byteString);
+//		}
+//		byteString = sb.toString();
+		final byte[] byteArray = byteString.getBytes();
+		Date start = null;
+		Date end = null;
+		long elapsed;
+
+		 AssertJUnit.assertEquals(byteArray.length, 56);
+		// simple benchmark start
+		start = CreateDateExtensions.now();
+		final byte[][] splitedBytes = ArrayExtensions.splitInChunks(byteArray, 5);
+		end = CreateDateExtensions.now();
+		// simple benchmark end
+		elapsed = CalculateDateExtensions.calculateElapsedTime(start, end);
+		System.out.println("ArrayExtensions.split:"+elapsed);
+		 AssertJUnit.assertEquals(splitedBytes.length, 12);
+
 	}
 
 
