@@ -259,4 +259,26 @@ public final class ArrayExtensions
 		return indexOfElement == lastIndex;
 	}
 
+	/**
+	 * Split the given byte array in to new arrays with the chunk size.
+	 *
+	 * @param bytes the bytes
+	 * @param chunkSize the chunk size
+	 * @return the byte[][]
+	 */
+	public static byte[][] splitInChunks(final byte[] bytes, final int chunkSize) {
+		final int size = ((bytes.length - 1) / chunkSize) + 1;
+		final byte[][] dataChunks = new byte[size][];
+		int to = bytes.length;
+		int count = size - 1;
+		int from = count * chunkSize;
+		while (-1 < count ) {
+			dataChunks[count] = Arrays.copyOfRange(bytes, from, to);
+		    to = from;
+		    from = to - chunkSize;
+		    count--;
+		}
+		return dataChunks;
+	}
+
 }
