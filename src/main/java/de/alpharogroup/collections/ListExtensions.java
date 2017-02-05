@@ -51,6 +51,20 @@ public class ListExtensions
 {
 
 	/**
+	 * Factory method for create new {@link ArrayList} and returns as {@link List}.
+	 *
+	 * @param <T>            the generic type
+	 * @param elements the elements to add in the new {@link ArrayList}.
+	 * @return the new {@link ArrayList} and returns as {@link List}.
+	 */
+	@SafeVarargs
+	public static <T> List<T> newArrayList(final T... elements) {
+		final List<T> list = new ArrayList<>();
+		Collections.addAll(list, elements);
+		return list;
+	}
+
+	/**
 	 * Checks if the given element is the first in the given list.
 	 *
 	 * @param <T>
@@ -529,7 +543,7 @@ public class ListExtensions
 	 */
 	public static <T> Vector<T> toVector(final Enumeration<T> enumaration)
 	{
-		final Vector<T> vector = new Vector<T>();
+		final Vector<T> vector = new Vector<>();
 		while (enumaration.hasMoreElements())
 		{
 			vector.add(enumaration.nextElement());
