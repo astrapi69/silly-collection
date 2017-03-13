@@ -94,11 +94,11 @@ public class ComparatorExtensions
 		// Check if one of the objects are null
 		if (object != null && compareWithObject == null)
 		{
-			return 1;// compareWithObject is null so its bigger
+			return 1;// compareWithObject is null so object is bigger
 		}
 		if (object == null && compareWithObject != null)
 		{
-			return -1; // object is null so its smaller
+			return -1; // object is null so compareWithObject is smaller
 		}
 		if (object == compareWithObject)
 		{
