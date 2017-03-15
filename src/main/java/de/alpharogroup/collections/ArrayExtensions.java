@@ -31,6 +31,92 @@ import java.util.Arrays;
  */
 public final class ArrayExtensions
 {
+	
+	/**
+	 * Groups successive numbers from the given integer array. <br>
+	 * Example: <br>
+	 * 
+	 * <pre>
+	 * int[] integerArray = [11, 12, 13, 14, 16, 18];
+	 * String actual = StringUtil.groupSuccessiveNumbers(integerArray, "-", ",", true);
+	 * 
+	 * assertTrue(actual.equals("11-14, 16, 18"));
+	 * </pre>
+	 * 
+	 * <br>
+	 * 
+	 * <pre>
+	 * int[] integerArray = [12, 13, 14, 16, 17, 18, 20, 22, 23, 24, 25];
+	 * String actual = StringUtil.groupSuccessiveNumbers(integerArray, "-", ",", true);
+	 * 
+	 * assertTrue(actual.equals("12-14, 16-18, 20, 22-25"));
+	 * </pre>
+	 *
+	 * @param integerArray
+	 *            the integer array that will be processed.
+	 * @param groupDelimiter
+	 *            the group delimiter for successive numbers.
+	 * @param defaultDelimiter
+	 *            the default delimiter for not successive numbers.
+	 * @param appendWithspace
+	 *            flag if true a whitespace will be appended after the default delimiter
+	 * @return the resulted {@link String} object.
+	 */
+	public static String groupSuccessiveNumbers(int[] integerArray, String groupDelimiter,
+		String defaultDelimiter, boolean appendWithspace)
+	{
+		StringBuilder sb = new StringBuilder();
+		int size = integerArray.length;
+		int firstIndex = 0;
+		boolean isLastIndex = false;
+		boolean skipInsert = false;
+		String currentDelimiter = defaultDelimiter;
+		for (int i = 0; i < size; i++)
+		{
+			int currentValue = integerArray[i];
+			if (i == firstIndex)
+			{
+				sb.append(currentValue);
+			}
+			int nextIndex = i + 1;
+			if (nextIndex == size)
+			{
+				isLastIndex = true;
+			}
+			if (!isLastIndex)
+			{
+				int nextValue = integerArray[nextIndex];
+				skipInsert = isNext(currentValue, nextValue);
+				if (skipInsert)
+				{
+					if (currentDelimiter.equals(defaultDelimiter))
+					{
+						if (i != firstIndex)
+						{
+							sb.append(currentValue);
+						}
+						currentDelimiter = groupDelimiter;
+						sb.append(currentDelimiter);
+					}
+				}
+				else
+				{
+					sb.append(currentValue);
+					currentDelimiter = defaultDelimiter;
+					sb.append(currentDelimiter);
+					if (appendWithspace)
+					{
+						sb.append(" ");
+					}
+				}
+			}
+			else
+			{
+				sb.append(currentValue);
+			}
+		}
+		return sb.toString();
+	}
 
 	/**
 	 * Gets the first object from the given array.
