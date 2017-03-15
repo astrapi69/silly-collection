@@ -29,6 +29,9 @@ import java.util.Date;
 import org.testng.AssertJUnit;
 import org.testng.annotations.Test;
 
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
+
 import de.alpharogroup.date.CalculateDateExtensions;
 import de.alpharogroup.date.CreateDateExtensions;
 import lombok.experimental.ExtensionMethod;
@@ -42,7 +45,57 @@ import lombok.experimental.ExtensionMethod;
 @ExtensionMethod(ArrayExtensions.class)
 public class ArrayExtensionsTest
 {
+	private static final Logger logger = LoggerFactory.getLogger(ArrayExtensionsTest.class);
+	
+	/**
+	 * Test for method {@link ArrayExtensions#groupSuccessiveNumbers(int[], String, String, boolean)}
+	 */
+	@Test
+	public void testGroupSuccessiveNumbers()
+	{
+		String stringArrayTest = "11, 12, 13, 14, 16, 18";
+		String expected = "11-14, 16, 18";
+		int[] integerArray = StringUtil.toIntegerArray(stringArrayTest, ",");
+		String actual = StringUtil.groupSuccessiveNumbers(integerArray, "-", ",", true);
+		logger.debug(newDescriptionOfTestCase("First test scenario", stringArrayTest, expected, actual));
+		assertEquals(expected, actual);
+		
+		stringArrayTest = "12, 13, 14, 16, 17, 18";
+		expected = "12-14, 16-18";
+		integerArray = StringUtil.toIntegerArray(stringArrayTest, ",");
+		actual = StringUtil.groupSuccessiveNumbers(integerArray, "-", ",", true);
+		logger.debug(newDescriptionOfTestCase("Second test scenario", stringArrayTest, expected, actual));
+		assertEquals(expected, actual);		
 
+		
+		stringArrayTest = "12, 13, 14, 16, 17, 18, 20, 22, 23, 24, 25";
+		expected = "12-14, 16-18, 20, 22-25";
+		integerArray = StringUtil.toIntegerArray(stringArrayTest, ",");
+		actual = StringUtil.groupSuccessiveNumbers(integerArray, "-", ",", true);
+		logger.debug(newDescriptionOfTestCase("Third test scenario", stringArrayTest, expected, actual));
+		assertEquals(expected, actual);		
+	}
+	
+	/**
+	 * New description of test case.
+	 *
+	 * @param description the description
+	 * @param input the input
+	 * @param expected the expected
+	 * @param actual the actual
+	 * @return the string
+	 */
+	public static String newDescriptionOfTestCase(String description, String input, String expected, String actual) {
+		StringBuilder logInfo = new StringBuilder();
+		logInfo.append("\n");
+		logInfo.append("Testscenario description:" + description);
+		logInfo.append("\n");
+		logInfo.append("expected is:" + expected);
+		logInfo.append("\n");
+		logInfo.append("actual is:" + actual);
+		return logInfo.toString();		
+	}
+	
 	/**
 	 * Test for method {@link ArrayExtensions#getFirst(Object[])}
 	 */
