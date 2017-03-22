@@ -26,10 +26,11 @@ package de.alpharogroup.comparators;
 
 import java.util.ArrayList;
 import java.util.Collections;
+import java.util.Comparator;
 import java.util.Date;
 import java.util.List;
 
-import org.testng.AssertJUnit;
+import static org.testng.AssertJUnit.assertTrue;
 import org.testng.annotations.AfterMethod;
 import org.testng.annotations.BeforeMethod;
 import org.testng.annotations.Test;
@@ -41,7 +42,9 @@ import de.alpharogroup.date.CreateDateExtensions;
  */
 public class DateComparatorTest
 {
-
+	
+	/** The comparator. */
+	private Comparator<Date> comparator;
 	/**
 	 * Sets the up.
 	 *
@@ -51,6 +54,7 @@ public class DateComparatorTest
 	@BeforeMethod
 	public void setUp() throws Exception
 	{
+		comparator = new DateComparator();
 	}
 
 	/**
@@ -89,17 +93,17 @@ public class DateComparatorTest
 			System.out.println(i + "." + date);
 			i++;
 		}
-		AssertJUnit.assertTrue("List object with index 0 should be 'before'-object.", dates.get(0)
+		assertTrue("List object with index 0 should be 'before'-object.", dates.get(0)
 			.equals(before));
-		AssertJUnit.assertTrue("List object with index 1 should be 'future'-object.", dates.get(1)
+		assertTrue("List object with index 1 should be 'future'-object.", dates.get(1)
 			.equals(future));
-		AssertJUnit.assertTrue("List object with index 2 should be 'past'-object.", dates.get(2)
+		assertTrue("List object with index 2 should be 'past'-object.", dates.get(2)
 			.equals(past));
-		AssertJUnit.assertTrue("List object with index 3 should be 'after'-object.", dates.get(3)
+		assertTrue("List object with index 3 should be 'after'-object.", dates.get(3)
 			.equals(after));
-		AssertJUnit.assertTrue("List object with index 4 should be 'null'", dates.get(4) == null);
+		assertTrue("List object with index 4 should be 'null'", dates.get(4) == null);
 		// Sort collection with our DateComparator...
-		Collections.sort(dates, new DateComparator());
+		Collections.sort(dates, comparator);
 		System.out.println("===================================================");
 		i = 1;
 		for (final Date date : dates)
@@ -108,15 +112,36 @@ public class DateComparatorTest
 			i++;
 		}
 
-		AssertJUnit.assertTrue("List object with index 0 should be 'null'", dates.get(0) == null);
-		AssertJUnit.assertTrue("List object with index 1 should be 'past'-object.", dates.get(1)
+		assertTrue("List object with index 0 should be 'null'", dates.get(0) == null);
+		assertTrue("List object with index 1 should be 'past'-object.", dates.get(1)
 			.equals(past));
-		AssertJUnit.assertTrue("List object with index 2 should be 'before'-object.", dates.get(2)
+		assertTrue("List object with index 2 should be 'before'-object.", dates.get(2)
 			.equals(before));
-		AssertJUnit.assertTrue("List object with index 3 should be 'after'-object.", dates.get(3)
+		assertTrue("List object with index 3 should be 'after'-object.", dates.get(3)
 			.equals(after));
-		AssertJUnit.assertTrue("List object with index 4 should be 'future'-object.", dates.get(4)
+		assertTrue("List object with index 4 should be 'future'-object.", dates.get(4)
 			.equals(future));
 	}
+
+	/**
+	 * Test for the scenario when {@linkplain Date} objects are equal.
+	 */
+    @Test
+    public void testEqual() {
+    }
+
+	/**
+	 * Test for the scenario when an {@linkplain Date} object are greater than another {@linkplain Date} object.
+	 */
+    @Test
+    public void testGreaterThan() {
+    }
+
+	/**
+	 * Test for the scenario when an {@linkplain Date} object are less than another {@linkplain Date} object.
+	 */
+    @Test
+    public void testLessThan() {
+    }
 
 }
