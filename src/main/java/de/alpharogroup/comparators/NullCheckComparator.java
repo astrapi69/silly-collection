@@ -8,7 +8,7 @@ import lombok.Builder;
 import lombok.EqualsAndHashCode;
 
 /**
- * The class {@link GenericNullComparator} decorates another {@link Comparator} object. Before the
+ * The class {@link NullCheckComparator} decorates another {@link Comparator} object. Before the
  * decorated {@link Comparator} will be executed null check will be executed.
  *
  * @param <T>
@@ -16,7 +16,7 @@ import lombok.EqualsAndHashCode;
  */
 @EqualsAndHashCode
 @Builder
-public class GenericNullComparator<T> implements Comparator<T>, Serializable
+public class NullCheckComparator<T> implements Comparator<T>, Serializable
 {
 
 	/** The Constant serialVersionUID. */
@@ -29,22 +29,22 @@ public class GenericNullComparator<T> implements Comparator<T>, Serializable
 	private final boolean nullIsGreaterThan;
 
 	/**
-	 * Factory method to create a new {@link GenericNullComparator} object from the given
+	 * Factory method to create a new {@link NullCheckComparator} object from the given
 	 * {@link Comparator} object.
 	 *
 	 * @param <T>
 	 *            the generic type of the {@link Comparator} object that will be decorated
 	 * @param decoratedComparator
 	 *            the {@link Comparator} object that will be decorated
-	 * @return the new {@link GenericNullComparator} object
+	 * @return the new {@link NullCheckComparator} object
 	 */
-	public static <T> GenericNullComparator<T> of(Comparator<T> decoratedComparator)
+	public static <T> NullCheckComparator<T> of(Comparator<T> decoratedComparator)
 	{
-		return GenericNullComparator.<T> builder().decoratedComparator(decoratedComparator).build();
+		return NullCheckComparator.<T> builder().decoratedComparator(decoratedComparator).build();
 	}
 
 	/**
-	 * Factory method to create a new {@link GenericNullComparator} object from the given
+	 * Factory method to create a new {@link NullCheckComparator} object from the given
 	 * {@link Comparator} object.
 	 *
 	 * @param <T>
@@ -53,29 +53,29 @@ public class GenericNullComparator<T> implements Comparator<T>, Serializable
 	 *            the {@link Comparator} object that will be decorated
 	 * @param nullIsGreaterThan
 	 *            the flag that specifies if null objects is greater than non null objects.
-	 * @return the new {@link GenericNullComparator} object
+	 * @return the new {@link NullCheckComparator} object
 	 */
-	public static <T> GenericNullComparator<T> of(Comparator<T> decoratedComparator,
+	public static <T> NullCheckComparator<T> of(Comparator<T> decoratedComparator,
 		boolean nullIsGreaterThan)
 	{
-		return GenericNullComparator.<T> builder().decoratedComparator(decoratedComparator)
+		return NullCheckComparator.<T> builder().decoratedComparator(decoratedComparator)
 			.nullIsGreaterThan(nullIsGreaterThan).build();
 	}
 
 	/**
-	 * Instantiates a {@link GenericNullComparator} from the given {@link Comparator} object. The
+	 * Instantiates a {@link NullCheckComparator} from the given {@link Comparator} object. The
 	 * flag nullIsGreaterThan is set to false so null objects are smaller then non null objects.
 	 *
 	 * @param decoratedComparator
 	 *            the {@link Comparator} object that will be decorated
 	 */
-	public GenericNullComparator(Comparator<T> decoratedComparator)
+	public NullCheckComparator(Comparator<T> decoratedComparator)
 	{
 		this(decoratedComparator, false);
 	}
 
 	/**
-	 * Instantiates a {@link GenericNullComparator} from the given {@link Comparator} object and the
+	 * Instantiates a {@link NullCheckComparator} from the given {@link Comparator} object and the
 	 * given flag.
 	 *
 	 * @param decoratedComparator
@@ -83,7 +83,7 @@ public class GenericNullComparator<T> implements Comparator<T>, Serializable
 	 * @param nullIsGreaterThan
 	 *            the flag that specifies if null objects is greater than non null objects.
 	 */
-	public GenericNullComparator(Comparator<T> decoratedComparator, boolean nullIsGreaterThan)
+	public NullCheckComparator(Comparator<T> decoratedComparator, boolean nullIsGreaterThan)
 	{
 		Check.get().notNull(decoratedComparator, "decoratedComparator");
 		this.decoratedComparator = decoratedComparator;
