@@ -49,7 +49,7 @@ import lombok.ToString;
 @ToString
 @NoArgsConstructor
 @AllArgsConstructor
-@Builder
+@Builder(toBuilder=true)
 public final class KeyValuePair<K, V> implements Serializable
 {
 

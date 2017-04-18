@@ -51,7 +51,7 @@ import lombok.ToString;
 @ToString
 @NoArgsConstructor
 @AllArgsConstructor
-@Builder
+@Builder(toBuilder=true)
 public final class KeyValuesPair<K, V> implements Serializable
 {
 

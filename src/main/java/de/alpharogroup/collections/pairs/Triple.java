@@ -50,7 +50,7 @@ import lombok.ToString;
 @ToString
 @NoArgsConstructor
 @AllArgsConstructor
-@Builder
+@Builder(toBuilder=true)
 public class Triple<L, M, R> implements Serializable
 {
 
