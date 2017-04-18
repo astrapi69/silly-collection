@@ -22,7 +22,7 @@ Add the following maven dependency to your project `pom.xml` if you want to impo
 Than you can add the dependency to your dependencies:
 
 		<!-- silly-collections version -->
-		<silly-collections.version>4.14.0</silly-collections.version>
+		<silly-collections.version>4.15.0</silly-collections.version>
 
 		<dependencies>
 			...
@@ -50,6 +50,9 @@ Don't forget to add new units tests on your changes.
 Do not hesitate to contact the silly-collections developers with your questions, concerns, comments, bug reports, or feature requests.
 - Feature requests, questions and bug reports can be reported at the [issues page](https://github.com/lightblueseas/silly-collections/issues).
 
+## Note
+
+No animals were harmed in the making of this library.
 
 # Donate
 
