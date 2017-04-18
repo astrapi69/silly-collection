@@ -51,44 +51,6 @@ public class ListExtensions
 {
 
 	/**
-	 * Checks if the given element is the first in the given list.
-	 *
-	 * @param <T>
-	 *            the generic type
-	 * @param list
-	 *            the list
-	 * @param element
-	 *            the element
-	 * @return true if the given element is the first otherwise false
-	 */
-	public static <T> boolean isFirst(final List<T> list, final T element)
-	{
-		final int indexOfElement = list.indexOf(element);
-		return indexOfElement == 0;
-	}
-
-	/**
-	 * Checks if the given element is the last in the given list.
-	 *
-	 * @param <T>
-	 *            the generic type
-	 * @param list
-	 *            the list
-	 * @param element
-	 *            the element
-	 * @return true if the given element is the last otherwise false
-	 */
-	public static <T> boolean isLast(final List<T> list, final T element)
-	{
-		final T last = getLast(list);
-		if (last != null)
-		{
-			return last == element;
-		}
-		return false;
-	}
-
-	/**
 	 * This Method look in the List toSearch if at least one Object exists in the List search.
 	 *
 	 * @param <T>
@@ -214,6 +176,44 @@ public class ListExtensions
 	}
 
 	/**
+	 * Checks if the given element is the first in the given list.
+	 *
+	 * @param <T>
+	 *            the generic type
+	 * @param list
+	 *            the list
+	 * @param element
+	 *            the element
+	 * @return true if the given element is the first otherwise false
+	 */
+	public static <T> boolean isFirst(final List<T> list, final T element)
+	{
+		final int indexOfElement = list.indexOf(element);
+		return indexOfElement == 0;
+	}
+
+	/**
+	 * Checks if the given element is the last in the given list.
+	 *
+	 * @param <T>
+	 *            the generic type
+	 * @param list
+	 *            the list
+	 * @param element
+	 *            the element
+	 * @return true if the given element is the last otherwise false
+	 */
+	public static <T> boolean isLast(final List<T> list, final T element)
+	{
+		final T last = getLast(list);
+		if (last != null)
+		{
+			return last == element;
+		}
+		return false;
+	}
+
+	/**
 	 * Checks if the given List is not null or empty.
 	 *
 	 * @param <T>
@@ -225,6 +225,23 @@ public class ListExtensions
 	public static <T> boolean isNotEmpty(final List<T> list)
 	{
 		return list != null && !list.isEmpty();
+	}
+
+	/**
+	 * Factory method for create new {@link ArrayList} and returns as {@link List}.
+	 *
+	 * @param <T>
+	 *            the generic type
+	 * @param elements
+	 *            the elements to add in the new {@link ArrayList}.
+	 * @return the new {@link ArrayList} and returns as {@link List}.
+	 */
+	@SafeVarargs
+	public static <T> List<T> newArrayList(final T... elements)
+	{
+		final List<T> list = new ArrayList<>();
+		Collections.addAll(list, elements);
+		return list;
 	}
 
 	/**
@@ -529,7 +546,7 @@ public class ListExtensions
 	 */
 	public static <T> Vector<T> toVector(final Enumeration<T> enumaration)
 	{
-		final Vector<T> vector = new Vector<T>();
+		final Vector<T> vector = new Vector<>();
 		while (enumaration.hasMoreElements())
 		{
 			vector.add(enumaration.nextElement());

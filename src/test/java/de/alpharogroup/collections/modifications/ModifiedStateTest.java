@@ -58,14 +58,16 @@ public class ModifiedStateTest
 		ModifiedState state = ModifiedState.isModified(previous, next);
 		AssertJUnit.assertTrue(
 			"ModifiedState should have state <ModifiedState.UNMODIFIED> but was <ModifiedState."
-				+ state.name() + ">", state.equals(ModifiedState.UNMODIFIED));
+				+ state.name() + ">",
+			state.equals(ModifiedState.UNMODIFIED));
 		// Add an initial entry...
 		next.add("one");
 		// And get the current modified state...
 		state = ModifiedState.isModified(previous, next);
 		AssertJUnit.assertTrue(
 			"ModifiedState should have state <ModifiedState.FIRST_MATCH> but was <ModifiedState."
-				+ state.name() + ">", state.equals(ModifiedState.FIRST_MATCH));
+				+ state.name() + ">",
+			state.equals(ModifiedState.FIRST_MATCH));
 		// Set the two lists to equal entries so the state gets to
 		// 'unmodified'...
 		previous.add("one");
@@ -73,14 +75,16 @@ public class ModifiedStateTest
 		state = ModifiedState.isModified(previous, next);
 		AssertJUnit.assertTrue(
 			"ModifiedState should have state <ModifiedState.UNMODIFIED> but was <ModifiedState."
-				+ state.name() + ">", state.equals(ModifiedState.UNMODIFIED));
+				+ state.name() + ">",
+			state.equals(ModifiedState.UNMODIFIED));
 		// Add a new entry to the existing entries...
 		next.add("two");
 		// And get the current modified state...
 		state = ModifiedState.isModified(previous, next);
 		AssertJUnit.assertTrue(
 			"ModifiedState should have state <ModifiedState.NEW_MATCH> but was <ModifiedState."
-				+ state.name() + ">", state.equals(ModifiedState.NEW_MATCH));
+				+ state.name() + ">",
+			state.equals(ModifiedState.NEW_MATCH));
 		// Set the two lists to equal entries so the state gets to
 		// 'unmodified'...
 		previous.add("two");
@@ -88,7 +92,8 @@ public class ModifiedStateTest
 		state = ModifiedState.isModified(previous, next);
 		AssertJUnit.assertTrue(
 			"ModifiedState should have state <ModifiedState.UNMODIFIED> but was <ModifiedState."
-				+ state.name() + ">", state.equals(ModifiedState.UNMODIFIED));
+				+ state.name() + ">",
+			state.equals(ModifiedState.UNMODIFIED));
 		// Remove existing value...
 		next.remove("two");
 		// And put another value so the state gets to 'new match'...
@@ -97,21 +102,24 @@ public class ModifiedStateTest
 		state = ModifiedState.isModified(previous, next);
 		AssertJUnit.assertTrue(
 			"ModifiedState should have state <ModifiedState.NEW_MATCH> but was <ModifiedState."
-				+ state.name() + ">", state.equals(ModifiedState.NEW_MATCH));
+				+ state.name() + ">",
+			state.equals(ModifiedState.NEW_MATCH));
 		// Now remove an existing entry...
 		next.remove("three");
 		// And get the current modified state...
 		state = ModifiedState.isModified(previous, next);
 		AssertJUnit.assertTrue(
 			"ModifiedState should have state <ModifiedState.REMOVED> but was <ModifiedState."
-				+ state.name() + ">", state.equals(ModifiedState.REMOVED));
+				+ state.name() + ">",
+			state.equals(ModifiedState.REMOVED));
 		// Clear now the next list...
 		next.clear();
 		// And get the current modified state...
 		state = ModifiedState.isModified(previous, next);
 		AssertJUnit.assertTrue(
 			"ModifiedState should have state <ModifiedState.CLEAR> but was <ModifiedState."
-				+ state.name() + ">", state.equals(ModifiedState.CLEARED));
+				+ state.name() + ">",
+			state.equals(ModifiedState.CLEARED));
 	}
 
 }

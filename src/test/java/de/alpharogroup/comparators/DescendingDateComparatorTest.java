@@ -90,14 +90,14 @@ public class DescendingDateComparatorTest
 		// System.out.println(i+"."+date);
 		// i++;
 		// }
-		AssertJUnit.assertTrue("List object with index 0 should be 'before'-object.", dates.get(0)
-			.equals(before));
-		AssertJUnit.assertTrue("List object with index 1 should be 'future'-object.", dates.get(1)
-			.equals(future));
-		AssertJUnit.assertTrue("List object with index 2 should be 'past'-object.", dates.get(2)
-			.equals(past));
-		AssertJUnit.assertTrue("List object with index 3 should be 'after'-object.", dates.get(3)
-			.equals(after));
+		AssertJUnit.assertTrue("List object with index 0 should be 'before'-object.",
+			dates.get(0).equals(before));
+		AssertJUnit.assertTrue("List object with index 1 should be 'future'-object.",
+			dates.get(1).equals(future));
+		AssertJUnit.assertTrue("List object with index 2 should be 'past'-object.",
+			dates.get(2).equals(past));
+		AssertJUnit.assertTrue("List object with index 3 should be 'after'-object.",
+			dates.get(3).equals(after));
 		AssertJUnit.assertTrue("List object with index 4 should be 'null'", dates.get(4) == null);
 		// Sort collection with our DescendingDateComparator...
 		Collections.sort(dates, new DescendingDateComparator());
@@ -110,14 +110,14 @@ public class DescendingDateComparatorTest
 		// i++;
 		// }
 
-		AssertJUnit.assertTrue("List object with index 0 should be 'future'-object.", dates.get(0)
-			.equals(future));
-		AssertJUnit.assertTrue("List object with index 1 should be 'after'-object.", dates.get(1)
-			.equals(after));
-		AssertJUnit.assertTrue("List object with index 2 should be 'before'-object.", dates.get(2)
-			.equals(before));
-		AssertJUnit.assertTrue("List object with index 3 should be 'past'-object.", dates.get(3)
-			.equals(past));
+		AssertJUnit.assertTrue("List object with index 0 should be 'future'-object.",
+			dates.get(0).equals(future));
+		AssertJUnit.assertTrue("List object with index 1 should be 'after'-object.",
+			dates.get(1).equals(after));
+		AssertJUnit.assertTrue("List object with index 2 should be 'before'-object.",
+			dates.get(2).equals(before));
+		AssertJUnit.assertTrue("List object with index 3 should be 'past'-object.",
+			dates.get(3).equals(past));
 		AssertJUnit.assertTrue("List object with index 4 should be 'null'", dates.get(4) == null);
 	}
 
