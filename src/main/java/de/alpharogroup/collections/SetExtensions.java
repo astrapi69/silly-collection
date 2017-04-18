@@ -40,8 +40,10 @@ public class SetExtensions
 	/**
 	 * Factory method for create new {@link HashSet} and returns as {@link Set}.
 	 *
-	 * @param <T>            the generic type
-	 * @param elements the elements to add in the new {@link HashSet}.
+	 * @param <T>
+	 *            the generic type
+	 * @param elements
+	 *            the elements to add in the new {@link HashSet}.
 	 * @return the new {@link HashSet} and returns as {@link Set}.
 	 */
 	@SafeVarargs

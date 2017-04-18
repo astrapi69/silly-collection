@@ -15,18 +15,12 @@ import lombok.EqualsAndHashCode;
  *            the generic type of the {@link Comparator} object that will be decorated
  */
 @EqualsAndHashCode
-@Builder(toBuilder=true)
+@Builder(toBuilder = true)
 public class NullCheckComparator<T> implements Comparator<T>, Serializable
 {
 
 	/** The Constant serialVersionUID. */
 	private static final long serialVersionUID = 1L;
-
-	/** The decorated comparator. */
-	private final Comparator<T> decoratedComparator;
-
-	/** The flag that specifies if null objects is greater than non null objects. */
-	private final boolean nullIsGreaterThan;
 
 	/**
 	 * Factory method to create a new {@link NullCheckComparator} object from the given
@@ -62,9 +56,15 @@ public class NullCheckComparator<T> implements Comparator<T>, Serializable
 			.nullIsGreaterThan(nullIsGreaterThan).build();
 	}
 
+	/** The decorated comparator. */
+	private final Comparator<T> decoratedComparator;
+
+	/** The flag that specifies if null objects is greater than non null objects. */
+	private final boolean nullIsGreaterThan;
+
 	/**
-	 * Instantiates a {@link NullCheckComparator} from the given {@link Comparator} object. The
-	 * flag nullIsGreaterThan is set to false so null objects are smaller then non null objects.
+	 * Instantiates a {@link NullCheckComparator} from the given {@link Comparator} object. The flag
+	 * nullIsGreaterThan is set to false so null objects are smaller then non null objects.
 	 *
 	 * @param decoratedComparator
 	 *            the {@link Comparator} object that will be decorated

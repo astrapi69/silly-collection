@@ -24,13 +24,14 @@
  */
 package de.alpharogroup.comparators;
 
+import static org.testng.AssertJUnit.assertTrue;
+
 import java.util.ArrayList;
 import java.util.Collections;
 import java.util.Comparator;
 import java.util.Date;
 import java.util.List;
 
-import static org.testng.AssertJUnit.assertTrue;
 import org.testng.annotations.AfterMethod;
 import org.testng.annotations.BeforeMethod;
 import org.testng.annotations.Test;
@@ -42,9 +43,10 @@ import de.alpharogroup.date.CreateDateExtensions;
  */
 public class DateComparatorTest
 {
-	
+
 	/** The comparator. */
 	private Comparator<Date> comparator;
+
 	/**
 	 * Sets the up.
 	 *
@@ -93,14 +95,13 @@ public class DateComparatorTest
 			System.out.println(i + "." + date);
 			i++;
 		}
-		assertTrue("List object with index 0 should be 'before'-object.", dates.get(0)
-			.equals(before));
-		assertTrue("List object with index 1 should be 'future'-object.", dates.get(1)
-			.equals(future));
-		assertTrue("List object with index 2 should be 'past'-object.", dates.get(2)
-			.equals(past));
-		assertTrue("List object with index 3 should be 'after'-object.", dates.get(3)
-			.equals(after));
+		assertTrue("List object with index 0 should be 'before'-object.",
+			dates.get(0).equals(before));
+		assertTrue("List object with index 1 should be 'future'-object.",
+			dates.get(1).equals(future));
+		assertTrue("List object with index 2 should be 'past'-object.", dates.get(2).equals(past));
+		assertTrue("List object with index 3 should be 'after'-object.",
+			dates.get(3).equals(after));
 		assertTrue("List object with index 4 should be 'null'", dates.get(4) == null);
 		// Sort collection with our DateComparator...
 		Collections.sort(dates, comparator);
@@ -113,35 +114,39 @@ public class DateComparatorTest
 		}
 
 		assertTrue("List object with index 0 should be 'null'", dates.get(0) == null);
-		assertTrue("List object with index 1 should be 'past'-object.", dates.get(1)
-			.equals(past));
-		assertTrue("List object with index 2 should be 'before'-object.", dates.get(2)
-			.equals(before));
-		assertTrue("List object with index 3 should be 'after'-object.", dates.get(3)
-			.equals(after));
-		assertTrue("List object with index 4 should be 'future'-object.", dates.get(4)
-			.equals(future));
+		assertTrue("List object with index 1 should be 'past'-object.", dates.get(1).equals(past));
+		assertTrue("List object with index 2 should be 'before'-object.",
+			dates.get(2).equals(before));
+		assertTrue("List object with index 3 should be 'after'-object.",
+			dates.get(3).equals(after));
+		assertTrue("List object with index 4 should be 'future'-object.",
+			dates.get(4).equals(future));
 	}
 
 	/**
 	 * Test for the scenario when {@linkplain Date} objects are equal.
 	 */
-    @Test
-    public void testEqual() {
-    }
+	@Test
+	public void testEqual()
+	{
+	}
 
 	/**
-	 * Test for the scenario when an {@linkplain Date} object are greater than another {@linkplain Date} object.
+	 * Test for the scenario when an {@linkplain Date} object are greater than another
+	 * {@linkplain Date} object.
 	 */
-    @Test
-    public void testGreaterThan() {
-    }
+	@Test
+	public void testGreaterThan()
+	{
+	}
 
 	/**
-	 * Test for the scenario when an {@linkplain Date} object are less than another {@linkplain Date} object.
+	 * Test for the scenario when an {@linkplain Date} object are less than another
+	 * {@linkplain Date} object.
 	 */
-    @Test
-    public void testLessThan() {
-    }
+	@Test
+	public void testLessThan()
+	{
+	}
 
 }

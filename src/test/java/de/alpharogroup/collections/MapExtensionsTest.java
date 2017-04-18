@@ -81,8 +81,8 @@ public class MapExtensionsTest
 		map.put("3", "othervalue");
 		map.put("5", "value");
 		final String foundedKey = MapExtensions.getKeyFromValue(map, value);
-		AssertJUnit
-			.assertTrue("Expected value is not equal with key.", foundedKey.equals(expected));
+		AssertJUnit.assertTrue("Expected value is not equal with key.",
+			foundedKey.equals(expected));
 
 	}
 

@@ -44,12 +44,8 @@ public class KeyValuesPairTest
 		employees.add(Employee.builder().id("10").build());
 		employees.add(Employee.builder().id("20").build());
 		final Employee employee = Employee.builder().id("20").build();
-		final KeyValuesPair<Person, Employee> kvp = KeyValuesPair
-			.<Person, Employee>builder()
-			.key(person)
-			.values(employees)
-			.value(employee)
-			.build();
+		final KeyValuesPair<Person, Employee> kvp = KeyValuesPair.<Person, Employee> builder()
+			.key(person).values(employees).value(employee).build();
 		AssertJUnit.assertEquals(person, kvp.getKey());
 		AssertJUnit.assertTrue(kvp.getValues().size() == 3);
 	}

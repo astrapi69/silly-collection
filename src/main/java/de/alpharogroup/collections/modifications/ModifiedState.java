@@ -54,7 +54,7 @@ public enum ModifiedState
 	/**
 	 * The removed state. This indicates that an entry has been removed. Precondition is that
 	 * minimun an entry exists in the collection.
-	 * */
+	 */
 	REMOVED,
 
 	/**

@@ -63,65 +63,6 @@ public class ArrayExtensionsTest
 	}
 
 	/**
-	 * Test method for {@link de.alpharogroup.collections.ArrayExtensions#isFirst(Object[], Object)}
-	 * .
-	 */
-	@Test
-	public void testIsFirst()
-	{
-		final String expected = "1";
-		final String numbers[] = { expected, "2", "3", "4", "5", "6", "7" };
-
-		boolean actual = numbers.isFirst(expected);
-		AssertJUnit.assertTrue("", actual);
-
-		actual = numbers.isFirst(null);
-		AssertJUnit.assertFalse("", actual);
-
-
-	}
-
-	/**
-	 * Test method for {@link de.alpharogroup.collections.ArrayExtensions#isLast(Object[], Object)}
-	 * .
-	 */
-	@Test
-	public void testIsLast()
-	{
-		final String expected = "7";
-		final String numbers[] = { "1", "2", "3", "4", "5", "6", expected };
-
-		boolean actual = numbers.isLast(expected);
-		AssertJUnit.assertTrue("", actual);
-
-		actual = numbers.isLast(null);
-		AssertJUnit.assertFalse("", actual);
-	}
-
-	/**
-	 * Test for method {@link ArrayExtensions#getLast(Object[])}
-	 */
-	@Test
-	public void testGetLast()
-	{
-		String expected = "7";
-		final String numbers[] = { "1", "2", "3", "4", "5", "6", expected };
-		// Old vanilla java with static method...
-		String actual = ArrayExtensions.getLast(numbers);
-		AssertJUnit.assertEquals(expected, actual);
-		// use lombok extensions method
-		actual = numbers.getLast();
-		AssertJUnit.assertEquals(expected, actual);
-		final String empty[] = { };
-		expected = null;
-		actual = ArrayExtensions.getLast(empty);
-		AssertJUnit.assertEquals(expected, actual);
-		expected = null;
-		actual = ArrayExtensions.getLast(null);
-		AssertJUnit.assertEquals(expected, actual);
-	}
-
-	/**
 	 * Test for method {@link ArrayExtensions#getIndex(Object[], Object)}
 	 */
 	@Test
@@ -146,26 +87,25 @@ public class ArrayExtensionsTest
 	}
 
 	/**
-	 * Test for method {@link ArrayExtensions#indexOf(Object[], Object)}
+	 * Test for method {@link ArrayExtensions#getLast(Object[])}
 	 */
 	@Test
-	public void testIndexOf()
+	public void testGetLast()
 	{
-		int expected = 6;
-		final String last = "7";
-		final String numbers[] = { "1", "2", "3", "4", "5", "6", last };
+		String expected = "7";
+		final String numbers[] = { "1", "2", "3", "4", "5", "6", expected };
 		// Old vanilla java with static method...
-		int actual = ArrayExtensions.indexOf(numbers, last);
+		String actual = ArrayExtensions.getLast(numbers);
 		AssertJUnit.assertEquals(expected, actual);
 		// use lombok extensions method
-		actual = numbers.indexOf(last);
+		actual = numbers.getLast();
 		AssertJUnit.assertEquals(expected, actual);
 		final String empty[] = { };
-		expected = -1;
-		actual = ArrayExtensions.indexOf(empty, last);
+		expected = null;
+		actual = ArrayExtensions.getLast(empty);
 		AssertJUnit.assertEquals(expected, actual);
-
-		actual = ArrayExtensions.indexOf(empty, null);
+		expected = null;
+		actual = ArrayExtensions.getLast(null);
 		AssertJUnit.assertEquals(expected, actual);
 	}
 
@@ -313,6 +253,66 @@ public class ArrayExtensionsTest
 
 		actual = empty.getPreviousIndexes(null, 2);
 		AssertJUnit.assertEquals(expected, actual);
+	}
+
+	/**
+	 * Test for method {@link ArrayExtensions#indexOf(Object[], Object)}
+	 */
+	@Test
+	public void testIndexOf()
+	{
+		int expected = 6;
+		final String last = "7";
+		final String numbers[] = { "1", "2", "3", "4", "5", "6", last };
+		// Old vanilla java with static method...
+		int actual = ArrayExtensions.indexOf(numbers, last);
+		AssertJUnit.assertEquals(expected, actual);
+		// use lombok extensions method
+		actual = numbers.indexOf(last);
+		AssertJUnit.assertEquals(expected, actual);
+		final String empty[] = { };
+		expected = -1;
+		actual = ArrayExtensions.indexOf(empty, last);
+		AssertJUnit.assertEquals(expected, actual);
+
+		actual = ArrayExtensions.indexOf(empty, null);
+		AssertJUnit.assertEquals(expected, actual);
+	}
+
+	/**
+	 * Test method for {@link de.alpharogroup.collections.ArrayExtensions#isFirst(Object[], Object)}
+	 * .
+	 */
+	@Test
+	public void testIsFirst()
+	{
+		final String expected = "1";
+		final String numbers[] = { expected, "2", "3", "4", "5", "6", "7" };
+
+		boolean actual = numbers.isFirst(expected);
+		AssertJUnit.assertTrue("", actual);
+
+		actual = numbers.isFirst(null);
+		AssertJUnit.assertFalse("", actual);
+
+
+	}
+
+	/**
+	 * Test method for {@link de.alpharogroup.collections.ArrayExtensions#isLast(Object[], Object)}
+	 * .
+	 */
+	@Test
+	public void testIsLast()
+	{
+		final String expected = "7";
+		final String numbers[] = { "1", "2", "3", "4", "5", "6", expected };
+
+		boolean actual = numbers.isLast(expected);
+		AssertJUnit.assertTrue("", actual);
+
+		actual = numbers.isLast(null);
+		AssertJUnit.assertFalse("", actual);
 	}
 
 
