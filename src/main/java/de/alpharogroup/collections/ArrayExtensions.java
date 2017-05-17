@@ -31,6 +31,19 @@ import java.util.Arrays;
  */
 public final class ArrayExtensions
 {
+	
+	/**
+	 * Creates a new {@link List} from the given array. <br></br>
+	 * Note: This wraps only the method asList from {@link Arrays#asList(Object...)}.
+	 *
+	 * @param <T> the generic type of the objects in the array.
+	 * @param array the array
+	 * @return the new {@link List} created from the given array.
+	 */
+	public static <T> List<T> toList(final T[] array)
+	{
+		return Arrays.asList(array);
+	}
 
 	/**
 	 * Gets the first object from the given array.
