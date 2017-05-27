@@ -25,13 +25,14 @@
 package de.alpharogroup.collections;
 
 import java.util.Arrays;
+import java.util.List;
 
 /**
  * The class {@link ArrayExtensions} is an extensions class for use with array objects.
  */
 public final class ArrayExtensions
 {
-	
+
 	/**
 	 * Creates a new {@link List} from the given array. <br></br>
 	 * Note: This wraps only the method asList from {@link Arrays#asList(Object...)}.

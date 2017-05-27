@@ -25,8 +25,8 @@
 package de.alpharogroup.collections;
 
 import static org.testng.AssertJUnit.assertEquals;
-import static org.testng.AssertJUnit.assertFalse;
-import static org.testng.AssertJUnit.assertTrue;
+
+import java.util.List;
 
 import org.testng.AssertJUnit;
 import org.testng.annotations.Test;
