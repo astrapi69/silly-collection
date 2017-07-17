@@ -7,6 +7,7 @@ Utility library for collections, comparators and iterator classes
 The source code comes under the liberal MIT License, making silly-collections great for all types of applications.
 
 ## Build Status 
+
 [![Build Status](https://travis-ci.org/lightblueseas/silly-collections.svg?branch=master)](https://travis-ci.org/lightblueseas/silly-collections)
 
 ## Maven Central
