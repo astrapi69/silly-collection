@@ -6,11 +6,16 @@ Utility library for collections, comparators and iterator classes
 
 The source code comes under the liberal MIT License, making silly-collections great for all types of applications.
 
-# Build status and latest maven version
+# Build Status 
 [![Build Status](https://travis-ci.org/lightblueseas/silly-collections.svg?branch=master)](https://travis-ci.org/lightblueseas/silly-collections)
 
+## Maven Central
 
 [![Maven Central](https://maven-badges.herokuapp.com/maven-central/de.alpharogroup/silly-collections/badge.svg)](https://maven-badges.herokuapp.com/maven-central/de.alpharogroup/silly-collections)
+
+## javadoc
+
+silly-collections [![Javadocs](http://www.javadoc.io/badge/de.alpharogroup/silly-collections.svg)](http://www.javadoc.io/doc/de.alpharogroup/silly-collections)
 
 ## Maven dependency
 
