@@ -47,7 +47,7 @@ The source code for silly-collections are on GitHub. Please feel free to fork an
 
 Create your own fork of [lightblueseas/silly-collections/fork](https://github.com/lightblueseas/silly-collections/fork)
 
-To share your changes, [submit a pull request](https://github.com/lightblueseas/silly-collections/pull/new/master).
+To share your changes, [submit a pull request](https://github.com/lightblueseas/silly-collections/pull/new/develop).
 
 Don't forget to add new units tests on your changes.
 
