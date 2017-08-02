@@ -46,7 +46,8 @@ public class EnumerationIteratorTest
 {
 
 	/** The LOGGER. */
-	private static final Logger logger = LoggerFactory.getLogger(EnumerationIteratorTest.class.getName());
+	private static final Logger logger = LoggerFactory
+		.getLogger(EnumerationIteratorTest.class.getName());
 	/** The List for the test. */
 	private final List<String> list = new ArrayList<String>()
 	{

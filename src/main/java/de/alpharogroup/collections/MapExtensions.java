@@ -132,19 +132,34 @@ public class MapExtensions
 	}
 
 	/**
-	 * Factory method for create a new {@link LazyMap} from commons-collections4.
+	 * Factory method for create a new {@link ConcurrentHashMap}.
 	 *
 	 * @param <K>
 	 *            the generic type of the key
 	 * @param <V>
 	 *            the generic type of the value
 	 *
-	 * @return The new {@link LazyMap}.
+	 * @return The new {@link ConcurrentHashMap}.
 	 */
-	@SuppressWarnings({ "unchecked", "rawtypes" })
-	public static <K, V> Map<K, V> newLazyMap()
+	public static <K, V> ConcurrentHashMap<K, V> newConcurrentHashMap()
 	{
-		return LazyMap.lazyMap(new HashMap<K, V>(), new InstantiateFactory(HashMap.class));
+		return new ConcurrentHashMap<>();
+	}
+
+	/**
+	 * Factory method for create a new {@link ConcurrentHashMap}.
+	 *
+	 * @param <K>
+	 *            the generic type of the key
+	 * @param <V>
+	 *            the generic type of the value
+	 * @param initialCapacity
+	 *            the initial capacity
+	 * @return The new {@link ConcurrentHashMap}.
+	 */
+	public static <K, V> ConcurrentHashMap<K, V> newConcurrentHashMap(final int initialCapacity)
+	{
+		return new ConcurrentHashMap<>(initialCapacity);
 	}
 
 	/**
@@ -179,34 +194,19 @@ public class MapExtensions
 	}
 
 	/**
-	 * Factory method for create a new {@link ConcurrentHashMap}.
+	 * Factory method for create a new {@link LazyMap} from commons-collections4.
 	 *
 	 * @param <K>
 	 *            the generic type of the key
 	 * @param <V>
 	 *            the generic type of the value
 	 *
-	 * @return The new {@link ConcurrentHashMap}.
+	 * @return The new {@link LazyMap}.
 	 */
-	public static <K, V> ConcurrentHashMap<K, V> newConcurrentHashMap()
+	@SuppressWarnings({ "unchecked", "rawtypes" })
+	public static <K, V> Map<K, V> newLazyMap()
 	{
-		return new ConcurrentHashMap<>();
-	}
-
-	/**
-	 * Factory method for create a new {@link ConcurrentHashMap}.
-	 *
-	 * @param <K>
-	 *            the generic type of the key
-	 * @param <V>
-	 *            the generic type of the value
-	 * @param initialCapacity
-	 *            the initial capacity
-	 * @return The new {@link ConcurrentHashMap}.
-	 */
-	public static <K, V> ConcurrentHashMap<K, V> newConcurrentHashMap(final int initialCapacity)
-	{
-		return new ConcurrentHashMap<>(initialCapacity);
+		return LazyMap.lazyMap(new HashMap<K, V>(), new InstantiateFactory(HashMap.class));
 	}
 
 	/**

@@ -44,23 +44,6 @@ public class ArrayExtensionsTest
 {
 
 	/**
-	 * Test for method {@link ArrayExtensions#toList(Object[])}
-	 */
-	@Test
-	public void testToList()
-	{
-		String actual;
-		String expected;
-		final String numbers[] = { "1", "2", "3", "4", "5", "6", "7" };
-		List<String> numberList = numbers.toList();// lombok magic extension method
-		for (int i = 0; i < numbers.length; i++) {
-			actual = numberList.get(i);
-			expected = numbers[i];
-			assertEquals(expected, actual);
-		}
-	}
-
-	/**
 	 * Test for method {@link ArrayExtensions#getFirst(Object[])}
 	 */
 	@Test
@@ -336,7 +319,6 @@ public class ArrayExtensionsTest
 		AssertJUnit.assertFalse("", actual);
 	}
 
-
 	/**
 	 * Test for method {@link ArrayExtensions#splitInChunks(byte[], int)}
 	 */
@@ -364,6 +346,25 @@ public class ArrayExtensionsTest
 		// elapsed = CalculateDateExtensions.calculateElapsedTime(start, end);
 		AssertJUnit.assertEquals(splitedBytes.length, 12);
 
+	}
+
+
+	/**
+	 * Test for method {@link ArrayExtensions#toList(Object[])}
+	 */
+	@Test
+	public void testToList()
+	{
+		String actual;
+		String expected;
+		final String numbers[] = { "1", "2", "3", "4", "5", "6", "7" };
+		List<String> numberList = numbers.toList();// lombok magic extension method
+		for (int i = 0; i < numbers.length; i++)
+		{
+			actual = numberList.get(i);
+			expected = numbers[i];
+			assertEquals(expected, actual);
+		}
 	}
 
 
