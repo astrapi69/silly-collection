@@ -231,10 +231,24 @@ public class ListExtensions
 	 * Factory method for create new {@link ArrayList} and returns as {@link List}.
 	 *
 	 * @param <T>
-	 *            the generic type
+	 *            the generic type of the elements
+	 * @param initialCapacity
+	 *            the initial capacity
+	 * @return the new {@link ArrayList} as {@link List}.
+	 */
+	public static <T> List<T> newArrayList(final int initialCapacity)
+	{
+		return new ArrayList<>(initialCapacity);
+	}
+
+	/**
+	 * Factory method for create new {@link ArrayList} and returns as {@link List}.
+	 *
+	 * @param <T>
+	 *            the generic type of the elements
 	 * @param elements
 	 *            the elements to add in the new {@link ArrayList}.
-	 * @return the new {@link ArrayList} and returns as {@link List}.
+	 * @return the new {@link ArrayList} as {@link List}.
 	 */
 	@SafeVarargs
 	public static <T> List<T> newArrayList(final T... elements)

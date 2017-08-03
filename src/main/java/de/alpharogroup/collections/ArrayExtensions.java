@@ -25,6 +25,7 @@
 package de.alpharogroup.collections;
 
 import java.util.Arrays;
+import java.util.List;
 
 /**
  * The class {@link ArrayExtensions} is an extensions class for use with array objects.
@@ -283,6 +284,22 @@ public final class ArrayExtensions
 			count--;
 		}
 		return dataChunks;
+	}
+
+	/**
+	 * Creates a new {@link List} from the given array. <br>
+	 * <br>
+	 * Note: This wraps only the method asList from {@link Arrays#asList(Object...)}.
+	 *
+	 * @param <T>
+	 *            the generic type of the objects in the array.
+	 * @param array
+	 *            the array
+	 * @return the new {@link List} created from the given array.
+	 */
+	public static <T> List<T> toList(final T[] array)
+	{
+		return Arrays.asList(array);
 	}
 
 }

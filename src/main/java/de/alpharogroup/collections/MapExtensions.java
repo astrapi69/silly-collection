@@ -30,6 +30,7 @@ import java.util.HashMap;
 import java.util.LinkedHashMap;
 import java.util.Map;
 import java.util.Map.Entry;
+import java.util.concurrent.ConcurrentHashMap;
 
 import org.apache.commons.collections4.functors.InstantiateFactory;
 import org.apache.commons.collections4.map.LazyMap;
@@ -128,6 +129,68 @@ public class MapExtensions
 	public static Map<Integer, Map<String, String>> newAssosiativeArrayMap()
 	{
 		return newLazyMap();
+	}
+
+	/**
+	 * Factory method for create a new {@link ConcurrentHashMap}.
+	 *
+	 * @param <K>
+	 *            the generic type of the key
+	 * @param <V>
+	 *            the generic type of the value
+	 *
+	 * @return The new {@link ConcurrentHashMap}.
+	 */
+	public static <K, V> ConcurrentHashMap<K, V> newConcurrentHashMap()
+	{
+		return new ConcurrentHashMap<>();
+	}
+
+	/**
+	 * Factory method for create a new {@link ConcurrentHashMap}.
+	 *
+	 * @param <K>
+	 *            the generic type of the key
+	 * @param <V>
+	 *            the generic type of the value
+	 * @param initialCapacity
+	 *            the initial capacity
+	 * @return The new {@link ConcurrentHashMap}.
+	 */
+	public static <K, V> ConcurrentHashMap<K, V> newConcurrentHashMap(final int initialCapacity)
+	{
+		return new ConcurrentHashMap<>(initialCapacity);
+	}
+
+	/**
+	 * Factory method for create a new {@link HashMap}.
+	 *
+	 * @param <K>
+	 *            the generic type of the key
+	 * @param <V>
+	 *            the generic type of the value
+	 *
+	 * @return The new {@link HashMap}.
+	 */
+	public static <K, V> Map<K, V> newHashMap()
+	{
+		return new HashMap<>();
+	}
+
+	/**
+	 * Factory method for create a new {@link HashMap}.
+	 *
+	 * @param <K>
+	 *            the generic type of the key
+	 * @param <V>
+	 *            the generic type of the value
+	 * @param initialCapacity
+	 *            the initial capacity
+	 * @return The new {@link HashMap}.
+	 */
+	public static <K, V> Map<K, V> newHashMap(final int initialCapacity)
+	{
+		return new HashMap<>(initialCapacity);
 	}
 
 	/**

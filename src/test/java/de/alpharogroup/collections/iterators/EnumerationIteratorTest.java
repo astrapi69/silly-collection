@@ -28,15 +28,16 @@ import java.util.ArrayList;
 import java.util.Collections;
 import java.util.Enumeration;
 import java.util.List;
-import java.util.logging.Logger;
 
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
 import org.testng.AssertJUnit;
 import org.testng.annotations.AfterMethod;
 import org.testng.annotations.BeforeMethod;
 import org.testng.annotations.Test;
 
 /**
- * Test class for the class EnumerationIterator.
+ * Test class for the class {@link EnumerationIterator}.
  *
  * @author Asterios Raptis
  * @version 1.0
@@ -45,7 +46,8 @@ public class EnumerationIteratorTest
 {
 
 	/** The LOGGER. */
-	static final Logger LOGGER = Logger.getLogger(EnumerationIteratorTest.class.getName());
+	private static final Logger logger = LoggerFactory
+		.getLogger(EnumerationIteratorTest.class.getName());
 	/** The List for the test. */
 	private final List<String> list = new ArrayList<String>()
 	{
@@ -100,7 +102,7 @@ public class EnumerationIteratorTest
 		while (this.iterator.hasNext())
 		{
 			final String stringNumber = this.iterator.next();
-			System.out.println(iteratorLength + ".)Object:" + stringNumber);
+			logger.debug(iteratorLength + ".)Object:" + stringNumber);
 			iteratorLength++;
 		}
 		AssertJUnit.assertTrue("The length from the array should be equal with "
