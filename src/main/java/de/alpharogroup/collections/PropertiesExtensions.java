@@ -24,9 +24,7 @@
  */
 package de.alpharogroup.collections;
 
-import java.util.ArrayList;
 import java.util.List;
-import java.util.Map.Entry;
 import java.util.Properties;
 
 import de.alpharogroup.collections.pairs.KeyValuePair;
@@ -48,13 +46,7 @@ public class PropertiesExtensions
 	 */
 	public static List<KeyValuePair<String, String>> toKeyValuePairs(Properties properties)
 	{
-		List<KeyValuePair<String, String>> list = new ArrayList<>();
-		for (Entry<Object, Object> entry : properties.entrySet())
-		{
-			list.add(KeyValuePair.<String, String> builder().key((String)entry.getKey())
-				.value((String)entry.getValue()).build());
-		}
-		return list;
+		return KeyValuePair.toKeyValuePairs(properties);
 	}
 
 }
