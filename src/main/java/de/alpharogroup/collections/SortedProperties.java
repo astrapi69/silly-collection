@@ -44,7 +44,7 @@ public class SortedProperties extends Properties
 
 	/**
 	 * Gets the Comparator for this SortedProperties.
-	 * 
+	 *
 	 * @return The Comparator.
 	 */
 	private Comparator<Object> getComparator()
@@ -62,7 +62,7 @@ public class SortedProperties extends Properties
 	@Override
 	public synchronized Enumeration<Object> keys()
 	{
-		final Vector<Object> keys = ListExtensions.toVector(super.keys());
+		final Vector<Object> keys = VectorExtensions.toVector(super.keys());
 		Collections.sort(keys, getComparator());
 		return keys.elements();
 	}
