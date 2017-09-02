@@ -45,9 +45,9 @@ import lombok.ToString;
  *
  *
  * @param <K>
- *            The type of the key.
+ *            The generic type of the key
  * @param <V>
- *            The type of the value.
+ *            The generic type of the value
  */
 @Getter
 @Setter
@@ -67,6 +67,10 @@ public final class KeyValuePair<K, V> implements Serializable
 	/**
 	 * Transforms the given {@link Map} to a list of {@link KeyValuePair}'s.
 	 *
+	 * @param <K>
+	 *            The generic type of the key
+	 * @param <V>
+	 *            The generic type of the value
 	 * @param map
 	 *            the map
 	 * @return the new list with the {@link KeyValuePair}'s.
