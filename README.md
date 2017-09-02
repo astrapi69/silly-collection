@@ -28,7 +28,7 @@ Add the following maven dependency to your project `pom.xml` if you want to impo
 Than you can add the dependency to your dependencies:
 
 		<!-- silly-collections version -->
-		<silly-collections.version>4.16.0</silly-collections.version>
+		<silly-collections.version>4.17.0</silly-collections.version>
 
 		<dependencies>
 			...
