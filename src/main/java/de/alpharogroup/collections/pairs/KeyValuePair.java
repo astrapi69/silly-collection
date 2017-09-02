@@ -28,8 +28,8 @@ import java.io.Serializable;
 import java.util.ArrayList;
 import java.util.List;
 import java.util.Map;
-import java.util.Properties;
 import java.util.Map.Entry;
+import java.util.Properties;
 
 import lombok.AllArgsConstructor;
 import lombok.Builder;
@@ -64,13 +64,6 @@ public final class KeyValuePair<K, V> implements Serializable
 	 */
 	private static final long serialVersionUID = 1L;
 
-	/** The key. */
-	private K key;
-
-	/** The value. */
-	private V value;
-
-
 	/**
 	 * Transforms the given {@link Map} to a list of {@link KeyValuePair}'s.
 	 *
@@ -83,8 +76,8 @@ public final class KeyValuePair<K, V> implements Serializable
 		List<KeyValuePair<K, V>> list = new ArrayList<>();
 		for (Entry<K, V> entry : map.entrySet())
 		{
-			list.add(KeyValuePair.<K, V> builder().key(entry.getKey())
-				.value(entry.getValue()).build());
+			list.add(
+				KeyValuePair.<K, V> builder().key(entry.getKey()).value(entry.getValue()).build());
 		}
 		return list;
 	}
@@ -106,5 +99,12 @@ public final class KeyValuePair<K, V> implements Serializable
 		}
 		return list;
 	}
+
+
+	/** The key. */
+	private K key;
+
+	/** The value. */
+	private V value;
 
 }
