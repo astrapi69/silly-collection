@@ -22,31 +22,54 @@
  * OF CONTRACT, TORT OR OTHERWISE, ARISING FROM, OUT OF OR IN CONNECTION
  * WITH THE SOFTWARE OR THE USE OR OTHER DEALINGS IN THE SOFTWARE.
  */
-package de.alpharogroup.collections;
+package de.alpharogroup.collections.pairs;
 
-import java.util.List;
-import java.util.Properties;
+import java.io.Serializable;
 
-import de.alpharogroup.collections.pairs.KeyValuePair;
-import lombok.experimental.UtilityClass;
+import lombok.AllArgsConstructor;
+import lombok.Builder;
+import lombok.EqualsAndHashCode;
+import lombok.Getter;
+import lombok.NoArgsConstructor;
+import lombok.Setter;
+import lombok.ToString;
 
 /**
- * The class {@link PropertiesExtensions}.
+ * The class {@link Quattro} represents four generic values.
+ *
+ * @param <TL>
+ *            the generic type of the top left content.
+ * @param <TR>
+ *            the generic type of the top right content.
+ * @param <BL>
+ *            the generic type of the bottom left content.
+ * @param <BR>
+ *            the generic type of the bottom right content.
  */
-@UtilityClass
-public class PropertiesExtensions
+@Getter
+@Setter
+@EqualsAndHashCode
+@ToString
+@NoArgsConstructor
+@AllArgsConstructor
+@Builder(toBuilder = true)
+public class Quattro<TL, TR, BL, BR> implements Serializable
 {
-
 	/**
-	 * Transforms the given {@link Properties} to a list of {@link KeyValuePair}'s.
-	 *
-	 * @param properties
-	 *            the properties
-	 * @return the new list with the {@link KeyValuePair}'s.
+	 * The serialVersionUID.
 	 */
-	public static List<KeyValuePair<String, String>> toKeyValuePairs(Properties properties)
-	{
-		return KeyValuePair.toKeyValuePairs(properties);
-	}
+	private static final long serialVersionUID = 1L;
+
+	/** The top left value. */
+	private TL topLeft;
+
+	/** The top right value. */
+	private TR topRight;
+
+	/** The bottom left value. */
+	private BL bottomLeft;
+
+	/** The bottom right value. */
+	private BR bottomRight;
 
 }

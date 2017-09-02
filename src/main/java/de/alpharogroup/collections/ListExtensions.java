@@ -531,6 +531,40 @@ public class ListExtensions
 	}
 
 	/**
+	 * Converts the given enumaration to a Vector.
+	 *
+	 * @param <T>
+	 *            the generic type
+	 * @param enumaration
+	 *            The Enumeration to convert.
+	 *
+	 * @return A new Vector with the content of the given Enumeration.
+	 */
+	public static <T> List<T> toList(final Enumeration<T> enumaration)
+	{
+		final List<T> list = new ArrayList<>();
+		while (enumaration.hasMoreElements())
+		{
+			list.add(enumaration.nextElement());
+		}
+		return list;
+	}
+
+	/**
+	 * Converts the given {@link Set} to a list.
+	 *
+	 * @param <T>
+	 *            the generic type of the elements
+	 * @param set
+	 *            the set
+	 * @return A new list
+	 */
+	public static <T> List<T> toList(final Set<T> set)
+	{
+		return new ArrayList<>(set);
+	}
+
+	/**
 	 * Converts the given parameters to an object array.
 	 *
 	 * @param <T>
@@ -557,14 +591,11 @@ public class ListExtensions
 	 *            The Enumeration to convert.
 	 *
 	 * @return A new Vector with the content of the given Enumeration.
+	 * @deprecated use instead VectorExtensions.toVector
 	 */
+	@Deprecated
 	public static <T> Vector<T> toVector(final Enumeration<T> enumaration)
 	{
-		final Vector<T> vector = new Vector<>();
-		while (enumaration.hasMoreElements())
-		{
-			vector.add(enumaration.nextElement());
-		}
-		return vector;
+		return VectorExtensions.toVector(enumaration);
 	}
 }

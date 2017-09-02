@@ -24,29 +24,42 @@
  */
 package de.alpharogroup.collections;
 
-import java.util.List;
-import java.util.Properties;
+import static org.testng.AssertJUnit.assertTrue;
 
-import de.alpharogroup.collections.pairs.KeyValuePair;
-import lombok.experimental.UtilityClass;
+import java.util.Enumeration;
+import java.util.Vector;
+
+import org.testng.annotations.Test;
+
+import lombok.experimental.ExtensionMethod;
 
 /**
- * The class {@link PropertiesExtensions}.
+ * Tests for the class {@link VectorExtensions}.
+ *
+ * @version 1.0
+ * @author Asterios Raptis
  */
-@UtilityClass
-public class PropertiesExtensions
+@ExtensionMethod(ListExtensions.class)
+public class VectorExtensionsTest
 {
 
 	/**
-	 * Transforms the given {@link Properties} to a list of {@link KeyValuePair}'s.
-	 *
-	 * @param properties
-	 *            the properties
-	 * @return the new list with the {@link KeyValuePair}'s.
+	 * Test the method {@link VectorExtensions#toVector(Object...)}.
 	 */
-	public static List<KeyValuePair<String, String>> toKeyValuePairs(Properties properties)
+	@Test
+	public void testToVector()
 	{
-		return KeyValuePair.toKeyValuePairs(properties);
+		final Vector<String> expectedValues = new Vector<>();
+		expectedValues.add("C");
+		expectedValues.add("D");
+		expectedValues.add("A");
+		expectedValues.add("B");
+		final Enumeration<String> elements = expectedValues.elements();
+		final Vector<String> actuals = VectorExtensions.toVector(elements);
+		for (final String actual : actuals)
+		{
+			assertTrue(expectedValues.contains(actual));
+		}
 	}
 
 }

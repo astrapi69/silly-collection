@@ -24,29 +24,39 @@
  */
 package de.alpharogroup.collections;
 
+import static org.testng.AssertJUnit.assertNotNull;
+import static org.testng.AssertJUnit.assertTrue;
+
 import java.util.List;
 import java.util.Properties;
 
-import de.alpharogroup.collections.pairs.KeyValuePair;
-import lombok.experimental.UtilityClass;
+import org.testng.annotations.Test;
 
-/**
- * The class {@link PropertiesExtensions}.
- */
-@UtilityClass
-public class PropertiesExtensions
+import de.alpharogroup.collections.pairs.KeyValuePair;
+
+public class PropertiesExtensionsTest
 {
 
-	/**
-	 * Transforms the given {@link Properties} to a list of {@link KeyValuePair}'s.
-	 *
-	 * @param properties
-	 *            the properties
-	 * @return the new list with the {@link KeyValuePair}'s.
-	 */
-	public static List<KeyValuePair<String, String>> toKeyValuePairs(Properties properties)
+	@Test
+	public void test()
 	{
-		return KeyValuePair.toKeyValuePairs(properties);
+		String key;
+		String value;
+		Properties properties = new Properties();
+
+		key = "foo";
+		value = "bar";
+		properties.setProperty(key, value);
+
+		key = "bla";
+		value = "fasel";
+		properties.setProperty(key, value);
+
+		List<KeyValuePair<String, String>> list = PropertiesExtensions.toKeyValuePairs(properties);
+
+		assertNotNull(list);
+		assertTrue(list.size() == 2);
+
 	}
 
 }

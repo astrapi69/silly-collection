@@ -22,31 +22,56 @@
  * OF CONTRACT, TORT OR OTHERWISE, ARISING FROM, OUT OF OR IN CONNECTION
  * WITH THE SOFTWARE OR THE USE OR OTHER DEALINGS IN THE SOFTWARE.
  */
-package de.alpharogroup.collections;
+package de.alpharogroup.collections.pairs;
 
+import static org.testng.AssertJUnit.assertNotNull;
+import static org.testng.AssertJUnit.assertTrue;
+
+import java.util.HashMap;
 import java.util.List;
+import java.util.Map;
 import java.util.Properties;
 
-import de.alpharogroup.collections.pairs.KeyValuePair;
-import lombok.experimental.UtilityClass;
+import org.testng.annotations.Test;
 
-/**
- * The class {@link PropertiesExtensions}.
- */
-@UtilityClass
-public class PropertiesExtensions
+
+public class KeyValuePairTest
 {
 
-	/**
-	 * Transforms the given {@link Properties} to a list of {@link KeyValuePair}'s.
-	 *
-	 * @param properties
-	 *            the properties
-	 * @return the new list with the {@link KeyValuePair}'s.
-	 */
-	public static List<KeyValuePair<String, String>> toKeyValuePairs(Properties properties)
+	@Test
+	public void testToKeyValuePairsMap()
 	{
-		return KeyValuePair.toKeyValuePairs(properties);
+		final Map<String, String> map = new HashMap<>();
+		map.put("1", "novalue");
+		map.put("2", "somevalue");
+		map.put("3", "othervalue");
+		map.put("5", "value");
+
+		List<KeyValuePair<String, String>> list = KeyValuePair.toKeyValuePairs(map);
+
+		assertNotNull(list);
+		assertTrue(list.size() == 4);
+	}
+
+	@Test
+	public void testToKeyValuePairsProperties()
+	{
+		String key;
+		String value;
+		Properties properties = new Properties();
+
+		key = "foo";
+		value = "bar";
+		properties.setProperty(key, value);
+
+		key = "bla";
+		value = "fasel";
+		properties.setProperty(key, value);
+
+		List<KeyValuePair<String, String>> objectList = KeyValuePair.toKeyValuePairs(properties);
+
+		assertNotNull(objectList);
+		assertTrue(objectList.size() == 2);
 	}
 
 }

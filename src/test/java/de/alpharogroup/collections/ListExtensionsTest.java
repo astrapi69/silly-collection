@@ -26,11 +26,9 @@ package de.alpharogroup.collections;
 
 import java.util.ArrayList;
 import java.util.Arrays;
-import java.util.Enumeration;
 import java.util.HashSet;
 import java.util.List;
 import java.util.Set;
-import java.util.Vector;
 
 import org.testng.AssertJUnit;
 import org.testng.annotations.AfterMethod;
@@ -500,25 +498,6 @@ public class ListExtensionsTest
 		}
 		actual = ListExtensions.toObjectArray();
 		AssertJUnit.assertTrue(actual.length == 0);
-	}
-
-	/**
-	 * Test the method {@link ListExtensions#toObjectArray(Object...)}.
-	 */
-	@Test
-	public void testToVector()
-	{
-		final Vector<String> expectedValues = new Vector<>();
-		expectedValues.add("C");
-		expectedValues.add("D");
-		expectedValues.add("A");
-		expectedValues.add("B");
-		final Enumeration<String> elements = expectedValues.elements();
-		final Vector<String> actuals = ListExtensions.toVector(elements);
-		for (final String actual : actuals)
-		{
-			AssertJUnit.assertTrue(expectedValues.contains(actual));
-		}
 	}
 
 }
