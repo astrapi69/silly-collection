@@ -26,6 +26,7 @@ package de.alpharogroup.collections;
 
 import java.util.Collections;
 import java.util.HashSet;
+import java.util.List;
 import java.util.Set;
 
 import lombok.experimental.UtilityClass;
@@ -52,6 +53,48 @@ public class SetExtensions
 		final Set<T> set = new HashSet<>();
 		Collections.addAll(set, elements);
 		return set;
+	}
+
+	/**
+	 * Checks if a Set is null or empty.
+	 *
+	 * @param <T>
+	 *            the generic type
+	 * @param set
+	 *            The Set to check.
+	 * @return true if the set is null or empty otherwise false.
+	 */
+	public static <T> boolean isEmpty(final Set<T> set)
+	{
+		return set == null || set.isEmpty();
+	}
+
+	/**
+	 * Checks if the given Set is not null or empty.
+	 *
+	 * @param <T>
+	 *            the generic type
+	 * @param set
+	 *            The Set to check.
+	 * @return true if the set is null or empty otherwise false.
+	 */
+	public static <T> boolean isNotEmpty(final Set<T> set)
+	{
+		return set != null && !set.isEmpty();
+	}
+
+	/**
+	 * Converts the given {@link List} to a {@link Set}.
+	 *
+	 * @param <T>
+	 *            the generic type of the elements
+	 * @param list
+	 *            the list
+	 * @return A new {@link Set}
+	 */
+	public static <T> Set<T> toSet(final List<T> list)
+	{
+		return new HashSet<>(list);
 	}
 
 }
