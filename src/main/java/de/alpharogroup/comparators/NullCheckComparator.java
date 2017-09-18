@@ -54,9 +54,9 @@ public class NullCheckComparator<T> implements Comparator<T>, Serializable
 	 *            the generic type of the {@link Comparator} object that will be decorated
 	 * @param decoratedComparator
 	 *            the {@link Comparator} object that will be decorated
-	 * @return the new {@link NullCheckComparator} object
+	 * @return the new decorated {@link Comparator} object
 	 */
-	public static <T> NullCheckComparator<T> of(Comparator<T> decoratedComparator)
+	public static <T> Comparator<T> of(Comparator<T> decoratedComparator)
 	{
 		return NullCheckComparator.<T> builder().decoratedComparator(decoratedComparator).build();
 	}

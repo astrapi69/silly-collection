@@ -24,7 +24,8 @@
  */
 package de.alpharogroup.comparators;
 
-import org.testng.AssertJUnit;
+import static org.testng.AssertJUnit.assertTrue;
+
 import org.testng.annotations.Test;
 
 public class ComparableComparatorTest
@@ -40,16 +41,16 @@ public class ComparableComparatorTest
 		final Integer same = i1;
 		final Integer greater = i1 * 2;
 
-		AssertJUnit.assertTrue(comparator.compare(i1, lesser) > 0);
-		AssertJUnit.assertTrue(comparator.compare(i1, same) == 0);
-		AssertJUnit.assertTrue(comparator.compare(i1, greater) < 0);
-		AssertJUnit.assertTrue(comparator.compare(i1, null) > 0);
+		assertTrue(comparator.compare(i1, lesser) > 0);
+		assertTrue(comparator.compare(i1, same) == 0);
+		assertTrue(comparator.compare(i1, greater) < 0);
+		assertTrue(comparator.compare(i1, null) > 0);
 
 		comparator = new ComparableComparator<>(SortOrder.DESCENDING);
 
-		AssertJUnit.assertTrue(comparator.compare(i1, lesser) < 0);
-		AssertJUnit.assertTrue(comparator.compare(i1, same) == 0);
-		AssertJUnit.assertTrue(comparator.compare(i1, greater) > 0);
-		AssertJUnit.assertTrue(comparator.compare(i1, null) < 0);
+		assertTrue(comparator.compare(i1, lesser) < 0);
+		assertTrue(comparator.compare(i1, same) == 0);
+		assertTrue(comparator.compare(i1, greater) > 0);
+		assertTrue(comparator.compare(i1, null) < 0);
 	}
 }
