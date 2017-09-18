@@ -24,7 +24,7 @@
  */
 package de.alpharogroup.comparators;
 
-import static org.testng.AssertJUnit.*;
+import static org.testng.AssertJUnit.assertEquals;
 
 import java.util.Comparator;
 import java.util.Locale;

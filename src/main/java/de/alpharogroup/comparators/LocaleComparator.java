@@ -37,12 +37,13 @@ public class LocaleComparator implements Comparator<Locale>
 {
 
 	/**
-	 * {@inheritDoc}
+	 * Factory method to create a new {@link LocaleComparator} object.
+	 *
+	 * @return the new {@link LocaleComparator} object
 	 */
-	@Override
-	public int compare(Locale o1, Locale o2)
+	public static Comparator<Locale> of()
 	{
-		return o1.toString().compareTo(o2.toString());
+		return LocaleComparator.of(false);
 	}
 
 	/**
@@ -58,13 +59,12 @@ public class LocaleComparator implements Comparator<Locale>
 	}
 
 	/**
-	 * Factory method to create a new {@link LocaleComparator} object.
-	 *
-	 * @return the new {@link LocaleComparator} object
+	 * {@inheritDoc}
 	 */
-	public static Comparator<Locale> of()
+	@Override
+	public int compare(Locale o1, Locale o2)
 	{
-		return LocaleComparator.of(false);
+		return o1.toString().compareTo(o2.toString());
 	}
 
 }
