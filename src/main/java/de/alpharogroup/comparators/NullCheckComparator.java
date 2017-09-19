@@ -32,7 +32,7 @@ import lombok.Builder;
 import lombok.EqualsAndHashCode;
 
 /**
- * The class {@link NullCheckComparator} decorates another {@link Comparator} object. Before the
+ * The class {@link NullCheckComparator} decorates another {@link Comparator} object to compare null and non-null values. Before the
  * decorated {@link Comparator} will be executed null check will be executed.
  *
  * @param <T>
