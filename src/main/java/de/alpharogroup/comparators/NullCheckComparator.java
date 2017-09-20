@@ -121,27 +121,11 @@ public class NullCheckComparator<T> implements Comparator<T>, Serializable
 	@Override
 	public int compare(T object, T compareWithObject)
 	{
-		if (object == compareWithObject)
+		final Integer nullCheck = ComparatorExtensions.nullCheck(object, compareWithObject, this.nullIsGreaterThan);
+		if (nullCheck != null)
 		{
-			return 0;
-		}
-		if (object == null)
-		{
-			if (this.nullIsGreaterThan)
-			{
-				return 1;
-			}
-			return -1;
-		}
-		if (compareWithObject == null)
-		{
-
-			if (this.nullIsGreaterThan)
-			{
-				return -1;
-			}
-			return 1;
-		}
+			return nullCheck;
+		}		
 		return this.decoratedComparator.compare(object, compareWithObject);
 	}
 
