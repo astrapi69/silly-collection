@@ -43,9 +43,6 @@ public class SortedProperties extends Properties
 	/** The Constant serialVersionUID. */
 	private static final long serialVersionUID = 1L;
 
-	/** The {@link Comparator} object. */
-	private Comparator<Object> comparator;
-
 	/**
 	 * Factory method to create a new {@link SortedProperties} object.
 	 *
@@ -77,7 +74,8 @@ public class SortedProperties extends Properties
 	 *            the comparator
 	 * @return the new {@link SortedProperties} object
 	 */
-	public static SortedProperties of(final Properties defaults, final Comparator<Object> comparator)
+	public static SortedProperties of(final Properties defaults,
+		final Comparator<Object> comparator)
 	{
 		return new SortedProperties(defaults)
 		{
@@ -94,13 +92,16 @@ public class SortedProperties extends Properties
 	/**
 	 * Factory method to create a new {@link SortedProperties} object.
 	 *
-	 * @param defaults            the defaults
-	 * @param comparator            the comparator
-	 * @param nullIsGreaterThan the null is greater than
+	 * @param defaults
+	 *            the defaults
+	 * @param comparator
+	 *            the comparator
+	 * @param nullIsGreaterThan
+	 *            the null is greater than
 	 * @return the new {@link SortedProperties} object
 	 */
-	public static SortedProperties of(final Properties defaults, final Comparator<Object> comparator,
-		final boolean nullIsGreaterThan)
+	public static SortedProperties of(final Properties defaults,
+		final Comparator<Object> comparator, final boolean nullIsGreaterThan)
 	{
 		return new SortedProperties(defaults)
 		{
@@ -114,12 +115,14 @@ public class SortedProperties extends Properties
 		};
 	}
 
+	/** The {@link Comparator} object. */
+	private Comparator<Object> comparator;
+
 	/**
 	 * Instantiates a new {@link SortedProperties}.
 	 */
 	public SortedProperties()
 	{
-		super();
 	}
 
 	/**
