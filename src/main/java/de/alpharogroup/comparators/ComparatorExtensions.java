@@ -106,7 +106,7 @@ public class ComparatorExtensions
 		}
 		return null;
 	}
-		
+
 	/**
 	 * Checks if one of the given objects are null and returns the value for the Comparator or null
 	 * if both are not null or if the given objects are not the same Object.
@@ -122,7 +122,8 @@ public class ComparatorExtensions
 	 * @return the integer or null if both are not null or if the given objects are not the same
 	 *         Object.
 	 */
-	public static <T> Integer nullCheck(final T object, final T compareWithObject, final boolean nullIsGreaterThan)
+	public static <T> Integer nullCheck(final T object, final T compareWithObject,
+		final boolean nullIsGreaterThan)
 	{
 		if (object == compareWithObject)
 		{
@@ -147,6 +148,5 @@ public class ComparatorExtensions
 		}
 		return null;
 	}
-	
 
 }

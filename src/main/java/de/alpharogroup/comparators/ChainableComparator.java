@@ -31,15 +31,16 @@ import java.util.List;
 import org.apache.commons.collections4.comparators.ComparatorChain;
 
 /**
- * The class {@link ChainableComparator} extends the {@link ComparatorChain} and
- * provides factory methods for create {@link ChainableComparator} objects.
+ * The class {@link ChainableComparator} extends the {@link ComparatorChain} and provides factory
+ * methods for create {@link ChainableComparator} objects.
  *
  * @param <T>
  *            the generic type of the object that will be compared
- * 
- * @see {@link ComparatorChain}
+ *
+ * @see <code> ComparatorChain </code>
  */
-public class ChainableComparator<T> extends ComparatorChain<T> {
+public class ChainableComparator<T> extends ComparatorChain<T>
+{
 
 	/** The Constant serialVersionUID. */
 	private static final long serialVersionUID = 1L;
@@ -48,111 +49,99 @@ public class ChainableComparator<T> extends ComparatorChain<T> {
 	 * Factory method to create a new chainable {@link Comparator} object.
 	 *
 	 * @param <T>
-	 *            the generic type of the {@link Comparator} object that will be
-	 *            compared
-	 * 
-	 * @see {@link ComparatorChain}
-	 * 
+	 *            the generic type of the {@link Comparator} object that will be compared
+	 *
 	 * @return the new chainable {@link Comparator} object
+	 *
+	 * @see <code> ComparatorChain </code>
 	 */
-	public static <T> Comparator<T> of() {
+	public static <T> Comparator<T> of()
+	{
 		return new ChainableComparator<T>();
 	}
 
 	/**
-	 * Factory method to create a new chainable {@link Comparator} object from
-	 * the given {@link Comparator} object.
+	 * Factory method to create a new chainable {@link Comparator} object from the given
+	 * {@link Comparator} object.
 	 *
 	 * @param <T>
-	 *            the generic type of the {@link Comparator} object that will be
-	 *            compared
+	 *            the generic type of the {@link Comparator} object that will be compared
 	 * @param comparator
 	 *            the {@link Comparator} object that will be in the chain
-	 *            
-	 * @see {@link ComparatorChain}
-	 * 
+	 *
 	 * @return the new chainable {@link Comparator} object
+	 *
+	 * @see <code> ComparatorChain </code>
 	 */
-	public static <T> Comparator<T> of(Comparator<T> comparator) {
+	public static <T> Comparator<T> of(final Comparator<T> comparator)
+	{
 		return new ChainableComparator<T>(comparator);
 	}
 
 	/**
-	 * Factory method to create a new chainable {@link Comparator} object from
-	 * the given {@link Comparator} object and the given reverse flag.
+	 * Factory method to create a new chainable {@link Comparator} object from the given
+	 * {@link Comparator} object and the given reverse flag.
 	 *
 	 * @param <T>
-	 *            the generic type of the {@link Comparator} object that will be
-	 *            compared
+	 *            the generic type of the {@link Comparator} object that will be compared
 	 * @param comparator
 	 *            the {@link Comparator} object that will be in the chain
 	 * @param reverse
 	 *            the reverse flag
-	 *            
-	 * @see {@link ComparatorChain}
-	 * 
+	 *
 	 * @return the new chainable {@link Comparator} object
+	 *
+	 * @see <code> ComparatorChain </code>
 	 */
-	public static <T> Comparator<T> of(Comparator<T> comparator, boolean reverse) {
+	public static <T> Comparator<T> of(final Comparator<T> comparator, final boolean reverse)
+	{
 		return new ChainableComparator<T>(comparator, reverse);
 	}
 
 	/**
-	 * Factory method to create a new chainable {@link Comparator} object from
-	 * the given {@link List} of {@link Comparator} objects.
+	 * Factory method to create a new chainable {@link Comparator} object from the given
+	 * {@link List} of {@link Comparator} objects.
 	 *
 	 * @param <T>
-	 *            the generic type of the {@link Comparator} object that will be
-	 *            compared
+	 *            the generic type of the {@link Comparator} object that will be compared
 	 * @param list
 	 *            the list with the {@link Comparator} objects.
-	 *            
-	 * @see {@link ComparatorChain} 
-	 * 
+	 *
 	 * @return the new chainable {@link Comparator} object
+	 *
+	 * @see <code> ComparatorChain </code>
 	 */
-	public static <T> Comparator<T> of(List<Comparator<T>> list) {
+	public static <T> Comparator<T> of(final List<Comparator<T>> list)
+	{
 		return new ChainableComparator<T>(list);
 	}
 
 	/**
-	 * Of.
+	 * Factory method to create a new chainable {@link Comparator} object from the given
+	 * {@link List} of {@link Comparator} objects.
 	 *
 	 * @param <T>
-	 *            the generic type
-	 * @param list
-	 *            the list
-	 * @param bits
-	 *            the bits
-	 * @return the comparator
-	 */
-
-
-	/**
-	 * Factory method to create a new chainable {@link Comparator} object from
-	 * the given {@link List} of {@link Comparator} objects.
-	 *
-	 * @param <T>
-	 *            the generic type of the {@link Comparator} object that will be
-	 *            compared
+	 *            the generic type of the {@link Comparator} object that will be compared
 	 * @param list
 	 *            the list with the {@link Comparator} objects.
 	 * @param bits
-	 *            Sort order for each Comparator.  Extra bits are ignored,
-     *               unless extra Comparators are added by another method.
-	 *            
-	 * @see {@link ComparatorChain} 
-	 * 
+	 *            Sort order for each Comparator. Extra bits are ignored, unless extra Comparators
+	 *            are added by another method.
+	 *
 	 * @return the new chainable {@link Comparator} object
+	 *
+	 * @see <code> ComparatorChain </code>
 	 */
-	public static <T> Comparator<T> of(List<Comparator<T>> list, BitSet bits) {
+	public static <T> Comparator<T> of(final List<Comparator<T>> list, final BitSet bits)
+	{
 		return new ChainableComparator<T>(list, bits);
 	}
 
 	/**
 	 * Instantiates a new {@link ChainableComparator}.
 	 */
-	private ChainableComparator() {
+	private ChainableComparator()
+	{
 	}
 
 	/**
@@ -161,7 +150,8 @@ public class ChainableComparator<T> extends ComparatorChain<T> {
 	 * @param comparator
 	 *            the comparator
 	 */
-	private ChainableComparator(Comparator<T> comparator) {
+	private ChainableComparator(final Comparator<T> comparator)
+	{
 		super(comparator);
 	}
 
@@ -173,7 +163,8 @@ public class ChainableComparator<T> extends ComparatorChain<T> {
 	 * @param reverse
 	 *            the reverse
 	 */
-	private ChainableComparator(Comparator<T> comparator, boolean reverse) {
+	private ChainableComparator(final Comparator<T> comparator, final boolean reverse)
+	{
 		super(comparator, reverse);
 	}
 
@@ -183,7 +174,8 @@ public class ChainableComparator<T> extends ComparatorChain<T> {
 	 * @param list
 	 *            the list
 	 */
-	private ChainableComparator(List<Comparator<T>> list) {
+	private ChainableComparator(final List<Comparator<T>> list)
+	{
 		super(list);
 	}
 
@@ -193,10 +185,11 @@ public class ChainableComparator<T> extends ComparatorChain<T> {
 	 * @param list
 	 *            the list
 	 * @param bits
-	 *            Sort order for each Comparator.  Extra bits are ignored,
-     *               unless extra Comparators are added by another method.
+	 *            Sort order for each Comparator. Extra bits are ignored, unless extra Comparators
+	 *            are added by another method.
 	 */
-	private ChainableComparator(List<Comparator<T>> list, BitSet bits) {
+	private ChainableComparator(final List<Comparator<T>> list, final BitSet bits)
+	{
 		super(list, bits);
 	}
 
