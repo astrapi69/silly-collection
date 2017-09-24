@@ -39,11 +39,30 @@ import de.alpharogroup.comparators.NullCheckComparator;
  */
 public class SortedProperties extends Properties
 {
+
 	/** The Constant serialVersionUID. */
 	private static final long serialVersionUID = 1L;
 
 	/** The {@link Comparator} object. */
 	private Comparator<Object> comparator;
+
+	/**
+	 * Instantiates a new {@link SortedProperties}.
+	 */
+	public SortedProperties()
+	{
+		super();
+	}
+
+	/**
+	 * Instantiates a new {@link SortedProperties}.
+	 *
+	 * @param defaults the defaults
+	 */
+	public SortedProperties(final Properties defaults)
+	{
+		super(defaults);
+	}
 
 	/**
 	 * Gets the {@link Comparator} for sort this {@link SortedProperties}.
