@@ -107,4 +107,46 @@ public class ComparatorExtensions
 		return null;
 	}
 
+	/**
+	 * Checks if one of the given objects are null and returns the value for the Comparator or null
+	 * if both are not null or if the given objects are not the same Object.
+	 *
+	 * @param <T>
+	 *            the generic type
+	 * @param object
+	 *            the object
+	 * @param compareWithObject
+	 *            the compare with object
+	 * @param nullIsGreaterThan
+	 *            the flag that says if null objects are greater
+	 * @return the integer or null if both are not null or if the given objects are not the same
+	 *         Object.
+	 */
+	public static <T> Integer nullCheck(final T object, final T compareWithObject,
+		final boolean nullIsGreaterThan)
+	{
+		if (object == compareWithObject)
+		{
+			return 0;// it is the same Object
+		}
+		if (object == null && compareWithObject != null)
+		{
+			if (nullIsGreaterThan)
+			{
+				return 1;
+			}
+			return -1; // object is null so its smaller
+		}
+		// Check if one of the objects are null
+		if (object != null && compareWithObject == null)
+		{
+			if (nullIsGreaterThan)
+			{
+				return -1;
+			}
+			return 1;// compareWithObject is null so its bigger
+		}
+		return null;
+	}
+
 }

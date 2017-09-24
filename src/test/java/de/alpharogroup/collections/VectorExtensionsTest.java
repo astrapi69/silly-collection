@@ -22,35 +22,44 @@
  * OF CONTRACT, TORT OR OTHERWISE, ARISING FROM, OUT OF OR IN CONNECTION
  * WITH THE SOFTWARE OR THE USE OR OTHER DEALINGS IN THE SOFTWARE.
  */
-package de.alpharogroup.comparators;
+package de.alpharogroup.collections;
 
 import static org.testng.AssertJUnit.assertTrue;
 
+import java.util.Enumeration;
+import java.util.Vector;
+
 import org.testng.annotations.Test;
 
-public class ComparableComparatorTest
+import lombok.experimental.ExtensionMethod;
+
+/**
+ * Tests for the class {@link VectorExtensions}.
+ *
+ * @version 1.0
+ * @author Asterios Raptis
+ */
+@ExtensionMethod(ListExtensions.class)
+public class VectorExtensionsTest
 {
 
+	/**
+	 * Test the method {@link VectorExtensions#toVector(Object...)}.
+	 */
 	@Test
-	public void testComparable()
+	public void testToVector()
 	{
-		ComparableComparator<Integer> comparator = new ComparableComparator<>();
-		final Integer i1 = 42;
-
-		final Integer lesser = i1 / 2;
-		final Integer same = i1;
-		final Integer greater = i1 * 2;
-
-		assertTrue(comparator.compare(i1, lesser) > 0);
-		assertTrue(comparator.compare(i1, same) == 0);
-		assertTrue(comparator.compare(i1, greater) < 0);
-		assertTrue(comparator.compare(i1, null) > 0);
-
-		comparator = new ComparableComparator<>(SortOrder.DESCENDING);
-
-		assertTrue(comparator.compare(i1, lesser) < 0);
-		assertTrue(comparator.compare(i1, same) == 0);
-		assertTrue(comparator.compare(i1, greater) > 0);
-		assertTrue(comparator.compare(i1, null) < 0);
+		final Vector<String> expectedValues = new Vector<>();
+		expectedValues.add("C");
+		expectedValues.add("D");
+		expectedValues.add("A");
+		expectedValues.add("B");
+		final Enumeration<String> elements = expectedValues.elements();
+		final Vector<String> actuals = VectorExtensions.toVector(elements);
+		for (final String actual : actuals)
+		{
+			assertTrue(expectedValues.contains(actual));
+		}
 	}
+
 }

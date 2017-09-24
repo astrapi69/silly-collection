@@ -22,35 +22,31 @@
  * OF CONTRACT, TORT OR OTHERWISE, ARISING FROM, OUT OF OR IN CONNECTION
  * WITH THE SOFTWARE OR THE USE OR OTHER DEALINGS IN THE SOFTWARE.
  */
-package de.alpharogroup.comparators;
+package de.alpharogroup.collections;
 
-import static org.testng.AssertJUnit.assertTrue;
+import java.util.List;
+import java.util.Properties;
 
-import org.testng.annotations.Test;
+import de.alpharogroup.collections.pairs.KeyValuePair;
+import lombok.experimental.UtilityClass;
 
-public class ComparableComparatorTest
+/**
+ * The class {@link PropertiesExtensions}.
+ */
+@UtilityClass
+public class PropertiesExtensions
 {
 
-	@Test
-	public void testComparable()
+	/**
+	 * Transforms the given {@link Properties} to a list of {@link KeyValuePair}'s.
+	 *
+	 * @param properties
+	 *            the properties
+	 * @return the new list with the {@link KeyValuePair}'s.
+	 */
+	public static List<KeyValuePair<String, String>> toKeyValuePairs(Properties properties)
 	{
-		ComparableComparator<Integer> comparator = new ComparableComparator<>();
-		final Integer i1 = 42;
-
-		final Integer lesser = i1 / 2;
-		final Integer same = i1;
-		final Integer greater = i1 * 2;
-
-		assertTrue(comparator.compare(i1, lesser) > 0);
-		assertTrue(comparator.compare(i1, same) == 0);
-		assertTrue(comparator.compare(i1, greater) < 0);
-		assertTrue(comparator.compare(i1, null) > 0);
-
-		comparator = new ComparableComparator<>(SortOrder.DESCENDING);
-
-		assertTrue(comparator.compare(i1, lesser) < 0);
-		assertTrue(comparator.compare(i1, same) == 0);
-		assertTrue(comparator.compare(i1, greater) > 0);
-		assertTrue(comparator.compare(i1, null) < 0);
+		return KeyValuePair.toKeyValuePairs(properties);
 	}
+
 }

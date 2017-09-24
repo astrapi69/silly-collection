@@ -22,35 +22,54 @@
  * OF CONTRACT, TORT OR OTHERWISE, ARISING FROM, OUT OF OR IN CONNECTION
  * WITH THE SOFTWARE OR THE USE OR OTHER DEALINGS IN THE SOFTWARE.
  */
-package de.alpharogroup.comparators;
+package de.alpharogroup.collections.pairs;
 
-import static org.testng.AssertJUnit.assertTrue;
+import java.io.Serializable;
 
-import org.testng.annotations.Test;
+import lombok.AllArgsConstructor;
+import lombok.Builder;
+import lombok.EqualsAndHashCode;
+import lombok.Getter;
+import lombok.NoArgsConstructor;
+import lombok.Setter;
+import lombok.ToString;
 
-public class ComparableComparatorTest
+/**
+ * The class {@link Quattro} represents four generic values.
+ *
+ * @param <TL>
+ *            the generic type of the top left content.
+ * @param <TR>
+ *            the generic type of the top right content.
+ * @param <BL>
+ *            the generic type of the bottom left content.
+ * @param <BR>
+ *            the generic type of the bottom right content.
+ */
+@Getter
+@Setter
+@EqualsAndHashCode
+@ToString
+@NoArgsConstructor
+@AllArgsConstructor
+@Builder(toBuilder = true)
+public class Quattro<TL, TR, BL, BR> implements Serializable
 {
+	/**
+	 * The serialVersionUID.
+	 */
+	private static final long serialVersionUID = 1L;
 
-	@Test
-	public void testComparable()
-	{
-		ComparableComparator<Integer> comparator = new ComparableComparator<>();
-		final Integer i1 = 42;
+	/** The top left value. */
+	private TL topLeft;
 
-		final Integer lesser = i1 / 2;
-		final Integer same = i1;
-		final Integer greater = i1 * 2;
+	/** The top right value. */
+	private TR topRight;
 
-		assertTrue(comparator.compare(i1, lesser) > 0);
-		assertTrue(comparator.compare(i1, same) == 0);
-		assertTrue(comparator.compare(i1, greater) < 0);
-		assertTrue(comparator.compare(i1, null) > 0);
+	/** The bottom left value. */
+	private BL bottomLeft;
 
-		comparator = new ComparableComparator<>(SortOrder.DESCENDING);
+	/** The bottom right value. */
+	private BR bottomRight;
 
-		assertTrue(comparator.compare(i1, lesser) < 0);
-		assertTrue(comparator.compare(i1, same) == 0);
-		assertTrue(comparator.compare(i1, greater) > 0);
-		assertTrue(comparator.compare(i1, null) < 0);
-	}
 }

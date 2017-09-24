@@ -25,11 +25,7 @@
 package de.alpharogroup.collections.pairs;
 
 import java.io.Serializable;
-import java.util.ArrayList;
-import java.util.List;
 import java.util.Map;
-import java.util.Map.Entry;
-import java.util.Properties;
 
 import lombok.AllArgsConstructor;
 import lombok.Builder;
@@ -40,14 +36,15 @@ import lombok.Setter;
 import lombok.ToString;
 
 /**
- * The class {@link KeyValuePair} represents a key value pair with generic parameters for the key
- * and value type.
- *
+ * The class {@link KeyMapPair} represents a key value pair with generic parameters for the key and
+ * map value type.
  *
  * @param <K>
- *            The generic type of the key
- * @param <V>
- *            The generic type of the value
+ *            The type of the key.
+ * @param <MK>
+ *            the generic type of the map key.
+ * @param <MV>
+ *            the generic type of the map value.
  */
 @Getter
 @Setter
@@ -56,7 +53,7 @@ import lombok.ToString;
 @NoArgsConstructor
 @AllArgsConstructor
 @Builder(toBuilder = true)
-public final class KeyValuePair<K, V> implements Serializable
+public final class KeyMapPair<K, MK, MV> implements Serializable
 {
 
 	/**
@@ -64,51 +61,10 @@ public final class KeyValuePair<K, V> implements Serializable
 	 */
 	private static final long serialVersionUID = 1L;
 
-	/**
-	 * Transforms the given {@link Map} to a list of {@link KeyValuePair}'s.
-	 *
-	 * @param <K>
-	 *            The generic type of the key
-	 * @param <V>
-	 *            The generic type of the value
-	 * @param map
-	 *            the map
-	 * @return the new list with the {@link KeyValuePair}'s.
-	 */
-	public static <K, V> List<KeyValuePair<K, V>> toKeyValuePairs(Map<K, V> map)
-	{
-		List<KeyValuePair<K, V>> list = new ArrayList<>();
-		for (Entry<K, V> entry : map.entrySet())
-		{
-			list.add(
-				KeyValuePair.<K, V> builder().key(entry.getKey()).value(entry.getValue()).build());
-		}
-		return list;
-	}
-
-	/**
-	 * Transforms the given {@link Properties} to a list of {@link KeyValuePair}'s.
-	 *
-	 * @param properties
-	 *            the properties
-	 * @return the new list with the {@link KeyValuePair}'s.
-	 */
-	public static List<KeyValuePair<String, String>> toKeyValuePairs(Properties properties)
-	{
-		List<KeyValuePair<String, String>> list = new ArrayList<>();
-		for (Entry<Object, Object> entry : properties.entrySet())
-		{
-			list.add(KeyValuePair.<String, String> builder().key((String)entry.getKey())
-				.value((String)entry.getValue()).build());
-		}
-		return list;
-	}
-
-
 	/** The key. */
 	private K key;
 
-	/** The value. */
-	private V value;
+	/** The map with the values. */
+	private Map<MK, MV> values;
 
 }

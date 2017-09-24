@@ -22,35 +22,41 @@
  * OF CONTRACT, TORT OR OTHERWISE, ARISING FROM, OUT OF OR IN CONNECTION
  * WITH THE SOFTWARE OR THE USE OR OTHER DEALINGS IN THE SOFTWARE.
  */
-package de.alpharogroup.comparators;
+package de.alpharogroup.collections;
 
+import static org.testng.AssertJUnit.assertNotNull;
 import static org.testng.AssertJUnit.assertTrue;
+
+import java.util.List;
+import java.util.Properties;
 
 import org.testng.annotations.Test;
 
-public class ComparableComparatorTest
+import de.alpharogroup.collections.pairs.KeyValuePair;
+
+public class PropertiesExtensionsTest
 {
 
 	@Test
-	public void testComparable()
+	public void test()
 	{
-		ComparableComparator<Integer> comparator = new ComparableComparator<>();
-		final Integer i1 = 42;
+		String key;
+		String value;
+		Properties properties = new Properties();
 
-		final Integer lesser = i1 / 2;
-		final Integer same = i1;
-		final Integer greater = i1 * 2;
+		key = "foo";
+		value = "bar";
+		properties.setProperty(key, value);
 
-		assertTrue(comparator.compare(i1, lesser) > 0);
-		assertTrue(comparator.compare(i1, same) == 0);
-		assertTrue(comparator.compare(i1, greater) < 0);
-		assertTrue(comparator.compare(i1, null) > 0);
+		key = "bla";
+		value = "fasel";
+		properties.setProperty(key, value);
 
-		comparator = new ComparableComparator<>(SortOrder.DESCENDING);
+		List<KeyValuePair<String, String>> list = PropertiesExtensions.toKeyValuePairs(properties);
 
-		assertTrue(comparator.compare(i1, lesser) < 0);
-		assertTrue(comparator.compare(i1, same) == 0);
-		assertTrue(comparator.compare(i1, greater) > 0);
-		assertTrue(comparator.compare(i1, null) < 0);
+		assertNotNull(list);
+		assertTrue(list.size() == 2);
+
 	}
+
 }

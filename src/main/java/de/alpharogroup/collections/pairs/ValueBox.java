@@ -44,7 +44,7 @@ import lombok.ToString;
 @EqualsAndHashCode
 @ToString
 @AllArgsConstructor
-@Builder
+@Builder(toBuilder = true)
 public class ValueBox<T> implements Serializable
 {
 

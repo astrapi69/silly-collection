@@ -35,6 +35,9 @@ import org.junit.Rule;
 import org.junit.Test;
 import org.junit.rules.ExpectedException;
 
+/**
+ * Test class for the class {@link Check}.
+ */
 public class CheckTest
 {
 	/**

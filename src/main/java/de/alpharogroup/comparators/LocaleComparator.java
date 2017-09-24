@@ -24,33 +24,47 @@
  */
 package de.alpharogroup.comparators;
 
-import static org.testng.AssertJUnit.assertTrue;
+import java.util.Comparator;
+import java.util.Locale;
 
-import org.testng.annotations.Test;
-
-public class ComparableComparatorTest
+/**
+ * The class {@link LocaleComparator} compares {@linkplain Locale} objects. This Comparator does not
+ * check null, for null check you can decorate it with the
+ * {@link NullCheckComparator#of(Comparator)}. an example is in the unit test class from
+ * {@linkplain NullCheckComparator}.
+ */
+public class LocaleComparator implements Comparator<Locale>
 {
 
-	@Test
-	public void testComparable()
+	/**
+	 * Factory method to create a new {@link LocaleComparator} object.
+	 *
+	 * @return the new {@link LocaleComparator} object
+	 */
+	public static Comparator<Locale> of()
 	{
-		ComparableComparator<Integer> comparator = new ComparableComparator<>();
-		final Integer i1 = 42;
-
-		final Integer lesser = i1 / 2;
-		final Integer same = i1;
-		final Integer greater = i1 * 2;
-
-		assertTrue(comparator.compare(i1, lesser) > 0);
-		assertTrue(comparator.compare(i1, same) == 0);
-		assertTrue(comparator.compare(i1, greater) < 0);
-		assertTrue(comparator.compare(i1, null) > 0);
-
-		comparator = new ComparableComparator<>(SortOrder.DESCENDING);
-
-		assertTrue(comparator.compare(i1, lesser) < 0);
-		assertTrue(comparator.compare(i1, same) == 0);
-		assertTrue(comparator.compare(i1, greater) > 0);
-		assertTrue(comparator.compare(i1, null) < 0);
+		return LocaleComparator.of(false);
 	}
+
+	/**
+	 * Factory method to create a new {@link LocaleComparator} object.
+	 *
+	 * @param nullIsGreaterThan
+	 *            the flag that specifies if null objects is greater than non null objects.
+	 * @return the new {@link LocaleComparator} object
+	 */
+	public static Comparator<Locale> of(boolean nullIsGreaterThan)
+	{
+		return NullCheckComparator.<Locale> of(new LocaleComparator(), nullIsGreaterThan);
+	}
+
+	/**
+	 * {@inheritDoc}
+	 */
+	@Override
+	public int compare(Locale o1, Locale o2)
+	{
+		return o1.toString().compareTo(o2.toString());
+	}
+
 }

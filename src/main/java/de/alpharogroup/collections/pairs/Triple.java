@@ -38,11 +38,11 @@ import lombok.ToString;
  * The class {@link Triple} represents a triple of values with generic parameters for the values.
  *
  * @param <L>
- *            The type of the left content of this Triple.
+ *            The generic type of the left content of this Triple.
  * @param <M>
- *            The type of the middle content of this Triple.
+ *            The generic type of the middle content of this Triple.
  * @param <R>
- *            The type of the right content of this Triple.
+ *            The generic type of the right content of this Triple.
  */
 @Getter
 @Setter
@@ -50,7 +50,7 @@ import lombok.ToString;
 @ToString
 @NoArgsConstructor
 @AllArgsConstructor
-@Builder
+@Builder(toBuilder = true)
 public class Triple<L, M, R> implements Serializable
 {
 

@@ -32,20 +32,23 @@ import java.util.Set;
 import java.util.TreeSet;
 import java.util.Vector;
 
+import de.alpharogroup.comparators.NullCheckComparator;
+
 /**
- * The class SortedProperties extends Properties and adds sort functionality for the keys.
+ * The class {@link SortedProperties} extends Properties and adds sort functionality for the keys.
  */
 public class SortedProperties extends Properties
 {
 	/** The Constant serialVersionUID. */
 	private static final long serialVersionUID = 1L;
 
+	/** The {@link Comparator} object. */
 	private Comparator<Object> comparator;
 
 	/**
-	 * Gets the Comparator for this SortedProperties.
-	 * 
-	 * @return The Comparator.
+	 * Gets the {@link Comparator} for sort this {@link SortedProperties}.
+	 *
+	 * @return The {@link Comparator}.
 	 */
 	private Comparator<Object> getComparator()
 	{
@@ -62,7 +65,7 @@ public class SortedProperties extends Properties
 	@Override
 	public synchronized Enumeration<Object> keys()
 	{
-		final Vector<Object> keys = ListExtensions.toVector(super.keys());
+		final Vector<Object> keys = VectorExtensions.toVector(super.keys());
 		Collections.sort(keys, getComparator());
 		return keys.elements();
 	}
@@ -79,22 +82,22 @@ public class SortedProperties extends Properties
 	}
 
 	/**
-	 * Factory method for creating a new Comparator for sort this SortedProperties. This method is
-	 * invoked in the methods keys and can be overridden so users can provide their own version of a
-	 * Comparator.
+	 * Factory method for creating a new {@link Comparator} for sort this {@link SortedProperties}.
+	 * This method is invoked in the methods keys and can be overridden so users can provide their
+	 * own version of a {@link Comparator}.
 	 *
-	 * @return the new Comparator.
+	 * @return the new {@link Comparator}.
 	 */
 	protected Comparator<Object> newComparator()
 	{
-		return new Comparator<Object>()
+		return NullCheckComparator.<Object> of(new Comparator<Object>()
 		{
 			@Override
 			public int compare(final Object o1, final Object o2)
 			{
 				return o1.toString().compareTo(o2.toString());
 			}
-		};
+		}, false);
 	}
 
 	/**

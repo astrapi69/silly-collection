@@ -30,10 +30,16 @@ import org.testng.annotations.Test;
 import de.alpharogroup.test.objects.Person;
 import lombok.experimental.ExtensionMethod;
 
+/**
+ * The test class {@link ComparatorExtensions}.
+ */
 @ExtensionMethod({ ComparatorExtensions.class })
 public class ComparatorExtensionsTest
 {
 
+	/**
+	 * Test for method {@link ComparatorExtensions#compare(Comparable, Comparable)}.
+	 */
 	@Test
 	public void testCompare()
 	{
@@ -43,6 +49,9 @@ public class ComparatorExtensionsTest
 		AssertJUnit.assertTrue(actual == -1);
 	}
 
+	/**
+	 * Test for method {@link ComparatorExtensions#compare(Comparable, Comparable, SortOrder)}.
+	 */
 	@Test
 	public void testCompareSortOrder()
 	{
@@ -54,6 +63,9 @@ public class ComparatorExtensionsTest
 		AssertJUnit.assertTrue(actual == -1);
 	}
 
+	/**
+	 * Test for method {@link ComparatorExtensions#nullCheck(Object, Object)}.
+	 */
 	@Test
 	public void testNullCheck()
 	{
@@ -70,6 +82,41 @@ public class ComparatorExtensionsTest
 		AssertJUnit.assertTrue(actual == 0);
 		actual = person.nullCheck(otherPerson);
 		AssertJUnit.assertTrue(actual == -1);
+	}
+
+	/**
+	 * Test for method {@link ComparatorExtensions#nullCheck(Object, Object, boolean)}.
+	 */
+	@Test
+	public void testNullCheckWithNullFlag()
+	{
+		// false case...
+		Integer actual = ComparatorExtensions.nullCheck(Person.builder().build(), null, false);
+		AssertJUnit.assertTrue(actual == 1);
+		Person person = Person.builder().build();
+		actual = person.nullCheck(null, false);
+		AssertJUnit.assertTrue(actual == 1);
+		final Person otherPerson = Person.builder().name("s").build();
+		actual = person.nullCheck(otherPerson, false);
+		AssertJUnit.assertTrue(actual == null);
+		person = null;
+		actual = person.nullCheck(null, false);
+		AssertJUnit.assertTrue(actual == 0);
+		actual = person.nullCheck(otherPerson, false);
+		AssertJUnit.assertTrue(actual == -1);
+		// true case...
+		actual = ComparatorExtensions.nullCheck(Person.builder().build(), null, true);
+		AssertJUnit.assertTrue(actual == -1);
+		person = Person.builder().build();
+		actual = person.nullCheck(null, true);
+		AssertJUnit.assertTrue(actual == -1);
+		actual = person.nullCheck(otherPerson, true);
+		AssertJUnit.assertTrue(actual == null);
+		person = null;
+		actual = person.nullCheck(null, true);
+		AssertJUnit.assertTrue(actual == 0);
+		actual = person.nullCheck(otherPerson, true);
+		AssertJUnit.assertTrue(actual == 1);
 	}
 
 }

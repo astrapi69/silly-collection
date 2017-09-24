@@ -39,9 +39,9 @@ import lombok.ToString;
  *
  *
  * @param <K>
- *            The type of the left content of this Pair.
+ *            The generic type of the left content of this Pair.
  * @param <V>
- *            The type of the right content of this Pair.
+ *            The generic type of the right content of this Pair.
  */
 @Getter
 @Setter
@@ -49,7 +49,7 @@ import lombok.ToString;
 @ToString
 @NoArgsConstructor
 @AllArgsConstructor
-@Builder
+@Builder(toBuilder = true)
 public class Pair<K, V> implements Serializable
 {
 

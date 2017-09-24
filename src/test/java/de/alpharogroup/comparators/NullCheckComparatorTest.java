@@ -24,33 +24,50 @@
  */
 package de.alpharogroup.comparators;
 
-import static org.testng.AssertJUnit.assertTrue;
+import static org.testng.AssertJUnit.assertEquals;
+
+import java.util.Comparator;
+import java.util.Locale;
 
 import org.testng.annotations.Test;
 
-public class ComparableComparatorTest
+public class NullCheckComparatorTest
 {
 
 	@Test
-	public void testComparable()
+	public void testCompare()
 	{
-		ComparableComparator<Integer> comparator = new ComparableComparator<>();
-		final Integer i1 = 42;
+		int expected;
+		int actual;
+		Comparator<Locale> localeComparator = NullCheckComparator
+			.<Locale> of(new LocaleComparator());
+		actual = localeComparator.compare(Locale.CANADA, null);
+		expected = 1;
+		assertEquals(expected, actual);
 
-		final Integer lesser = i1 / 2;
-		final Integer same = i1;
-		final Integer greater = i1 * 2;
+		actual = localeComparator.compare(null, null);
+		expected = 0;
+		assertEquals(expected, actual);
 
-		assertTrue(comparator.compare(i1, lesser) > 0);
-		assertTrue(comparator.compare(i1, same) == 0);
-		assertTrue(comparator.compare(i1, greater) < 0);
-		assertTrue(comparator.compare(i1, null) > 0);
+		actual = localeComparator.compare(null, Locale.CANADA);
+		expected = -1;
+		assertEquals(expected, actual);
 
-		comparator = new ComparableComparator<>(SortOrder.DESCENDING);
+		// set null flag to true so null are greater...
+		localeComparator = LocaleComparator.of(true);
 
-		assertTrue(comparator.compare(i1, lesser) < 0);
-		assertTrue(comparator.compare(i1, same) == 0);
-		assertTrue(comparator.compare(i1, greater) > 0);
-		assertTrue(comparator.compare(i1, null) < 0);
+		actual = localeComparator.compare(Locale.CANADA, null);
+		expected = -1;
+		assertEquals(expected, actual);
+
+		actual = localeComparator.compare(null, null);
+		expected = 0;
+		assertEquals(expected, actual);
+
+		actual = localeComparator.compare(null, Locale.CANADA);
+		expected = 1;
+		assertEquals(expected, actual);
+
 	}
+
 }

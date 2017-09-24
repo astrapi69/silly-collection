@@ -25,12 +25,29 @@
 package de.alpharogroup.collections;
 
 import java.util.Arrays;
+import java.util.List;
 
 /**
  * The class {@link ArrayExtensions} is an extensions class for use with array objects.
  */
 public final class ArrayExtensions
 {
+
+	/**
+	 * Creates a new {@link List} from the given array. <br>
+	 * <br>
+	 * Note: This wraps only the method asList from {@link Arrays#asList(Object...)}.
+	 *
+	 * @param <T>
+	 *            the generic type of the objects in the array.
+	 * @param array
+	 *            the array
+	 * @return the new {@link List} created from the given array.
+	 */
+	public static <T> List<T> asList(final T[] array)
+	{
+		return ArrayExtensions.toList(array);
+	}
 
 	/**
 	 * Gets the first object from the given array.
@@ -262,23 +279,43 @@ public final class ArrayExtensions
 	/**
 	 * Split the given byte array in to new arrays with the chunk size.
 	 *
-	 * @param bytes the bytes
-	 * @param chunkSize the chunk size
+	 * @param bytes
+	 *            the bytes
+	 * @param chunkSize
+	 *            the chunk size
 	 * @return the byte[][]
 	 */
-	public static byte[][] splitInChunks(final byte[] bytes, final int chunkSize) {
+	public static byte[][] splitInChunks(final byte[] bytes, final int chunkSize)
+	{
 		final int size = ((bytes.length - 1) / chunkSize) + 1;
 		final byte[][] dataChunks = new byte[size][];
 		int to = bytes.length;
 		int count = size - 1;
 		int from = count * chunkSize;
-		while (-1 < count ) {
+		while (-1 < count)
+		{
 			dataChunks[count] = Arrays.copyOfRange(bytes, from, to);
-		    to = from;
-		    from = to - chunkSize;
-		    count--;
+			to = from;
+			from = to - chunkSize;
+			count--;
 		}
 		return dataChunks;
+	}
+
+	/**
+	 * Creates a new {@link List} from the given array. <br>
+	 * <br>
+	 * Note: This wraps only the method asList from {@link Arrays#asList(Object...)}.
+	 *
+	 * @param <T>
+	 *            the generic type of the objects in the array.
+	 * @param array
+	 *            the array
+	 * @return the new {@link List} created from the given array.
+	 */
+	public static <T> List<T> toList(final T[] array)
+	{
+		return Arrays.asList(array);
 	}
 
 }

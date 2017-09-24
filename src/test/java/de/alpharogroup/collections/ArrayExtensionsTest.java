@@ -24,13 +24,13 @@
  */
 package de.alpharogroup.collections;
 
-import java.util.Date;
+import static org.testng.AssertJUnit.assertEquals;
+
+import java.util.List;
 
 import org.testng.AssertJUnit;
 import org.testng.annotations.Test;
 
-import de.alpharogroup.date.CalculateDateExtensions;
-import de.alpharogroup.date.CreateDateExtensions;
 import lombok.experimental.ExtensionMethod;
 
 /**
@@ -67,65 +67,6 @@ public class ArrayExtensionsTest
 	}
 
 	/**
-	 * Test method for {@link de.alpharogroup.collections.ArrayExtensions#isFirst(Object[], Object)}
-	 * .
-	 */
-	@Test
-	public void testIsFirst()
-	{
-		final String expected = "1";
-		final String numbers[] = { expected, "2", "3", "4", "5", "6", "7" };
-
-		boolean actual = numbers.isFirst(expected);
-		AssertJUnit.assertTrue("", actual);
-
-		actual = numbers.isFirst(null);
-		AssertJUnit.assertFalse("", actual);
-
-
-	}
-
-	/**
-	 * Test method for {@link de.alpharogroup.collections.ArrayExtensions#isLast(Object[], Object)}
-	 * .
-	 */
-	@Test
-	public void testIsLast()
-	{
-		final String expected = "7";
-		final String numbers[] = { "1", "2", "3", "4", "5", "6", expected };
-
-		boolean actual = numbers.isLast(expected);
-		AssertJUnit.assertTrue("", actual);
-
-		actual = numbers.isLast(null);
-		AssertJUnit.assertFalse("", actual);
-	}
-
-	/**
-	 * Test for method {@link ArrayExtensions#getLast(Object[])}
-	 */
-	@Test
-	public void testGetLast()
-	{
-		String expected = "7";
-		final String numbers[] = { "1", "2", "3", "4", "5", "6", expected };
-		// Old vanilla java with static method...
-		String actual = ArrayExtensions.getLast(numbers);
-		AssertJUnit.assertEquals(expected, actual);
-		// use lombok extensions method
-		actual = numbers.getLast();
-		AssertJUnit.assertEquals(expected, actual);
-		final String empty[] = { };
-		expected = null;
-		actual = ArrayExtensions.getLast(empty);
-		AssertJUnit.assertEquals(expected, actual);
-		expected = null;
-		actual = ArrayExtensions.getLast(null);
-		AssertJUnit.assertEquals(expected, actual);
-	}
-
-	/**
 	 * Test for method {@link ArrayExtensions#getIndex(Object[], Object)}
 	 */
 	@Test
@@ -150,26 +91,25 @@ public class ArrayExtensionsTest
 	}
 
 	/**
-	 * Test for method {@link ArrayExtensions#indexOf(Object[], Object)}
+	 * Test for method {@link ArrayExtensions#getLast(Object[])}
 	 */
 	@Test
-	public void testIndexOf()
+	public void testGetLast()
 	{
-		int expected = 6;
-		final String last = "7";
-		final String numbers[] = { "1", "2", "3", "4", "5", "6", last };
+		String expected = "7";
+		final String numbers[] = { "1", "2", "3", "4", "5", "6", expected };
 		// Old vanilla java with static method...
-		int actual = ArrayExtensions.indexOf(numbers, last);
+		String actual = ArrayExtensions.getLast(numbers);
 		AssertJUnit.assertEquals(expected, actual);
 		// use lombok extensions method
-		actual = numbers.indexOf(last);
+		actual = numbers.getLast();
 		AssertJUnit.assertEquals(expected, actual);
 		final String empty[] = { };
-		expected = -1;
-		actual = ArrayExtensions.indexOf(empty, last);
+		expected = null;
+		actual = ArrayExtensions.getLast(empty);
 		AssertJUnit.assertEquals(expected, actual);
-
-		actual = ArrayExtensions.indexOf(empty, null);
+		expected = null;
+		actual = ArrayExtensions.getLast(null);
 		AssertJUnit.assertEquals(expected, actual);
 	}
 
@@ -319,6 +259,65 @@ public class ArrayExtensionsTest
 		AssertJUnit.assertEquals(expected, actual);
 	}
 
+	/**
+	 * Test for method {@link ArrayExtensions#indexOf(Object[], Object)}
+	 */
+	@Test
+	public void testIndexOf()
+	{
+		int expected = 6;
+		final String last = "7";
+		final String numbers[] = { "1", "2", "3", "4", "5", "6", last };
+		// Old vanilla java with static method...
+		int actual = ArrayExtensions.indexOf(numbers, last);
+		AssertJUnit.assertEquals(expected, actual);
+		// use lombok extensions method
+		actual = numbers.indexOf(last);
+		AssertJUnit.assertEquals(expected, actual);
+		final String empty[] = { };
+		expected = -1;
+		actual = ArrayExtensions.indexOf(empty, last);
+		AssertJUnit.assertEquals(expected, actual);
+
+		actual = ArrayExtensions.indexOf(empty, null);
+		AssertJUnit.assertEquals(expected, actual);
+	}
+
+	/**
+	 * Test method for {@link de.alpharogroup.collections.ArrayExtensions#isFirst(Object[], Object)}
+	 * .
+	 */
+	@Test
+	public void testIsFirst()
+	{
+		final String expected = "1";
+		final String numbers[] = { expected, "2", "3", "4", "5", "6", "7" };
+
+		boolean actual = numbers.isFirst(expected);
+		AssertJUnit.assertTrue("", actual);
+
+		actual = numbers.isFirst(null);
+		AssertJUnit.assertFalse("", actual);
+
+
+	}
+
+	/**
+	 * Test method for {@link de.alpharogroup.collections.ArrayExtensions#isLast(Object[], Object)}
+	 * .
+	 */
+	@Test
+	public void testIsLast()
+	{
+		final String expected = "7";
+		final String numbers[] = { "1", "2", "3", "4", "5", "6", expected };
+
+		boolean actual = numbers.isLast(expected);
+		AssertJUnit.assertTrue("", actual);
+
+		actual = numbers.isLast(null);
+		AssertJUnit.assertFalse("", actual);
+	}
 
 	/**
 	 * Test for method {@link ArrayExtensions#splitInChunks(byte[], int)}
@@ -327,27 +326,45 @@ public class ArrayExtensionsTest
 	public void testSplit()
 	{
 		final String byteString = "Lorem ipsum dolor sit amet, consectetur adipiscing elit.";
-//		final StringBuilder sb = new StringBuilder();
-//		for (int i = 0; i < 1000000; i++)
-//		{
-//			sb.append(byteString);
-//		}
-//		byteString = sb.toString();
+		// final StringBuilder sb = new StringBuilder();
+		// for (int i = 0; i < 1000000; i++)
+		// {
+		// sb.append(byteString);
+		// }
+		// byteString = sb.toString();
 		final byte[] byteArray = byteString.getBytes();
-		Date start = null;
-		Date end = null;
-		long elapsed;
+		// Date start = null;
+		// Date end = null;
+		// long elapsed;
 
-		 AssertJUnit.assertEquals(byteArray.length, 56);
+		AssertJUnit.assertEquals(byteArray.length, 56);
 		// simple benchmark start
-		start = CreateDateExtensions.now();
+		// start = CreateDateExtensions.now();
 		final byte[][] splitedBytes = ArrayExtensions.splitInChunks(byteArray, 5);
-		end = CreateDateExtensions.now();
+		// end = CreateDateExtensions.now();
 		// simple benchmark end
-		elapsed = CalculateDateExtensions.calculateElapsedTime(start, end);
-		System.out.println("ArrayExtensions.split:"+elapsed);
-		 AssertJUnit.assertEquals(splitedBytes.length, 12);
+		// elapsed = CalculateDateExtensions.calculateElapsedTime(start, end);
+		AssertJUnit.assertEquals(splitedBytes.length, 12);
 
+	}
+
+
+	/**
+	 * Test for method {@link ArrayExtensions#toList(Object[])}
+	 */
+	@Test
+	public void testToList()
+	{
+		String actual;
+		String expected;
+		final String numbers[] = { "1", "2", "3", "4", "5", "6", "7" };
+		List<String> numberList = numbers.toList();// lombok magic extension method
+		for (int i = 0; i < numbers.length; i++)
+		{
+			actual = numberList.get(i);
+			expected = numbers[i];
+			assertEquals(expected, actual);
+		}
 	}
 
 

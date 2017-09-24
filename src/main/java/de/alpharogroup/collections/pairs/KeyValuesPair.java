@@ -37,7 +37,8 @@ import lombok.Singular;
 import lombok.ToString;
 
 /**
- * The class {@link KeyValuesPair} represents a key value pair where the value is a collection with generic parameters for the key and value type.
+ * The class {@link KeyValuesPair} represents a key value pair where the value is a collection with
+ * generic parameters for the key and value type.
  *
  *
  * @param <K>
@@ -51,7 +52,7 @@ import lombok.ToString;
 @ToString
 @NoArgsConstructor
 @AllArgsConstructor
-@Builder
+@Builder(toBuilder = true)
 public final class KeyValuesPair<K, V> implements Serializable
 {
 

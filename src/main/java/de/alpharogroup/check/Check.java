@@ -73,18 +73,17 @@ public class Check implements Serializable
 	 * @throws IllegalArgumentException
 	 *             when the given {@code argument} is not in the given range.
 	 */
-	public Check isInRange(final Double min, final Double max, final Double value, final String name)
+	public Check isInRange(final Double min, final Double max, final Double value,
+		final String name)
 	{
 		nullCheck(min, "min");
 		nullCheck(max, "max");
 		nullCheck(value, name);
 		if (!((min < value) && (value < max)))
 		{
-			throw new IllegalArgumentException(
-				String
-					.format(
-						"Given argument '%s' should have a value between %s - %s, but given argument is currently:%s",
-						name, min, max, value));
+			throw new IllegalArgumentException(String.format(
+				"Given argument '%s' should have a value between %s - %s, but given argument is currently:%s",
+				name, min, max, value));
 		}
 		return this;
 	}
@@ -112,11 +111,9 @@ public class Check implements Serializable
 		nullCheck(value, name);
 		if (!((min < value) && (value < max)))
 		{
-			throw new IllegalArgumentException(
-				String
-					.format(
-						"Given argument '%s' should have a value between %s - %s, but given argument is currently:%s",
-						name, min, max, value));
+			throw new IllegalArgumentException(String.format(
+				"Given argument '%s' should have a value between %s - %s, but given argument is currently:%s",
+				name, min, max, value));
 		}
 		return this;
 	}
@@ -145,11 +142,9 @@ public class Check implements Serializable
 		nullCheck(value, name);
 		if (!((min < value) && (value < max)))
 		{
-			throw new IllegalArgumentException(
-				String
-					.format(
-						"Given argument '%s' should have a value between %s - %s, but given argument is currently:%s",
-						name, min, max, value));
+			throw new IllegalArgumentException(String.format(
+				"Given argument '%s' should have a value between %s - %s, but given argument is currently:%s",
+				name, min, max, value));
 		}
 		return this;
 	}
@@ -177,11 +172,9 @@ public class Check implements Serializable
 		nullCheck(value, name);
 		if (!((min < value) && (value < max)))
 		{
-			throw new IllegalArgumentException(
-				String
-					.format(
-						"Given argument '%s' should have a value between %s - %s, but given argument is currently:%s",
-						name, min, max, value));
+			throw new IllegalArgumentException(String.format(
+				"Given argument '%s' should have a value between %s - %s, but given argument is currently:%s",
+				name, min, max, value));
 		}
 		return this;
 	}

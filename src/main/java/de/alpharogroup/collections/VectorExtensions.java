@@ -22,35 +22,37 @@
  * OF CONTRACT, TORT OR OTHERWISE, ARISING FROM, OUT OF OR IN CONNECTION
  * WITH THE SOFTWARE OR THE USE OR OTHER DEALINGS IN THE SOFTWARE.
  */
-package de.alpharogroup.comparators;
+package de.alpharogroup.collections;
 
-import static org.testng.AssertJUnit.assertTrue;
+import java.util.Enumeration;
+import java.util.Vector;
 
-import org.testng.annotations.Test;
+import lombok.experimental.UtilityClass;
 
-public class ComparableComparatorTest
+/**
+ * The extensions {@link VectorExtensions} class can be used with {@link Vector} objects.
+ */
+@UtilityClass
+public class VectorExtensions
 {
 
-	@Test
-	public void testComparable()
+	/**
+	 * Converts the given enumaration to a Vector.
+	 *
+	 * @param <T>
+	 *            the generic type
+	 * @param enumaration
+	 *            The Enumeration to convert.
+	 *
+	 * @return A new Vector with the content of the given Enumeration.
+	 */
+	public static <T> Vector<T> toVector(final Enumeration<T> enumaration)
 	{
-		ComparableComparator<Integer> comparator = new ComparableComparator<>();
-		final Integer i1 = 42;
-
-		final Integer lesser = i1 / 2;
-		final Integer same = i1;
-		final Integer greater = i1 * 2;
-
-		assertTrue(comparator.compare(i1, lesser) > 0);
-		assertTrue(comparator.compare(i1, same) == 0);
-		assertTrue(comparator.compare(i1, greater) < 0);
-		assertTrue(comparator.compare(i1, null) > 0);
-
-		comparator = new ComparableComparator<>(SortOrder.DESCENDING);
-
-		assertTrue(comparator.compare(i1, lesser) < 0);
-		assertTrue(comparator.compare(i1, same) == 0);
-		assertTrue(comparator.compare(i1, greater) > 0);
-		assertTrue(comparator.compare(i1, null) < 0);
+		final Vector<T> vector = new Vector<>();
+		while (enumaration.hasMoreElements())
+		{
+			vector.add(enumaration.nextElement());
+		}
+		return vector;
 	}
 }

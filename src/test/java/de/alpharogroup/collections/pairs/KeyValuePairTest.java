@@ -22,35 +22,56 @@
  * OF CONTRACT, TORT OR OTHERWISE, ARISING FROM, OUT OF OR IN CONNECTION
  * WITH THE SOFTWARE OR THE USE OR OTHER DEALINGS IN THE SOFTWARE.
  */
-package de.alpharogroup.comparators;
+package de.alpharogroup.collections.pairs;
 
+import static org.testng.AssertJUnit.assertNotNull;
 import static org.testng.AssertJUnit.assertTrue;
+
+import java.util.HashMap;
+import java.util.List;
+import java.util.Map;
+import java.util.Properties;
 
 import org.testng.annotations.Test;
 
-public class ComparableComparatorTest
+
+public class KeyValuePairTest
 {
 
 	@Test
-	public void testComparable()
+	public void testToKeyValuePairsMap()
 	{
-		ComparableComparator<Integer> comparator = new ComparableComparator<>();
-		final Integer i1 = 42;
+		final Map<String, String> map = new HashMap<>();
+		map.put("1", "novalue");
+		map.put("2", "somevalue");
+		map.put("3", "othervalue");
+		map.put("5", "value");
 
-		final Integer lesser = i1 / 2;
-		final Integer same = i1;
-		final Integer greater = i1 * 2;
+		List<KeyValuePair<String, String>> list = KeyValuePair.toKeyValuePairs(map);
 
-		assertTrue(comparator.compare(i1, lesser) > 0);
-		assertTrue(comparator.compare(i1, same) == 0);
-		assertTrue(comparator.compare(i1, greater) < 0);
-		assertTrue(comparator.compare(i1, null) > 0);
-
-		comparator = new ComparableComparator<>(SortOrder.DESCENDING);
-
-		assertTrue(comparator.compare(i1, lesser) < 0);
-		assertTrue(comparator.compare(i1, same) == 0);
-		assertTrue(comparator.compare(i1, greater) > 0);
-		assertTrue(comparator.compare(i1, null) < 0);
+		assertNotNull(list);
+		assertTrue(list.size() == 4);
 	}
+
+	@Test
+	public void testToKeyValuePairsProperties()
+	{
+		String key;
+		String value;
+		Properties properties = new Properties();
+
+		key = "foo";
+		value = "bar";
+		properties.setProperty(key, value);
+
+		key = "bla";
+		value = "fasel";
+		properties.setProperty(key, value);
+
+		List<KeyValuePair<String, String>> objectList = KeyValuePair.toKeyValuePairs(properties);
+
+		assertNotNull(objectList);
+		assertTrue(objectList.size() == 2);
+	}
+
 }

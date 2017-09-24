@@ -51,44 +51,6 @@ public class ListExtensions
 {
 
 	/**
-	 * Checks if the given element is the first in the given list.
-	 *
-	 * @param <T>
-	 *            the generic type
-	 * @param list
-	 *            the list
-	 * @param element
-	 *            the element
-	 * @return true if the given element is the first otherwise false
-	 */
-	public static <T> boolean isFirst(final List<T> list, final T element)
-	{
-		final int indexOfElement = list.indexOf(element);
-		return indexOfElement == 0;
-	}
-
-	/**
-	 * Checks if the given element is the last in the given list.
-	 *
-	 * @param <T>
-	 *            the generic type
-	 * @param list
-	 *            the list
-	 * @param element
-	 *            the element
-	 * @return true if the given element is the last otherwise false
-	 */
-	public static <T> boolean isLast(final List<T> list, final T element)
-	{
-		final T last = getLast(list);
-		if (last != null)
-		{
-			return last == element;
-		}
-		return false;
-	}
-
-	/**
 	 * This Method look in the List toSearch if at least one Object exists in the List search.
 	 *
 	 * @param <T>
@@ -214,6 +176,44 @@ public class ListExtensions
 	}
 
 	/**
+	 * Checks if the given element is the first in the given list.
+	 *
+	 * @param <T>
+	 *            the generic type
+	 * @param list
+	 *            the list
+	 * @param element
+	 *            the element
+	 * @return true if the given element is the first otherwise false
+	 */
+	public static <T> boolean isFirst(final List<T> list, final T element)
+	{
+		final int indexOfElement = list.indexOf(element);
+		return indexOfElement == 0;
+	}
+
+	/**
+	 * Checks if the given element is the last in the given list.
+	 *
+	 * @param <T>
+	 *            the generic type
+	 * @param list
+	 *            the list
+	 * @param element
+	 *            the element
+	 * @return true if the given element is the last otherwise false
+	 */
+	public static <T> boolean isLast(final List<T> list, final T element)
+	{
+		final T last = getLast(list);
+		if (last != null)
+		{
+			return last == element;
+		}
+		return false;
+	}
+
+	/**
 	 * Checks if the given List is not null or empty.
 	 *
 	 * @param <T>
@@ -225,6 +225,37 @@ public class ListExtensions
 	public static <T> boolean isNotEmpty(final List<T> list)
 	{
 		return list != null && !list.isEmpty();
+	}
+
+	/**
+	 * Factory method for create new {@link ArrayList} and returns as {@link List}.
+	 *
+	 * @param <T>
+	 *            the generic type of the elements
+	 * @param initialCapacity
+	 *            the initial capacity
+	 * @return the new {@link ArrayList} as {@link List}.
+	 */
+	public static <T> List<T> newArrayList(final int initialCapacity)
+	{
+		return new ArrayList<>(initialCapacity);
+	}
+
+	/**
+	 * Factory method for create new {@link ArrayList} and returns as {@link List}.
+	 *
+	 * @param <T>
+	 *            the generic type of the elements
+	 * @param elements
+	 *            the elements to add in the new {@link ArrayList}.
+	 * @return the new {@link ArrayList} as {@link List}.
+	 */
+	@SafeVarargs
+	public static <T> List<T> newArrayList(final T... elements)
+	{
+		final List<T> list = new ArrayList<>();
+		Collections.addAll(list, elements);
+		return list;
 	}
 
 	/**
@@ -500,6 +531,40 @@ public class ListExtensions
 	}
 
 	/**
+	 * Converts the given enumaration to a Vector.
+	 *
+	 * @param <T>
+	 *            the generic type
+	 * @param enumaration
+	 *            The Enumeration to convert.
+	 *
+	 * @return A new Vector with the content of the given Enumeration.
+	 */
+	public static <T> List<T> toList(final Enumeration<T> enumaration)
+	{
+		final List<T> list = new ArrayList<>();
+		while (enumaration.hasMoreElements())
+		{
+			list.add(enumaration.nextElement());
+		}
+		return list;
+	}
+
+	/**
+	 * Converts the given {@link Set} to a list.
+	 *
+	 * @param <T>
+	 *            the generic type of the elements
+	 * @param set
+	 *            the set
+	 * @return A new list
+	 */
+	public static <T> List<T> toList(final Set<T> set)
+	{
+		return new ArrayList<>(set);
+	}
+
+	/**
 	 * Converts the given parameters to an object array.
 	 *
 	 * @param <T>
@@ -526,14 +591,11 @@ public class ListExtensions
 	 *            The Enumeration to convert.
 	 *
 	 * @return A new Vector with the content of the given Enumeration.
+	 * @deprecated use instead VectorExtensions.toVector
 	 */
+	@Deprecated
 	public static <T> Vector<T> toVector(final Enumeration<T> enumaration)
 	{
-		final Vector<T> vector = new Vector<T>();
-		while (enumaration.hasMoreElements())
-		{
-			vector.add(enumaration.nextElement());
-		}
-		return vector;
+		return VectorExtensions.toVector(enumaration);
 	}
 }

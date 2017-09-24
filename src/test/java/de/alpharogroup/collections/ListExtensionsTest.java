@@ -26,11 +26,9 @@ package de.alpharogroup.collections;
 
 import java.util.ArrayList;
 import java.util.Arrays;
-import java.util.Enumeration;
 import java.util.HashSet;
 import java.util.List;
 import java.util.Set;
-import java.util.Vector;
 
 import org.testng.AssertJUnit;
 import org.testng.annotations.AfterMethod;
@@ -118,24 +116,6 @@ public class ListExtensionsTest
 	}
 
 	/**
-	 * Test method for {@link de.alpharogroup.collections.ListExtensions#isFirst(java.util.List)} .
-	 */
-	@Test
-	public void testIsFirst()
-	{
-		final String expected = "Leonidas";
-		final List<String> search = new ArrayList<>();
-		search.add(expected);
-		search.add("Berta");
-		search.add("Caesar");
-		search.add("Dora");
-		search.add("Emil");
-		search.add("Anton");
-		final boolean actual = search.isFirst(expected);
-		AssertJUnit.assertTrue("", actual);
-	}
-
-	/**
 	 * Test method for {@link de.alpharogroup.collections.ListExtensions#getLast(java.util.List)} .
 	 */
 	@Test
@@ -153,24 +133,6 @@ public class ListExtensionsTest
 		search.add(expected);
 		compare = ListExtensions.getLast(search);
 		AssertJUnit.assertTrue("", expected.equals(compare));
-	}
-
-	/**
-	 * Test method for {@link de.alpharogroup.collections.ListExtensions#isLast(java.util.List)} .
-	 */
-	@Test
-	public void testIsLast()
-	{
-		final String expected = "Leonidas";
-		final List<String> search = new ArrayList<>();
-		search.add("Anton");
-		search.add("Berta");
-		search.add("Caesar");
-		search.add("Dora");
-		search.add("Emil");
-		search.add(expected);
-		final boolean actual = search.isLast(expected);
-		AssertJUnit.assertTrue("", actual);
 	}
 
 	@Test
@@ -229,6 +191,42 @@ public class ListExtensionsTest
 		}
 		final List<String> empty = ListExtensions.getSameElementsFromLists(toSearch, search);
 		AssertJUnit.assertNull("List should be empty.", empty);
+	}
+
+	/**
+	 * Test method for {@link de.alpharogroup.collections.ListExtensions#isFirst(java.util.List)} .
+	 */
+	@Test
+	public void testIsFirst()
+	{
+		final String expected = "Leonidas";
+		final List<String> search = new ArrayList<>();
+		search.add(expected);
+		search.add("Berta");
+		search.add("Caesar");
+		search.add("Dora");
+		search.add("Emil");
+		search.add("Anton");
+		final boolean actual = search.isFirst(expected);
+		AssertJUnit.assertTrue("", actual);
+	}
+
+	/**
+	 * Test method for {@link de.alpharogroup.collections.ListExtensions#isLast(java.util.List)} .
+	 */
+	@Test
+	public void testIsLast()
+	{
+		final String expected = "Leonidas";
+		final List<String> search = new ArrayList<>();
+		search.add("Anton");
+		search.add("Berta");
+		search.add("Caesar");
+		search.add("Dora");
+		search.add("Emil");
+		search.add(expected);
+		final boolean actual = search.isLast(expected);
+		AssertJUnit.assertTrue("", actual);
 	}
 
 	/**
@@ -500,25 +498,6 @@ public class ListExtensionsTest
 		}
 		actual = ListExtensions.toObjectArray();
 		AssertJUnit.assertTrue(actual.length == 0);
-	}
-
-	/**
-	 * Test the method {@link ListExtensions#toObjectArray(Object...)}.
-	 */
-	@Test
-	public void testToVector()
-	{
-		final Vector<String> expectedValues = new Vector<>();
-		expectedValues.add("C");
-		expectedValues.add("D");
-		expectedValues.add("A");
-		expectedValues.add("B");
-		final Enumeration<String> elements = expectedValues.elements();
-		final Vector<String> actuals = ListExtensions.toVector(elements);
-		for (final String actual : actuals)
-		{
-			AssertJUnit.assertTrue(expectedValues.contains(actual));
-		}
 	}
 
 }

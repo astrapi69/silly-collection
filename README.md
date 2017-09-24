@@ -6,11 +6,17 @@ Utility library for collections, comparators and iterator classes
 
 The source code comes under the liberal MIT License, making silly-collections great for all types of applications.
 
-# Build status and latest maven version
+## Build Status 
+
 [![Build Status](https://travis-ci.org/lightblueseas/silly-collections.svg?branch=master)](https://travis-ci.org/lightblueseas/silly-collections)
 
+## Maven Central
 
 [![Maven Central](https://maven-badges.herokuapp.com/maven-central/de.alpharogroup/silly-collections/badge.svg)](https://maven-badges.herokuapp.com/maven-central/de.alpharogroup/silly-collections)
+
+## javadoc
+
+silly-collections [![Javadocs](http://www.javadoc.io/badge/de.alpharogroup/silly-collections.svg)](http://www.javadoc.io/doc/de.alpharogroup/silly-collections)
 
 ## Maven dependency
 
@@ -22,7 +28,7 @@ Add the following maven dependency to your project `pom.xml` if you want to impo
 Than you can add the dependency to your dependencies:
 
 		<!-- silly-collections version -->
-		<silly-collections.version>4.14.0</silly-collections.version>
+		<silly-collections.version>4.18.0</silly-collections.version>
 
 		<dependencies>
 			...
@@ -41,7 +47,7 @@ The source code for silly-collections are on GitHub. Please feel free to fork an
 
 Create your own fork of [lightblueseas/silly-collections/fork](https://github.com/lightblueseas/silly-collections/fork)
 
-To share your changes, [submit a pull request](https://github.com/lightblueseas/silly-collections/pull/new/master).
+To share your changes, [submit a pull request](https://github.com/lightblueseas/silly-collections/pull/new/develop).
 
 Don't forget to add new units tests on your changes.
 
@@ -50,6 +56,9 @@ Don't forget to add new units tests on your changes.
 Do not hesitate to contact the silly-collections developers with your questions, concerns, comments, bug reports, or feature requests.
 - Feature requests, questions and bug reports can be reported at the [issues page](https://github.com/lightblueseas/silly-collections/issues).
 
+## Note
+
+No animals were harmed in the making of this library.
 
 # Donate
 
