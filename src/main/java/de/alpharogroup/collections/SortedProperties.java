@@ -47,6 +47,74 @@ public class SortedProperties extends Properties
 	private Comparator<Object> comparator;
 
 	/**
+	 * Factory method to create a new {@link SortedProperties} object.
+	 *
+	 * @return the new {@link SortedProperties} object
+	 */
+	public static SortedProperties of()
+	{
+		return new SortedProperties();
+	}
+
+	/**
+	 * Factory method to create a new {@link SortedProperties} object.
+	 *
+	 * @param defaults
+	 *            the defaults
+	 * @return the new {@link SortedProperties} object
+	 */
+	public static SortedProperties of(final Properties defaults)
+	{
+		return new SortedProperties(defaults);
+	}
+
+	/**
+	 * Factory method to create a new {@link SortedProperties} object.
+	 *
+	 * @param defaults
+	 *            the defaults
+	 * @param comparator
+	 *            the comparator
+	 * @return the new {@link SortedProperties} object
+	 */
+	public static SortedProperties of(final Properties defaults, final Comparator<Object> comparator)
+	{
+		return new SortedProperties(defaults)
+		{
+			private static final long serialVersionUID = 1L;
+
+			@Override
+			protected Comparator<Object> newComparator()
+			{
+				return NullCheckComparator.<Object> of(comparator, false);
+			}
+		};
+	}
+
+	/**
+	 * Factory method to create a new {@link SortedProperties} object.
+	 *
+	 * @param defaults            the defaults
+	 * @param comparator            the comparator
+	 * @param nullIsGreaterThan the null is greater than
+	 * @return the new {@link SortedProperties} object
+	 */
+	public static SortedProperties of(final Properties defaults, final Comparator<Object> comparator,
+		final boolean nullIsGreaterThan)
+	{
+		return new SortedProperties(defaults)
+		{
+			private static final long serialVersionUID = 1L;
+
+			@Override
+			protected Comparator<Object> newComparator()
+			{
+				return NullCheckComparator.<Object> of(comparator, nullIsGreaterThan);
+			}
+		};
+	}
+
+	/**
 	 * Instantiates a new {@link SortedProperties}.
 	 */
 	public SortedProperties()
@@ -57,7 +125,8 @@ public class SortedProperties extends Properties
 	/**
 	 * Instantiates a new {@link SortedProperties}.
 	 *
-	 * @param defaults the defaults
+	 * @param defaults
+	 *            the defaults
 	 */
 	public SortedProperties(final Properties defaults)
 	{
@@ -69,7 +138,7 @@ public class SortedProperties extends Properties
 	 *
 	 * @return The {@link Comparator}.
 	 */
-	private Comparator<Object> getComparator()
+	public Comparator<Object> getComparator()
 	{
 		if (this.comparator == null)
 		{
