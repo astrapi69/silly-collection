@@ -32,9 +32,10 @@ import lombok.Builder;
 import lombok.EqualsAndHashCode;
 
 /**
- * The class {@link NullCheckComparator} decorates another {@link Comparator} object to compare null and non-null values. Before the
- * decorated {@link Comparator} will be executed null check will be executed. Over the flag 'nullIsGreaterThan' can be controlled whether 
- * null object values are greater or less than non-null object values.
+ * The class {@link NullCheckComparator} decorates another {@link Comparator} object to compare null
+ * and non-null values. Before the decorated {@link Comparator} will be executed null check will be
+ * executed. Over the flag 'nullIsGreaterThan' can be controlled whether null object values are
+ * greater or less than non-null object values.
  *
  * @param <T>
  *            the generic type of the {@link Comparator} object that will be decorated
@@ -121,11 +122,12 @@ public class NullCheckComparator<T> implements Comparator<T>, Serializable
 	@Override
 	public int compare(T object, T compareWithObject)
 	{
-		final Integer nullCheck = ComparatorExtensions.nullCheck(object, compareWithObject, this.nullIsGreaterThan);
+		final Integer nullCheck = ComparatorExtensions.nullCheck(object, compareWithObject,
+			this.nullIsGreaterThan);
 		if (nullCheck != null)
 		{
 			return nullCheck;
-		}		
+		}
 		return this.decoratedComparator.compare(object, compareWithObject);
 	}
 
