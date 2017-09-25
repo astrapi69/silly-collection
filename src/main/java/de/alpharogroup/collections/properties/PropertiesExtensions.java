@@ -44,15 +44,15 @@ import java.util.TreeSet;
 import java.util.regex.Matcher;
 import java.util.regex.Pattern;
 
-import org.apache.commons.io.FilenameUtils;
+//import org.apache.commons.io.FilenameUtils;
 import org.apache.log4j.Logger;
 
 import de.alpharogroup.collections.ListExtensions;
 import de.alpharogroup.collections.pairs.KeyValuePair;
-import de.alpharogroup.file.FileExtension;
-import de.alpharogroup.lang.ClassExtensions;
-import de.alpharogroup.lang.PackageExtensions;
-import de.alpharogroup.resourcebundle.file.namefilter.PropertiesResourceBundleFilenameFilter;
+//import de.alpharogroup.file.FileExtension;
+//import de.alpharogroup.lang.ClassExtensions;
+//import de.alpharogroup.lang.PackageExtensions;
+//import de.alpharogroup.resourcebundle.file.namefilter.PropertiesResourceBundleFilenameFilter;
 
 /**
  * The Class {@link PropertiesExtensions} provides methods loading properties and other related
@@ -127,21 +127,21 @@ public final class PropertiesExtensions
 	 * @throws Exception
 	 *             the exception
 	 */
-	public static Properties getLocalPropertiesFromClass(final Class<?> componentClass,
-		final Class<?> defaultClass, final Locale locale) throws Exception
-	{
-		// Try to find the properties file and the resource
-		Properties properties = null;
-		if (componentClass != null)
-		{
-			properties = PropertiesExtensions.loadPropertiesFromClassObject(componentClass, locale);
-		}
-		else
-		{
-			properties = PropertiesExtensions.loadPropertiesFromClassObject(defaultClass, locale);
-		}
-		return properties;
-	}
+//	public static Properties getLocalPropertiesFromClass(final Class<?> componentClass,
+//		final Class<?> defaultClass, final Locale locale) throws Exception
+//	{
+//		// Try to find the properties file and the resource
+//		Properties properties = null;
+//		if (componentClass != null)
+//		{
+//			properties = PropertiesExtensions.loadPropertiesFromClassObject(componentClass, locale);
+//		}
+//		else
+//		{
+//			properties = PropertiesExtensions.loadPropertiesFromClassObject(defaultClass, locale);
+//		}
+//		return properties;
+//	}
 
 	/**
 	 * Finds all keys with the same key prefixes from the given Properties and saves them to a Map
@@ -192,25 +192,25 @@ public final class PropertiesExtensions
 	 * @throws IOException
 	 *             Signals that an I/O exception has occurred.
 	 */
-	public static String getProjectName() throws IOException
-	{
-		final Properties projectProperties = PropertiesExtensions
-			.loadProperties("project.properties");
-		if (projectProperties != null)
-		{
-			final String projectName = projectProperties.getProperty("artifactId");
-			if (projectName == null)
-			{
-				throw new RuntimeException(
-					"No properties key 'artifactId' found in the properties file project.properties exist.");
-			}
-			return projectName;
-		}
-		else
-		{
-			throw new RuntimeException("No properties file project.properties exist.");
-		}
-	}
+//	public static String getProjectName() throws IOException
+//	{
+//		final Properties projectProperties = PropertiesExtensions
+//			.loadProperties("project.properties");
+//		if (projectProperties != null)
+//		{
+//			final String projectName = projectProperties.getProperty("artifactId");
+//			if (projectName == null)
+//			{
+//				throw new RuntimeException(
+//					"No properties key 'artifactId' found in the properties file project.properties exist.");
+//			}
+//			return projectName;
+//		}
+//		else
+//		{
+//			throw new RuntimeException("No properties file project.properties exist.");
+//		}
+//	}
 
 	/**
 	 * Gets the project name from the 'project.properties'. In this properties file is only a
@@ -220,19 +220,19 @@ public final class PropertiesExtensions
 	 *            the default project name if
 	 * @return the project name
 	 */
-	public static String getProjectNameQuietly(final String defaultName)
-	{
-		try
-		{
-			getProjectName();
-		}
-		catch (final Exception e)
-		{
-			// default project name will be returned...
-			LOGGER.error(e.getMessage(), e);
-		}
-		return defaultName;
-	}
+//	public static String getProjectNameQuietly(final String defaultName)
+//	{
+//		try
+//		{
+//			getProjectName();
+//		}
+//		catch (final Exception e)
+//		{
+//			// default project name will be returned...
+//			LOGGER.error(e.getMessage(), e);
+//		}
+//		return defaultName;
+//	}
 
 	/**
 	 * Finds the property parameters from the given propertyValue.
@@ -266,21 +266,21 @@ public final class PropertiesExtensions
 	 * @throws IOException
 	 *             Signals that an I/O exception has occurred.
 	 */
-	public static Properties loadProperties(final Class<?> clazz, final String name)
-		throws IOException
-	{
-		Properties properties = loadProperties(name);
-		if (properties == null)
-		{
-			final InputStream is = ClassExtensions.getResourceAsStream(clazz.getClass(), name);
-			if (is != null)
-			{
-				properties = new Properties();
-				properties.load(is);
-			}
-		}
-		return properties;
-	}
+//	public static Properties loadProperties(final Class<?> clazz, final String name)
+//		throws IOException
+//	{
+//		Properties properties = loadProperties(name);
+//		if (properties == null)
+//		{
+//			final InputStream is = ClassExtensions.getResourceAsStream(clazz.getClass(), name);
+//			if (is != null)
+//			{
+//				properties = new Properties();
+//				properties.load(is);
+//			}
+//		}
+//		return properties;
+//	}
 
 	/**
 	 * Load properties.
@@ -295,11 +295,11 @@ public final class PropertiesExtensions
 	 * @throws IOException
 	 *             Signals that an I/O exception has occurred.
 	 */
-	public static Properties loadProperties(final Class<?> clazz, final String packagePath,
-		final String fileName) throws IOException
-	{
-		return loadProperties(clazz, packagePath + fileName);
-	}
+//	public static Properties loadProperties(final Class<?> clazz, final String packagePath,
+//		final String fileName) throws IOException
+//	{
+//		return loadProperties(clazz, packagePath + fileName);
+//	}
 
 	/**
 	 * Load a Properties-object from the given File-object.
@@ -339,26 +339,26 @@ public final class PropertiesExtensions
 	 * @throws IOException
 	 *             Signals that an I/O exception has occurred.
 	 */
-	public static Properties loadProperties(final String packagePath) throws IOException
-	{
-		Properties properties = null;
-		final URL url = ClassExtensions.getResource(packagePath);
-		if (url != null)
-		{
-			properties = new Properties();
-			properties.load(url.openStream());
-		}
-		else
-		{
-			final InputStream is = ClassExtensions.getResourceAsStream(packagePath);
-			if (is != null)
-			{
-				properties = new Properties();
-				properties.load(is);
-			}
-		}
-		return properties;
-	}
+//	public static Properties loadProperties(final String packagePath) throws IOException
+//	{
+//		Properties properties = null;
+//		final URL url = ClassExtensions.getResource(packagePath);
+//		if (url != null)
+//		{
+//			properties = new Properties();
+//			properties.load(url.openStream());
+//		}
+//		else
+//		{
+//			final InputStream is = ClassExtensions.getResourceAsStream(packagePath);
+//			if (is != null)
+//			{
+//				properties = new Properties();
+//				properties.load(is);
+//			}
+//		}
+//		return properties;
+//	}
 
 	/**
 	 * Load properties.
@@ -371,46 +371,46 @@ public final class PropertiesExtensions
 	 * @throws IOException
 	 *             Signals that an I/O exception has occurred.
 	 */
-	public static Properties loadProperties(String packagePath, String fileName) throws IOException
-	{
-		StringBuilder sb = new StringBuilder();
-		packagePath = FilenameUtils.normalize(packagePath);
-		final String slash = "/";
-		if (packagePath.startsWith(slash))
-		{
-			// remove first slash...
-			if (packagePath.endsWith(slash))
-			{
-				sb.append(packagePath.substring(1, packagePath.length()));
-			}
-			else
-			{
-				// append slash at the end...
-				sb.append(packagePath.substring(1, packagePath.length())).append(slash);
-			}
-		}
-		else
-		{
-			if (packagePath.endsWith(slash))
-			{
-				// remove first char...
-				sb.append(packagePath);
-			}
-			else
-			{
-				// remove first char...
-				sb.append(packagePath).append(slash);
-			}
-		}
-		packagePath = sb.toString().trim();
-		sb = new StringBuilder();
-		if (fileName.startsWith(slash))
-		{
-			sb.append(fileName.substring(1, fileName.length()));
-		}
-		fileName = sb.toString().trim();
-		return loadProperties(packagePath + fileName);
-	}
+//	public static Properties loadProperties(String packagePath, String fileName) throws IOException
+//	{
+//		StringBuilder sb = new StringBuilder();
+//		packagePath = FilenameUtils.normalize(packagePath);
+//		final String slash = "/";
+//		if (packagePath.startsWith(slash))
+//		{
+//			// remove first slash...
+//			if (packagePath.endsWith(slash))
+//			{
+//				sb.append(packagePath.substring(1, packagePath.length()));
+//			}
+//			else
+//			{
+//				// append slash at the end...
+//				sb.append(packagePath.substring(1, packagePath.length())).append(slash);
+//			}
+//		}
+//		else
+//		{
+//			if (packagePath.endsWith(slash))
+//			{
+//				// remove first char...
+//				sb.append(packagePath);
+//			}
+//			else
+//			{
+//				// remove first char...
+//				sb.append(packagePath).append(slash);
+//			}
+//		}
+//		packagePath = sb.toString().trim();
+//		sb = new StringBuilder();
+//		if (fileName.startsWith(slash))
+//		{
+//			sb.append(fileName.substring(1, fileName.length()));
+//		}
+//		fileName = sb.toString().trim();
+//		return loadProperties(packagePath + fileName);
+//	}
 
 	/**
 	 * Load {@link Properties} object from the given arguments.
@@ -423,39 +423,39 @@ public final class PropertiesExtensions
 	 *            the properties filename
 	 * @return the loaded {@link Properties} or null if the loading process failed.
 	 */
-	public static <T> Properties loadProperties(final T object, final String propertiesFilename)
-	{
-		Properties properties = null;
-		final String packagePath = PackageExtensions.getPackagePathWithSlash(object);
-		final String propertiespath = packagePath + propertiesFilename;
-		try
-		{
-			properties = PropertiesExtensions.loadProperties(object.getClass(), propertiespath);
-		}
-		catch (final IOException e)
-		{
-			LOGGER.error(
-				"Loading properties file '" + propertiespath
-					+ "' with method 'PropertiesExtensions.loadProperties(object.getClass(), propertiespath)' failed.",
-				e);
-		}
-		if (properties == null)
-		{
-			try
-			{
-				properties = PropertiesExtensions.getLocalPropertiesFromClass(object.getClass(),
-					object.getClass(), null);
-			}
-			catch (final Exception e)
-			{
-				LOGGER.error(
-					"Loading properties file '" + propertiespath
-						+ "' with method 'PropertiesExtensions.getLocalPropertiesFromClass(object.getClass(), object.getClass(), null)' failed.",
-					e);
-			}
-		}
-		return properties;
-	}
+//	public static <T> Properties loadProperties(final T object, final String propertiesFilename)
+//	{
+//		Properties properties = null;
+//		final String packagePath = PackageExtensions.getPackagePathWithSlash(object);
+//		final String propertiespath = packagePath + propertiesFilename;
+//		try
+//		{
+//			properties = PropertiesExtensions.loadProperties(object.getClass(), propertiespath);
+//		}
+//		catch (final IOException e)
+//		{
+//			LOGGER.error(
+//				"Loading properties file '" + propertiespath
+//					+ "' with method 'PropertiesExtensions.loadProperties(object.getClass(), propertiespath)' failed.",
+//				e);
+//		}
+//		if (properties == null)
+//		{
+//			try
+//			{
+//				properties = PropertiesExtensions.getLocalPropertiesFromClass(object.getClass(),
+//					object.getClass(), null);
+//			}
+//			catch (final Exception e)
+//			{
+//				LOGGER.error(
+//					"Loading properties file '" + propertiespath
+//						+ "' with method 'PropertiesExtensions.getLocalPropertiesFromClass(object.getClass(), object.getClass(), null)' failed.",
+//					e);
+//			}
+//		}
+//		return properties;
+//	}
 
 
 	/**
@@ -472,133 +472,133 @@ public final class PropertiesExtensions
 	 * @throws IOException
 	 *             Signals that an I/O exception has occurred.
 	 */
-	public static Properties loadPropertiesFromClassObject(final Class<?> clazz,
-		final Locale locale) throws IOException
-	{
-		if (null == clazz)
-		{
-			throw new IllegalArgumentException("Class object must not be null!!!");
-		}
-		StringBuilder propertiesName = new StringBuilder();
-		Properties properties = null;
-		String language = null;
-		String filename = null;
-		String pathAndFilename = null;
-		File propertiesFile = null;
-		String absoluteFilename = null;
-		final String packagePath = PackageExtensions.getPackagePathWithSlash(clazz);
-		final List<String> missedFiles = new ArrayList<>();
-		if (null != locale)
-		{
-			propertiesName.append(clazz.getSimpleName());
-			language = locale.getLanguage();
-			if ((null != language) && !language.isEmpty())
-			{
-				propertiesName.append("_").append(language);
-			}
-
-			final String country = locale.getCountry();
-			if ((null != country) && !country.isEmpty())
-			{
-				propertiesName.append("_").append(country);
-			}
-			propertiesName.append(FileExtension.PROPERTIES.getExtension());
-			filename = propertiesName.toString().trim();
-			pathAndFilename = packagePath + filename;
-			URL url = ClassExtensions.getResource(clazz, filename);
-
-			if (url != null)
-			{
-				absoluteFilename = url.getFile();
-			}
-			else
-			{
-				missedFiles.add("File with filename '" + filename + "' does not exists.");
-			}
-
-			if (null != absoluteFilename)
-			{
-				propertiesFile = new File(absoluteFilename);
-			}
-
-			if ((null != propertiesFile) && propertiesFile.exists())
-			{
-				properties = PropertiesExtensions.loadProperties(pathAndFilename);
-			}
-			else
-			{
-				propertiesName = new StringBuilder();
-				if (null != locale)
-				{
-					propertiesName.append(clazz.getSimpleName());
-					language = locale.getLanguage();
-					if ((null != language) && !language.isEmpty())
-					{
-						propertiesName.append("_").append(language);
-					}
-					propertiesName.append(FileExtension.PROPERTIES.getExtension());
-					filename = propertiesName.toString().trim();
-					pathAndFilename = packagePath + filename;
-					url = ClassExtensions.getResource(clazz, filename);
-
-					if (url != null)
-					{
-						absoluteFilename = url.getFile();
-					}
-					else
-					{
-						missedFiles.add("File with filename '" + filename + "' does not exists.");
-					}
-					if (null != absoluteFilename)
-					{
-						propertiesFile = new File(absoluteFilename);
-					}
-					if ((null != propertiesFile) && propertiesFile.exists())
-					{
-						properties = PropertiesExtensions.loadProperties(pathAndFilename);
-					}
-				}
-			}
-		}
-
-		if (null == properties)
-		{
-			propertiesName = new StringBuilder();
-			propertiesName.append(clazz.getSimpleName())
-				.append(FileExtension.PROPERTIES.getExtension());
-			filename = propertiesName.toString().trim();
-			pathAndFilename = packagePath + filename;
-			final URL url = ClassExtensions.getResource(clazz, filename);
-
-			if (url != null)
-			{
-				absoluteFilename = url.getFile();
-			}
-			else
-			{
-				properties = PropertiesExtensions.loadProperties(pathAndFilename);
-				missedFiles.add("File with filename '" + filename + "' does not exists.");
-			}
-
-			if (null != absoluteFilename)
-			{
-				propertiesFile = new File(absoluteFilename);
-			}
-			if ((null != propertiesFile) && propertiesFile.exists())
-			{
-				properties = PropertiesExtensions.loadProperties(pathAndFilename);
-			}
-		}
-		if (properties == null)
-		{
-			for (final String string : missedFiles)
-			{
-				LOGGER.info(string);
-			}
-		}
-
-		return properties;
-	}
+//	public static Properties loadPropertiesFromClassObject(final Class<?> clazz,
+//		final Locale locale) throws IOException
+//	{
+//		if (null == clazz)
+//		{
+//			throw new IllegalArgumentException("Class object must not be null!!!");
+//		}
+//		StringBuilder propertiesName = new StringBuilder();
+//		Properties properties = null;
+//		String language = null;
+//		String filename = null;
+//		String pathAndFilename = null;
+//		File propertiesFile = null;
+//		String absoluteFilename = null;
+//		final String packagePath = PackageExtensions.getPackagePathWithSlash(clazz);
+//		final List<String> missedFiles = new ArrayList<>();
+//		if (null != locale)
+//		{
+//			propertiesName.append(clazz.getSimpleName());
+//			language = locale.getLanguage();
+//			if ((null != language) && !language.isEmpty())
+//			{
+//				propertiesName.append("_").append(language);
+//			}
+//
+//			final String country = locale.getCountry();
+//			if ((null != country) && !country.isEmpty())
+//			{
+//				propertiesName.append("_").append(country);
+//			}
+//			propertiesName.append(FileExtension.PROPERTIES.getExtension());
+//			filename = propertiesName.toString().trim();
+//			pathAndFilename = packagePath + filename;
+//			URL url = ClassExtensions.getResource(clazz, filename);
+//
+//			if (url != null)
+//			{
+//				absoluteFilename = url.getFile();
+//			}
+//			else
+//			{
+//				missedFiles.add("File with filename '" + filename + "' does not exists.");
+//			}
+//
+//			if (null != absoluteFilename)
+//			{
+//				propertiesFile = new File(absoluteFilename);
+//			}
+//
+//			if ((null != propertiesFile) && propertiesFile.exists())
+//			{
+//				properties = PropertiesExtensions.loadProperties(pathAndFilename);
+//			}
+//			else
+//			{
+//				propertiesName = new StringBuilder();
+//				if (null != locale)
+//				{
+//					propertiesName.append(clazz.getSimpleName());
+//					language = locale.getLanguage();
+//					if ((null != language) && !language.isEmpty())
+//					{
+//						propertiesName.append("_").append(language);
+//					}
+//					propertiesName.append(FileExtension.PROPERTIES.getExtension());
+//					filename = propertiesName.toString().trim();
+//					pathAndFilename = packagePath + filename;
+//					url = ClassExtensions.getResource(clazz, filename);
+//
+//					if (url != null)
+//					{
+//						absoluteFilename = url.getFile();
+//					}
+//					else
+//					{
+//						missedFiles.add("File with filename '" + filename + "' does not exists.");
+//					}
+//					if (null != absoluteFilename)
+//					{
+//						propertiesFile = new File(absoluteFilename);
+//					}
+//					if ((null != propertiesFile) && propertiesFile.exists())
+//					{
+//						properties = PropertiesExtensions.loadProperties(pathAndFilename);
+//					}
+//				}
+//			}
+//		}
+//
+//		if (null == properties)
+//		{
+//			propertiesName = new StringBuilder();
+//			propertiesName.append(clazz.getSimpleName())
+//				.append(FileExtension.PROPERTIES.getExtension());
+//			filename = propertiesName.toString().trim();
+//			pathAndFilename = packagePath + filename;
+//			final URL url = ClassExtensions.getResource(clazz, filename);
+//
+//			if (url != null)
+//			{
+//				absoluteFilename = url.getFile();
+//			}
+//			else
+//			{
+//				properties = PropertiesExtensions.loadProperties(pathAndFilename);
+//				missedFiles.add("File with filename '" + filename + "' does not exists.");
+//			}
+//
+//			if (null != absoluteFilename)
+//			{
+//				propertiesFile = new File(absoluteFilename);
+//			}
+//			if ((null != propertiesFile) && propertiesFile.exists())
+//			{
+//				properties = PropertiesExtensions.loadProperties(pathAndFilename);
+//			}
+//		}
+//		if (properties == null)
+//		{
+//			for (final String string : missedFiles)
+//			{
+//				LOGGER.info(string);
+//			}
+//		}
+//
+//		return properties;
+//	}
 
 	/**
 	 * Resolves all the available languages for the given resource bundle name in the given bundle
@@ -610,25 +610,25 @@ public final class PropertiesExtensions
 	 *            The name of the resource bundle.
 	 * @return a Set of String objects with the available languages excluding the default.
 	 */
-	public static Set<String> resolveAvailableLanguages(final String bundlepackage,
-		final String bundlename)
-	{
-		final ClassLoader loader = Thread.currentThread().getContextClassLoader();
-		final File root = new File(loader.getResource(bundlepackage.replace('.', '/')).getFile());
-		final File[] files = root.listFiles(new PropertiesResourceBundleFilenameFilter(bundlename));
-
-		final Set<String> languages = new TreeSet<>();
-		for (final File file : files)
-		{
-			final String language = file.getName()
-				.replaceAll("^" + bundlename + "(_)?|\\.properties$", "");
-			if ((language != null) && !language.isEmpty())
-			{
-				languages.add(language);
-			}
-		}
-		return languages;
-	}
+//	public static Set<String> resolveAvailableLanguages(final String bundlepackage,
+//		final String bundlename)
+//	{
+//		final ClassLoader loader = Thread.currentThread().getContextClassLoader();
+//		final File root = new File(loader.getResource(bundlepackage.replace('.', '/')).getFile());
+//		final File[] files = root.listFiles(new PropertiesResourceBundleFilenameFilter(bundlename));
+//
+//		final Set<String> languages = new TreeSet<>();
+//		for (final File file : files)
+//		{
+//			final String language = file.getName()
+//				.replaceAll("^" + bundlename + "(_)?|\\.properties$", "");
+//			if ((language != null) && !language.isEmpty())
+//			{
+//				languages.add(language);
+//			}
+//		}
+//		return languages;
+//	}
 
 	/**
 	 * Converts the given {@linkplain Properties} object to a list of {@linkplain KeyValuePair}
