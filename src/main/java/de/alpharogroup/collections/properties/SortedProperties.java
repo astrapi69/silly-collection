@@ -22,7 +22,7 @@
  * OF CONTRACT, TORT OR OTHERWISE, ARISING FROM, OUT OF OR IN CONNECTION
  * WITH THE SOFTWARE OR THE USE OR OTHER DEALINGS IN THE SOFTWARE.
  */
-package de.alpharogroup.collections;
+package de.alpharogroup.collections.properties;
 
 import java.util.Collections;
 import java.util.Comparator;
@@ -32,6 +32,7 @@ import java.util.Set;
 import java.util.TreeSet;
 import java.util.Vector;
 
+import de.alpharogroup.collections.VectorExtensions;
 import de.alpharogroup.comparators.NullCheckComparator;
 
 /**
