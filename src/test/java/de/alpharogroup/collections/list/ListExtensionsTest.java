@@ -22,7 +22,7 @@
  * OF CONTRACT, TORT OR OTHERWISE, ARISING FROM, OUT OF OR IN CONNECTION
  * WITH THE SOFTWARE OR THE USE OR OTHER DEALINGS IN THE SOFTWARE.
  */
-package de.alpharogroup.collections;
+package de.alpharogroup.collections.list;
 
 import java.util.ArrayList;
 import java.util.Arrays;
@@ -35,6 +35,7 @@ import org.testng.annotations.AfterMethod;
 import org.testng.annotations.BeforeMethod;
 import org.testng.annotations.Test;
 
+import de.alpharogroup.collections.list.ListExtensions;
 import de.alpharogroup.collections.modifications.ModifiedCollections;
 import de.alpharogroup.test.objects.Gender;
 import de.alpharogroup.test.objects.Person;
@@ -98,7 +99,7 @@ public class ListExtensionsTest
 	}
 
 	/**
-	 * Test method for {@link de.alpharogroup.collections.ListExtensions#getFirst(java.util.List)} .
+	 * Test method for {@link de.alpharogroup.collections.list.ListExtensions#getFirst(java.util.List)} .
 	 */
 	@Test
 	public void testGetFirst()
@@ -116,7 +117,7 @@ public class ListExtensionsTest
 	}
 
 	/**
-	 * Test method for {@link de.alpharogroup.collections.ListExtensions#getLast(java.util.List)} .
+	 * Test method for {@link de.alpharogroup.collections.list.ListExtensions#getLast(java.util.List)} .
 	 */
 	@Test
 	public void testGetLast()
@@ -194,7 +195,7 @@ public class ListExtensionsTest
 	}
 
 	/**
-	 * Test method for {@link de.alpharogroup.collections.ListExtensions#isFirst(java.util.List)} .
+	 * Test method for {@link de.alpharogroup.collections.list.ListExtensions#isFirst(java.util.List)} .
 	 */
 	@Test
 	public void testIsFirst()
@@ -212,7 +213,7 @@ public class ListExtensionsTest
 	}
 
 	/**
-	 * Test method for {@link de.alpharogroup.collections.ListExtensions#isLast(java.util.List)} .
+	 * Test method for {@link de.alpharogroup.collections.list.ListExtensions#isLast(java.util.List)} .
 	 */
 	@Test
 	public void testIsLast()
@@ -285,7 +286,7 @@ public class ListExtensionsTest
 
 	/**
 	 * Test method for
-	 * {@link de.alpharogroup.collections.ListExtensions#removeFirst(java.util.List)} .
+	 * {@link de.alpharogroup.collections.list.ListExtensions#removeFirst(java.util.List)} .
 	 */
 	@Test
 	public void testRemoveFirst()
@@ -307,7 +308,7 @@ public class ListExtensionsTest
 	}
 
 	/**
-	 * Test method for {@link de.alpharogroup.collections.ListExtensions#removeLast(java.util.List)}
+	 * Test method for {@link de.alpharogroup.collections.list.ListExtensions#removeLast(java.util.List)}
 	 * .
 	 */
 	@Test

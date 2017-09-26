@@ -22,37 +22,57 @@
  * OF CONTRACT, TORT OR OTHERWISE, ARISING FROM, OUT OF OR IN CONNECTION
  * WITH THE SOFTWARE OR THE USE OR OTHER DEALINGS IN THE SOFTWARE.
  */
-package de.alpharogroup.collections;
+package de.alpharogroup.collections.set;
 
-import java.util.Enumeration;
-import java.util.Vector;
+import static org.testng.AssertJUnit.assertFalse;
+import static org.testng.AssertJUnit.assertTrue;
 
-import lombok.experimental.UtilityClass;
+import java.util.Set;
+
+import org.testng.annotations.Test;
+
+import de.alpharogroup.collections.set.SetExtensions;
 
 /**
- * The extensions {@link VectorExtensions} class can be used with {@link Vector} objects.
+ * The class {@link SetExtensionsTest}.
  */
-@UtilityClass
-public class VectorExtensions
+public class SetExtensionsTest
 {
+	/**
+	 * Test for method {@link SetExtensions#newHashSet(Object...)}
+	 */
+	@Test
+	public void testNewHashSet()
+	{
+		Set<String> set = SetExtensions.newHashSet();
+		assertTrue(set.size() == 0);
+		set = SetExtensions.newHashSet("foo", "bar", "foo");
+		assertTrue(set.size() == 2);
+	}
 
 	/**
-	 * Converts the given enumaration to a Vector.
-	 *
-	 * @param <T>
-	 *            the generic type
-	 * @param enumaration
-	 *            The Enumeration to convert.
-	 *
-	 * @return A new Vector with the content of the given Enumeration.
+	 * Test the method {@link SetExtensions#isEmpty(Set)}
 	 */
-	public static <T> Vector<T> toVector(final Enumeration<T> enumaration)
+	@Test
+	public void testIsNullOrEmpty()
 	{
-		final Vector<T> vector = new Vector<>();
-		while (enumaration.hasMoreElements())
-		{
-			vector.add(enumaration.nextElement());
-		}
-		return vector;
+		Set<String> nullSet = null;
+
+		boolean isNull = SetExtensions.isEmpty(nullSet);
+
+		assertTrue("Set should be null.", isNull);
+
+		nullSet = SetExtensions.newHashSet();
+
+		isNull = SetExtensions.isEmpty(nullSet);
+
+		assertTrue("Set should be empty.", isNull);
+
+		nullSet.add("");
+
+		isNull = SetExtensions.isEmpty(nullSet);
+
+		assertFalse("Set should not be empty.", isNull);
 	}
+
 }

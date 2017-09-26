@@ -22,7 +22,7 @@
  * OF CONTRACT, TORT OR OTHERWISE, ARISING FROM, OUT OF OR IN CONNECTION
  * WITH THE SOFTWARE OR THE USE OR OTHER DEALINGS IN THE SOFTWARE.
  */
-package de.alpharogroup.collections;
+package de.alpharogroup.collections.list;
 
 import static org.testng.AssertJUnit.assertTrue;
 
@@ -31,6 +31,8 @@ import java.util.Vector;
 
 import org.testng.annotations.Test;
 
+import de.alpharogroup.collections.list.ListExtensions;
+import de.alpharogroup.collections.list.VectorExtensions;
 import lombok.experimental.ExtensionMethod;
 
 /**

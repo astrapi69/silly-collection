@@ -32,7 +32,7 @@ import java.util.Set;
 import java.util.TreeSet;
 import java.util.Vector;
 
-import de.alpharogroup.collections.VectorExtensions;
+import de.alpharogroup.collections.list.VectorExtensions;
 import de.alpharogroup.comparators.NullCheckComparator;
 
 /**

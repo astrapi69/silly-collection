@@ -22,7 +22,7 @@
  * OF CONTRACT, TORT OR OTHERWISE, ARISING FROM, OUT OF OR IN CONNECTION
  * WITH THE SOFTWARE OR THE USE OR OTHER DEALINGS IN THE SOFTWARE.
  */
-package de.alpharogroup.collections;
+package de.alpharogroup.collections.map;
 
 import java.util.HashMap;
 import java.util.LinkedHashMap;
@@ -31,6 +31,9 @@ import java.util.Map.Entry;
 
 import org.testng.AssertJUnit;
 import org.testng.annotations.Test;
+
+import de.alpharogroup.collections.map.InsertionOrderMap;
+import de.alpharogroup.collections.map.MapExtensions;
 
 /**
  * Test class for the class {@link InsertionOrderMap}.
