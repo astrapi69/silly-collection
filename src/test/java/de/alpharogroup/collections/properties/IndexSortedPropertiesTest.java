@@ -36,6 +36,8 @@ import de.alpharogroup.comparators.NullCheckComparator;
 
 /**
  * Test class for the class {@link IndexSortedProperties}.
+ *
+ * @author Asterios Raptis
  */
 public class IndexSortedPropertiesTest
 {

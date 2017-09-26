@@ -38,6 +38,8 @@ import de.alpharogroup.comparators.NullCheckComparator;
 /**
  * The class {@link IndexSortedProperties} extends SortedProperties and holds an intern list with
  * the keys for get values over an index.
+ *
+ * @author Asterios Raptis
  */
 public class IndexSortedProperties extends SortedProperties
 {

@@ -36,7 +36,9 @@ import de.alpharogroup.collections.properties.SortedProperties;
 import de.alpharogroup.comparators.NullCheckComparator;
 
 /**
- * The test class for SortedProperties.
+ * The test class for {@link SortedProperties}.
+ *
+ * @author Asterios Raptis
  */
 public class SortedPropertiesTest
 {
