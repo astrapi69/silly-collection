@@ -24,18 +24,20 @@
  */
 package de.alpharogroup.collections;
 
+import static org.testng.AssertJUnit.assertFalse;
+import static org.testng.AssertJUnit.assertTrue;
+
 import java.util.Set;
 
-import org.testng.AssertJUnit;
 import org.testng.annotations.Test;
+
+import de.alpharogroup.collections.set.SetExtensions;
 
 /**
  * The class {@link SetExtensionsTest}.
  */
 public class SetExtensionsTest
 {
-
-
 	/**
 	 * Test for method {@link SetExtensions#newHashSet(Object...)}
 	 */
@@ -43,9 +45,34 @@ public class SetExtensionsTest
 	public void testNewHashSet()
 	{
 		Set<String> set = SetExtensions.newHashSet();
-		AssertJUnit.assertTrue(set.size() == 0);
+		assertTrue(set.size() == 0);
 		set = SetExtensions.newHashSet("foo", "bar", "foo");
-		AssertJUnit.assertTrue(set.size() == 2);
+		assertTrue(set.size() == 2);
+	}
+
+	/**
+	 * Test the method {@link SetExtensions#isEmpty(Set)}
+	 */
+	@Test
+	public void testIsNullOrEmpty()
+	{
+		Set<String> nullSet = null;
+
+		boolean isNull = SetExtensions.isEmpty(nullSet);
+
+		assertTrue("Set should be null.", isNull);
+
+		nullSet = SetExtensions.newHashSet();
+
+		isNull = SetExtensions.isEmpty(nullSet);
+
+		assertTrue("Set should be empty.", isNull);
+
+		nullSet.add("");
+
+		isNull = SetExtensions.isEmpty(nullSet);
+
+		assertFalse("Set should not be empty.", isNull);
 	}
 
 }
