@@ -29,7 +29,7 @@ import java.util.Set;
 import org.testng.AssertJUnit;
 import org.testng.annotations.Test;
 
-import de.alpharogroup.collections.SetExtensions;
+import de.alpharogroup.collections.set.SetExtensions;
 import de.alpharogroup.test.objects.Employee;
 import de.alpharogroup.test.objects.Person;
 

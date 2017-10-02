@@ -22,44 +22,32 @@
  * OF CONTRACT, TORT OR OTHERWISE, ARISING FROM, OUT OF OR IN CONNECTION
  * WITH THE SOFTWARE OR THE USE OR OTHER DEALINGS IN THE SOFTWARE.
  */
-package de.alpharogroup.collections;
+package de.alpharogroup.comparators.pairs;
 
-import static org.testng.AssertJUnit.assertTrue;
+import java.util.Comparator;
 
-import java.util.Enumeration;
-import java.util.Vector;
-
-import org.testng.annotations.Test;
-
-import lombok.experimental.ExtensionMethod;
+import de.alpharogroup.collections.pairs.KeyValuePair;
 
 /**
- * Tests for the class {@link VectorExtensions}.
+ * The class {@link KeyValuePairKeyComparator} compares {@linkplain KeyValuePair} objects over the
+ * key where the key have to implements the {@linkplain Comparable} interface.
  *
- * @version 1.0
- * @author Asterios Raptis
+ * @param <K>
+ *            The generic type of the key
+ * @param <V>
+ *            The generic type of the value
  */
-@ExtensionMethod(ListExtensions.class)
-public class VectorExtensionsTest
+public class KeyValuePairKeyComparator<K extends Comparable<K>, V>
+	implements
+		Comparator<KeyValuePair<K, V>>
 {
 
 	/**
-	 * Test the method {@link VectorExtensions#toVector(Object...)}.
+	 * {@inheritDoc}
 	 */
-	@Test
-	public void testToVector()
+	@Override
+	public int compare(final KeyValuePair<K, V> o1, final KeyValuePair<K, V> o2)
 	{
-		final Vector<String> expectedValues = new Vector<>();
-		expectedValues.add("C");
-		expectedValues.add("D");
-		expectedValues.add("A");
-		expectedValues.add("B");
-		final Enumeration<String> elements = expectedValues.elements();
-		final Vector<String> actuals = VectorExtensions.toVector(elements);
-		for (final String actual : actuals)
-		{
-			assertTrue(expectedValues.contains(actual));
-		}
+		return o1.getKey().compareTo(o2.getKey());
 	}
-
 }

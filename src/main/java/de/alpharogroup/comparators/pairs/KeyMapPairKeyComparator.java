@@ -22,30 +22,34 @@
  * OF CONTRACT, TORT OR OTHERWISE, ARISING FROM, OUT OF OR IN CONNECTION
  * WITH THE SOFTWARE OR THE USE OR OTHER DEALINGS IN THE SOFTWARE.
  */
-package de.alpharogroup.collections;
+package de.alpharogroup.comparators.pairs;
 
-import java.util.Set;
+import java.util.Comparator;
 
-import org.testng.AssertJUnit;
-import org.testng.annotations.Test;
+import de.alpharogroup.collections.pairs.KeyMapPair;
 
 /**
- * The class {@link SetExtensionsTest}.
+ * The class {@link KeyMapPairKeyComparator} compares {@linkplain KeyMapPair} objects over the key
+ * where the key have to implements the {@linkplain Comparable} interface.
+ *
+ * @param <K>
+ *            The type of the key.
+ * @param <MK>
+ *            the generic type of the map key.
+ * @param <MV>
+ *            the generic type of the map value.
  */
-public class SetExtensionsTest
+public class KeyMapPairKeyComparator<K extends Comparable<K>, MK, MV>
+	implements
+		Comparator<KeyMapPair<K, MK, MV>>
 {
 
-
 	/**
-	 * Test for method {@link SetExtensions#newHashSet(Object...)}
+	 * {@inheritDoc}
 	 */
-	@Test
-	public void testNewHashSet()
+	@Override
+	public int compare(final KeyMapPair<K, MK, MV> o1, final KeyMapPair<K, MK, MV> o2)
 	{
-		Set<String> set = SetExtensions.newHashSet();
-		AssertJUnit.assertTrue(set.size() == 0);
-		set = SetExtensions.newHashSet("foo", "bar", "foo");
-		AssertJUnit.assertTrue(set.size() == 2);
+		return o1.getKey().compareTo(o2.getKey());
 	}
-
 }

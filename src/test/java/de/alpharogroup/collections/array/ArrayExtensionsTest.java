@@ -22,7 +22,7 @@
  * OF CONTRACT, TORT OR OTHERWISE, ARISING FROM, OUT OF OR IN CONNECTION
  * WITH THE SOFTWARE OR THE USE OR OTHER DEALINGS IN THE SOFTWARE.
  */
-package de.alpharogroup.collections;
+package de.alpharogroup.collections.array;
 
 import static org.testng.AssertJUnit.assertEquals;
 
@@ -284,8 +284,8 @@ public class ArrayExtensionsTest
 	}
 
 	/**
-	 * Test method for {@link de.alpharogroup.collections.ArrayExtensions#isFirst(Object[], Object)}
-	 * .
+	 * Test method for
+	 * {@link de.alpharogroup.collections.array.ArrayExtensions#isFirst(Object[], Object)} .
 	 */
 	@Test
 	public void testIsFirst()
@@ -303,8 +303,8 @@ public class ArrayExtensionsTest
 	}
 
 	/**
-	 * Test method for {@link de.alpharogroup.collections.ArrayExtensions#isLast(Object[], Object)}
-	 * .
+	 * Test method for
+	 * {@link de.alpharogroup.collections.array.ArrayExtensions#isLast(Object[], Object)} .
 	 */
 	@Test
 	public void testIsLast()

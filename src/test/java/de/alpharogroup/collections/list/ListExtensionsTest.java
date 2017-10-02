@@ -22,7 +22,13 @@
  * OF CONTRACT, TORT OR OTHERWISE, ARISING FROM, OUT OF OR IN CONNECTION
  * WITH THE SOFTWARE OR THE USE OR OTHER DEALINGS IN THE SOFTWARE.
  */
-package de.alpharogroup.collections;
+package de.alpharogroup.collections.list;
+
+import static org.testng.Assert.assertNotNull;
+import static org.testng.AssertJUnit.assertEquals;
+import static org.testng.AssertJUnit.assertFalse;
+import static org.testng.AssertJUnit.assertNull;
+import static org.testng.AssertJUnit.assertTrue;
 
 import java.util.ArrayList;
 import java.util.Arrays;
@@ -30,7 +36,6 @@ import java.util.HashSet;
 import java.util.List;
 import java.util.Set;
 
-import org.testng.AssertJUnit;
 import org.testng.annotations.AfterMethod;
 import org.testng.annotations.BeforeMethod;
 import org.testng.annotations.Test;
@@ -88,17 +93,18 @@ public class ListExtensionsTest
 		search.add("Emil");
 		search.add("Franz");
 		final boolean isFalse = ListExtensions.containAtleastOneObject(toSearch, search);
-		AssertJUnit.assertFalse(isFalse);
+		assertFalse(isFalse);
 		atLeastOneSameObject.add("Anton");
 		atLeastOneSameObject.add("Dora");
 		boolean isTrue = ListExtensions.containAtleastOneObject(toSearch, atLeastOneSameObject);
-		AssertJUnit.assertTrue(isTrue);
+		assertTrue(isTrue);
 		isTrue = ListExtensions.containAtleastOneObject(search, atLeastOneSameObject);
-		AssertJUnit.assertTrue(isTrue);
+		assertTrue(isTrue);
 	}
 
 	/**
-	 * Test method for {@link de.alpharogroup.collections.ListExtensions#getFirst(java.util.List)} .
+	 * Test method for
+	 * {@link de.alpharogroup.collections.list.ListExtensions#getFirst(java.util.List)} .
 	 */
 	@Test
 	public void testGetFirst()
@@ -112,11 +118,12 @@ public class ListExtensionsTest
 		search.add("Emil");
 		search.add("Anton");
 		final String compare = ListExtensions.getFirst(search);
-		AssertJUnit.assertTrue("", expected.equals(compare));
+		assertTrue("", expected.equals(compare));
 	}
 
 	/**
-	 * Test method for {@link de.alpharogroup.collections.ListExtensions#getLast(java.util.List)} .
+	 * Test method for
+	 * {@link de.alpharogroup.collections.list.ListExtensions#getLast(java.util.List)} .
 	 */
 	@Test
 	public void testGetLast()
@@ -124,7 +131,7 @@ public class ListExtensionsTest
 		final String expected = "Leonidas";
 		final List<String> search = new ArrayList<>();
 		String compare = ListExtensions.getLast(search);
-		AssertJUnit.assertNull(compare);
+		assertNull(compare);
 		search.add("Anton");
 		search.add("Berta");
 		search.add("Caesar");
@@ -132,7 +139,7 @@ public class ListExtensionsTest
 		search.add("Emil");
 		search.add(expected);
 		compare = ListExtensions.getLast(search);
-		AssertJUnit.assertTrue("", expected.equals(compare));
+		assertTrue("", expected.equals(compare));
 	}
 
 	@Test
@@ -154,8 +161,8 @@ public class ListExtensionsTest
 		final ModifiedCollections<String> result = ListExtensions
 			.getModifiedCollections(previousList, nextList);
 
-		AssertJUnit.assertTrue(result.getRemovedElements().equals(expectedremovedList));
-		AssertJUnit.assertTrue(result.getAddedElements().equals(expectedaddedList));
+		assertTrue(result.getRemovedElements().equals(expectedremovedList));
+		assertTrue(result.getAddedElements().equals(expectedaddedList));
 
 	}
 
@@ -183,18 +190,19 @@ public class ListExtensionsTest
 		final List<String> foundElements = ListExtensions.getSameElementsFromLists(search,
 			atLeastOneSameObject);
 		final boolean isTrue = expectedElements.equals(foundElements);
-		AssertJUnit.assertTrue(isTrue);
+		assertTrue(isTrue);
 		for (final String string : foundElements)
 		{
-			AssertJUnit.assertTrue(expectedElements.contains(string));
+			assertTrue(expectedElements.contains(string));
 
 		}
 		final List<String> empty = ListExtensions.getSameElementsFromLists(toSearch, search);
-		AssertJUnit.assertNull("List should be empty.", empty);
+		assertNull("List should be empty.", empty);
 	}
 
 	/**
-	 * Test method for {@link de.alpharogroup.collections.ListExtensions#isFirst(java.util.List)} .
+	 * Test method for
+	 * {@link de.alpharogroup.collections.list.ListExtensions#isFirst(java.util.List)} .
 	 */
 	@Test
 	public void testIsFirst()
@@ -208,11 +216,12 @@ public class ListExtensionsTest
 		search.add("Emil");
 		search.add("Anton");
 		final boolean actual = search.isFirst(expected);
-		AssertJUnit.assertTrue("", actual);
+		assertTrue("", actual);
 	}
 
 	/**
-	 * Test method for {@link de.alpharogroup.collections.ListExtensions#isLast(java.util.List)} .
+	 * Test method for
+	 * {@link de.alpharogroup.collections.list.ListExtensions#isLast(java.util.List)} .
 	 */
 	@Test
 	public void testIsLast()
@@ -226,7 +235,7 @@ public class ListExtensionsTest
 		search.add("Emil");
 		search.add(expected);
 		final boolean actual = search.isLast(expected);
-		AssertJUnit.assertTrue("", actual);
+		assertTrue("", actual);
 	}
 
 	/**
@@ -240,20 +249,56 @@ public class ListExtensionsTest
 
 		boolean isNull = ListExtensions.isEmpty(nullList);
 
-		AssertJUnit.assertTrue("List should be null.", isNull);
+		assertTrue("List should be null.", isNull);
 
 		nullList = new ArrayList<>();
 
 		isNull = ListExtensions.isEmpty(nullList);
 
-		AssertJUnit.assertTrue("List should be empty.", isNull);
+		assertTrue("List should be empty.", isNull);
 
 		nullList.add("");
 
 		isNull = ListExtensions.isEmpty(nullList);
 
-		AssertJUnit.assertFalse("List should not be empty.", isNull);
+		assertFalse("List should not be empty.", isNull);
 
+	}
+
+	/**
+	 * Test the method {@link ListExtensions#newArrayList(java.util.Collection, Object...)}.
+	 */
+	@Test
+	public void testNewArrayListCollectionObjects()
+	{
+		List<String> strings = ListExtensions.newArrayList(null, "foo");
+		assertNotNull(strings);
+		assertTrue(strings.size() == 1);
+		assertTrue(strings.get(0).equals("foo"));
+	}
+
+	/**
+	 * Test the method {@link ListExtensions#newArrayList(int)}.
+	 */
+	@Test
+	public void testNewArrayListInt()
+	{
+		List<String> strings = ListExtensions.newArrayList(2);
+		assertNotNull(strings);
+		assertTrue(strings.size() == 0);
+	}
+
+	/**
+	 * Test the method {@link ListExtensions#newArrayList(Object...)}.
+	 */
+	@Test
+	public void testNewArrayListObjects()
+	{
+		List<String> strings = ListExtensions.newArrayList("foo", "bar");
+		assertNotNull(strings);
+		assertTrue(strings.size() == 2);
+		assertTrue(strings.get(0).equals("foo"));
+		assertTrue(strings.get(1).equals("bar"));
 	}
 
 	@Test
@@ -262,7 +307,7 @@ public class ListExtensionsTest
 		final Integer[] actual = ListExtensions.newRangeArray(5, 9);
 		final Integer[] expected = { 5, 6, 7, 8, 9 };
 
-		AssertJUnit.assertTrue(Arrays.deepEquals(actual, expected));
+		assertTrue(Arrays.deepEquals(actual, expected));
 	}
 
 	@SuppressWarnings("serial")
@@ -280,12 +325,12 @@ public class ListExtensionsTest
 				add(9);
 			}
 		};
-		AssertJUnit.assertTrue(actual.equals(expected));
+		assertTrue(actual.equals(expected));
 	}
 
 	/**
 	 * Test method for
-	 * {@link de.alpharogroup.collections.ListExtensions#removeFirst(java.util.List)} .
+	 * {@link de.alpharogroup.collections.list.ListExtensions#removeFirst(java.util.List)} .
 	 */
 	@Test
 	public void testRemoveFirst()
@@ -300,15 +345,15 @@ public class ListExtensionsTest
 		search.add("Emil");
 		search.add("Anton");
 		String compare = ListExtensions.removeFirst(search);
-		AssertJUnit.assertTrue("", removed.equals(compare));
+		assertTrue("", removed.equals(compare));
 
 		compare = ListExtensions.getFirst(search);
-		AssertJUnit.assertTrue("", expected.equals(compare));
+		assertTrue("", expected.equals(compare));
 	}
 
 	/**
-	 * Test method for {@link de.alpharogroup.collections.ListExtensions#removeLast(java.util.List)}
-	 * .
+	 * Test method for
+	 * {@link de.alpharogroup.collections.list.ListExtensions#removeLast(java.util.List)} .
 	 */
 	@Test
 	public void testRemoveLast()
@@ -323,10 +368,10 @@ public class ListExtensionsTest
 		search.add(expected);
 		search.add(removed);
 		String compare = ListExtensions.removeLast(search);
-		AssertJUnit.assertTrue("", compare.equals(removed));
+		assertTrue("", compare.equals(removed));
 
 		compare = ListExtensions.getLast(search);
-		AssertJUnit.assertTrue("", expected.equals(compare));
+		assertTrue("", expected.equals(compare));
 	}
 
 	/**
@@ -350,9 +395,9 @@ public class ListExtensionsTest
 		source.shuffle(destination, selectedElements);
 
 		final boolean actual = destination.size() == 2;
-		AssertJUnit.assertTrue(actual);
-		AssertJUnit.assertTrue(destination.contains(berta));
-		AssertJUnit.assertTrue(destination.contains(caesar));
+		assertTrue(actual);
+		assertTrue(destination.contains(berta));
+		assertTrue(destination.contains(caesar));
 		// shuffle the elements back
 		final int[] newSelectedElements = { 0, 1 };
 		destination.shuffle(source, newSelectedElements);
@@ -380,34 +425,34 @@ public class ListExtensionsTest
 		persons.add(miraculix);
 
 		// Unsorted Persons...
-		AssertJUnit.assertTrue(
+		assertTrue(
 			"Index of person 'obelix' should be <0> but was <" + persons.indexOf(obelix) + ">.",
 			persons.indexOf(obelix) == 0);
-		AssertJUnit.assertTrue(
+		assertTrue(
 			"Index of person 'asterix' should be <1> but was <" + persons.indexOf(asterix) + ">.",
 			persons.indexOf(asterix) == 1);
-		AssertJUnit.assertTrue("Index of person 'miraculix' should be <2> but was <"
+		assertTrue("Index of person 'miraculix' should be <2> but was <"
 			+ persons.indexOf(miraculix) + ">.", persons.indexOf(miraculix) == 2);
 
 		ListExtensions.sortByProperty(persons, "name", true);
 		// Sorted Persons by name in ascending order...
-		AssertJUnit.assertTrue(
+		assertTrue(
 			"Index of person 'obelix' should be <0> but was <" + persons.indexOf(obelix) + ">.",
 			persons.indexOf(obelix) == 0);
-		AssertJUnit.assertTrue("Index of person 'miraculix' should be <1> but was <"
+		assertTrue("Index of person 'miraculix' should be <1> but was <"
 			+ persons.indexOf(miraculix) + ">.", persons.indexOf(miraculix) == 1);
-		AssertJUnit.assertTrue(
+		assertTrue(
 			"Index of person 'asterix' should be <2> but was <" + persons.indexOf(asterix) + ">.",
 			persons.indexOf(asterix) == 2);
 
 		ListExtensions.sortByProperty(persons, "name", false);
 		// Sorted Persons by name in descending order...
-		AssertJUnit.assertTrue(
+		assertTrue(
 			"Index of person 'asterix' should be <0> but was <" + persons.indexOf(asterix) + ">.",
 			persons.indexOf(asterix) == 0);
-		AssertJUnit.assertTrue("Index of person 'miraculix' should be <1> but was <"
+		assertTrue("Index of person 'miraculix' should be <1> but was <"
 			+ persons.indexOf(miraculix) + ">.", persons.indexOf(miraculix) == 1);
-		AssertJUnit.assertTrue(
+		assertTrue(
 			"Index of person 'obelix' should be <2> but was <" + persons.indexOf(obelix) + ">.",
 			persons.indexOf(obelix) == 2);
 		// set a null value...
@@ -415,12 +460,12 @@ public class ListExtensionsTest
 
 		ListExtensions.sortByProperty(persons, "name", true);
 		// Sorted Persons by name in ascending order with a null value...
-		AssertJUnit.assertTrue(
+		assertTrue(
 			"Index of person 'obelix' should be <0> but was <" + persons.indexOf(obelix) + ">.",
 			persons.indexOf(obelix) == 0);
-		AssertJUnit.assertTrue("Index of person 'miraculix' should be <1> but was <"
+		assertTrue("Index of person 'miraculix' should be <1> but was <"
 			+ persons.indexOf(miraculix) + ">.", persons.indexOf(miraculix) == 1);
-		AssertJUnit.assertTrue(
+		assertTrue(
 			"Index of person 'asterix' should be <2> but was <" + persons.indexOf(asterix) + ">.",
 			persons.indexOf(asterix) == 2);
 	}
@@ -438,18 +483,18 @@ public class ListExtensionsTest
 			set.add(i);
 		}
 		final List al = ListExtensions.splitSetToParts(set, 50);
-		AssertJUnit.assertTrue(al.size() == 20);
+		assertTrue(al.size() == 20);
 		for (int i = 0; i < al.size(); i++)
 		{
 			if (i == al.size() - 1)
 			{
 				final ArrayList lastPart = (ArrayList)al.get(i);
-				AssertJUnit.assertTrue(lastPart.size() == 49);
+				assertTrue(lastPart.size() == 49);
 			}
 			else
 			{
 				final ArrayList aPart = (ArrayList)al.get(i);
-				AssertJUnit.assertTrue(aPart.size() == 50);
+				assertTrue(aPart.size() == 50);
 			}
 		}
 	}
@@ -467,18 +512,18 @@ public class ListExtensionsTest
 			list.add(i);
 		}
 		final List al = ListExtensions.splitListToParts(list, 50);
-		AssertJUnit.assertTrue(al.size() == 20);
+		assertTrue(al.size() == 20);
 		for (int i = 0; i < al.size(); i++)
 		{
 			if (i == al.size() - 1)
 			{
 				final List lastPart = (ArrayList)al.get(i);
-				AssertJUnit.assertTrue(lastPart.size() == 49);
+				assertTrue(lastPart.size() == 49);
 			}
 			else
 			{
 				final List aPart = (ArrayList)al.get(i);
-				AssertJUnit.assertTrue(aPart.size() == 50);
+				assertTrue(aPart.size() == 50);
 			}
 		}
 	}
@@ -491,13 +536,13 @@ public class ListExtensionsTest
 	{
 		final Object expected[] = { "2", "5", "6", "7", "8", "9" };
 		Object[] actual = ListExtensions.toObjectArray("2", "5", "6", "7", "8", "9");
-		AssertJUnit.assertTrue(expected.length == actual.length);
+		assertTrue(expected.length == actual.length);
 		for (int i = 0; i < actual.length; i++)
 		{
-			AssertJUnit.assertEquals(expected[i], actual[i]);
+			assertEquals(expected[i], actual[i]);
 		}
 		actual = ListExtensions.toObjectArray();
-		AssertJUnit.assertTrue(actual.length == 0);
+		assertTrue(actual.length == 0);
 	}
 
 }

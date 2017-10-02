@@ -22,36 +22,44 @@
  * OF CONTRACT, TORT OR OTHERWISE, ARISING FROM, OUT OF OR IN CONNECTION
  * WITH THE SOFTWARE OR THE USE OR OTHER DEALINGS IN THE SOFTWARE.
  */
-package de.alpharogroup.collections;
+package de.alpharogroup.collections.list;
 
-import java.util.Collections;
-import java.util.HashSet;
-import java.util.Set;
+import static org.testng.AssertJUnit.assertTrue;
 
-import lombok.experimental.UtilityClass;
+import java.util.Enumeration;
+import java.util.Vector;
+
+import org.testng.annotations.Test;
+
+import lombok.experimental.ExtensionMethod;
 
 /**
- * Extensions class for use with {@link Set} objects.
+ * Tests for the class {@link VectorExtensions}.
+ *
+ * @version 1.0
+ * @author Asterios Raptis
  */
-@UtilityClass
-public class SetExtensions
+@ExtensionMethod(ListExtensions.class)
+public class VectorExtensionsTest
 {
 
 	/**
-	 * Factory method for create new {@link HashSet} and returns as {@link Set}.
-	 *
-	 * @param <T>
-	 *            the generic type
-	 * @param elements
-	 *            the elements to add in the new {@link HashSet}.
-	 * @return the new {@link HashSet} and returns as {@link Set}.
+	 * Test the method {@link VectorExtensions#toVector(Object...)}.
 	 */
-	@SafeVarargs
-	public static final <T> Set<T> newHashSet(final T... elements)
+	@Test
+	public void testToVector()
 	{
-		final Set<T> set = new HashSet<>();
-		Collections.addAll(set, elements);
-		return set;
+		final Vector<String> expectedValues = new Vector<>();
+		expectedValues.add("C");
+		expectedValues.add("D");
+		expectedValues.add("A");
+		expectedValues.add("B");
+		final Enumeration<String> elements = expectedValues.elements();
+		final Vector<String> actuals = VectorExtensions.toVector(elements);
+		for (final String actual : actuals)
+		{
+			assertTrue(expectedValues.contains(actual));
+		}
 	}
 
 }

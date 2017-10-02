@@ -22,35 +22,32 @@
  * OF CONTRACT, TORT OR OTHERWISE, ARISING FROM, OUT OF OR IN CONNECTION
  * WITH THE SOFTWARE OR THE USE OR OTHER DEALINGS IN THE SOFTWARE.
  */
-package de.alpharogroup.comparators;
+package de.alpharogroup.comparators.pairs;
 
-import static org.testng.AssertJUnit.assertTrue;
+import java.util.Comparator;
 
-import org.testng.annotations.Test;
+import de.alpharogroup.collections.pairs.KeyValuesPair;
 
-public class ComparableComparatorTest
+/**
+ * The class {@link KeyValuePairsKeyComparator} compares {@linkplain KeyValuesPair} objects over the
+ * key where the key have to implements the {@linkplain Comparable} interface.
+ *
+ * @param <K>
+ *            The generic type of the key
+ * @param <V>
+ *            The generic type of the value
+ */
+public class KeyValuePairsKeyComparator<K extends Comparable<K>, V>
+	implements
+		Comparator<KeyValuesPair<K, V>>
 {
 
-	@Test
-	public void testComparable()
+	/**
+	 * {@inheritDoc}
+	 */
+	@Override
+	public int compare(final KeyValuesPair<K, V> o1, final KeyValuesPair<K, V> o2)
 	{
-		ComparableComparator<Integer> comparator = new ComparableComparator<>();
-		final Integer i1 = 42;
-
-		final Integer lesser = i1 / 2;
-		final Integer same = i1;
-		final Integer greater = i1 * 2;
-
-		assertTrue(comparator.compare(i1, lesser) > 0);
-		assertTrue(comparator.compare(i1, same) == 0);
-		assertTrue(comparator.compare(i1, greater) < 0);
-		assertTrue(comparator.compare(i1, null) > 0);
-
-		comparator = new ComparableComparator<>(SortOrder.DESCENDING);
-
-		assertTrue(comparator.compare(i1, lesser) < 0);
-		assertTrue(comparator.compare(i1, same) == 0);
-		assertTrue(comparator.compare(i1, greater) > 0);
-		assertTrue(comparator.compare(i1, null) < 0);
+		return o1.getKey().compareTo(o2.getKey());
 	}
 }

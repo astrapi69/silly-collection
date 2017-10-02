@@ -22,20 +22,110 @@
  * OF CONTRACT, TORT OR OTHERWISE, ARISING FROM, OUT OF OR IN CONNECTION
  * WITH THE SOFTWARE OR THE USE OR OTHER DEALINGS IN THE SOFTWARE.
  */
-package de.alpharogroup.collections;
+package de.alpharogroup.collections.properties;
 
 import java.util.Comparator;
 import java.util.Enumeration;
+import java.util.Properties;
 import java.util.Set;
 
 import org.testng.AssertJUnit;
 import org.testng.annotations.Test;
 
+import de.alpharogroup.comparators.NullCheckComparator;
+
 /**
- * The test class for SortedProperties.
+ * The test class for {@link SortedProperties}.
+ *
+ * @author Asterios Raptis
  */
 public class SortedPropertiesTest
 {
+	/**
+	 * Test for constructor with unsorted Properties.
+	 */
+	@Test
+	public void testConstructor()
+	{
+		final Properties unsortedProperties = new Properties();
+		unsortedProperties.put("B", "2");
+		unsortedProperties.put("C", "3");
+		unsortedProperties.put("A", "1");
+		unsortedProperties.put("D", "4");
+
+		Properties sortedProperties = new SortedProperties(unsortedProperties);
+
+		Enumeration<?> keys = sortedProperties.keys();
+		int count = 1;
+		while (keys.hasMoreElements())
+		{
+			final Object key = keys.nextElement();
+			if (count == 1)
+			{
+				AssertJUnit.assertEquals(key, "A");
+			}
+			if (count == 2)
+			{
+				AssertJUnit.assertEquals(key, "B");
+			}
+			if (count == 3)
+			{
+				AssertJUnit.assertEquals(key, "C");
+			}
+			if (count == 4)
+			{
+				AssertJUnit.assertEquals(key, "D");
+			}
+			count++;
+		}
+
+		// Add a reverse comparator.
+		sortedProperties = new SortedProperties(unsortedProperties)
+		{
+			/**
+			 * The serialVersionUID
+			 */
+			private static final long serialVersionUID = 1L;
+
+			@Override
+			protected Comparator<Object> newComparator()
+			{
+
+				return NullCheckComparator.<Object> of(new Comparator<Object>()
+				{
+					@Override
+					public int compare(final Object o1, final Object o2)
+					{
+						return ((o1.toString().compareTo(o2.toString())) * (-1));
+					}
+				}, false);
+			}
+		};
+
+		keys = sortedProperties.keys();
+		count = 1;
+		while (keys.hasMoreElements())
+		{
+			final Object key = keys.nextElement();
+			if (count == 1)
+			{
+				AssertJUnit.assertEquals(key, "D");
+			}
+			if (count == 2)
+			{
+				AssertJUnit.assertEquals(key, "C");
+			}
+			if (count == 3)
+			{
+				AssertJUnit.assertEquals(key, "B");
+			}
+			if (count == 4)
+			{
+				AssertJUnit.assertEquals(key, "A");
+			}
+			count++;
+		}
+	}
 
 	/**
 	 * Test for method keys of class SortedProperties.
@@ -83,14 +173,15 @@ public class SortedPropertiesTest
 			@Override
 			protected Comparator<Object> newComparator()
 			{
-				return new Comparator<Object>()
+
+				return NullCheckComparator.<Object> of(new Comparator<Object>()
 				{
 					@Override
 					public int compare(final Object o1, final Object o2)
 					{
 						return ((o1.toString().compareTo(o2.toString())) * (-1));
 					}
-				};
+				}, false);
 			}
 		};
 		sortedProperties.put("B", "2");
@@ -168,14 +259,15 @@ public class SortedPropertiesTest
 			@Override
 			protected Comparator<Object> newComparator()
 			{
-				return new Comparator<Object>()
+
+				return NullCheckComparator.<Object> of(new Comparator<Object>()
 				{
 					@Override
 					public int compare(final Object o1, final Object o2)
 					{
 						return ((o1.toString().compareTo(o2.toString())) * (-1));
 					}
-				};
+				}, false);
 			}
 		};
 		sortedProperties.put("B", "2");
@@ -253,14 +345,15 @@ public class SortedPropertiesTest
 			@Override
 			protected Comparator<Object> newComparator()
 			{
-				return new Comparator<Object>()
+
+				return NullCheckComparator.<Object> of(new Comparator<Object>()
 				{
 					@Override
 					public int compare(final Object o1, final Object o2)
 					{
 						return ((o1.toString().compareTo(o2.toString())) * (-1));
 					}
-				};
+				}, false);
 			}
 		};
 		sortedProperties.put("B", "2");

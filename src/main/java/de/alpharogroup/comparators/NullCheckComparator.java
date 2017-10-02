@@ -32,8 +32,10 @@ import lombok.Builder;
 import lombok.EqualsAndHashCode;
 
 /**
- * The class {@link NullCheckComparator} decorates another {@link Comparator} object. Before the
- * decorated {@link Comparator} will be executed null check will be executed.
+ * The class {@link NullCheckComparator} decorates another {@link Comparator} object to compare null
+ * and non-null values. Before the decorated {@link Comparator} will be executed null check will be
+ * executed. Over the flag 'nullIsGreaterThan' can be controlled whether null object values are
+ * greater or less than non-null object values.
  *
  * @param <T>
  *            the generic type of the {@link Comparator} object that will be decorated
@@ -54,9 +56,9 @@ public class NullCheckComparator<T> implements Comparator<T>, Serializable
 	 *            the generic type of the {@link Comparator} object that will be decorated
 	 * @param decoratedComparator
 	 *            the {@link Comparator} object that will be decorated
-	 * @return the new {@link NullCheckComparator} object
+	 * @return the new decorated {@link Comparator} object
 	 */
-	public static <T> NullCheckComparator<T> of(Comparator<T> decoratedComparator)
+	public static <T> Comparator<T> of(Comparator<T> decoratedComparator)
 	{
 		return NullCheckComparator.<T> builder().decoratedComparator(decoratedComparator).build();
 	}
@@ -120,26 +122,11 @@ public class NullCheckComparator<T> implements Comparator<T>, Serializable
 	@Override
 	public int compare(T object, T compareWithObject)
 	{
-		if (object == compareWithObject)
+		final Integer nullCheck = ComparatorExtensions.nullCheck(object, compareWithObject,
+			this.nullIsGreaterThan);
+		if (nullCheck != null)
 		{
-			return 0;
-		}
-		if (object == null)
-		{
-			if (this.nullIsGreaterThan)
-			{
-				return 1;
-			}
-			return -1;
-		}
-		if (compareWithObject == null)
-		{
-
-			if (this.nullIsGreaterThan)
-			{
-				return -1;
-			}
-			return 1;
+			return nullCheck;
 		}
 		return this.decoratedComparator.compare(object, compareWithObject);
 	}

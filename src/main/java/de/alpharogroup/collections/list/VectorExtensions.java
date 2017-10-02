@@ -22,31 +22,37 @@
  * OF CONTRACT, TORT OR OTHERWISE, ARISING FROM, OUT OF OR IN CONNECTION
  * WITH THE SOFTWARE OR THE USE OR OTHER DEALINGS IN THE SOFTWARE.
  */
-package de.alpharogroup.collections;
+package de.alpharogroup.collections.list;
 
-import java.util.List;
-import java.util.Properties;
+import java.util.Enumeration;
+import java.util.Vector;
 
-import de.alpharogroup.collections.pairs.KeyValuePair;
 import lombok.experimental.UtilityClass;
 
 /**
- * The class {@link PropertiesExtensions}.
+ * The extensions {@link VectorExtensions} class can be used with {@link Vector} objects.
  */
 @UtilityClass
-public class PropertiesExtensions
+public class VectorExtensions
 {
 
 	/**
-	 * Transforms the given {@link Properties} to a list of {@link KeyValuePair}'s.
+	 * Converts the given enumaration to a Vector.
 	 *
-	 * @param properties
-	 *            the properties
-	 * @return the new list with the {@link KeyValuePair}'s.
+	 * @param <T>
+	 *            the generic type
+	 * @param enumaration
+	 *            The Enumeration to convert.
+	 *
+	 * @return A new Vector with the content of the given Enumeration.
 	 */
-	public static List<KeyValuePair<String, String>> toKeyValuePairs(Properties properties)
+	public static <T> Vector<T> toVector(final Enumeration<T> enumaration)
 	{
-		return KeyValuePair.toKeyValuePairs(properties);
+		final Vector<T> vector = new Vector<>();
+		while (enumaration.hasMoreElements())
+		{
+			vector.add(enumaration.nextElement());
+		}
+		return vector;
 	}
-
 }

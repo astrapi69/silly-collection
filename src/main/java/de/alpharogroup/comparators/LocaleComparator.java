@@ -22,37 +22,49 @@
  * OF CONTRACT, TORT OR OTHERWISE, ARISING FROM, OUT OF OR IN CONNECTION
  * WITH THE SOFTWARE OR THE USE OR OTHER DEALINGS IN THE SOFTWARE.
  */
-package de.alpharogroup.collections;
+package de.alpharogroup.comparators;
 
-import java.util.Enumeration;
-import java.util.Vector;
-
-import lombok.experimental.UtilityClass;
+import java.util.Comparator;
+import java.util.Locale;
 
 /**
- * The extensions {@link VectorExtensions} class can be used with {@link Vector} objects.
+ * The class {@link LocaleComparator} compares {@linkplain Locale} objects. This Comparator does not
+ * check null, for null check you can decorate it with the
+ * {@link NullCheckComparator#of(Comparator)}. an example is in the unit test class from
+ * {@linkplain NullCheckComparator}.
  */
-@UtilityClass
-public class VectorExtensions
+public class LocaleComparator implements Comparator<Locale>
 {
 
 	/**
-	 * Converts the given enumaration to a Vector.
+	 * Factory method to create a new {@link LocaleComparator} object.
 	 *
-	 * @param <T>
-	 *            the generic type
-	 * @param enumaration
-	 *            The Enumeration to convert.
-	 *
-	 * @return A new Vector with the content of the given Enumeration.
+	 * @return the new {@link LocaleComparator} object
 	 */
-	public static <T> Vector<T> toVector(final Enumeration<T> enumaration)
+	public static Comparator<Locale> of()
 	{
-		final Vector<T> vector = new Vector<>();
-		while (enumaration.hasMoreElements())
-		{
-			vector.add(enumaration.nextElement());
-		}
-		return vector;
+		return LocaleComparator.of(false);
 	}
+
+	/**
+	 * Factory method to create a new {@link LocaleComparator} object.
+	 *
+	 * @param nullIsGreaterThan
+	 *            the flag that specifies if null objects is greater than non null objects.
+	 * @return the new {@link LocaleComparator} object
+	 */
+	public static Comparator<Locale> of(boolean nullIsGreaterThan)
+	{
+		return NullCheckComparator.<Locale> of(new LocaleComparator(), nullIsGreaterThan);
+	}
+
+	/**
+	 * {@inheritDoc}
+	 */
+	@Override
+	public int compare(Locale o1, Locale o2)
+	{
+		return o1.toString().compareTo(o2.toString());
+	}
+
 }

@@ -22,7 +22,7 @@
  * OF CONTRACT, TORT OR OTHERWISE, ARISING FROM, OUT OF OR IN CONNECTION
  * WITH THE SOFTWARE OR THE USE OR OTHER DEALINGS IN THE SOFTWARE.
  */
-package de.alpharogroup.collections;
+package de.alpharogroup.collections.list;
 
 import java.util.ArrayList;
 import java.util.Arrays;
@@ -228,6 +228,35 @@ public class ListExtensions
 	}
 
 	/**
+	 * Factory method for create new {@link ArrayList} from the given optional collection and the
+	 * given optional elements.
+	 *
+	 * @param <T>
+	 *            the generic type of the elements
+	 * @param collection
+	 *            the optional collection that will be added to the new list
+	 * @param elements
+	 *            the optional elements to be added in the new {@link ArrayList}.
+	 * @return the new {@link ArrayList} as {@link List}.
+	 */
+	@SafeVarargs
+	public static <T> List<T> newArrayList(final Collection<T> collection, final T... elements)
+	{
+		final List<T> list;
+		if (collection != null && !collection.isEmpty())
+		{
+			list = new ArrayList<>(collection);
+			Collections.addAll(list, elements);
+		}
+		else
+		{
+			list = new ArrayList<>();
+			Collections.addAll(list, elements);
+		}
+		return list;
+	}
+
+	/**
 	 * Factory method for create new {@link ArrayList} and returns as {@link List}.
 	 *
 	 * @param <T>
@@ -242,7 +271,7 @@ public class ListExtensions
 	}
 
 	/**
-	 * Factory method for create new {@link ArrayList} and returns as {@link List}.
+	 * Factory method for create new {@link ArrayList} from the given optional elements.
 	 *
 	 * @param <T>
 	 *            the generic type of the elements
@@ -253,9 +282,7 @@ public class ListExtensions
 	@SafeVarargs
 	public static <T> List<T> newArrayList(final T... elements)
 	{
-		final List<T> list = new ArrayList<>();
-		Collections.addAll(list, elements);
-		return list;
+		return newArrayList(null, elements);
 	}
 
 	/**
