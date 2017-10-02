@@ -168,7 +168,7 @@ public final class PropertiesExtensions
 	 *            the properties file
 	 * @return the properties or null if the file is not found.
 	 * @throws IOException
-	 *             Signals that an I/O exception has occurred. TODO delegate
+	 *             Signals that an I/O exception has occurred.
 	 */
 	public static Properties loadProperties(final File propertiesFile) throws IOException
 	{
@@ -214,7 +214,7 @@ public final class PropertiesExtensions
 	 * @throws FileNotFoundException
 	 *             the file not found exception
 	 * @throws IOException
-	 *             Signals that an I/O exception has occurred. TODO delegate
+	 *             Signals that an I/O exception has occurred.
 	 */
 	public static void toProperties(final File properties, final File xml, final String comment)
 		throws FileNotFoundException, IOException
@@ -234,7 +234,7 @@ public final class PropertiesExtensions
 	 * @throws FileNotFoundException
 	 *             the file not found exception
 	 * @throws IOException
-	 *             Signals that an I/O exception has occurred. TODO delegate
+	 *             Signals that an I/O exception has occurred.
 	 */
 	public static void toProperties(final OutputStream properties, final InputStream xml,
 		final String comment) throws FileNotFoundException, IOException
@@ -258,7 +258,7 @@ public final class PropertiesExtensions
 	 * @throws FileNotFoundException
 	 *             the file not found exception
 	 * @throws IOException
-	 *             Signals that an I/O exception has occurred. TODO delegate
+	 *             Signals that an I/O exception has occurred.
 	 */
 	public static void toXml(final File properties, final File xml, final String comment,
 		final String encoding) throws FileNotFoundException, IOException
@@ -280,7 +280,7 @@ public final class PropertiesExtensions
 	 * @throws FileNotFoundException
 	 *             the file not found exception
 	 * @throws IOException
-	 *             Signals that an I/O exception has occurred. TODO delegate
+	 *             Signals that an I/O exception has occurred.
 	 */
 	public static void toXml(final InputStream properties, final OutputStream xml,
 		final String comment, final String encoding) throws FileNotFoundException, IOException
