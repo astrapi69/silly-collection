@@ -32,7 +32,6 @@ import java.util.Set;
 import org.testng.AssertJUnit;
 import org.testng.annotations.Test;
 
-import de.alpharogroup.collections.properties.SortedProperties;
 import de.alpharogroup.comparators.NullCheckComparator;
 
 /**

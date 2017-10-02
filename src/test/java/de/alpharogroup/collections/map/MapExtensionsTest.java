@@ -36,8 +36,6 @@ import org.testng.annotations.AfterMethod;
 import org.testng.annotations.BeforeMethod;
 import org.testng.annotations.Test;
 
-import de.alpharogroup.collections.map.MapExtensions;
-
 /**
  * Test class for the class {@link MapExtensions}.
  *

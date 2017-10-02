@@ -31,7 +31,6 @@ import java.util.Properties;
 import org.testng.AssertJUnit;
 import org.testng.annotations.Test;
 
-import de.alpharogroup.collections.properties.IndexSortedProperties;
 import de.alpharogroup.comparators.NullCheckComparator;
 
 /**

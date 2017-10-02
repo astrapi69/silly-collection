@@ -32,38 +32,12 @@ import java.util.Set;
 import org.testng.annotations.Test;
 
 import de.alpharogroup.collections.list.ListExtensions;
-import de.alpharogroup.collections.set.SetExtensions;
 
 /**
  * The class {@link SetExtensionsTest}.
  */
 public class SetExtensionsTest
 {
-	/**
-	 * Test for method {@link SetExtensions#newHashSet(Object...)}
-	 */
-	@Test
-	public void testNewHashSetObjects()
-	{
-		Set<String> set = SetExtensions.newHashSet();
-		assertTrue(set.size() == 0);
-		set = SetExtensions.newHashSet("foo", "bar", "foo");
-		assertTrue(set.size() == 2);
-	}
-	/**
-	 * Test for method {@link SetExtensions#newHashSet(java.util.Collection, Object...)}
-	 */
-	@Test
-	public void testNewHashSetCollectionObjects()
-	{
-
-		Set<String> set = SetExtensions.newHashSet();
-		assertTrue(set.size() == 0);
-		set = SetExtensions.newHashSet(ListExtensions.newArrayList("foo", "fasel"), "foo", "bar", "foo");
-		assertTrue(set.size() == 3);
-	}
-
-
 	/**
 	 * Test the method {@link SetExtensions#isEmpty(Set)}
 	 */
@@ -87,6 +61,33 @@ public class SetExtensionsTest
 		isNull = SetExtensions.isEmpty(nullSet);
 
 		assertFalse("Set should not be empty.", isNull);
+	}
+
+	/**
+	 * Test for method {@link SetExtensions#newHashSet(java.util.Collection, Object...)}
+	 */
+	@Test
+	public void testNewHashSetCollectionObjects()
+	{
+
+		Set<String> set = SetExtensions.newHashSet();
+		assertTrue(set.size() == 0);
+		set = SetExtensions.newHashSet(ListExtensions.newArrayList("foo", "fasel"), "foo", "bar",
+			"foo");
+		assertTrue(set.size() == 3);
+	}
+
+
+	/**
+	 * Test for method {@link SetExtensions#newHashSet(Object...)}
+	 */
+	@Test
+	public void testNewHashSetObjects()
+	{
+		Set<String> set = SetExtensions.newHashSet();
+		assertTrue(set.size() == 0);
+		set = SetExtensions.newHashSet("foo", "bar", "foo");
+		assertTrue(set.size() == 2);
 	}
 
 }

@@ -61,7 +61,8 @@ public class SetExtensions
 	 *            the generic type of the elements
 	 * @param collection
 	 *            the optional collection that will be added to the new list
-	 * @param elements            the elements to add in the new {@link HashSet}.
+	 * @param elements
+	 *            the elements to add in the new {@link HashSet}.
 	 * @return the new {@link HashSet} and returns as {@link Set}.
 	 */
 	@SafeVarargs

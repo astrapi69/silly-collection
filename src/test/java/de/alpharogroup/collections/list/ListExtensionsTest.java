@@ -103,7 +103,8 @@ public class ListExtensionsTest
 	}
 
 	/**
-	 * Test method for {@link de.alpharogroup.collections.list.ListExtensions#getFirst(java.util.List)} .
+	 * Test method for
+	 * {@link de.alpharogroup.collections.list.ListExtensions#getFirst(java.util.List)} .
 	 */
 	@Test
 	public void testGetFirst()
@@ -121,7 +122,8 @@ public class ListExtensionsTest
 	}
 
 	/**
-	 * Test method for {@link de.alpharogroup.collections.list.ListExtensions#getLast(java.util.List)} .
+	 * Test method for
+	 * {@link de.alpharogroup.collections.list.ListExtensions#getLast(java.util.List)} .
 	 */
 	@Test
 	public void testGetLast()
@@ -199,7 +201,8 @@ public class ListExtensionsTest
 	}
 
 	/**
-	 * Test method for {@link de.alpharogroup.collections.list.ListExtensions#isFirst(java.util.List)} .
+	 * Test method for
+	 * {@link de.alpharogroup.collections.list.ListExtensions#isFirst(java.util.List)} .
 	 */
 	@Test
 	public void testIsFirst()
@@ -217,7 +220,8 @@ public class ListExtensionsTest
 	}
 
 	/**
-	 * Test method for {@link de.alpharogroup.collections.list.ListExtensions#isLast(java.util.List)} .
+	 * Test method for
+	 * {@link de.alpharogroup.collections.list.ListExtensions#isLast(java.util.List)} .
 	 */
 	@Test
 	public void testIsLast()
@@ -259,6 +263,42 @@ public class ListExtensionsTest
 
 		assertFalse("List should not be empty.", isNull);
 
+	}
+
+	/**
+	 * Test the method {@link ListExtensions#newArrayList(java.util.Collection, Object...)}.
+	 */
+	@Test
+	public void testNewArrayListCollectionObjects()
+	{
+		List<String> strings = ListExtensions.newArrayList(null, "foo");
+		assertNotNull(strings);
+		assertTrue(strings.size() == 1);
+		assertTrue(strings.get(0).equals("foo"));
+	}
+
+	/**
+	 * Test the method {@link ListExtensions#newArrayList(int)}.
+	 */
+	@Test
+	public void testNewArrayListInt()
+	{
+		List<String> strings = ListExtensions.newArrayList(2);
+		assertNotNull(strings);
+		assertTrue(strings.size() == 0);
+	}
+
+	/**
+	 * Test the method {@link ListExtensions#newArrayList(Object...)}.
+	 */
+	@Test
+	public void testNewArrayListObjects()
+	{
+		List<String> strings = ListExtensions.newArrayList("foo", "bar");
+		assertNotNull(strings);
+		assertTrue(strings.size() == 2);
+		assertTrue(strings.get(0).equals("foo"));
+		assertTrue(strings.get(1).equals("bar"));
 	}
 
 	@Test
@@ -312,8 +352,8 @@ public class ListExtensionsTest
 	}
 
 	/**
-	 * Test method for {@link de.alpharogroup.collections.list.ListExtensions#removeLast(java.util.List)}
-	 * .
+	 * Test method for
+	 * {@link de.alpharogroup.collections.list.ListExtensions#removeLast(java.util.List)} .
 	 */
 	@Test
 	public void testRemoveLast()
@@ -503,42 +543,6 @@ public class ListExtensionsTest
 		}
 		actual = ListExtensions.toObjectArray();
 		assertTrue(actual.length == 0);
-	}
-
-	/**
-	 * Test the method {@link ListExtensions#newArrayList(Object...)}.
-	 */
-	@Test
-	public void testNewArrayListObjects()
-	{
-		List<String> strings = ListExtensions.newArrayList("foo", "bar");
-		assertNotNull(strings);
-		assertTrue(strings.size() == 2);
-		assertTrue(strings.get(0).equals("foo"));
-		assertTrue(strings.get(1).equals("bar"));
-	}
-
-	/**
-	 * Test the method {@link ListExtensions#newArrayList(java.util.Collection, Object...)}.
-	 */
-	@Test
-	public void testNewArrayListCollectionObjects()
-	{
-		List<String> strings = ListExtensions.newArrayList(null, "foo");
-		assertNotNull(strings);
-		assertTrue(strings.size() == 1);
-		assertTrue(strings.get(0).equals("foo"));
-	}
-
-	/**
-	 * Test the method {@link ListExtensions#newArrayList(int)}.
-	 */
-	@Test
-	public void testNewArrayListInt()
-	{
-		List<String> strings = ListExtensions.newArrayList(2);
-		assertNotNull(strings);
-		assertTrue(strings.size() == 0);
 	}
 
 }

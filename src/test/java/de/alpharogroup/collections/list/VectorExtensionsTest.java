@@ -31,8 +31,6 @@ import java.util.Vector;
 
 import org.testng.annotations.Test;
 
-import de.alpharogroup.collections.list.ListExtensions;
-import de.alpharogroup.collections.list.VectorExtensions;
 import lombok.experimental.ExtensionMethod;
 
 /**

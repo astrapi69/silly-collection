@@ -31,7 +31,6 @@ import java.util.List;
 import org.testng.AssertJUnit;
 import org.testng.annotations.Test;
 
-import de.alpharogroup.collections.array.ArrayExtensions;
 import lombok.experimental.ExtensionMethod;
 
 /**
@@ -285,8 +284,8 @@ public class ArrayExtensionsTest
 	}
 
 	/**
-	 * Test method for {@link de.alpharogroup.collections.array.ArrayExtensions#isFirst(Object[], Object)}
-	 * .
+	 * Test method for
+	 * {@link de.alpharogroup.collections.array.ArrayExtensions#isFirst(Object[], Object)} .
 	 */
 	@Test
 	public void testIsFirst()
@@ -304,8 +303,8 @@ public class ArrayExtensionsTest
 	}
 
 	/**
-	 * Test method for {@link de.alpharogroup.collections.array.ArrayExtensions#isLast(Object[], Object)}
-	 * .
+	 * Test method for
+	 * {@link de.alpharogroup.collections.array.ArrayExtensions#isLast(Object[], Object)} .
 	 */
 	@Test
 	public void testIsLast()

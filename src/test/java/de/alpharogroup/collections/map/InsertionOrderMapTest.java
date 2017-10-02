@@ -32,9 +32,6 @@ import java.util.Map.Entry;
 import org.testng.AssertJUnit;
 import org.testng.annotations.Test;
 
-import de.alpharogroup.collections.map.InsertionOrderMap;
-import de.alpharogroup.collections.map.MapExtensions;
-
 /**
  * Test class for the class {@link InsertionOrderMap}.
  *
