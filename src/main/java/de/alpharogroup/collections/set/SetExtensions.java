@@ -24,6 +24,7 @@
  */
 package de.alpharogroup.collections.set;
 
+import java.util.Collection;
 import java.util.Collections;
 import java.util.HashSet;
 import java.util.List;
@@ -50,8 +51,32 @@ public class SetExtensions
 	@SafeVarargs
 	public static final <T> Set<T> newHashSet(final T... elements)
 	{
-		final Set<T> set = new HashSet<>();
-		Collections.addAll(set, elements);
+		return newHashSet(null, elements);
+	}
+
+	/**
+	 * Factory method for create new {@link HashSet} and returns as {@link Set}.
+	 *
+	 * @param <T>
+	 *            the generic type
+	 * @param elements
+	 *            the elements to add in the new {@link HashSet}.
+	 * @return the new {@link HashSet} and returns as {@link Set}.
+	 */
+	@SafeVarargs
+	public static final <T> Set<T> newHashSet(final Collection<T> collection, final T... elements)
+	{
+		final Set<T> set;
+		if (collection != null && !collection.isEmpty())
+		{
+			set = new HashSet<>(collection);
+			Collections.addAll(set, elements);
+		}
+		else
+		{
+			set = new HashSet<>();
+			Collections.addAll(set, elements);
+		}
 		return set;
 	}
 
