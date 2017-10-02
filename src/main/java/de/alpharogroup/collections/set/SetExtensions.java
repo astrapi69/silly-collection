@@ -43,7 +43,7 @@ public class SetExtensions
 	 * Factory method for create new {@link HashSet} and returns as {@link Set}.
 	 *
 	 * @param <T>
-	 *            the generic type
+	 *            the generic type of the elements
 	 * @param elements
 	 *            the elements to add in the new {@link HashSet}.
 	 * @return the new {@link HashSet} and returns as {@link Set}.
@@ -58,9 +58,10 @@ public class SetExtensions
 	 * Factory method for create new {@link HashSet} and returns as {@link Set}.
 	 *
 	 * @param <T>
-	 *            the generic type
-	 * @param elements
-	 *            the elements to add in the new {@link HashSet}.
+	 *            the generic type of the elements
+	 * @param collection
+	 *            the optional collection that will be added to the new list
+	 * @param elements            the elements to add in the new {@link HashSet}.
 	 * @return the new {@link HashSet} and returns as {@link Set}.
 	 */
 	@SafeVarargs
@@ -84,7 +85,7 @@ public class SetExtensions
 	 * Checks if a Set is null or empty.
 	 *
 	 * @param <T>
-	 *            the generic type
+	 *            the generic type of the elements
 	 * @param set
 	 *            The Set to check.
 	 * @return true if the set is null or empty otherwise false.
@@ -98,7 +99,7 @@ public class SetExtensions
 	 * Checks if the given Set is not null or empty.
 	 *
 	 * @param <T>
-	 *            the generic type
+	 *            the generic type of the elements
 	 * @param set
 	 *            The Set to check.
 	 * @return true if the set is null or empty otherwise false.
@@ -117,9 +118,9 @@ public class SetExtensions
 	 *            the list
 	 * @return A new {@link Set}
 	 */
-	public static <T> Set<T> toSet(final List<T> list)
+	public static <T> Set<T> toSet(final Collection<T> list)
 	{
-		return new HashSet<>(list);
+		return newHashSet(list);
 	}
 
 }
