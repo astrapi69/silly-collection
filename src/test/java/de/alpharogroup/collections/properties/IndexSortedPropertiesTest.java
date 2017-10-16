@@ -45,7 +45,7 @@ public class IndexSortedPropertiesTest
 	 * Test for method {@link IndexSortedProperties#indexOf(Object)}
 	 */
 	@Test
-	public void tesIndexOf()
+	public void testIndexOf()
 	{
 
 		final Properties unsortedProperties = new Properties();
