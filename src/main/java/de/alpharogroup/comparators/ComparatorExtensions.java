@@ -147,6 +147,32 @@ public class ComparatorExtensions
 			return 1;// compareWithObject is null so its bigger
 		}
 		return null;
+	}	
+
+	/**
+	 * Null check of the given objects that is intended for use in equals
+	 * method. Returns the appropriate boolean or null if given objects are
+	 * ready for equation.
+	 *
+	 * @param <T>
+	 *            the generic type
+	 * @param object
+	 *            the object
+	 * @param compareWithObject
+	 *            the compare with object
+	 * @return the boolean or null if both are not null.
+	 */
+	public static <T> Boolean equalNullCheck(final T object, final T compareWithObject) 
+	{
+		if (object == compareWithObject) 
+		{
+			return true;
+		}
+		if (object == null || compareWithObject == null) 
+		{
+			return false;
+		}
+		return null;
 	}
 
 }
