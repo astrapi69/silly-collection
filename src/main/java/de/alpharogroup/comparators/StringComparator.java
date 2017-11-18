@@ -53,6 +53,18 @@ public class StringComparator extends SortOrderComparator<String>
 	/**
 	 * Factory method to create a new {@link StringComparator} object.
 	 *
+	 * @param nullIsGreaterThan
+	 *            the flag that specifies if null objects is greater than non null objects.
+	 * @return the new {@link StringComparator} object
+	 */
+	public static Comparator<String> of(final boolean nullIsGreaterThan)
+	{
+		return NullCheckComparator.<String> of(new StringComparator(), nullIsGreaterThan);
+	}
+
+	/**
+	 * Factory method to create a new {@link StringComparator} object.
+	 *
 	 * @param sortOrder
 	 *            the sort order
 	 * @return the new {@link StringComparator} object
@@ -74,18 +86,6 @@ public class StringComparator extends SortOrderComparator<String>
 	public static Comparator<String> of(final SortOrder sortOrder, final boolean nullIsGreaterThan)
 	{
 		return NullCheckComparator.<String> of(new StringComparator(sortOrder), nullIsGreaterThan);
-	}
-
-	/**
-	 * Factory method to create a new {@link StringComparator} object.
-	 *
-	 * @param nullIsGreaterThan
-	 *            the flag that specifies if null objects is greater than non null objects.
-	 * @return the new {@link StringComparator} object
-	 */
-	public static Comparator<String> of(final boolean nullIsGreaterThan)
-	{
-		return NullCheckComparator.<String> of(new StringComparator(), nullIsGreaterThan);
 	}
 
 	/**
