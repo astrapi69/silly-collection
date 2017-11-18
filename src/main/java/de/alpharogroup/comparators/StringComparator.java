@@ -24,15 +24,15 @@
  */
 package de.alpharogroup.comparators;
 
+import java.util.Comparator;
+
 import lombok.NoArgsConstructor;
 
-
 /**
- * The class StringComparator sorts String object in ascending order as default or descending if the
- * {@link SortOrder} is set to {@link SortOrder#DESCENDING}.
+ * The class StringComparator sorts String object in ascending order as default.
  */
 @NoArgsConstructor
-public class StringComparator extends ComparableComparator<String>
+public class StringComparator extends SortOrderComparator<String>
 {
 
 	/**
@@ -40,8 +40,63 @@ public class StringComparator extends ComparableComparator<String>
 	 */
 	private static final long serialVersionUID = 1L;
 
+	/**
+	 * Factory method to create a new {@link StringComparator} object.
+	 *
+	 * @return the new {@link StringComparator} object
+	 */
+	public static Comparator<String> of()
+	{
+		return StringComparator.of(false);
+	}
+
+	/**
+	 * Factory method to create a new {@link StringComparator} object.
+	 *
+	 * @param sortOrder
+	 *            the sort order
+	 * @return the new {@link StringComparator} object
+	 */
+	public static Comparator<String> of(final SortOrder sortOrder)
+	{
+		return StringComparator.of(sortOrder, false);
+	}
+
+	/**
+	 * Factory method to create a new {@link StringComparator} object.
+	 *
+	 * @param nullIsGreaterThan
+	 *            the flag that specifies if null objects is greater than non null objects
+	 * @param sortOrder
+	 *            the sort order
+	 * @return the new {@link StringComparator} object
+	 */
+	public static Comparator<String> of(final SortOrder sortOrder, final boolean nullIsGreaterThan)
+	{
+		return NullCheckComparator.<String> of(new StringComparator(sortOrder), nullIsGreaterThan);
+	}
+
+	/**
+	 * Factory method to create a new {@link StringComparator} object.
+	 *
+	 * @param nullIsGreaterThan
+	 *            the flag that specifies if null objects is greater than non null objects.
+	 * @return the new {@link StringComparator} object
+	 */
+	public static Comparator<String> of(final boolean nullIsGreaterThan)
+	{
+		return NullCheckComparator.<String> of(new StringComparator(), nullIsGreaterThan);
+	}
+
+	/**
+	 * Instantiates a new {@link StringComparator}.
+	 *
+	 * @param sortOrder
+	 *            the sort order
+	 */
 	public StringComparator(final SortOrder sortOrder)
 	{
 		super(sortOrder);
 	}
+
 }

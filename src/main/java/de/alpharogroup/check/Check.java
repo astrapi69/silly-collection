@@ -30,7 +30,12 @@ import java.util.Map;
 
 /**
  * The class {@link Check} can validate arguments in a chained manner like a builder.
+ *
+ *
+ * @deprecated use instead the same name class from jobject-core project. Will be removed in the
+ *             next major release.
  */
+@Deprecated
 public class Check implements Serializable
 {
 
