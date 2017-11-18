@@ -22,32 +22,37 @@
  * OF CONTRACT, TORT OR OTHERWISE, ARISING FROM, OUT OF OR IN CONNECTION
  * WITH THE SOFTWARE OR THE USE OR OTHER DEALINGS IN THE SOFTWARE.
  */
-package de.alpharogroup.collections.pairs;
+package de.alpharogroup.collections.list;
 
-import java.util.Set;
+import java.util.Enumeration;
+import java.util.Vector;
 
-import org.testng.AssertJUnit;
-import org.testng.annotations.Test;
+import lombok.experimental.UtilityClass;
 
-import de.alpharogroup.collections.set.SetExtensions;
-import de.alpharogroup.test.objects.Employee;
-import de.alpharogroup.test.objects.Person;
-
-public class KeyValuesPairTest
+/**
+ * The extensions {@link VectorExtensions} class can be used with {@link Vector} objects.
+ */
+@UtilityClass
+public class VectorExtensions
 {
 
-	@Test
-	public void testKeyValuesPairBuilder()
+	/**
+	 * Converts the given enumaration to a Vector.
+	 *
+	 * @param <T>
+	 *            the generic type
+	 * @param enumaration
+	 *            The Enumeration to convert.
+	 *
+	 * @return A new Vector with the content of the given Enumeration.
+	 */
+	public static <T> Vector<T> toVector(final Enumeration<T> enumaration)
 	{
-		final Person person = Person.builder().name("John").married(Boolean.FALSE).build();
-		final Set<Employee> employees = SetExtensions.newHashSet();
-		employees.add(Employee.builder().id("10").build());
-		employees.add(Employee.builder().id("20").build());
-		final Employee employee = Employee.builder().id("20").build();
-		final KeyValuesPair<Person, Employee> kvp = KeyValuesPair.<Person, Employee> builder()
-			.key(person).values(employees).value(employee).build();
-		AssertJUnit.assertEquals(person, kvp.getKey());
-		AssertJUnit.assertTrue(kvp.getValues().size() == 3);
+		final Vector<T> vector = new Vector<>();
+		while (enumaration.hasMoreElements())
+		{
+			vector.add(enumaration.nextElement());
+		}
+		return vector;
 	}
-
 }

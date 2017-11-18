@@ -22,32 +22,32 @@
  * OF CONTRACT, TORT OR OTHERWISE, ARISING FROM, OUT OF OR IN CONNECTION
  * WITH THE SOFTWARE OR THE USE OR OTHER DEALINGS IN THE SOFTWARE.
  */
-package de.alpharogroup.collections.pairs;
+package de.alpharogroup.comparators.pairs;
 
-import java.util.Set;
+import java.util.Comparator;
 
-import org.testng.AssertJUnit;
-import org.testng.annotations.Test;
+import de.alpharogroup.collections.pairs.KeyValuePair;
 
-import de.alpharogroup.collections.set.SetExtensions;
-import de.alpharogroup.test.objects.Employee;
-import de.alpharogroup.test.objects.Person;
-
-public class KeyValuesPairTest
+/**
+ * The class {@link KeyValuePairKeyComparator} compares {@linkplain KeyValuePair} objects over the
+ * key where the key have to implements the {@linkplain Comparable} interface.
+ *
+ * @param <K>
+ *            The generic type of the key
+ * @param <V>
+ *            The generic type of the value
+ */
+public class KeyValuePairKeyComparator<K extends Comparable<K>, V>
+	implements
+		Comparator<KeyValuePair<K, V>>
 {
 
-	@Test
-	public void testKeyValuesPairBuilder()
+	/**
+	 * {@inheritDoc}
+	 */
+	@Override
+	public int compare(final KeyValuePair<K, V> o1, final KeyValuePair<K, V> o2)
 	{
-		final Person person = Person.builder().name("John").married(Boolean.FALSE).build();
-		final Set<Employee> employees = SetExtensions.newHashSet();
-		employees.add(Employee.builder().id("10").build());
-		employees.add(Employee.builder().id("20").build());
-		final Employee employee = Employee.builder().id("20").build();
-		final KeyValuesPair<Person, Employee> kvp = KeyValuesPair.<Person, Employee> builder()
-			.key(person).values(employees).value(employee).build();
-		AssertJUnit.assertEquals(person, kvp.getKey());
-		AssertJUnit.assertTrue(kvp.getValues().size() == 3);
+		return o1.getKey().compareTo(o2.getKey());
 	}
-
 }

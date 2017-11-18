@@ -5,19 +5,19 @@
 	<parent>
 		<groupId>de.alpharogroup</groupId>
 		<artifactId>mvn-java-parent</artifactId>
-		<version>2.28.0</version>
+		<version>2.29.0</version>
 		<relativePath></relativePath>
 	</parent>
 
 	<artifactId>silly-collections</artifactId>
-	<version>4.18.0</version>
+	<version>4.20.0</version>
 
 	<name>${project.artifactId}</name>
 
 	<description>
 		Utility library for collections, comparators and iterator classes
 	</description>
-	
+
 	<licenses>
 		<license>
 			<name>MIT License</name>
@@ -45,8 +45,14 @@
 	</issueManagement>
 
 	<properties>
+		<!-- JOBJECT-EXTENSIONS versions -->
+		<jobject-extensions.version>1.4.0</jobject-extensions.version>
+		<jobject-compare.version>${jobject-extensions.version}</jobject-compare.version>
+		<jobject-core.version>${jobject-extensions.version}</jobject-core.version>
+		<!-- VINTAGE-TIME version -->
 		<vintage-time.version>4.11.0</vintage-time.version>
-		<test-objects.version>4.16.0</test-objects.version>
+		<!-- TEST-OBJECTS version -->
+		<test-objects.version>4.17.0</test-objects.version>
 		<!-- EXTERNAL LIBRARIES versions -->
 		<commons-collections4.version>4.1</commons-collections4.version>
 		<commons-beanutils.version>1.9.3</commons-beanutils.version>
@@ -73,17 +79,29 @@
 					</exclusion>
 				</exclusions>
 			</dependency>
-
+			<!-- VINTAGE-TIME DEPENDENCY -->
 			<dependency>
 				<groupId>de.alpharogroup</groupId>
 				<artifactId>vintage-time</artifactId>
 				<version>${vintage-time.version}</version>
 			</dependency>
-
+			<!-- TEST-OBJECTS DEPENDENCY -->
 			<dependency>
 				<groupId>de.alpharogroup</groupId>
 				<artifactId>test-objects</artifactId>
 				<version>${test-objects.version}</version>
+			</dependency>
+			<!-- JOBJECT-COMPARE DEPENDENCY -->
+			<dependency>
+				<groupId>de.alpharogroup</groupId>
+				<artifactId>jobject-compare</artifactId>
+				<version>${jobject-compare.version}</version>
+			</dependency>
+			<!-- JOBJECT-CORE DEPENDENCY -->
+			<dependency>
+				<groupId>de.alpharogroup</groupId>
+				<artifactId>jobject-core</artifactId>
+				<version>${jobject-core.version}</version>
 			</dependency>
 
 		</dependencies>
@@ -100,6 +118,16 @@
 		<dependency>
 			<groupId>commons-beanutils</groupId>
 			<artifactId>commons-beanutils</artifactId>
+		</dependency>
+		<!-- JOBJECT-COMPARE DEPENDENCY -->
+		<dependency>
+			<groupId>de.alpharogroup</groupId>
+			<artifactId>jobject-compare</artifactId>
+		</dependency>
+		<!-- JOBJECT-CORE DEPENDENCY -->
+		<dependency>
+			<groupId>de.alpharogroup</groupId>
+			<artifactId>jobject-core</artifactId>
 		</dependency>
 
 		<dependency>

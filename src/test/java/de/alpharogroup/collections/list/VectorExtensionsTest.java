@@ -22,32 +22,44 @@
  * OF CONTRACT, TORT OR OTHERWISE, ARISING FROM, OUT OF OR IN CONNECTION
  * WITH THE SOFTWARE OR THE USE OR OTHER DEALINGS IN THE SOFTWARE.
  */
-package de.alpharogroup.collections.pairs;
+package de.alpharogroup.collections.list;
 
-import java.util.Set;
+import static org.testng.AssertJUnit.assertTrue;
 
-import org.testng.AssertJUnit;
+import java.util.Enumeration;
+import java.util.Vector;
+
 import org.testng.annotations.Test;
 
-import de.alpharogroup.collections.set.SetExtensions;
-import de.alpharogroup.test.objects.Employee;
-import de.alpharogroup.test.objects.Person;
+import lombok.experimental.ExtensionMethod;
 
-public class KeyValuesPairTest
+/**
+ * Tests for the class {@link VectorExtensions}.
+ *
+ * @version 1.0
+ * @author Asterios Raptis
+ */
+@ExtensionMethod(ListExtensions.class)
+public class VectorExtensionsTest
 {
 
+	/**
+	 * Test the method {@link VectorExtensions#toVector(Object...)}.
+	 */
 	@Test
-	public void testKeyValuesPairBuilder()
+	public void testToVector()
 	{
-		final Person person = Person.builder().name("John").married(Boolean.FALSE).build();
-		final Set<Employee> employees = SetExtensions.newHashSet();
-		employees.add(Employee.builder().id("10").build());
-		employees.add(Employee.builder().id("20").build());
-		final Employee employee = Employee.builder().id("20").build();
-		final KeyValuesPair<Person, Employee> kvp = KeyValuesPair.<Person, Employee> builder()
-			.key(person).values(employees).value(employee).build();
-		AssertJUnit.assertEquals(person, kvp.getKey());
-		AssertJUnit.assertTrue(kvp.getValues().size() == 3);
+		final Vector<String> expectedValues = new Vector<>();
+		expectedValues.add("C");
+		expectedValues.add("D");
+		expectedValues.add("A");
+		expectedValues.add("B");
+		final Enumeration<String> elements = expectedValues.elements();
+		final Vector<String> actuals = VectorExtensions.toVector(elements);
+		for (final String actual : actuals)
+		{
+			assertTrue(expectedValues.contains(actual));
+		}
 	}
 
 }
