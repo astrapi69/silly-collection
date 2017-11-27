@@ -26,6 +26,7 @@ package de.alpharogroup.collections.pairs;
 
 import java.io.Serializable;
 
+import lombok.AccessLevel;
 import lombok.AllArgsConstructor;
 import lombok.Builder;
 import lombok.EqualsAndHashCode;
@@ -33,6 +34,7 @@ import lombok.Getter;
 import lombok.NoArgsConstructor;
 import lombok.Setter;
 import lombok.ToString;
+import lombok.experimental.FieldDefaults;
 
 /**
  * The class {@link Quattro} represents four generic values.
@@ -53,6 +55,7 @@ import lombok.ToString;
 @NoArgsConstructor
 @AllArgsConstructor
 @Builder(toBuilder = true)
+@FieldDefaults(level=AccessLevel.PRIVATE)
 public class Quattro<TL, TR, BL, BR> implements Serializable
 {
 	/**
@@ -61,15 +64,15 @@ public class Quattro<TL, TR, BL, BR> implements Serializable
 	private static final long serialVersionUID = 1L;
 
 	/** The top left value. */
-	private TL topLeft;
+	TL topLeft;
 
 	/** The top right value. */
-	private TR topRight;
+	TR topRight;
 
 	/** The bottom left value. */
-	private BL bottomLeft;
+	BL bottomLeft;
 
 	/** The bottom right value. */
-	private BR bottomRight;
+	BR bottomRight;
 
 }
