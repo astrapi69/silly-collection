@@ -47,7 +47,7 @@ import lombok.experimental.FieldDefaults;
 @ToString
 @AllArgsConstructor
 @Builder(toBuilder = true)
-@FieldDefaults(makeFinal=true, level=AccessLevel.PRIVATE)
+@FieldDefaults(makeFinal = true, level = AccessLevel.PRIVATE)
 public class ValueBox<T> implements Serializable
 {
 

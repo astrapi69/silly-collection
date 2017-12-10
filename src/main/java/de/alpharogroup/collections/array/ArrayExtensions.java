@@ -24,6 +24,7 @@
  */
 package de.alpharogroup.collections.array;
 
+import java.util.ArrayList;
 import java.util.Arrays;
 import java.util.List;
 
@@ -274,6 +275,21 @@ public final class ArrayExtensions
 		final int lastIndex = array.length - 1;
 		final int indexOfElement = Arrays.asList(array).indexOf(element);
 		return indexOfElement == lastIndex;
+	}
+
+	/**
+	 * Factory method for create new {@link Array} from the given optional elements.
+	 *
+	 * @param <T>
+	 *            the generic type of the elements
+	 * @param elements
+	 *            the optional elements to be added in the new {@link ArrayList}.
+	 * @return the new {@link Array}.
+	 */
+	@SafeVarargs
+	public static <T> T[] newArray(final T... elements)
+	{
+		return elements;
 	}
 
 	/**
