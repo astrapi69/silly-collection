@@ -39,7 +39,7 @@ import lombok.experimental.ExtensionMethod;
  * @author Asterios Raptis
  */
 @ExtensionMethod(ArrayExtensions.class)
-//@Slf4j
+// @Slf4j
 public class ArrayExtensionsTest
 {
 
