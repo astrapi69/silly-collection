@@ -10,6 +10,10 @@ The source code comes under the liberal MIT License, making silly-collections gr
 
 [![Build Status](https://travis-ci.org/lightblueseas/silly-collections.svg?branch=master)](https://travis-ci.org/lightblueseas/silly-collections)
 
+## Coverage Status
+
+[![Coverage Status](https://coveralls.io/repos/github/lightblueseas/silly-collections/badge.svg?branch=develop)](https://coveralls.io/github/lightblueseas/silly-collections?branch=develop)
+
 ## Maven Central
 
 [![Maven Central](https://maven-badges.herokuapp.com/maven-central/de.alpharogroup/silly-collections/badge.svg)](https://maven-badges.herokuapp.com/maven-central/de.alpharogroup/silly-collections)
@@ -28,7 +32,7 @@ Add the following maven dependency to your project `pom.xml` if you want to impo
 Than you can add the dependency to your dependencies:
 
 		<!-- SILLY-COLLECTIONS version -->
-		<silly-collections.version>4.20.0</silly-collections.version>
+		<silly-collections.version>4.21.0</silly-collections.version>
 
 		<dependencies>
 			...

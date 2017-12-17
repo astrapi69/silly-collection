@@ -26,12 +26,14 @@ package de.alpharogroup.collections.pairs;
 
 import java.io.Serializable;
 
+import lombok.AccessLevel;
 import lombok.AllArgsConstructor;
 import lombok.Builder;
 import lombok.EqualsAndHashCode;
 import lombok.Getter;
 import lombok.Setter;
 import lombok.ToString;
+import lombok.experimental.FieldDefaults;
 
 /**
  * The class {@link ValueBox} represents one value with a generic parameter for the value.
@@ -45,6 +47,7 @@ import lombok.ToString;
 @ToString
 @AllArgsConstructor
 @Builder(toBuilder = true)
+@FieldDefaults(makeFinal = true, level = AccessLevel.PRIVATE)
 public class ValueBox<T> implements Serializable
 {
 
@@ -54,6 +57,6 @@ public class ValueBox<T> implements Serializable
 	private static final long serialVersionUID = 1L;
 
 	/** The value. */
-	private final T value;
+	T value;
 
 }
