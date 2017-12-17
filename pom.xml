@@ -6,7 +6,7 @@
 	<parent>
 		<groupId>de.alpharogroup</groupId>
 		<artifactId>mvn-java-parent</artifactId>
-		<version>3.2.0</version>
+		<version>3.3.0</version>
 		<relativePath></relativePath>
 	</parent>
 
@@ -21,7 +21,7 @@
 
 	<properties>
 		<!-- JOBJECT-EXTENSIONS versions -->
-		<jobject-extensions.version>1.4.0</jobject-extensions.version>
+		<jobject-extensions.version>1.5.0</jobject-extensions.version>
 		<jobject-compare.version>${jobject-extensions.version}</jobject-compare.version>
 		<jobject-core.version>${jobject-extensions.version}</jobject-core.version>
 		<!-- VINTAGE-TIME version -->
