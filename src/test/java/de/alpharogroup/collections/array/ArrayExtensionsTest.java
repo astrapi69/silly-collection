@@ -44,6 +44,25 @@ public class ArrayExtensionsTest
 {
 
 	/**
+	 * Test for method {@link ArrayExtensions#asList(Object[])}
+	 */
+	@Test
+	public void testAsList()
+	{
+		String actual;
+		String expected;
+		final String numbers[] = { "1", "2", "3", "4", "5", "6", "7" };
+		final List<String> numberList = ArrayExtensions.asList(numbers);// lombok magic extension
+																		// method
+		for (int i = 0; i < numbers.length; i++)
+		{
+			expected = numbers[i];
+			actual = numberList.get(i);
+			assertEquals(expected, actual);
+		}
+	}
+
+	/**
 	 * Test for method {@link ArrayExtensions#getFirst(Object[])}
 	 */
 	@Test
@@ -393,24 +412,6 @@ public class ArrayExtensionsTest
 		String expected;
 		final String numbers[] = { "1", "2", "3", "4", "5", "6", "7" };
 		final List<String> numberList = numbers.toList();// lombok magic extension method
-		for (int i = 0; i < numbers.length; i++)
-		{
-			expected = numbers[i];
-			actual = numberList.get(i);
-			assertEquals(expected, actual);
-		}
-	}
-	
-	/**
-	 * Test for method {@link ArrayExtensions#asList(Object[])}
-	 */
-	@Test
-	public void testAsList()
-	{
-		String actual;
-		String expected;
-		final String numbers[] = { "1", "2", "3", "4", "5", "6", "7" };
-		final List<String> numberList = ArrayExtensions.asList(numbers);// lombok magic extension method
 		for (int i = 0; i < numbers.length; i++)
 		{
 			expected = numbers[i];
