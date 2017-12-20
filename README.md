@@ -65,9 +65,19 @@ Do not hesitate to contact the silly-collections developers with your questions,
 
 No animals were harmed in the making of this library.
 
-# Donate
 
-If you like this library, please consider a donation through 
+# Donations
+
+If you like this library, please consider a donation through bitcoin or over bitcoin-cash with:
+
+1Jzso5h7U82QCNmgxxSCya1yUK7UVcSXsW
+
+or over ether with:
+
+0xaB6EaE10F352268B0CA672Dd6e999C86344D49D8
+
+or over flattr:
+
 <a href="https://flattr.com/submit/auto?fid=r7vp62&url=https%3A%2F%2Fgithub.com%2Flightblueseas%2Fsilly-collections" target="_blank">
 <img src="http://api.flattr.com/button/flattr-badge-large.png" alt="Flattr this" title="Flattr this" border="0" />
 </a>
