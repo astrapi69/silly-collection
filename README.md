@@ -10,6 +10,10 @@ The source code comes under the liberal MIT License, making silly-collections gr
 
 [![Build Status](https://travis-ci.org/lightblueseas/silly-collections.svg?branch=master)](https://travis-ci.org/lightblueseas/silly-collections)
 
+## Coverage Status
+
+[![Coverage Status](https://coveralls.io/repos/github/lightblueseas/silly-collections/badge.svg?branch=develop)](https://coveralls.io/github/lightblueseas/silly-collections?branch=develop)
+
 ## Maven Central
 
 [![Maven Central](https://maven-badges.herokuapp.com/maven-central/de.alpharogroup/silly-collections/badge.svg)](https://maven-badges.herokuapp.com/maven-central/de.alpharogroup/silly-collections)
@@ -27,11 +31,12 @@ Add the following maven dependency to your project `pom.xml` if you want to impo
 
 Than you can add the dependency to your dependencies:
 
-		<!-- silly-collections version -->
-		<silly-collections.version>4.19.0</silly-collections.version>
+		<!-- SILLY-COLLECTIONS version -->
+		<silly-collections.version>4.21.2</silly-collections.version>
 
 		<dependencies>
 			...
+			<!-- SILLY-COLLECTIONS DEPENDENCY -->
 			<dependency>
 				<groupId>de.alpharogroup</groupId>
 				<artifactId>silly-collections</artifactId>
@@ -60,9 +65,19 @@ Do not hesitate to contact the silly-collections developers with your questions,
 
 No animals were harmed in the making of this library.
 
-# Donate
 
-If you like this library, please consider a donation through 
+# Donations
+
+If you like this library, please consider a donation through bitcoin or over bitcoin-cash with:
+
+1Jzso5h7U82QCNmgxxSCya1yUK7UVcSXsW
+
+or over ether with:
+
+0xaB6EaE10F352268B0CA672Dd6e999C86344D49D8
+
+or over flattr:
+
 <a href="https://flattr.com/submit/auto?fid=r7vp62&url=https%3A%2F%2Fgithub.com%2Flightblueseas%2Fsilly-collections" target="_blank">
 <img src="http://api.flattr.com/button/flattr-badge-large.png" alt="Flattr this" title="Flattr this" border="0" />
 </a>

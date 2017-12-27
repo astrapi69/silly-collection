@@ -27,6 +27,7 @@ package de.alpharogroup.collections.pairs;
 import java.io.Serializable;
 import java.util.Collection;
 
+import lombok.AccessLevel;
 import lombok.AllArgsConstructor;
 import lombok.Builder;
 import lombok.EqualsAndHashCode;
@@ -35,6 +36,7 @@ import lombok.NoArgsConstructor;
 import lombok.Setter;
 import lombok.Singular;
 import lombok.ToString;
+import lombok.experimental.FieldDefaults;
 
 /**
  * The class {@link KeyValuesPair} represents a key value pair where the value is a collection with
@@ -53,6 +55,7 @@ import lombok.ToString;
 @NoArgsConstructor
 @AllArgsConstructor
 @Builder(toBuilder = true)
+@FieldDefaults(level = AccessLevel.PRIVATE)
 public final class KeyValuesPair<K, V> implements Serializable
 {
 
@@ -62,10 +65,10 @@ public final class KeyValuesPair<K, V> implements Serializable
 	private static final long serialVersionUID = 1L;
 
 	/** The key. */
-	private K key;
+	K key;
 
 	/** The collection with the values. */
 	@Singular
-	private Collection<V> values;
+	Collection<V> values;
 
 }

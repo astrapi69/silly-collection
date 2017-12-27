@@ -42,29 +42,6 @@ public class IndexSortedPropertiesTest
 {
 
 	/**
-	 * Test for method {@link IndexSortedProperties#indexOf(Object)}
-	 */
-	@Test
-	public void tesIndexOf()
-	{
-
-		final Properties unsortedProperties = new Properties();
-		unsortedProperties.put("B", "2");
-		unsortedProperties.put("C", "3");
-		unsortedProperties.put("A", "1");
-		unsortedProperties.put("D", "4");
-
-		final IndexSortedProperties properties = new IndexSortedProperties(unsortedProperties);
-
-		properties.setProperty("E", "5");
-		int expected;
-		int actual;
-		expected = 4;
-		actual = properties.indexOf("5");
-		AssertJUnit.assertEquals(expected, actual);
-	}
-
-	/**
 	 * Test for constructor of the class {@link IndexSortedProperties}.
 	 */
 	@Test
@@ -148,6 +125,29 @@ public class IndexSortedPropertiesTest
 			}
 			count++;
 		}
+	}
+
+	/**
+	 * Test for method {@link IndexSortedProperties#indexOf(Object)}
+	 */
+	@Test
+	public void testIndexOf()
+	{
+
+		final Properties unsortedProperties = new Properties();
+		unsortedProperties.put("B", "2");
+		unsortedProperties.put("C", "3");
+		unsortedProperties.put("A", "1");
+		unsortedProperties.put("D", "4");
+
+		final IndexSortedProperties properties = new IndexSortedProperties(unsortedProperties);
+
+		properties.setProperty("E", "5");
+		int expected;
+		int actual;
+		expected = 4;
+		actual = properties.indexOf("5");
+		AssertJUnit.assertEquals(expected, actual);
 	}
 
 	/**

@@ -27,6 +27,7 @@ package de.alpharogroup.collections.pairs;
 import java.io.Serializable;
 import java.util.Map;
 
+import lombok.AccessLevel;
 import lombok.AllArgsConstructor;
 import lombok.Builder;
 import lombok.EqualsAndHashCode;
@@ -34,6 +35,7 @@ import lombok.Getter;
 import lombok.NoArgsConstructor;
 import lombok.Setter;
 import lombok.ToString;
+import lombok.experimental.FieldDefaults;
 
 /**
  * The class {@link KeyMapPair} represents a key value pair with generic parameters for the key and
@@ -53,6 +55,7 @@ import lombok.ToString;
 @NoArgsConstructor
 @AllArgsConstructor
 @Builder(toBuilder = true)
+@FieldDefaults(level = AccessLevel.PRIVATE)
 public final class KeyMapPair<K, MK, MV> implements Serializable
 {
 
@@ -62,9 +65,9 @@ public final class KeyMapPair<K, MK, MV> implements Serializable
 	private static final long serialVersionUID = 1L;
 
 	/** The key. */
-	private K key;
+	K key;
 
 	/** The map with the values. */
-	private Map<MK, MV> values;
+	Map<MK, MV> values;
 
 }

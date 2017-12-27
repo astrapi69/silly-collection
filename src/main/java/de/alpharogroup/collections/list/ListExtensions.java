@@ -39,7 +39,7 @@ import org.apache.commons.beanutils.BeanComparator;
 import org.apache.commons.collections4.ComparatorUtils;
 
 import de.alpharogroup.collections.modifications.ModifiedCollections;
-import de.alpharogroup.comparators.ComparableComparator;
+import de.alpharogroup.comparators.SortOrderComparator;
 
 /**
  * Extensions class for use with {@link List} objects.
@@ -471,7 +471,7 @@ public class ListExtensions
 	public static <T> void sortByProperty(final List<T> list, final String property,
 		final boolean ascending)
 	{
-		Comparator comparator = new BeanComparator(property, new ComparableComparator());
+		Comparator comparator = new BeanComparator(property, new SortOrderComparator());
 		if (ascending)
 		{
 			comparator = ComparatorUtils.reversedComparator(comparator);

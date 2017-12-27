@@ -1,3 +1,4 @@
+<?xml version="1.0" encoding="UTF-8"?>
 <project xmlns="http://maven.apache.org/POM/4.0.0" xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
 	xsi:schemaLocation="http://maven.apache.org/POM/4.0.0 http://maven.apache.org/xsd/maven-4.0.0.xsd">
 	<modelVersion>4.0.0</modelVersion>
@@ -5,19 +6,32 @@
 	<parent>
 		<groupId>de.alpharogroup</groupId>
 		<artifactId>mvn-java-parent</artifactId>
-		<version>2.28.0</version>
+		<version>3.3.0</version>
 		<relativePath></relativePath>
 	</parent>
 
 	<artifactId>silly-collections</artifactId>
-	<version>4.19.0</version>
+	<version>4.21.2</version>
 
 	<name>${project.artifactId}</name>
 
-	<description>
-		Utility library for collections, comparators and iterator classes
-	</description>
-	
+	<description>Utility library for collections, comparators and iterator classes</description>
+
+	<url>https://github.com/lightblueseas/silly-collections</url>
+
+	<properties>
+		<!-- JOBJECT-EXTENSIONS versions -->
+		<jobject-extensions.version>1.6.0</jobject-extensions.version>
+		<jobject-compare.version>${jobject-extensions.version}</jobject-compare.version>
+		<jobject-core.version>${jobject-extensions.version}</jobject-core.version>
+		<!-- VINTAGE-TIME version -->
+		<vintage-time.version>4.11.0</vintage-time.version>
+		<!-- TEST-OBJECTS version -->
+		<test-objects.version>4.19.0</test-objects.version>
+		<!-- EXTERNAL LIBRARIES versions -->
+		<commons-collections4.version>4.1</commons-collections4.version>
+	</properties>
+
 	<licenses>
 		<license>
 			<name>MIT License</name>
@@ -26,31 +40,21 @@
 		</license>
 	</licenses>
 
-	<url>https://github.com/lightblueseas/silly-collections</url>
-
 	<scm>
 		<connection>scm:git:git:@github.com:lightblueseas/silly-collections.git</connection>
 		<developerConnection>scm:git:git@github.com:lightblueseas/silly-collections.git</developerConnection>
 		<url>git:@github.com:lightblueseas/silly-collections.git</url>
 	</scm>
 
-	<ciManagement>
-		<system>travis-ci</system>
-		<url>https://travis-ci.org/lightblueseas/silly-collections</url>
-	</ciManagement>
-
 	<issueManagement>
 		<system>github</system>
 		<url>https://github.com/lightblueseas/silly-collections/issues</url>
 	</issueManagement>
 
-	<properties>
-		<vintage-time.version>4.11.0</vintage-time.version>
-		<test-objects.version>4.16.0</test-objects.version>
-		<!-- EXTERNAL LIBRARIES versions -->
-		<commons-collections4.version>4.1</commons-collections4.version>
-		<commons-beanutils.version>1.9.3</commons-beanutils.version>
-	</properties>
+	<ciManagement>
+		<system>travis-ci</system>
+		<url>https://travis-ci.org/lightblueseas/silly-collections</url>
+	</ciManagement>
 
 	<dependencyManagement>
 
@@ -61,29 +65,29 @@
 				<artifactId>commons-collections4</artifactId>
 				<version>${commons-collections4.version}</version>
 			</dependency>
-
-			<dependency>
-				<groupId>commons-beanutils</groupId>
-				<artifactId>commons-beanutils</artifactId>
-				<version>${commons-beanutils.version}</version>
-				<exclusions>
-					<exclusion>
-						<groupId>commons-collections</groupId>
-						<artifactId>commons-collections</artifactId>
-					</exclusion>
-				</exclusions>
-			</dependency>
-
+			<!-- VINTAGE-TIME DEPENDENCY -->
 			<dependency>
 				<groupId>de.alpharogroup</groupId>
 				<artifactId>vintage-time</artifactId>
 				<version>${vintage-time.version}</version>
 			</dependency>
-
+			<!-- TEST-OBJECTS DEPENDENCY -->
 			<dependency>
 				<groupId>de.alpharogroup</groupId>
 				<artifactId>test-objects</artifactId>
 				<version>${test-objects.version}</version>
+			</dependency>
+			<!-- JOBJECT-COMPARE DEPENDENCY -->
+			<dependency>
+				<groupId>de.alpharogroup</groupId>
+				<artifactId>jobject-compare</artifactId>
+				<version>${jobject-compare.version}</version>
+			</dependency>
+			<!-- JOBJECT-CORE DEPENDENCY -->
+			<dependency>
+				<groupId>de.alpharogroup</groupId>
+				<artifactId>jobject-core</artifactId>
+				<version>${jobject-core.version}</version>
 			</dependency>
 
 		</dependencies>
@@ -97,9 +101,15 @@
 			<artifactId>commons-collections4</artifactId>
 		</dependency>
 
+		<!-- JOBJECT-COMPARE DEPENDENCY -->
 		<dependency>
-			<groupId>commons-beanutils</groupId>
-			<artifactId>commons-beanutils</artifactId>
+			<groupId>de.alpharogroup</groupId>
+			<artifactId>jobject-compare</artifactId>
+		</dependency>
+		<!-- JOBJECT-CORE DEPENDENCY -->
+		<dependency>
+			<groupId>de.alpharogroup</groupId>
+			<artifactId>jobject-core</artifactId>
 		</dependency>
 
 		<dependency>

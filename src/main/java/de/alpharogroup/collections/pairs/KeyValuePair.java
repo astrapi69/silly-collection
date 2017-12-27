@@ -31,6 +31,7 @@ import java.util.Map;
 import java.util.Map.Entry;
 import java.util.Properties;
 
+import lombok.AccessLevel;
 import lombok.AllArgsConstructor;
 import lombok.Builder;
 import lombok.EqualsAndHashCode;
@@ -38,6 +39,7 @@ import lombok.Getter;
 import lombok.NoArgsConstructor;
 import lombok.Setter;
 import lombok.ToString;
+import lombok.experimental.FieldDefaults;
 
 /**
  * The class {@link KeyValuePair} represents a key value pair with generic parameters for the key
@@ -56,6 +58,7 @@ import lombok.ToString;
 @NoArgsConstructor
 @AllArgsConstructor
 @Builder(toBuilder = true)
+@FieldDefaults(level = AccessLevel.PRIVATE)
 public final class KeyValuePair<K, V> implements Serializable
 {
 
@@ -75,10 +78,10 @@ public final class KeyValuePair<K, V> implements Serializable
 	 *            the map
 	 * @return the new list with the {@link KeyValuePair}'s.
 	 */
-	public static <K, V> List<KeyValuePair<K, V>> toKeyValuePairs(Map<K, V> map)
+	public static <K, V> List<KeyValuePair<K, V>> toKeyValuePairs(final Map<K, V> map)
 	{
-		List<KeyValuePair<K, V>> list = new ArrayList<>();
-		for (Entry<K, V> entry : map.entrySet())
+		final List<KeyValuePair<K, V>> list = new ArrayList<>();
+		for (final Entry<K, V> entry : map.entrySet())
 		{
 			list.add(
 				KeyValuePair.<K, V> builder().key(entry.getKey()).value(entry.getValue()).build());
@@ -93,10 +96,10 @@ public final class KeyValuePair<K, V> implements Serializable
 	 *            the properties
 	 * @return the new list with the {@link KeyValuePair}'s.
 	 */
-	public static List<KeyValuePair<String, String>> toKeyValuePairs(Properties properties)
+	public static List<KeyValuePair<String, String>> toKeyValuePairs(final Properties properties)
 	{
-		List<KeyValuePair<String, String>> list = new ArrayList<>();
-		for (Entry<Object, Object> entry : properties.entrySet())
+		final List<KeyValuePair<String, String>> list = new ArrayList<>();
+		for (final Entry<Object, Object> entry : properties.entrySet())
 		{
 			list.add(KeyValuePair.<String, String> builder().key((String)entry.getKey())
 				.value((String)entry.getValue()).build());
@@ -106,9 +109,9 @@ public final class KeyValuePair<K, V> implements Serializable
 
 
 	/** The key. */
-	private K key;
+	K key;
 
 	/** The value. */
-	private V value;
+	V value;
 
 }

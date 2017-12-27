@@ -277,6 +277,21 @@ public final class ArrayExtensions
 	}
 
 	/**
+	 * Factory method for create new array from the given optional elements.
+	 *
+	 * @param <T>
+	 *            the generic type of the elements
+	 * @param elements
+	 *            the optional elements that will be in the returned array.
+	 * @return the new array.
+	 */
+	@SafeVarargs
+	public static <T> T[] newArray(final T... elements)
+	{
+		return elements;
+	}
+
+	/**
 	 * Split the given byte array in to new arrays with the chunk size.
 	 *
 	 * @param bytes
