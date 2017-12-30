@@ -24,13 +24,14 @@
  */
 package de.alpharogroup.collections.pairs;
 
-import static org.testng.AssertJUnit.assertTrue;
 import static org.testng.AssertJUnit.assertEquals;
 import static org.testng.AssertJUnit.assertNotSame;
+import static org.testng.AssertJUnit.assertTrue;
 
 import org.testng.annotations.Test;
 
 import de.alpharogroup.test.objects.evaluations.HashcodeEvaluator;
+import de.alpharogroup.test.objects.evaluations.ToStringEvaluator;
 
 /**
  * The unit test class for the class {@link ImmutableBox}.
@@ -46,17 +47,21 @@ public class ImmutableBoxTest
 	{
 		final ImmutableBox<Integer> expected = ImmutableBox.<Integer> builder().value(2).build();
 
-		final ImmutableBox<String> actual = ImmutableBox.<String> builder()
-			.value("Hello")
-			.build();
-
+		final ImmutableBox<String> actual = ImmutableBox.<String> builder().value("Hello").build();
 
 		assertNotSame(expected, actual);
 		final ImmutableBox<Integer> twoBox = new ImmutableBox<>(2);
 		assertEquals(expected, twoBox);
 
 		assertTrue(HashcodeEvaluator.evaluateConsistency(expected));
-		assertTrue(HashcodeEvaluator.evaluateEqualityOfHashCode(expected, twoBox));
+		assertTrue(HashcodeEvaluator.evaluateEquality(expected, twoBox));
+
+		final ImmutableBox<Integer> threeBox = ImmutableBox.<Integer> builder().value(3).build();
+		assertTrue(HashcodeEvaluator.evaluateUnequality(expected, threeBox));
+		assertTrue(ToStringEvaluator.evaluate(ImmutableBox.class));
+		assertTrue(ToStringEvaluator.evaluateConsistency(threeBox));
+		assertEquals(Integer.valueOf(3), threeBox.getValue());
+
 	}
 
 	/**

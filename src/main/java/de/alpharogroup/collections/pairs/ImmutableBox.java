@@ -32,18 +32,17 @@ import lombok.Builder;
 import lombok.EqualsAndHashCode;
 import lombok.Getter;
 import lombok.NonNull;
-import lombok.Setter;
 import lombok.ToString;
 import lombok.experimental.FieldDefaults;
 
 /**
- * The class {@link ImmutableBox} represents one value with a generic parameter for an immutable value.
+ * The class {@link ImmutableBox} represents one value with a generic parameter for an immutable
+ * value.
  *
  * @param <T>
  *            The type of the value.
  */
 @Getter
-@Setter
 @EqualsAndHashCode
 @ToString
 @AllArgsConstructor

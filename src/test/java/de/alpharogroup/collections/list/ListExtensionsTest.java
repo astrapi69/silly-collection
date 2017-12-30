@@ -41,8 +41,8 @@ import org.testng.annotations.BeforeMethod;
 import org.testng.annotations.Test;
 
 import de.alpharogroup.collections.modifications.ModifiedCollections;
-import de.alpharogroup.test.objects.enums.Gender;
 import de.alpharogroup.test.objects.Person;
+import de.alpharogroup.test.objects.enums.Gender;
 import lombok.experimental.ExtensionMethod;
 
 /**

@@ -45,8 +45,7 @@ public class ValueBoxTest
 	@Test
 	public void testEqualsObject()
 	{
-		final ValueBox<Integer> expected = ValueBox.<Integer>builder()
-			.value(2).build();
+		final ValueBox<Integer> expected = ValueBox.<Integer> builder().value(2).build();
 		final ValueBox<String> actual = new ValueBox<>("Hello");
 
 		assertNotSame(expected, actual);
@@ -55,7 +54,7 @@ public class ValueBoxTest
 		assertEquals(expected.hashCode(), twoBox.hashCode());
 
 		assertTrue(HashcodeEvaluator.evaluateConsistency(expected));
-		assertTrue(HashcodeEvaluator.evaluateEqualityOfHashCode(expected, twoBox));
+		assertTrue(HashcodeEvaluator.evaluateEquality(expected, twoBox));
 	}
 
 	/**
