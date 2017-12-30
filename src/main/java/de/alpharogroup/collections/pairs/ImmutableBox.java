@@ -24,47 +24,40 @@
  */
 package de.alpharogroup.collections.pairs;
 
-import static org.testng.AssertJUnit.assertEquals;
-import static org.testng.AssertJUnit.assertNotSame;
-import static org.testng.AssertJUnit.assertTrue;
+import java.io.Serializable;
 
-import org.meanbean.test.BeanTester;
-import org.testng.annotations.Test;
-
-import de.alpharogroup.test.objects.evaluations.HashcodeEvaluator;
+import lombok.AccessLevel;
+import lombok.AllArgsConstructor;
+import lombok.Builder;
+import lombok.EqualsAndHashCode;
+import lombok.Getter;
+import lombok.NonNull;
+import lombok.ToString;
+import lombok.experimental.FieldDefaults;
 
 /**
- * The unit test class for the class {@link ValueBox}.
+ * The class {@link ImmutableBox} represents one value with a generic parameter for an immutable
+ * value.
+ *
+ * @param <T>
+ *            The type of the value.
  */
-public class ValueBoxTest
+@Getter
+@EqualsAndHashCode
+@ToString
+@AllArgsConstructor
+@Builder(toBuilder = true)
+@FieldDefaults(makeFinal = true, level = AccessLevel.PRIVATE)
+public class ImmutableBox<T> implements Serializable
 {
 
 	/**
-	 * Test method for {@link ValueBox#equals(Object)}
+	 * The serialVersionUID.
 	 */
-	@Test
-	public void testEqualsObject()
-	{
-		final ValueBox<Integer> expected = ValueBox.<Integer> builder().value(2).build();
-		final ValueBox<String> actual = new ValueBox<>("Hello");
+	private static final long serialVersionUID = 1L;
 
-		assertNotSame(expected, actual);
-		final ValueBox<Integer> twoBox = new ValueBox<>(2);
-		assertEquals(expected, twoBox);
-		assertEquals(expected.hashCode(), twoBox.hashCode());
-
-		assertTrue(HashcodeEvaluator.evaluateConsistency(expected));
-		assertTrue(HashcodeEvaluator.evaluateEquality(expected, twoBox));
-	}
-
-	/**
-	 * Test method for {@link ValueBox}
-	 */
-	@Test
-	public void testWithBeanTester()
-	{
-		BeanTester beanTester = new BeanTester();
-		beanTester.testBean(ValueBox.class);
-	}
+	/** The value. */
+	@NonNull
+	T value;
 
 }
