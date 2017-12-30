@@ -26,9 +26,12 @@ package de.alpharogroup.collections.pairs;
 
 import static org.testng.AssertJUnit.assertEquals;
 import static org.testng.AssertJUnit.assertNotSame;
+import static org.testng.AssertJUnit.assertTrue;
 
 import org.meanbean.test.BeanTester;
 import org.testng.annotations.Test;
+
+import de.alpharogroup.test.objects.evaluations.HashcodeEvaluator;
 
 /**
  * The unit test class for the class {@link ValueBox}.
@@ -51,6 +54,8 @@ public class ValueBoxTest
 		assertEquals(expected, twoBox);
 		assertEquals(expected.hashCode(), twoBox.hashCode());
 
+		assertTrue(HashcodeEvaluator.evaluateConsistency(expected));
+		assertTrue(HashcodeEvaluator.evaluateEqualityOfHashCode(expected, twoBox));
 	}
 
 	/**
