@@ -31,13 +31,13 @@ import lombok.AllArgsConstructor;
 import lombok.Builder;
 import lombok.EqualsAndHashCode;
 import lombok.Getter;
-import lombok.NoArgsConstructor;
+import lombok.NonNull;
 import lombok.Setter;
 import lombok.ToString;
 import lombok.experimental.FieldDefaults;
 
 /**
- * The class {@link ValueBox} represents one value with a generic parameter for the value.
+ * The class {@link ImmutableBox} represents one value with a generic parameter for an immutable value.
  *
  * @param <T>
  *            The type of the value.
@@ -46,11 +46,10 @@ import lombok.experimental.FieldDefaults;
 @Setter
 @EqualsAndHashCode
 @ToString
-@NoArgsConstructor
 @AllArgsConstructor
 @Builder(toBuilder = true)
-@FieldDefaults(level = AccessLevel.PRIVATE)
-public class ValueBox<T> implements Serializable
+@FieldDefaults(makeFinal = true, level = AccessLevel.PRIVATE)
+public class ImmutableBox<T> implements Serializable
 {
 
 	/**
@@ -59,6 +58,7 @@ public class ValueBox<T> implements Serializable
 	private static final long serialVersionUID = 1L;
 
 	/** The value. */
+	@NonNull
 	T value;
 
 }

@@ -24,11 +24,14 @@
  */
 package de.alpharogroup.collections.pairs;
 
-import org.testng.AssertJUnit;
+import static org.testng.AssertJUnit.assertEquals;
+import static org.testng.AssertJUnit.assertNotSame;
+
+import org.meanbean.test.BeanTester;
 import org.testng.annotations.Test;
 
 /**
- * The test class {@link ValueBoxTest} is for the class {@link ValueBox}.
+ * The unit test class for the class {@link ValueBox}.
  */
 public class ValueBoxTest
 {
@@ -39,13 +42,25 @@ public class ValueBoxTest
 	@Test
 	public void testEqualsObject()
 	{
-		final ValueBox<Integer> expected = new ValueBox<>(2);
+		final ValueBox<Integer> expected = ValueBox.<Integer>builder()
+			.value(2).build();
 		final ValueBox<String> actual = new ValueBox<>("Hello");
 
-		AssertJUnit.assertNotSame(expected, actual);
+		assertNotSame(expected, actual);
 		final ValueBox<Integer> twoBox = new ValueBox<>(2);
-		AssertJUnit.assertEquals(expected, twoBox);
-		AssertJUnit.assertEquals(expected.hashCode(), twoBox.hashCode());
+		assertEquals(expected, twoBox);
+		assertEquals(expected.hashCode(), twoBox.hashCode());
+
+	}
+
+	/**
+	 * Test method for {@link ValueBox}
+	 */
+	@Test
+	public void testWithBeanTester()
+	{
+		BeanTester beanTester = new BeanTester();
+		beanTester.testBean(ValueBox.class);
 	}
 
 }

@@ -21,7 +21,7 @@
 
 	<properties>
 		<!-- JOBJECT-EXTENSIONS versions -->
-		<jobject-extensions.version>1.6.0</jobject-extensions.version>
+		<jobject-extensions.version>1.6.1</jobject-extensions.version>
 		<jobject-compare.version>${jobject-extensions.version}</jobject-compare.version>
 		<jobject-core.version>${jobject-extensions.version}</jobject-core.version>
 		<!-- VINTAGE-TIME version -->
@@ -30,6 +30,8 @@
 		<test-objects.version>4.19.0</test-objects.version>
 		<!-- EXTERNAL LIBRARIES versions -->
 		<commons-collections4.version>4.1</commons-collections4.version>
+		<!-- MEANBEAN version -->
+		<meanbean.version>2.0.3</meanbean.version>
 	</properties>
 
 	<licenses>
@@ -89,6 +91,12 @@
 				<artifactId>jobject-core</artifactId>
 				<version>${jobject-core.version}</version>
 			</dependency>
+			<!-- MEANBEAN DEPENDENCY -->
+			<dependency>
+				<groupId>org.meanbean</groupId>
+				<artifactId>meanbean</artifactId>
+				<version>${meanbean.version}</version>
+			</dependency>
 
 		</dependencies>
 
@@ -121,6 +129,12 @@
 		<dependency>
 			<groupId>de.alpharogroup</groupId>
 			<artifactId>test-objects</artifactId>
+			<scope>test</scope>
+		</dependency>
+		<!-- MEANBEAN DEPENDENCY -->
+		<dependency>
+			<groupId>org.meanbean</groupId>
+			<artifactId>meanbean</artifactId>
 			<scope>test</scope>
 		</dependency>
 

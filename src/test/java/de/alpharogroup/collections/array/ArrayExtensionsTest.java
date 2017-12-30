@@ -33,7 +33,7 @@ import org.testng.annotations.Test;
 import lombok.experimental.ExtensionMethod;
 
 /**
- * Test class for the class {@link ArrayExtensions}.
+ * The unit test class for the class {@link ArrayExtensions}.
  *
  * @venrsion 1.0
  * @author Asterios Raptis
