@@ -27,6 +27,7 @@ package de.alpharogroup.collections.pairs;
 import static org.testng.AssertJUnit.assertNotNull;
 import static org.testng.AssertJUnit.assertTrue;
 
+import java.util.ArrayList;
 import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
@@ -34,10 +35,15 @@ import java.util.Properties;
 
 import org.testng.annotations.Test;
 
-
+/**
+ * The unit test class for the class {@link KeyValuePair}
+ */
 public class KeyValuePairTest
 {
 
+	/**
+	 * Test method for {@link KeyValuePair#toKeyValuePairs(Map)}.
+	 */
 	@Test
 	public void testToKeyValuePairsMap()
 	{
@@ -45,7 +51,7 @@ public class KeyValuePairTest
 		map.put("1", "novalue");
 		map.put("2", "somevalue");
 		map.put("3", "othervalue");
-		map.put("5", "value");
+		map.put("4", "value");
 
 		List<KeyValuePair<String, String>> list = KeyValuePair.toKeyValuePairs(map);
 
@@ -53,6 +59,9 @@ public class KeyValuePairTest
 		assertTrue(list.size() == 4);
 	}
 
+	/**
+	 * Test method for {@link KeyValuePair#toKeyValuePairs(Properties)}.
+	 */
 	@Test
 	public void testToKeyValuePairsProperties()
 	{
@@ -72,6 +81,24 @@ public class KeyValuePairTest
 
 		assertNotNull(objectList);
 		assertTrue(objectList.size() == 2);
+	}
+
+	/**
+	 * Test method for {@link KeyValuePair#toMap(java.util.Collection)}.
+	 */
+	@Test
+	public void testToMap()
+	{
+		List<KeyValuePair<String, String>> list = new ArrayList<>();
+		list.add(KeyValuePair.<String, String>builder().key("1").value("novalue").build());
+		list.add(KeyValuePair.<String, String>builder().key("2").value("somevalue").build());
+		list.add(KeyValuePair.<String, String>builder().key("3").value("othervalue").build());
+		list.add(KeyValuePair.<String, String>builder().key("4").value("value").build());
+
+		Map<String, String> map = KeyValuePair.toMap(list);
+
+		assertNotNull(map);
+		assertTrue(map.size() == 4);
 	}
 
 }
