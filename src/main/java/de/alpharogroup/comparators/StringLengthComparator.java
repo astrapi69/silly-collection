@@ -29,74 +29,92 @@ import java.util.Comparator;
 import lombok.NoArgsConstructor;
 
 /**
- * The class {@link StringComparator} sorts String objects in ascending order as default.
+ * The class {@link StringLengthComparator} compares {@link String} objects based on length. The
+ * default order is greater length come first. If length are equal then the natural ordering will be
+ * taken.
  *
  * @author Asterios Raptis
  */
 @NoArgsConstructor
-public class StringComparator extends SortOrderComparator<String>
+public class StringLengthComparator extends SortOrderComparator<String>
 {
 
 	/** The serialVersionUID. */
 	private static final long serialVersionUID = 1L;
 
 	/**
-	 * Factory method to create a new {@link StringComparator} object.
+	 * Factory method to create a new {@link StringLengthComparator} object.
 	 *
-	 * @return the new {@link StringComparator} object
+	 * @return the new {@link StringLengthComparator} object
 	 */
 	public static Comparator<String> of()
 	{
-		return StringComparator.of(false);
+		return StringLengthComparator.of(false);
 	}
 
 	/**
-	 * Factory method to create a new {@link StringComparator} object.
+	 * Factory method to create a new {@link StringLengthComparator} object.
 	 *
 	 * @param nullIsGreaterThan
 	 *            the flag that specifies if null objects is greater than non null objects.
-	 * @return the new {@link StringComparator} object
+	 * @return the new {@link StringLengthComparator} object
 	 */
 	public static Comparator<String> of(final boolean nullIsGreaterThan)
 	{
-		return NullCheckComparator.<String> of(new StringComparator(), nullIsGreaterThan);
+		return NullCheckComparator.<String> of(new StringLengthComparator(), nullIsGreaterThan);
 	}
 
 	/**
-	 * Factory method to create a new {@link StringComparator} object.
+	 * Factory method to create a new {@link StringLengthComparator} object.
 	 *
 	 * @param sortOrder
 	 *            the sort order
-	 * @return the new {@link StringComparator} object
+	 * @return the new {@link StringLengthComparator} object
 	 */
 	public static Comparator<String> of(final SortOrder sortOrder)
 	{
-		return StringComparator.of(sortOrder, false);
+		return StringLengthComparator.of(sortOrder, false);
 	}
 
 	/**
-	 * Factory method to create a new {@link StringComparator} object.
+	 * Factory method to create a new {@link StringLengthComparator} object.
 	 *
 	 * @param nullIsGreaterThan
 	 *            the flag that specifies if null objects is greater than non null objects
 	 * @param sortOrder
 	 *            the sort order
-	 * @return the new {@link StringComparator} object
+	 * @return the new {@link StringLengthComparator} object
 	 */
 	public static Comparator<String> of(final SortOrder sortOrder, final boolean nullIsGreaterThan)
 	{
-		return NullCheckComparator.<String> of(new StringComparator(sortOrder), nullIsGreaterThan);
+		return NullCheckComparator.<String> of(new StringLengthComparator(sortOrder),
+			nullIsGreaterThan);
 	}
 
 	/**
-	 * Instantiates a new {@link StringComparator}.
+	 * Instantiates a new {@link StringLengthComparator}.
 	 *
 	 * @param sortOrder
 	 *            the sort order
 	 */
-	public StringComparator(final SortOrder sortOrder)
+	public StringLengthComparator(final SortOrder sortOrder)
 	{
 		super(sortOrder);
+	}
+
+	/**
+	 * {@inheritDoc}
+	 */
+	@Override
+	public int compare(String object, String compareWithObject)
+	{
+		int compareWithObjectLength = compareWithObject.length();
+		int objectLength = object.length();
+		if (objectLength == compareWithObjectLength)
+		{
+			return super.compare(object, compareWithObject);
+		}
+		return compareWithObjectLength - objectLength;
 	}
 
 }

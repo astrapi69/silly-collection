@@ -92,6 +92,24 @@ public final class KeyValuePair<K, V> implements Serializable
 	}
 
 	/**
+	 * Transforms the given {@link Properties} to a list of {@link KeyValuePair}'s.
+	 *
+	 * @param properties
+	 *            the properties
+	 * @return the new list with the {@link KeyValuePair}'s.
+	 */
+	public static List<KeyValuePair<String, String>> toKeyValuePairs(final Properties properties)
+	{
+		final List<KeyValuePair<String, String>> list = new ArrayList<>();
+		for (final Entry<Object, Object> entry : properties.entrySet())
+		{
+			list.add(KeyValuePair.<String, String> builder().key((String)entry.getKey())
+				.value((String)entry.getValue()).build());
+		}
+		return list;
+	}
+
+	/**
 	 * Transforms the given {@link List} of {@link KeyValuePair}'s to a {@link Map}.
 	 *
 	 * @param <K>
@@ -110,24 +128,6 @@ public final class KeyValuePair<K, V> implements Serializable
 			map.put(keyValuePair.getKey(), keyValuePair.getValue());
 		}
 		return map;
-	}
-
-	/**
-	 * Transforms the given {@link Properties} to a list of {@link KeyValuePair}'s.
-	 *
-	 * @param properties
-	 *            the properties
-	 * @return the new list with the {@link KeyValuePair}'s.
-	 */
-	public static List<KeyValuePair<String, String>> toKeyValuePairs(final Properties properties)
-	{
-		final List<KeyValuePair<String, String>> list = new ArrayList<>();
-		for (final Entry<Object, Object> entry : properties.entrySet())
-		{
-			list.add(KeyValuePair.<String, String> builder().key((String)entry.getKey())
-				.value((String)entry.getValue()).build());
-		}
-		return list;
 	}
 
 

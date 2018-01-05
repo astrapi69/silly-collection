@@ -90,10 +90,10 @@ public class KeyValuePairTest
 	public void testToMap()
 	{
 		List<KeyValuePair<String, String>> list = new ArrayList<>();
-		list.add(KeyValuePair.<String, String>builder().key("1").value("novalue").build());
-		list.add(KeyValuePair.<String, String>builder().key("2").value("somevalue").build());
-		list.add(KeyValuePair.<String, String>builder().key("3").value("othervalue").build());
-		list.add(KeyValuePair.<String, String>builder().key("4").value("value").build());
+		list.add(KeyValuePair.<String, String> builder().key("1").value("novalue").build());
+		list.add(KeyValuePair.<String, String> builder().key("2").value("somevalue").build());
+		list.add(KeyValuePair.<String, String> builder().key("3").value("othervalue").build());
+		list.add(KeyValuePair.<String, String> builder().key("4").value("value").build());
 
 		Map<String, String> map = KeyValuePair.toMap(list);
 
