@@ -47,10 +47,60 @@ public class StringComparatorTest
 	int actual;
 
 	/**
-	 * Test method for {@link StringComparator#compare(String, String)}.
+	 * Test method for {@link StringComparator#compare(String, String)} with null smaller.
 	 */
 	@Test
 	public void testCompare()
+	{
+		String alex = "Alex";
+		String bill = "Billy";
+		String leo = "Leon";
+
+		Comparator<String> comparator = StringComparator.of(false);
+
+		actual = comparator.compare(alex, leo);
+		expected = actual < 0;
+		assertTrue(expected);
+
+		actual = comparator.compare(leo, alex);
+		expected = 0 < actual;
+		assertTrue(expected);
+
+		actual = comparator.compare(alex, bill);
+		expected = actual < 0;
+		assertTrue(expected);
+
+		// Now lets see a demo on a list...
+		List<String> list = new ArrayList<>();
+		list.add(leo);
+		list.add(alex);
+		list.add(bill);
+		list.add(null);
+		list.add(null);
+
+		expected = list.indexOf(leo) == 0;
+		assertTrue(expected);
+		expected = list.indexOf(alex) == 1;
+		assertTrue(expected);
+		expected = list.indexOf(bill) == 2;
+		assertTrue(expected);
+
+		Collections.sort(list, comparator);
+
+		expected = list.indexOf(alex) == 2;
+		assertTrue(expected);
+		expected = list.indexOf(bill) == 3;
+		assertTrue(expected);
+		expected = list.indexOf(leo) == 4;
+		assertTrue(expected);
+
+	}
+
+	/**
+	 * Test method for {@link StringComparator#compare(String, String)} with null greater.
+	 */
+	@Test
+	public void testCompareNullGreater()
 	{
 		String alex = "Alex";
 		String bill = "Billy";
@@ -75,6 +125,8 @@ public class StringComparatorTest
 		list.add(leo);
 		list.add(alex);
 		list.add(bill);
+		list.add(null);
+		list.add(null);
 
 		expected = list.indexOf(leo) == 0;
 		assertTrue(expected);
