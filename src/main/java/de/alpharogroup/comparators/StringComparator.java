@@ -47,7 +47,7 @@ public class StringComparator extends SortOrderComparator<String>
 	 */
 	public static Comparator<String> of()
 	{
-		return StringComparator.of(false);
+		return StringComparator.of(true);
 	}
 
 	/**
@@ -71,7 +71,7 @@ public class StringComparator extends SortOrderComparator<String>
 	 */
 	public static Comparator<String> of(final SortOrder sortOrder)
 	{
-		return StringComparator.of(sortOrder, false);
+		return StringComparator.of(sortOrder, true);
 	}
 
 	/**

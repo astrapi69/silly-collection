@@ -49,7 +49,7 @@ public class StringLengthComparator extends SortOrderComparator<String>
 	 */
 	public static Comparator<String> of()
 	{
-		return StringLengthComparator.of(false);
+		return StringLengthComparator.of(true);
 	}
 
 	/**
@@ -73,7 +73,7 @@ public class StringLengthComparator extends SortOrderComparator<String>
 	 */
 	public static Comparator<String> of(final SortOrder sortOrder)
 	{
-		return StringLengthComparator.of(sortOrder, false);
+		return StringLengthComparator.of(sortOrder, true);
 	}
 
 	/**

@@ -49,7 +49,7 @@ public class StringLengthComparatorTest
 	public void testCompare()
 	{
 		String alex = "Alex";
-		String bill = "Billy";
+		String billy = "Billy";
 		String leo = "Leon";
 
 		Comparator<String> comparator = StringLengthComparator.of();
@@ -65,25 +65,25 @@ public class StringLengthComparatorTest
 		expected = 0 < actual;
 		assertTrue(expected);
 		// Billy is longer then Alex so it is greater...
-		actual = comparator.compare(alex, bill);
+		actual = comparator.compare(alex, billy);
 		expected = 0 < actual;
 		assertTrue(expected);
 		// Now lets see a demo on a list...
 		List<String> list = new ArrayList<>();
 		list.add(leo);
 		list.add(alex);
-		list.add(bill);
+		list.add(billy);
 
 		expected = list.indexOf(leo) == 0;
 		assertTrue(expected);
 		expected = list.indexOf(alex) == 1;
 		assertTrue(expected);
-		expected = list.indexOf(bill) == 2;
+		expected = list.indexOf(billy) == 2;
 		assertTrue(expected);
 
 		Collections.sort(list, comparator);
 
-		expected = list.indexOf(bill) == 0;
+		expected = list.indexOf(billy) == 0;
 		assertTrue(expected);
 		expected = list.indexOf(alex) == 1;
 		assertTrue(expected);
