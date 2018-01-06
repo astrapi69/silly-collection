@@ -30,6 +30,7 @@ import static org.testng.AssertJUnit.assertTrue;
 
 import org.testng.annotations.Test;
 
+import de.alpharogroup.test.objects.evaluations.EqualsEvaluator;
 import de.alpharogroup.test.objects.evaluations.HashcodeEvaluator;
 import de.alpharogroup.test.objects.evaluations.ToStringEvaluator;
 
@@ -38,6 +39,44 @@ import de.alpharogroup.test.objects.evaluations.ToStringEvaluator;
  */
 public class ImmutableBoxTest
 {
+
+	/**
+	 * Test method for {@link ImmutableBox#equals(Object)}
+	 */
+	@Test
+	public void testEqualsObject()
+	{
+		final ImmutableBox<Integer> expected = ImmutableBox.<Integer> builder().value(2).build();
+		final ImmutableBox<String> actual = new ImmutableBox<>("Hello");
+
+		assertNotSame(expected, actual);
+		final ImmutableBox<Integer> twoBox = new ImmutableBox<>(2);
+		assertEquals(expected, twoBox);
+		assertTrue(expected.equals(twoBox));
+	}
+
+	/**
+	 * Test method for {@link ImmutableBox#equals(Object)} and {@link ImmutableBox#hashCode()}
+	 */
+	@Test
+	public void testEqualsAndHashcode()
+	{
+		boolean expected;
+		boolean actual;
+		final ImmutableBox<Integer> immutableBox = ImmutableBox.<Integer> builder().value(2).build();
+		ImmutableBox<String> stringBox =ImmutableBox.<String> builder().value("Hello").build();
+		actual = EqualsEvaluator.evaluateReflexivityAndNonNull(immutableBox);
+		expected = true;
+		assertEquals(expected, actual);
+
+		actual = HashcodeEvaluator.evaluateConsistency(immutableBox);
+		expected = true;
+		assertEquals(expected, actual);
+
+		expected = true;
+		actual = HashcodeEvaluator.evaluateUnequality(immutableBox, stringBox);
+		assertEquals(expected, actual);
+	}
 
 	/**
 	 * Test method for {@link ImmutableBox#equals(Object)}
@@ -71,6 +110,19 @@ public class ImmutableBoxTest
 	public void testImmutableBoxNullValue()
 	{
 		ImmutableBox.<Integer> builder().build();
+	}
+
+	/**
+	 * Test method for {@link ImmutableBox#toString()}
+	 */
+	@Test
+	public void testToStringOfImmutableBox()
+	{
+		boolean expected;
+		boolean actual;
+		actual = ToStringEvaluator.evaluate(ImmutableBox.class);
+		expected = true;
+		assertEquals(expected, actual);
 	}
 
 }
