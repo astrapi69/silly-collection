@@ -51,31 +51,51 @@ public class ValueBoxTest
 		final ValueBox<String> actual = new ValueBox<>("Hello");
 
 		assertNotSame(expected, actual);
-		final ValueBox<Integer> twoBox = new ValueBox<>(2);
-		assertEquals(expected, twoBox);
-		assertTrue(expected.equals(twoBox));
+		final ValueBox<Integer> integerBox = new ValueBox<>(2);
+		assertEquals(expected, integerBox);
+		assertTrue(EqualsEvaluator.evaluateReflexivityNonNullSymmetricAndConsistency(expected, actual));
+		assertTrue(EqualsEvaluator.evaluateReflexivityNonNullSymmetricConsistencyAndTransitivity(expected, integerBox, new ValueBox<>(2)));
 	}
 
 	/**
-	 * Test method for {@link ValueBox#equals(Object)} and {@link ValueBox#hashCode()}
+	 * Test method for {@link ValueBox#hashCode()}
 	 */
 	@Test
-	public void testEqualsAndHashcode()
+	public void testHashcode()
 	{
 		boolean expected;
 		boolean actual;
-		final ValueBox<Integer> valueBox = ValueBox.<Integer> builder().value(2).build();
+		final ValueBox<Integer> integerBox = ValueBox.<Integer> builder().value(2).build();
 		ValueBox<String> stringBox =ValueBox.<String> builder().value("Hello").build();
-		actual = EqualsEvaluator.evaluateReflexivityAndNonNull(valueBox);
+		actual = HashcodeEvaluator.evaluateEquality(integerBox, new ValueBox<>(2));
 		expected = true;
 		assertEquals(expected, actual);
 
-		actual = HashcodeEvaluator.evaluateConsistency(valueBox);
+		actual = HashcodeEvaluator.evaluateConsistency(integerBox);
 		expected = true;
 		assertEquals(expected, actual);
 
 		expected = true;
-		actual = HashcodeEvaluator.evaluateUnequality(valueBox, stringBox);
+		actual = HashcodeEvaluator.evaluateUnequality(integerBox, stringBox);
+		assertEquals(expected, actual);
+	}
+
+	/**
+	 * Test method for {@link ValueBox#toString()}
+	 */
+	@Test
+	public void testToString()
+	{
+		boolean expected;
+		boolean actual;
+		actual = ToStringEvaluator.evaluate(ValueBox.class);
+		expected = true;
+		assertEquals(expected, actual);
+
+		final ValueBox<Integer> integerBox = ValueBox.<Integer> builder().value(2).build();
+
+		actual = ToStringEvaluator.evaluateConsistency(integerBox);
+		expected = true;
 		assertEquals(expected, actual);
 	}
 
@@ -87,19 +107,6 @@ public class ValueBoxTest
 	{
 		BeanTester beanTester = new BeanTester();
 		beanTester.testBean(ValueBox.class);
-	}
-
-	/**
-	 * Test method for {@link ValueBox#toString()}
-	 */
-	@Test
-	public void testToStringOfValueBox()
-	{
-		boolean expected;
-		boolean actual;
-		actual = ToStringEvaluator.evaluate(ValueBox.class);
-		expected = true;
-		assertEquals(expected, actual);
 	}
 
 }
