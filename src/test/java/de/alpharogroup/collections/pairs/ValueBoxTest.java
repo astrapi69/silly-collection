@@ -71,12 +71,12 @@ public class ValueBoxTest
 		expected = true;
 		assertEquals(expected, actual);
 
-		actual = HashcodeEvaluator.evaluateConsistency(integerBox);
-		expected = true;
-		assertEquals(expected, actual);
-
 		expected = true;
 		actual = HashcodeEvaluator.evaluateUnequality(integerBox, stringBox);
+		assertEquals(expected, actual);
+
+		actual = HashcodeEvaluator.evaluateConsistency(integerBox);
+		expected = true;
 		assertEquals(expected, actual);
 	}
 
