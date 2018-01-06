@@ -75,7 +75,7 @@ public class ValueBoxTest
 		assertEquals(expected, actual);
 
 		expected = true;
-		actual = HashcodeEvaluator.evaluateEquality(valueBox, stringBox);
+		actual = HashcodeEvaluator.evaluateUnequality(valueBox, stringBox);
 		assertEquals(expected, actual);
 	}
 
