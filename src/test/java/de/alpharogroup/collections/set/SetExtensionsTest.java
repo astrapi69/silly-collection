@@ -72,6 +72,8 @@ public class SetExtensionsTest
 
 		Set<String> set = SetExtensions.newHashSet();
 		assertTrue(set.size() == 0);
+		set.add("foo");
+		assertTrue(set.size() == 1);
 		set = SetExtensions.newHashSet(ListExtensions.newArrayList("foo", "fasel"), "foo", "bar",
 			"foo");
 		assertTrue(set.size() == 3);
