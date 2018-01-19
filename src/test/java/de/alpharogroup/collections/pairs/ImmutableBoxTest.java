@@ -52,8 +52,10 @@ public class ImmutableBoxTest
 		assertNotSame(expected, actual);
 		final ImmutableBox<Integer> integerBox = new ImmutableBox<>(2);
 		assertEquals(expected, integerBox);
-		assertTrue(EqualsEvaluator.evaluateReflexivityNonNullSymmetricAndConsistency(expected, actual));
-		assertTrue(EqualsEvaluator.evaluateReflexivityNonNullSymmetricConsistencyAndTransitivity(expected, integerBox, new ImmutableBox<>(2)));
+		assertTrue(
+			EqualsEvaluator.evaluateReflexivityNonNullSymmetricAndConsistency(expected, actual));
+		assertTrue(EqualsEvaluator.evaluateReflexivityNonNullSymmetricConsistencyAndTransitivity(
+			expected, integerBox, new ImmutableBox<>(2)));
 	}
 
 	/**
@@ -65,7 +67,7 @@ public class ImmutableBoxTest
 		boolean expected;
 		boolean actual;
 		final ImmutableBox<Integer> integerBox = ImmutableBox.<Integer> builder().value(2).build();
-		ImmutableBox<String> stringBox =ImmutableBox.<String> builder().value("Hello").build();
+		ImmutableBox<String> stringBox = ImmutableBox.<String> builder().value("Hello").build();
 		actual = HashcodeEvaluator.evaluateEquality(integerBox, new ImmutableBox<>(2));
 		expected = true;
 		assertEquals(expected, actual);
@@ -77,6 +79,15 @@ public class ImmutableBoxTest
 		expected = true;
 		actual = HashcodeEvaluator.evaluateUnequality(integerBox, stringBox);
 		assertEquals(expected, actual);
+	}
+
+	/**
+	 * Test method for {@link ImmutableBox}
+	 */
+	@Test(enabled = true, expectedExceptions = NullPointerException.class)
+	public void testImmutableBoxNullValue()
+	{
+		ImmutableBox.<Integer> builder().build();
 	}
 
 	/**
@@ -96,15 +107,6 @@ public class ImmutableBoxTest
 		actual = ToStringEvaluator.evaluateConsistency(integerBox);
 		expected = true;
 		assertEquals(expected, actual);
-	}
-
-	/**
-	 * Test method for {@link ImmutableBox}
-	 */
-	@Test(enabled = true, expectedExceptions = NullPointerException.class)
-	public void testImmutableBoxNullValue()
-	{
-		ImmutableBox.<Integer> builder().build();
 	}
 
 }

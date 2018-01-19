@@ -53,8 +53,10 @@ public class ValueBoxTest
 		assertNotSame(expected, actual);
 		final ValueBox<Integer> integerBox = new ValueBox<>(2);
 		assertEquals(expected, integerBox);
-		assertTrue(EqualsEvaluator.evaluateReflexivityNonNullSymmetricAndConsistency(expected, actual));
-		assertTrue(EqualsEvaluator.evaluateReflexivityNonNullSymmetricConsistencyAndTransitivity(expected, integerBox, new ValueBox<>(2)));
+		assertTrue(
+			EqualsEvaluator.evaluateReflexivityNonNullSymmetricAndConsistency(expected, actual));
+		assertTrue(EqualsEvaluator.evaluateReflexivityNonNullSymmetricConsistencyAndTransitivity(
+			expected, integerBox, new ValueBox<>(2)));
 	}
 
 	/**
@@ -66,7 +68,7 @@ public class ValueBoxTest
 		boolean expected;
 		boolean actual;
 		final ValueBox<Integer> integerBox = ValueBox.<Integer> builder().value(2).build();
-		ValueBox<String> stringBox =ValueBox.<String> builder().value("Hello").build();
+		ValueBox<String> stringBox = ValueBox.<String> builder().value("Hello").build();
 		actual = HashcodeEvaluator.evaluateEquality(integerBox, new ValueBox<>(2));
 		expected = true;
 		assertEquals(expected, actual);

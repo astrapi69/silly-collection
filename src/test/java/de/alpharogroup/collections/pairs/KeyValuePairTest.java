@@ -48,6 +48,55 @@ public class KeyValuePairTest
 {
 
 	/**
+	 * Test method for {@link KeyValuePair#equals(Object)}
+	 */
+	@Test
+	public void testEqualsObject()
+	{
+
+		KeyValuePair<String, String> expected = KeyValuePair.<String, String> builder().key("1")
+			.value("novalue").build();
+		KeyValuePair<String, String> actual = new KeyValuePair<>();
+		actual.setKey("2");
+		actual.setValue("somevalue");
+
+		assertNotSame(expected, actual);
+		final KeyValuePair<String, String> keyValuePair1 = new KeyValuePair<>("1", "novalue");
+		assertEquals(expected, keyValuePair1);
+		assertTrue(
+			EqualsEvaluator.evaluateReflexivityNonNullSymmetricAndConsistency(expected, actual));
+		assertTrue(EqualsEvaluator.evaluateReflexivityNonNullSymmetricConsistencyAndTransitivity(
+			expected, keyValuePair1,
+			KeyValuePair.<String, String> builder().key("1").value("novalue").build()));
+	}
+
+	/**
+	 * Test method for {@link KeyValuePair#hashCode()}
+	 */
+	@Test
+	public void testHashcode()
+	{
+		boolean expected;
+		boolean actual;
+		KeyValuePair<String, String> keyValuePair1 = KeyValuePair.<String, String> builder()
+			.key("1").value("novalue").build();
+		KeyValuePair<String, String> keyValuePair2 = KeyValuePair.<String, String> builder()
+			.key("2").value("somevalue").build();
+		actual = HashcodeEvaluator.evaluateEquality(keyValuePair1,
+			KeyValuePair.<String, String> builder().key("1").value("novalue").build());
+		expected = true;
+		assertEquals(expected, actual);
+
+		expected = true;
+		actual = HashcodeEvaluator.evaluateUnequality(keyValuePair1, keyValuePair2);
+		assertEquals(expected, actual);
+
+		actual = HashcodeEvaluator.evaluateConsistency(keyValuePair1);
+		expected = true;
+		assertEquals(expected, actual);
+	}
+
+	/**
 	 * Test method for {@link KeyValuePair#toKeyValuePairs(Map)}.
 	 */
 	@Test
@@ -108,48 +157,6 @@ public class KeyValuePairTest
 	}
 
 	/**
-	 * Test method for {@link KeyValuePair#equals(Object)}
-	 */
-	@Test
-	public void testEqualsObject()
-	{
-
-		KeyValuePair<String,String> expected = KeyValuePair.<String, String> builder().key("1").value("novalue").build();
-		KeyValuePair<String,String> actual = new KeyValuePair<>();
-		actual.setKey("2");
-		actual.setValue("somevalue");
-
-		assertNotSame(expected, actual);
-		final KeyValuePair<String,String> keyValuePair1 = new KeyValuePair<>("1", "novalue");
-		assertEquals(expected, keyValuePair1);
-		assertTrue(EqualsEvaluator.evaluateReflexivityNonNullSymmetricAndConsistency(expected, actual));
-		assertTrue(EqualsEvaluator.evaluateReflexivityNonNullSymmetricConsistencyAndTransitivity(expected, keyValuePair1, KeyValuePair.<String, String> builder().key("1").value("novalue").build()));
-	}
-
-	/**
-	 * Test method for {@link KeyValuePair#hashCode()}
-	 */
-	@Test
-	public void testHashcode()
-	{
-		boolean expected;
-		boolean actual;
-		KeyValuePair<String,String> keyValuePair1 = KeyValuePair.<String, String> builder().key("1").value("novalue").build();
-		KeyValuePair<String,String> keyValuePair2 = KeyValuePair.<String, String> builder().key("2").value("somevalue").build();
-		actual = HashcodeEvaluator.evaluateEquality(keyValuePair1, KeyValuePair.<String, String> builder().key("1").value("novalue").build());
-		expected = true;
-		assertEquals(expected, actual);
-
-		expected = true;
-		actual = HashcodeEvaluator.evaluateUnequality(keyValuePair1, keyValuePair2);
-		assertEquals(expected, actual);
-
-		actual = HashcodeEvaluator.evaluateConsistency(keyValuePair1);
-		expected = true;
-		assertEquals(expected, actual);
-	}
-
-	/**
 	 * Test method for {@link KeyValuePair#toString()}
 	 */
 	@Test
@@ -161,7 +168,8 @@ public class KeyValuePairTest
 		expected = true;
 		assertEquals(expected, actual);
 
-		final KeyValuePair<String,String> keyValuePair1 = KeyValuePair.<String, String> builder().key("1").value("novalue").build();
+		final KeyValuePair<String, String> keyValuePair1 = KeyValuePair.<String, String> builder()
+			.key("1").value("novalue").build();
 
 		actual = ToStringEvaluator.evaluateConsistency(keyValuePair1);
 		expected = true;

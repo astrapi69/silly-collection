@@ -471,7 +471,9 @@ public class ListExtensions
 	public static <T> void sortByProperty(final List<T> list, final String property,
 		final boolean ascending)
 	{
-		Comparator comparator = new BeanComparator(property, new SortOrderComparator(){});
+		Comparator comparator = new BeanComparator(property, new SortOrderComparator()
+		{
+		});
 		if (ascending)
 		{
 			comparator = ComparatorUtils.reversedComparator(comparator);

@@ -77,8 +77,8 @@ public class SetExtensions
 		else
 		{
 			set = new HashSet<>();
-			if(elements.length != 0)
-			Collections.addAll(set, elements);
+			if (elements.length != 0)
+				Collections.addAll(set, elements);
 		}
 		return set;
 	}
