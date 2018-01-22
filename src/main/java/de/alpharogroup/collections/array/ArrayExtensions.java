@@ -27,9 +27,12 @@ package de.alpharogroup.collections.array;
 import java.util.Arrays;
 import java.util.List;
 
+import lombok.experimental.UtilityClass;
+
 /**
  * The class {@link ArrayExtensions} is an extensions class for use with array objects.
  */
+@UtilityClass
 public final class ArrayExtensions
 {
 

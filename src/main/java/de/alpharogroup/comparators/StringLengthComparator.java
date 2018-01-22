@@ -39,14 +39,12 @@ import lombok.NoArgsConstructor;
 public class StringLengthComparator extends SortOrderComparator<String>
 {
 
-	/** The serialVersionUID. */
-	private static final long serialVersionUID = 1L;
-
 	/**
 	 * Factory method to create a new {@link StringLengthComparator} object.
 	 *
 	 * @return the new {@link StringLengthComparator} object
 	 */
+	@SuppressWarnings("unchecked")
 	public static Comparator<String> of()
 	{
 		return StringLengthComparator.of(true);
@@ -71,6 +69,7 @@ public class StringLengthComparator extends SortOrderComparator<String>
 	 *            the sort order
 	 * @return the new {@link StringLengthComparator} object
 	 */
+	@SuppressWarnings("unchecked")
 	public static Comparator<String> of(final SortOrder sortOrder)
 	{
 		return StringLengthComparator.of(sortOrder, true);
@@ -106,10 +105,10 @@ public class StringLengthComparator extends SortOrderComparator<String>
 	 * {@inheritDoc}
 	 */
 	@Override
-	public int compare(String object, String compareWithObject)
+	public int compare(final String object, final String compareWithObject)
 	{
-		int compareWithObjectLength = compareWithObject.length();
-		int objectLength = object.length();
+		final int compareWithObjectLength = compareWithObject.length();
+		final int objectLength = object.length();
 		if (objectLength == compareWithObjectLength)
 		{
 			return super.compare(object, compareWithObject);
