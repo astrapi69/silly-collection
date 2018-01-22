@@ -27,8 +27,11 @@ package de.alpharogroup.collections.set;
 import static org.testng.AssertJUnit.assertFalse;
 import static org.testng.AssertJUnit.assertTrue;
 
+import java.lang.reflect.InvocationTargetException;
 import java.util.Set;
 
+import org.meanbean.test.BeanTestException;
+import org.meanbean.test.BeanTester;
 import org.testng.annotations.Test;
 
 import de.alpharogroup.collections.list.ListExtensions;
@@ -72,9 +75,15 @@ public class SetExtensionsTest
 
 		Set<String> set = SetExtensions.newHashSet();
 		assertTrue(set.size() == 0);
+		set.add("foo");
+		assertTrue(set.size() == 1);
 		set = SetExtensions.newHashSet(ListExtensions.newArrayList("foo", "fasel"), "foo", "bar",
 			"foo");
 		assertTrue(set.size() == 3);
+		set = SetExtensions.newHashSet(ListExtensions.newArrayList(), "foo", "bar", "foo");
+		assertTrue(set.size() == 2);
+
+
 	}
 
 
@@ -88,6 +97,17 @@ public class SetExtensionsTest
 		assertTrue(set.size() == 0);
 		set = SetExtensions.newHashSet("foo", "bar", "foo");
 		assertTrue(set.size() == 2);
+	}
+
+	/**
+	 * Test method for {@link SetExtensions} with {@link BeanTester}
+	 */
+	@Test(expectedExceptions = { BeanTestException.class, InvocationTargetException.class,
+			UnsupportedOperationException.class })
+	public void testWithBeanTester()
+	{
+		final BeanTester beanTester = new BeanTester();
+		beanTester.testBean(SetExtensions.class);
 	}
 
 }

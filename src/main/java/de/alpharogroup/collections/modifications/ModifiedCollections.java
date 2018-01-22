@@ -38,15 +38,14 @@ import lombok.NoArgsConstructor;
  *            the generic type of the collections
  */
 @NoArgsConstructor
+@Getter
 public class ModifiedCollections<T>
 {
 
 	/** The added elements. */
-	@Getter
 	private final Collection<T> addedElements = new ArrayList<>();
 
 	/** The removed elements. */
-	@Getter
 	private final Collection<T> removedElements = new ArrayList<>();
 
 	/**

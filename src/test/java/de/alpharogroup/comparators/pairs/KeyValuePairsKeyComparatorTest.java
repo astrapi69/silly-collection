@@ -22,44 +22,25 @@
  * OF CONTRACT, TORT OR OTHERWISE, ARISING FROM, OUT OF OR IN CONNECTION
  * WITH THE SOFTWARE OR THE USE OR OTHER DEALINGS IN THE SOFTWARE.
  */
-package de.alpharogroup.collections.list;
+package de.alpharogroup.comparators.pairs;
 
-import static org.testng.AssertJUnit.assertTrue;
-
-import java.util.Enumeration;
-import java.util.Vector;
-
+import org.meanbean.test.BeanTester;
 import org.testng.annotations.Test;
 
-import lombok.experimental.ExtensionMethod;
 
 /**
- * Tests for the class {@link VectorExtensions}.
- *
- * @version 1.0
- * @author Asterios Raptis
+ * The unit test class for the class {@link KeyValuePairsKeyComparator}.
  */
-@ExtensionMethod(ListExtensions.class)
-public class VectorExtensionsTest
+public class KeyValuePairsKeyComparatorTest
 {
 
 	/**
-	 * Test the method {@link VectorExtensions#toVector(Enumeration)}.
+	 * Test method for {@link KeyValuePairsKeyComparator}
 	 */
 	@Test
-	public void testToVector()
+	public void testWithBeanTester()
 	{
-		final Vector<String> expectedValues = new Vector<>();
-		expectedValues.add("C");
-		expectedValues.add("D");
-		expectedValues.add("A");
-		expectedValues.add("B");
-		final Enumeration<String> elements = expectedValues.elements();
-		final Vector<String> actuals = VectorExtensions.toVector(elements);
-		for (final String actual : actuals)
-		{
-			assertTrue(expectedValues.contains(actual));
-		}
+		BeanTester beanTester = new BeanTester();
+		beanTester.testBean(KeyValuePairsKeyComparator.class);
 	}
-
 }

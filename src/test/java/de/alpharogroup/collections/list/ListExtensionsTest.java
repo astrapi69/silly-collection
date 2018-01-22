@@ -201,13 +201,14 @@ public class ListExtensionsTest
 	}
 
 	/**
-	 * Test method for
-	 * {@link de.alpharogroup.collections.list.ListExtensions#isFirst(java.util.List)} .
+	 * Test method for {@link de.alpharogroup.collections.list.ListExtensions#isFirst(List, Object)}
+	 * .
 	 */
 	@Test
 	public void testIsFirst()
 	{
-		final String expected = "Leonidas";
+		String expected;
+		expected = "Leonidas";
 		final List<String> search = new ArrayList<>();
 		search.add(expected);
 		search.add("Berta");
@@ -220,8 +221,8 @@ public class ListExtensionsTest
 	}
 
 	/**
-	 * Test method for
-	 * {@link de.alpharogroup.collections.list.ListExtensions#isLast(java.util.List)} .
+	 * Test method for {@link de.alpharogroup.collections.list.ListExtensions#isLast(List, Object)}
+	 * .
 	 */
 	@Test
 	public void testIsLast()

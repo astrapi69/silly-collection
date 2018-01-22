@@ -29,6 +29,8 @@ import static org.testng.AssertJUnit.assertNotNull;
 
 import java.util.NoSuchElementException;
 
+import org.meanbean.test.BeanTestException;
+import org.meanbean.test.BeanTester;
 import org.testng.annotations.AfterMethod;
 import org.testng.annotations.BeforeMethod;
 import org.testng.annotations.Test;
@@ -286,6 +288,16 @@ public class ArrayIteratorTest
 	{
 		final ArrayIterator<Object> arrayIterator = new ArrayIterator<>(new Object[] { });
 		arrayIterator.remove();
+	}
+
+	/**
+	 * Test method for {@link ArrayIterator}
+	 */
+	@Test(expectedExceptions = { BeanTestException.class })
+	public void testWithBeanTester()
+	{
+		final BeanTester beanTester = new BeanTester();
+		beanTester.testBean(ArrayIterator.class);
 	}
 
 }

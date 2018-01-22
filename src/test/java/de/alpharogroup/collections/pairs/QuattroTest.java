@@ -22,52 +22,29 @@
  * OF CONTRACT, TORT OR OTHERWISE, ARISING FROM, OUT OF OR IN CONNECTION
  * WITH THE SOFTWARE OR THE USE OR OTHER DEALINGS IN THE SOFTWARE.
  */
-package de.alpharogroup.comparators;
+package de.alpharogroup.collections.pairs;
 
-import static org.testng.AssertJUnit.assertEquals;
-
-import java.util.Comparator;
-import java.util.Locale;
-
+import org.meanbean.test.BeanTester;
 import org.testng.annotations.Test;
 
-public class NullCheckComparatorTest
+/**
+ * The class {@link Quattro}.
+ */
+
+/**
+ * The unit test class for the class {@link Quattro}.
+ */
+public class QuattroTest
 {
 
+	/**
+	 * Test method for {@link Quattro}
+	 */
 	@Test
-	public void testCompare()
+	public void testWithBeanTester()
 	{
-		int expected;
-		int actual;
-		Comparator<Locale> localeComparator = NullCheckComparator
-			.<Locale> of(new LocaleComparator());
-		actual = localeComparator.compare(Locale.CANADA, null);
-		expected = 1;
-		assertEquals(expected, actual);
-
-		actual = localeComparator.compare(null, null);
-		expected = 0;
-		assertEquals(expected, actual);
-
-		actual = localeComparator.compare(null, Locale.CANADA);
-		expected = -1;
-		assertEquals(expected, actual);
-
-		// set null flag to true so null are greater...
-		localeComparator = LocaleComparator.of(true);
-
-		actual = localeComparator.compare(Locale.CANADA, null);
-		expected = -1;
-		assertEquals(expected, actual);
-
-		actual = localeComparator.compare(null, null);
-		expected = 0;
-		assertEquals(expected, actual);
-
-		actual = localeComparator.compare(null, Locale.CANADA);
-		expected = 1;
-		assertEquals(expected, actual);
-
+		final BeanTester beanTester = new BeanTester();
+		beanTester.testBean(Quattro.class);
 	}
 
 }

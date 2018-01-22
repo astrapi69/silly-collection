@@ -26,6 +26,8 @@ package de.alpharogroup.collections.pairs;
 
 import java.io.Serializable;
 import java.util.ArrayList;
+import java.util.Collection;
+import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
 import java.util.Map.Entry;
@@ -105,6 +107,27 @@ public final class KeyValuePair<K, V> implements Serializable
 				.value((String)entry.getValue()).build());
 		}
 		return list;
+	}
+
+	/**
+	 * Transforms the given {@link List} of {@link KeyValuePair}'s to a {@link Map}.
+	 *
+	 * @param <K>
+	 *            The generic type of the key
+	 * @param <V>
+	 *            The generic type of the value
+	 * @param list
+	 *            the list
+	 * @return the new map.
+	 */
+	public static <K, V> Map<K, V> toMap(final Collection<KeyValuePair<K, V>> list)
+	{
+		final Map<K, V> map = new HashMap<>();
+		for (KeyValuePair<K, V> keyValuePair : list)
+		{
+			map.put(keyValuePair.getKey(), keyValuePair.getValue());
+		}
+		return map;
 	}
 
 

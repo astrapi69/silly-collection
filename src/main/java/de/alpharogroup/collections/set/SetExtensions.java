@@ -27,7 +27,6 @@ package de.alpharogroup.collections.set;
 import java.util.Collection;
 import java.util.Collections;
 import java.util.HashSet;
-import java.util.List;
 import java.util.Set;
 
 import lombok.experimental.UtilityClass;
@@ -72,11 +71,13 @@ public class SetExtensions
 		if (collection != null && !collection.isEmpty())
 		{
 			set = new HashSet<>(collection);
-			Collections.addAll(set, elements);
 		}
 		else
 		{
 			set = new HashSet<>();
+		}
+		if (0 < elements.length)
+		{
 			Collections.addAll(set, elements);
 		}
 		return set;
@@ -111,17 +112,17 @@ public class SetExtensions
 	}
 
 	/**
-	 * Converts the given {@link List} to a {@link Set}.
+	 * Converts the given {@link Collection} to a {@link Set}.
 	 *
 	 * @param <T>
 	 *            the generic type of the elements
-	 * @param list
-	 *            the list
+	 * @param collection
+	 *            the collection
 	 * @return A new {@link Set}
 	 */
-	public static <T> Set<T> toSet(final Collection<T> list)
+	public static <T> Set<T> toSet(final Collection<T> collection)
 	{
-		return newHashSet(list);
+		return newHashSet(collection);
 	}
 
 }

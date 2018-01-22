@@ -26,8 +26,11 @@ package de.alpharogroup.collections.array;
 
 import static org.testng.AssertJUnit.assertEquals;
 
+import java.lang.reflect.InvocationTargetException;
 import java.util.List;
 
+import org.meanbean.test.BeanTestException;
+import org.meanbean.test.BeanTester;
 import org.testng.annotations.Test;
 
 import lombok.experimental.ExtensionMethod;
@@ -419,5 +422,17 @@ public class ArrayExtensionsTest
 			assertEquals(expected, actual);
 		}
 	}
+
+	/**
+	 * Test method for {@link ArrayExtensions} with {@link BeanTester}
+	 */
+	@Test(expectedExceptions = { BeanTestException.class, InvocationTargetException.class,
+			UnsupportedOperationException.class })
+	public void testWithBeanTester()
+	{
+		final BeanTester beanTester = new BeanTester();
+		beanTester.testBean(ArrayExtensions.class);
+	}
+
 
 }
