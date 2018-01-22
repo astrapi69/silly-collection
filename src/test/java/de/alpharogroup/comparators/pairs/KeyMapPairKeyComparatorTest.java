@@ -36,7 +36,6 @@ import de.alpharogroup.collections.pairs.ValueBox;
 public class KeyMapPairKeyComparatorTest
 {
 
-
 	/**
 	 * Test method for {@link ValueBox}
 	 */

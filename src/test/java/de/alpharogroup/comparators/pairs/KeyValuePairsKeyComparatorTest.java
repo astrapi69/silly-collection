@@ -34,7 +34,6 @@ import org.testng.annotations.Test;
 public class KeyValuePairsKeyComparatorTest
 {
 
-
 	/**
 	 * Test method for {@link KeyValuePairsKeyComparator}
 	 */
