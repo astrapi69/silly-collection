@@ -35,4 +35,16 @@ public class CollectionExtensions
 		return null;
 	}
 
+	/**
+	 * Difference.
+	 *
+	 * @param <T> the generic type
+	 * @param collection1 the collection 1
+	 * @param collection2 the collection 2
+	 */
+	public static <T> void difference(final Collection<T> collection1, final Collection<T> collection2) {
+		// collection1.stream().filter(e -> !collection1.contains(e)).collect(Collectors.toSet());
+		collection1.removeAll(collection2);
+	}
+
 }
