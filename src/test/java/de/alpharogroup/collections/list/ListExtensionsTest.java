@@ -32,7 +32,6 @@ import static org.testng.AssertJUnit.assertTrue;
 
 import java.util.ArrayList;
 import java.util.Arrays;
-import java.util.Collection;
 import java.util.HashSet;
 import java.util.List;
 import java.util.Set;
@@ -47,7 +46,7 @@ import de.alpharogroup.test.objects.enums.Gender;
 import lombok.experimental.ExtensionMethod;
 
 /**
- * Tests for the class {@link ListExtensions}.
+ * The unit test class for the class {@link ListExtensions}.
  *
  * @version 1.0
  * @author Asterios Raptis
@@ -200,51 +199,6 @@ public class ListExtensionsTest
 		final List<String> empty = ListExtensions.getSameElementsFromLists(toSearch, search);
 		assertNull("List should be empty.", empty);
 	}
-	
-	/**
-	 *Test the method for {@link ListExtensions#intersection(Collection...)}
-	 */
-	@SuppressWarnings("unchecked")
-	@Test
-	public void testIntersection() {
-		Collection<String> expected;
-		Collection<String> actual;
-		Collection<String> nameList = new ArrayList<String>();
-
-		nameList.add("Anton");
-		nameList.add("Alex");
-		nameList.add("Berta");
-		nameList.add("Brad");
-		nameList.add("Caesar");
-		nameList.add("Leonardo");
-
-		Collection<String> otherNames = new ArrayList<String>();
-
-		otherNames.add("Alex");
-		otherNames.add("Berta");
-		otherNames.add("Brad");
-		otherNames.add("Caesar");
-		otherNames.add("Leonardo");
-
-		Collection<String> vipNames = new ArrayList<String>();
-		vipNames.add("Alex");
-		vipNames.add("Brad");
-		vipNames.add("Caesar");
-		vipNames.add("Leonardo");
-		vipNames.add("Jesus");
-
-		expected = new ArrayList<String>();
-		expected.add("Alex");
-		expected.add("Brad");
-		expected.add("Caesar");
-		expected.add("Leonardo");
-		actual = ListExtensions.intersection(vipNames, otherNames, nameList);
-		assertNotNull(actual);
-		assertEquals(expected.size(), actual.size());
-		for (final String name : actual) {
-			assertTrue(expected.contains(name));
-		}
-	}
 
 	/**
 	 * Test method for {@link de.alpharogroup.collections.list.ListExtensions#isFirst(List, Object)}
@@ -318,7 +272,7 @@ public class ListExtensionsTest
 	@Test
 	public void testNewArrayListCollectionObjects()
 	{
-		List<String> strings = ListExtensions.newArrayList(null, "foo");
+		final List<String> strings = ListExtensions.newArrayList(null, "foo");
 		assertNotNull(strings);
 		assertTrue(strings.size() == 1);
 		assertTrue(strings.get(0).equals("foo"));
@@ -330,7 +284,7 @@ public class ListExtensionsTest
 	@Test
 	public void testNewArrayListInt()
 	{
-		List<String> strings = ListExtensions.newArrayList(2);
+		final List<String> strings = ListExtensions.newArrayList(2);
 		assertNotNull(strings);
 		assertTrue(strings.size() == 0);
 	}
@@ -341,7 +295,7 @@ public class ListExtensionsTest
 	@Test
 	public void testNewArrayListObjects()
 	{
-		List<String> strings = ListExtensions.newArrayList("foo", "bar");
+		final List<String> strings = ListExtensions.newArrayList("foo", "bar");
 		assertNotNull(strings);
 		assertTrue(strings.size() == 2);
 		assertTrue(strings.get(0).equals("foo"));
