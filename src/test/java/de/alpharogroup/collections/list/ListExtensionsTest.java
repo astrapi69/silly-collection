@@ -199,6 +199,51 @@ public class ListExtensionsTest
 		final List<String> empty = ListExtensions.getSameElementsFromLists(toSearch, search);
 		assertNull("List should be empty.", empty);
 	}
+	
+	/**
+	 *Test the method for {@link ListExtensions#intersection(Collection...)}
+	 */
+	@SuppressWarnings("unchecked")
+	@Test
+	public void testIntersection() {
+		Collection<String> expected;
+		Collection<String> actual;
+		Collection<String> nameList = new ArrayList<String>();
+
+		nameList.add("Anton");
+		nameList.add("Alex");
+		nameList.add("Berta");
+		nameList.add("Brad");
+		nameList.add("Caesar");
+		nameList.add("Leonardo");
+
+		Collection<String> otherNames = new ArrayList<String>();
+
+		otherNames.add("Alex");
+		otherNames.add("Berta");
+		otherNames.add("Brad");
+		otherNames.add("Caesar");
+		otherNames.add("Leonardo");
+
+		Collection<String> vipNames = new ArrayList<String>();
+		vipNames.add("Alex");
+		vipNames.add("Brad");
+		vipNames.add("Caesar");
+		vipNames.add("Leonardo");
+		vipNames.add("Jesus");
+
+		expected = new ArrayList<String>();
+		expected.add("Alex");
+		expected.add("Brad");
+		expected.add("Caesar");
+		expected.add("Leonardo");
+		actual = ListExtensions.intersection(vipNames, otherNames, nameList);
+		assertNotNull(actual);
+		assertEquals(expected.size(), actual.size());
+		for (final String name : actual) {
+			assertTrue(expected.contains(name));
+		}
+	}
 
 	/**
 	 * Test method for {@link de.alpharogroup.collections.list.ListExtensions#isFirst(List, Object)}
