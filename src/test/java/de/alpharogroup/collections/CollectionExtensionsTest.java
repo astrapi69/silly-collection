@@ -7,7 +7,7 @@ import static org.testng.AssertJUnit.assertTrue;
 import java.util.ArrayList;
 import java.util.Collection;
 
-import org.junit.Test;
+import org.testng.annotations.Test;
 
 import de.alpharogroup.collections.list.ListExtensions;
 
@@ -18,7 +18,7 @@ public class CollectionExtensionsTest
 {
 
 	/**
-	 * Test the method for {@link ListExtensions#intersection(Collection...)}
+	 * Test the method for {@link CollectionExtensions#intersection(Collection...)}
 	 */
 	@Test
 	public void testIntersection()
@@ -62,5 +62,38 @@ public class CollectionExtensionsTest
 			assertTrue(expected.contains(name));
 		}
 	}
+
+
+	/**
+	 * Test the method for {@link CollectionExtensions#intersection(Collection...)} with the
+	 * scenario of lotto numbers
+	 */
+	@Test
+	public void testIntersectionLottoNumbers()
+	{
+		Collection<Integer> expected;
+		Collection<Integer> actual;
+		Collection<Integer> yourNumbers;
+		final Collection<Integer> lottoNumbers = ListExtensions.newArrayList(3, 7, 22, 23, 34, 45);
+		yourNumbers = ListExtensions.newArrayList(3, 7, 23, 34, 22, 45);
+		actual = CollectionExtensions.intersection(lottoNumbers, yourNumbers);
+		expected = lottoNumbers;
+		assertEquals(expected.size(), actual.size());
+		for (final Integer number : actual)
+		{
+			assertTrue(expected.contains(number));
+		}
+
+		yourNumbers = ListExtensions.newArrayList(3, 7, 24, 35, 25, 46);
+		actual = CollectionExtensions.intersection(lottoNumbers, yourNumbers);
+		expected = ListExtensions.newArrayList(3, 7);
+		assertEquals(expected.size(), actual.size());
+		for (final Integer number : actual)
+		{
+			assertTrue(expected.contains(number));
+		}
+
+	}
+
 
 }

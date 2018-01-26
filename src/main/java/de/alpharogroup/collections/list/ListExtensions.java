@@ -38,6 +38,7 @@ import java.util.Vector;
 import org.apache.commons.beanutils.BeanComparator;
 import org.apache.commons.collections4.ComparatorUtils;
 
+import de.alpharogroup.collections.array.ArrayExtensions;
 import de.alpharogroup.collections.modifications.ModifiedCollections;
 import de.alpharogroup.comparators.SortOrderComparator;
 
@@ -592,20 +593,36 @@ public class ListExtensions
 	}
 
 	/**
-	 * Converts the given parameters to an object array.
+	 * Converts the given parameter elements to an object array.
 	 *
 	 * @param <T>
 	 *            the generic type
-	 * @param t
-	 *            The objects that will be in the returned object array
+	 * @param elements
+	 *            The elements that will be in the returned object array
 	 *
 	 * @return An Object array.
 	 */
 	@SafeVarargs
-	public static <T> Object[] toObjectArray(final T... t)
+	public static <T> Object[] toObjectArray(final T... elements)
 	{
-		final Object[] decorator = new Object[t.length];
-		System.arraycopy(t, 0, decorator, 0, t.length);
+		final Object[] decorator = new Object[elements.length];
+		System.arraycopy(elements, 0, decorator, 0, elements.length);
+		return decorator;
+	}
+
+	/**
+	 * To array.
+	 *
+	 * @param <T>
+	 *            the generic type
+	 * @param elements
+	 *            the elements
+	 * @return the t[]
+	 */
+	@SafeVarargs
+	public static <T> T[] toArray(final T... elements)
+	{
+		final T[] decorator = ArrayExtensions.newArray(elements);
 		return decorator;
 	}
 
