@@ -38,10 +38,12 @@ public class ValueBoxTest
 {
 
 	/**
-	 * Test method for {@link ValueBox#equals(Object)} , {@link ValueBox#hashCode()} and {@link ValueBox#toString()}
+	 * Test method for {@link ValueBox#equals(Object)} , {@link ValueBox#hashCode()} and
+	 * {@link ValueBox#toString()}
 	 */
 	@Test
-	public void testEqualsHashcodeAndToString() {
+	public void testEqualsHashcodeAndToString()
+	{
 
 		boolean expected;
 		boolean actual;
@@ -50,7 +52,8 @@ public class ValueBoxTest
 		final ValueBox<Integer> third = new ValueBox<>(2);
 		final ValueBox<Integer> fourth = new ValueBox<>(2);
 
-		actual = EqualsHashCodeAndToStringEvaluator.evaluateEqualsHashcodeAndToString(first, second, third, fourth);
+		actual = EqualsHashCodeAndToStringEvaluator.evaluateEqualsHashcodeAndToString(first, second,
+			third, fourth);
 		expected = true;
 		assertEquals(expected, actual);
 	}

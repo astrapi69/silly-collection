@@ -93,7 +93,8 @@ public class ChainableComparator<T> extends ComparatorChain<T>
 	 *
 	 * @see <code> ComparatorChain </code>
 	 */
-	public static <T> ChainableComparator<T> of(final Comparator<T> comparator, final boolean reverse)
+	public static <T> ChainableComparator<T> of(final Comparator<T> comparator,
+		final boolean reverse)
 	{
 		return new ChainableComparator<T>(comparator, reverse);
 	}

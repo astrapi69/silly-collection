@@ -559,6 +559,22 @@ public class ListExtensions
 	}
 
 	/**
+	 * To array.
+	 *
+	 * @param <T>
+	 *            the generic type
+	 * @param elements
+	 *            the elements
+	 * @return the t[]
+	 */
+	@SafeVarargs
+	public static <T> T[] toArray(final T... elements)
+	{
+		final T[] decorator = ArrayExtensions.newArray(elements);
+		return decorator;
+	}
+
+	/**
 	 * Converts the given enumaration to a Vector.
 	 *
 	 * @param <T>
@@ -607,22 +623,6 @@ public class ListExtensions
 	{
 		final Object[] decorator = new Object[elements.length];
 		System.arraycopy(elements, 0, decorator, 0, elements.length);
-		return decorator;
-	}
-
-	/**
-	 * To array.
-	 *
-	 * @param <T>
-	 *            the generic type
-	 * @param elements
-	 *            the elements
-	 * @return the t[]
-	 */
-	@SafeVarargs
-	public static <T> T[] toArray(final T... elements)
-	{
-		final T[] decorator = ArrayExtensions.newArray(elements);
 		return decorator;
 	}
 
