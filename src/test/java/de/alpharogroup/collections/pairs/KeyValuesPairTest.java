@@ -24,30 +24,38 @@
  */
 package de.alpharogroup.collections.pairs;
 
-import java.util.Set;
+import static org.testng.AssertJUnit.assertEquals;
+import static org.testng.AssertJUnit.assertTrue;
 
-import org.testng.AssertJUnit;
+import java.util.List;
+
 import org.testng.annotations.Test;
 
-import de.alpharogroup.collections.set.SetExtensions;
+import de.alpharogroup.collections.list.ListExtensions;
 import de.alpharogroup.test.objects.Employee;
 import de.alpharogroup.test.objects.Person;
 
+/**
+ * The unit test class for the class {@link KeyValuesPair}.
+ */
 public class KeyValuesPairTest
 {
 
+	/**
+	 * Test for method {@link KeyValuesPair#builder()} with List as collection
+	 */
 	@Test
-	public void testKeyValuesPairBuilder()
+	public void testKeyValuesPairWithList()
 	{
 		final Person person = Person.builder().name("John").married(Boolean.FALSE).build();
-		final Set<Employee> employees = SetExtensions.newHashSet();
+		final List<Employee> employees = ListExtensions.newArrayList();
 		employees.add(Employee.builder().id("10").build());
 		employees.add(Employee.builder().id("20").build());
 		final Employee employee = Employee.builder().id("20").build();
 		final KeyValuesPair<Person, Employee> kvp = KeyValuesPair.<Person, Employee> builder()
 			.key(person).values(employees).value(employee).build();
-		AssertJUnit.assertEquals(person, kvp.getKey());
-		AssertJUnit.assertTrue(kvp.getValues().size() == 3);
+		assertEquals(person, kvp.getKey());
+		assertTrue(kvp.getValues().size() == 3);
 	}
 
 }
