@@ -1,9 +1,14 @@
 # silly-collections
 
+<div align="center">
+
+[![MIT license](http://img.shields.io/badge/license-MIT-brightgreen.svg?style=flat)](http://opensource.org/licenses/MIT)
 [![Build Status](https://travis-ci.org/lightblueseas/silly-collections.svg?branch=master)](https://travis-ci.org/lightblueseas/silly-collections) 
 [![Coverage Status](https://coveralls.io/repos/github/lightblueseas/silly-collections/badge.svg?branch=develop)](https://coveralls.io/github/lightblueseas/silly-collections?branch=develop) 
 [![Maven Central](https://maven-badges.herokuapp.com/maven-central/de.alpharogroup/silly-collections/badge.svg)](https://maven-badges.herokuapp.com/maven-central/de.alpharogroup/silly-collections)
 [![Javadocs](http://www.javadoc.io/badge/de.alpharogroup/silly-collections.svg)](http://www.javadoc.io/doc/de.alpharogroup/silly-collections)
+
+</div>
 
 Utility library for collections, comparators and iterator classes
 
