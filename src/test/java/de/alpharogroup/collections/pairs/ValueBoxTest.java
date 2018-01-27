@@ -25,15 +25,11 @@
 package de.alpharogroup.collections.pairs;
 
 import static org.testng.AssertJUnit.assertEquals;
-import static org.testng.AssertJUnit.assertNotSame;
-import static org.testng.AssertJUnit.assertTrue;
 
 import org.meanbean.test.BeanTester;
 import org.testng.annotations.Test;
 
-import de.alpharogroup.test.objects.evaluations.EqualsEvaluator;
-import de.alpharogroup.test.objects.evaluations.HashcodeEvaluator;
-import de.alpharogroup.test.objects.evaluations.ToStringEvaluator;
+import de.alpharogroup.test.objects.evaluations.EqualsHashCodeAndToStringEvaluator;
 
 /**
  * The unit test class for the class {@link ValueBox}.
@@ -42,61 +38,19 @@ public class ValueBoxTest
 {
 
 	/**
-	 * Test method for {@link ValueBox#equals(Object)}
+	 * Test method for {@link ValueBox#equals(Object)} , {@link ValueBox#hashCode()} and {@link ValueBox#toString()}
 	 */
 	@Test
-	public void testEqualsObject()
-	{
-		final ValueBox<Integer> expected = ValueBox.<Integer> builder().value(2).build();
-		final ValueBox<String> actual = new ValueBox<>("Hello");
+	public void testEqualsHashcodeAndToString() {
 
-		assertNotSame(expected, actual);
-		final ValueBox<Integer> integerBox = new ValueBox<>(2);
-		assertEquals(expected, integerBox);
-		assertTrue(
-			EqualsEvaluator.evaluateReflexivityNonNullSymmetricAndConsistency(expected, actual));
-		assertTrue(EqualsEvaluator.evaluateReflexivityNonNullSymmetricConsistencyAndTransitivity(
-			expected, integerBox, new ValueBox<>(2)));
-	}
-
-	/**
-	 * Test method for {@link ValueBox#hashCode()}
-	 */
-	@Test
-	public void testHashcode()
-	{
 		boolean expected;
 		boolean actual;
-		final ValueBox<Integer> integerBox = ValueBox.<Integer> builder().value(2).build();
-		ValueBox<String> stringBox = ValueBox.<String> builder().value("Hello").build();
-		actual = HashcodeEvaluator.evaluateEquality(integerBox, new ValueBox<>(2));
-		expected = true;
-		assertEquals(expected, actual);
+		final ValueBox<Integer> first = ValueBox.<Integer> builder().value(2).build();
+		final ValueBox<String> second = new ValueBox<>("Hello");
+		final ValueBox<Integer> third = new ValueBox<>(2);
+		final ValueBox<Integer> fourth = new ValueBox<>(2);
 
-		expected = true;
-		actual = HashcodeEvaluator.evaluateUnequality(integerBox, stringBox);
-		assertEquals(expected, actual);
-
-		actual = HashcodeEvaluator.evaluateConsistency(integerBox);
-		expected = true;
-		assertEquals(expected, actual);
-	}
-
-	/**
-	 * Test method for {@link ValueBox#toString()}
-	 */
-	@Test
-	public void testToString()
-	{
-		boolean expected;
-		boolean actual;
-		actual = ToStringEvaluator.evaluate(ValueBox.class);
-		expected = true;
-		assertEquals(expected, actual);
-
-		final ValueBox<Integer> integerBox = ValueBox.<Integer> builder().value(2).build();
-
-		actual = ToStringEvaluator.evaluateConsistency(integerBox);
+		actual = EqualsHashCodeAndToStringEvaluator.evaluateEqualsHashcodeAndToString(first, second, third, fourth);
 		expected = true;
 		assertEquals(expected, actual);
 	}
@@ -107,7 +61,7 @@ public class ValueBoxTest
 	@Test
 	public void testWithBeanTester()
 	{
-		BeanTester beanTester = new BeanTester();
+		final BeanTester beanTester = new BeanTester();
 		beanTester.testBean(ValueBox.class);
 	}
 
