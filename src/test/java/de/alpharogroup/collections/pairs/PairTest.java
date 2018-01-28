@@ -24,14 +24,53 @@
  */
 package de.alpharogroup.collections.pairs;
 
+import static org.testng.AssertJUnit.assertEquals;
+
 import org.meanbean.test.BeanTester;
 import org.testng.annotations.Test;
+
+import de.alpharogroup.test.objects.evaluations.EqualsHashCodeAndToStringEvaluator;
 
 /**
  * The unit test class for the class {@link Pair}.
  */
 public class PairTest
 {
+
+	/**
+	 * Test method for {@link Pair#equals(Object)} , {@link Pair#hashCode()} and
+	 * {@link Pair#toString()}
+	 */
+	@Test
+	public void testEqualsHashcodeAndToString()
+	{
+
+		boolean expected;
+		boolean actual;
+
+		final Pair<String, String> first = Pair.<String, String> builder()
+			.leftContent("1")
+			.rightContent("value")
+			.build();
+		final Pair<Integer, String> second = new Pair<>();
+		second.setLeftContent(1);
+		second.setRightContent("somevalue");
+
+		final Pair<String, String> third = Pair.<String, String> builder()
+			.leftContent("1")
+			.rightContent("value")
+			.build();
+
+		final Pair<String, String> fourth = Pair.<String, String> builder()
+			.leftContent("1")
+			.rightContent("value")
+			.build();
+
+		actual = EqualsHashCodeAndToStringEvaluator.evaluateEqualsHashcodeAndToString(first, second,
+			third, fourth);
+		expected = true;
+		assertEquals(expected, actual);
+	}
 
 
 	/**

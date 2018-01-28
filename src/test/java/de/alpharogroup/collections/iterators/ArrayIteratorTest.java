@@ -112,9 +112,11 @@ public class ArrayIteratorTest
 	{
 		boolean expected;
 		boolean actual;
-
-		final ArrayIterator<Object> arrayIterator = new ArrayIterator<>(new Object[] { });
+		Object[] array = new Object[] { };
+		final ArrayIterator<Object> arrayIterator = new ArrayIterator<>(array);
 		assertNotNull(arrayIterator);
+
+		assertEquals(array, arrayIterator.getArray());
 
 		expected = false;
 		actual = arrayIterator.hasNext();
