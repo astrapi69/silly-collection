@@ -86,7 +86,7 @@ public class PropertiesExtensionsTest
 	}
 
 	/**
-	 * Test to key value pairs.
+	 * Test for method {@link PropertiesExtensions#toKeyValuePairs(Properties)}
 	 */
 	@Test
 	public void testToKeyValuePairs()
@@ -112,7 +112,7 @@ public class PropertiesExtensionsTest
 	}
 
 	/**
-	 * Test get matched prefix lists.
+	 * Test for method {@link PropertiesExtensions#getMatchedPrefixLists(Properties)}
 	 */
 	@Test(enabled = true)
 	public void testGetMatchedPrefixLists()
@@ -132,11 +132,14 @@ public class PropertiesExtensionsTest
 	}
 
 	/**
-	 * Test get property parameters.
+	 * Test for method {@link PropertiesExtensions#getPropertyParameters(String)}
 	 */
 	@Test
 	public void testGetPropertyParameters()
 	{
+		final String propertyValue = "Hello, {0} {1} {2}!";
+		final List<String> propertyParameters = PropertiesExtensions.getPropertyParameters(propertyValue);
+		assertEquals(propertyParameters.size(), 3);
 	}
 
 	/**
