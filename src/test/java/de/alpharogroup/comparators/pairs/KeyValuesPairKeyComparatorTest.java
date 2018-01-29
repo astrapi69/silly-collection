@@ -24,30 +24,23 @@
  */
 package de.alpharogroup.comparators.pairs;
 
-import java.util.Comparator;
+import org.meanbean.test.BeanTester;
+import org.testng.annotations.Test;
 
-import de.alpharogroup.collections.pairs.KeyValuesPair;
 
 /**
- * The class {@link KeyValuePairsKeyComparator} compares {@linkplain KeyValuesPair} objects over the
- * key where the key have to implements the {@linkplain Comparable} interface.
- *
- * @param <K>
- *            The generic type of the key
- * @param <V>
- *            The generic type of the value
+ * The unit test class for the class {@link KeyValuesPairKeyComparator}.
  */
-public class KeyValuePairsKeyComparator<K extends Comparable<K>, V>
-	implements
-		Comparator<KeyValuesPair<K, V>>
+public class KeyValuesPairKeyComparatorTest
 {
 
 	/**
-	 * {@inheritDoc}
+	 * Test method for {@link KeyValuesPairKeyComparator}
 	 */
-	@Override
-	public int compare(final KeyValuesPair<K, V> o1, final KeyValuesPair<K, V> o2)
+	@Test
+	public void testWithBeanTester()
 	{
-		return o1.getKey().compareTo(o2.getKey());
+		BeanTester beanTester = new BeanTester();
+		beanTester.testBean(KeyValuesPairKeyComparator.class);
 	}
 }
