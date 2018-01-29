@@ -24,6 +24,7 @@
  */
 package de.alpharogroup.collections.properties;
 
+import static org.testng.Assert.assertEquals;
 import static org.testng.AssertJUnit.assertNotNull;
 import static org.testng.AssertJUnit.assertTrue;
 
@@ -41,15 +42,20 @@ import de.alpharogroup.collections.pairs.KeyValuePair;
 /**
  * Test class for the class {@link PropertiesExtensions}.
  *
- * @version 1.0
  * @author Asterios Raptis
+ * @version 1.0
  */
 public class PropertiesExtensionsTest
 {
 
 
+	/**
+	 * Test for method {@link PropertiesExtensions#findRedundantValues(Properties)}
+	 *
+	 * @throws IOException Signals that an I/O exception has occurred.
+	 */
 	@SuppressWarnings("serial")
-	@Test(enabled = false)
+	@Test(enabled = true)
 	public void testFindRedundantValues() throws IOException
 	{
 		final Properties properties = new Properties();
@@ -79,6 +85,9 @@ public class PropertiesExtensionsTest
 		});
 	}
 
+	/**
+	 * Test to key value pairs.
+	 */
 	@Test
 	public void testToKeyValuePairs()
 	{
@@ -100,6 +109,74 @@ public class PropertiesExtensionsTest
 		assertNotNull(list);
 		assertTrue(list.size() == 2);
 
+	}
+
+	/**
+	 * Test get matched prefix lists.
+	 */
+	@Test(enabled = true)
+	public void testGetMatchedPrefixLists()
+	{
+		final Properties properties = new Properties();
+
+		properties.put("com", "Hello, {0} {1} {2}!");
+		properties.put("foo.redundant.value", "Hello, {0} {1} {2}!");
+		properties.put("com.example.gui.window.title", "Hello, {0}!");
+		properties.put("com.example.gui.window.buttons.ok", "OK");
+		properties.put("foo.bar", "OK");
+		properties.put("com.example.gui.window.buttons.cancel", "Cancel");
+
+		final Map<String, List<String>> matchedPrefixLists = PropertiesExtensions.getMatchedPrefixLists(properties);
+
+		assertEquals(matchedPrefixLists.size(), 5);
+	}
+
+	/**
+	 * Test get property parameters.
+	 */
+	@Test
+	public void testGetPropertyParameters()
+	{
+	}
+
+	/**
+	 * Test load properties.
+	 */
+	@Test
+	public void testLoadProperties()
+	{
+	}
+
+	/**
+	 * Test to properties file file string.
+	 */
+	@Test
+	public void testToPropertiesFileFileString()
+	{
+	}
+
+	/**
+	 * Test to properties output stream input stream string.
+	 */
+	@Test
+	public void testToPropertiesOutputStreamInputStreamString()
+	{
+	}
+
+	/**
+	 * Test to xml file file string string.
+	 */
+	@Test
+	public void testToXmlFileFileStringString()
+	{
+	}
+
+	/**
+	 * Test to xml input stream output stream string string.
+	 */
+	@Test
+	public void testToXmlInputStreamOutputStreamStringString()
+	{
 	}
 
 }

@@ -104,13 +104,13 @@ public final class PropertiesExtensions
 	 * with the prefix as a key and holds a List with the whole keys the starts with the same key
 	 * prefix.
 	 *
-	 * @param enProperties
+	 * @param properties
 	 *            the en properties
 	 * @return the matched prefix lists
 	 */
-	public static Map<String, List<String>> getMatchedPrefixLists(final Properties enProperties)
+	public static Map<String, List<String>> getMatchedPrefixLists(final Properties properties)
 	{
-		final Enumeration<?> e = enProperties.propertyNames();
+		final Enumeration<?> e = properties.propertyNames();
 		final Map<String, List<String>> matchedPrefixes = new LinkedHashMap<>();
 		while (e.hasMoreElements())
 		{
