@@ -24,8 +24,7 @@
  */
 package de.alpharogroup.collections;
 
-import static org.testng.Assert.assertNotNull;
-import static org.testng.AssertJUnit.assertEquals;
+import static org.testng.AssertJUnit.*;
 import static org.testng.AssertJUnit.assertTrue;
 
 import java.util.ArrayList;
@@ -85,6 +84,10 @@ public class CollectionExtensionsTest
 		{
 			assertTrue(expected.contains(name));
 		}
+
+		actual = CollectionExtensions.intersection(vipNames);
+		assertNull(actual);
+
 	}
 
 
@@ -117,6 +120,25 @@ public class CollectionExtensionsTest
 			assertTrue(expected.contains(number));
 		}
 
+	}
+
+
+	@Test
+	public void testDifference()
+	{
+		Collection<Integer> expected;
+		final Collection<Integer> actual;
+		Collection<Integer> yourNumbers;
+		yourNumbers = ListExtensions.newArrayList( 22, 33, 25, 45);
+		actual = ListExtensions.newArrayList(3, 7, 22, 23, 34, 45);
+		expected = ListExtensions.newArrayList(3, 7, 23, 34);
+		CollectionExtensions.difference(actual, yourNumbers);
+
+		assertEquals(expected.size(), actual.size());
+		for (final Integer number : actual)
+		{
+			assertTrue(expected.contains(number));
+		}
 	}
 
 

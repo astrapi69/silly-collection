@@ -26,11 +26,14 @@ package de.alpharogroup.collections;
 
 import java.util.Collection;
 
+import lombok.experimental.UtilityClass;
+
 /**
  * The class {@link CollectionExtensions} is an extension class for use with {@link Collection}
- * objects. .
+ * objects.
  */
-public class CollectionExtensions
+@UtilityClass
+public final class CollectionExtensions
 {
 
 	/**
