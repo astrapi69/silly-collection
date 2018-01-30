@@ -351,17 +351,58 @@ public class IndexSortedPropertiesTest
 		actual = properties.get(0);
 		expected = "1";
 		assertEquals(expected, actual);
+
+		actual = properties.get(5);
+		expected = null;
+		assertEquals(expected, actual);
+
+
 	}
 
-	@Test(enabled = false)
+	@Test(enabled = true)
 	public void testGetPropertyInt()
 	{
+		final Properties unsortedProperties = new Properties();
+		unsortedProperties.put("B", "2");
+		unsortedProperties.put("C", "3");
+		unsortedProperties.put("A", "1");
+		unsortedProperties.put("D", "4");
+		unsortedProperties.put("E", "5");
+
+		final IndexSortedProperties properties = IndexSortedProperties.of(unsortedProperties);
+		Object expected;
+		Object actual;
+		actual = properties.getProperty(0);
+		expected = "1";
+		assertEquals(expected, actual);
+
+		actual = properties.getProperty(5);
+		expected = null;
+		assertEquals(expected, actual);
 	}
 
 
 	@Test(enabled = false)
 	public void testPutAllMapOfQextendsObjectQextendsObject()
 	{
+		final Properties unsortedProperties = new Properties();
+		unsortedProperties.put("B", "2");
+		unsortedProperties.put("C", "3");
+		unsortedProperties.put("A", "1");
+		unsortedProperties.put("D", "4");
+		unsortedProperties.put("E", "5");
+
+		final IndexSortedProperties properties = IndexSortedProperties.of();
+		properties.putAll(unsortedProperties);
+		Object expected;
+		Object actual;
+		actual = properties.getProperty(0);
+		expected = "1";
+		assertEquals(expected, actual);
+
+		actual = properties.getProperty(5);
+		expected = null;
+		assertEquals(expected, actual);
 	}
 
 	@Test(enabled = false)

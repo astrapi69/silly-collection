@@ -189,7 +189,7 @@ public class IndexSortedProperties extends SortedProperties
 	 */
 	public String getProperty(final int index)
 	{
-		if (index < size())
+		if (index < keys.size())
 			return getProperty((String)keys.get(index));
 		return null;
 	}
@@ -244,7 +244,7 @@ public class IndexSortedProperties extends SortedProperties
 	 */
 	public synchronized Object remove(final int index)
 	{
-		if (index < size())
+		if (index < keys.size())
 			return remove(keys.get(index));
 		return null;
 	}
@@ -265,8 +265,10 @@ public class IndexSortedProperties extends SortedProperties
 	@Override
 	public synchronized boolean remove(final Object key, final Object value)
 	{
-		removeKey(key);
-		return super.remove(key, value);
+		final boolean removed = super.remove(key, value);
+		if(removed)
+			removeKey(key);
+		return removed;
 	}
 
 	/**
