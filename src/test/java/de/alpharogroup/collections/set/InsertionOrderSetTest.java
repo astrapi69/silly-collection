@@ -24,7 +24,7 @@
  */
 package de.alpharogroup.collections.set;
 
-import java.util.LinkedHashSet;
+import java.util.Arrays;
 import java.util.Set;
 
 import org.testng.AssertJUnit;
@@ -91,11 +91,49 @@ public class InsertionOrderSetTest
 	 * Test the InsertionOrderMap.
 	 */
 	@Test
-	public void testLinkedHashSet()
+	public void testInsertionOrderSetOf()
 	{
-		final String expected[] = { "value1", "value2", "value3", "value4" };
+		final String expected[] = { "value1", "value3", "value4", "value2" };
+
+		final Set<String> set = InsertionOrderSet.setOf("value1", "value2", "value3", "value4" );
+
+
+		set.add("value2"); // Add the same object.
 		int count = 0;
-		final Set<String> set = new LinkedHashSet<>();
+		for (final String element : set)
+		{
+			final String exp = expected[count];
+			AssertJUnit.assertTrue(element.equals(exp));
+			count++;
+		}
+	}
+
+	@Test
+	public void testInsertionOrderSetCollectionOfQextendsE()
+	{
+
+		final String expected[] = { "value1", "value3", "value4", "value2" };
+
+		final String elements[] = { "value1", "value2", "value3", "value4" };
+
+		final Set<String> set = new InsertionOrderSet<>(Arrays.asList(elements));
+
+		set.add("value2"); // Add the same object.
+		int count = 0;
+		for (final String element : set)
+		{
+			final String exp = expected[count];
+			AssertJUnit.assertTrue(element.equals(exp));
+			count++;
+		}
+	}
+
+	@Test
+	public void testInsertionOrderSetInt()
+	{
+		final String expected[] = { "value1", "value3", "value4", "value2" };
+		int count = 0;
+		final Set<String> set = new InsertionOrderSet<>(4);
 		set.add("value1");
 		set.add("value2");
 		set.add("value3");
@@ -105,10 +143,50 @@ public class InsertionOrderSetTest
 
 		for (final String element : set)
 		{
-			final String exp = expected[count];
-			AssertJUnit.assertTrue(element.equals(exp));
+			AssertJUnit.assertTrue(element.equals(expected[count]));
 			count++;
 		}
 	}
+
+	@Test
+	public void testInsertionOrderSetIntFloat()
+	{
+		final String expected[] = { "value1", "value3", "value4", "value2" };
+		int count = 0;
+		final Set<String> set = new InsertionOrderSet<>(4, 4f);
+		set.add("value1");
+		set.add("value2");
+		set.add("value3");
+		set.add("value4");
+
+		set.add("value2"); // Add the same object.
+
+		for (final String element : set)
+		{
+			AssertJUnit.assertTrue(element.equals(expected[count]));
+			count++;
+		}
+	}
+
+	@Test
+	public void testAddE()
+	{
+		final String expected[] = { "value1", "value3", "value4", "value2" };
+		int count = 0;
+		final Set<String> set = new InsertionOrderSet<>(4, 4f);
+		set.add("value1");
+		set.add("value2");
+		set.add("value3");
+		set.add("value4");
+
+		set.add("value2"); // Add the same object.
+
+		for (final String element : set)
+		{
+			AssertJUnit.assertTrue(element.equals(expected[count]));
+			count++;
+		}
+	}
+
 
 }
