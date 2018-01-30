@@ -24,6 +24,8 @@
  */
 package de.alpharogroup.collections.properties;
 
+import static org.testng.AssertJUnit.assertNotNull;
+
 import java.util.Comparator;
 import java.util.Enumeration;
 import java.util.Properties;
@@ -184,5 +186,43 @@ public class IndexSortedPropertiesTest
 		actual = properties.indexOf("1");
 		AssertJUnit.assertEquals(expected, actual);
 	}
-
+	
+	
+	/**
+	 * Test for method {@link IndexSortedProperties#of()} and      {@link IndexSortedProperties#of(Properties)}
+	 */
+	@Test
+	public void testFactoryMethods()
+	{
+		IndexSortedProperties indexSortedProperties = IndexSortedProperties.of();
+		assertNotNull(indexSortedProperties);
+		
+		
+		final Properties unsortedProperties = new Properties();
+		unsortedProperties.put("B", "2");
+		unsortedProperties.put("C", "3");
+		unsortedProperties.put("A", "1");
+		unsortedProperties.put("D", "4");
+		unsortedProperties.put("E", "5");
+		
+		IndexSortedProperties properties = IndexSortedProperties.of(unsortedProperties) ;
+		int expected;
+		int actual;
+		expected = 4;
+		actual = properties.indexOf("5");
+		AssertJUnit.assertEquals(expected, actual);
+		expected = 3;
+		actual = properties.indexOf("4");
+		AssertJUnit.assertEquals(expected, actual);
+		expected = 2;
+		actual = properties.indexOf("3");
+		AssertJUnit.assertEquals(expected, actual);
+		expected = 1;
+		actual = properties.indexOf("2");
+		AssertJUnit.assertEquals(expected, actual);
+		expected = 0;
+		actual = properties.indexOf("1");
+		AssertJUnit.assertEquals(expected, actual);
+		
+	}
 }
