@@ -175,8 +175,8 @@ public class IndexSortedProperties extends SortedProperties
 	 */
 	public synchronized Object get(final int index)
 	{
-		if (index < size())
-			return get(keys.get(index));
+		if (index < keys.size())
+			return getProperty((String)keys.get(index));
 		return null;
 	}
 
