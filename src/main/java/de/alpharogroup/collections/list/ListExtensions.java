@@ -397,7 +397,7 @@ public final class ListExtensions
 	 *            How much to remove.
 	 * @return the list
 	 */
-	public static <T> List<T> removeLastValues(final ArrayList<T> v, final int remove)
+	public static <T> List<T> removeLastValues(final List<T> v, final int remove)
 	{
 		if (remove < v.size())
 		{

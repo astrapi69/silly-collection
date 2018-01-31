@@ -409,7 +409,7 @@ public class ListExtensionsTest
 	@Test
 	public void testRemoveLast()
 	{
-		final String expected = "Leonidas";
+		String expected = "Leonidas";
 		final String removed = "Berta";
 		final List<String> search = new ArrayList<>();
 		search.add("Anton");
@@ -423,6 +423,62 @@ public class ListExtensionsTest
 
 		compare = ListExtensions.getLast(search);
 		assertTrue("", expected.equals(compare));
+
+		search.clear();
+
+		final String actual = ListExtensions.removeLast(search);
+		expected = null;
+		assertEquals(expected, actual);
+	}
+
+	@Test
+	public void testRemoveLastValues()
+	{
+		final String expected = "Leonidas";
+		final String removed = "Berta";
+		final List<String> search = new ArrayList<>();
+		search.add("Anton");
+		search.add("Caesar");
+		search.add("Dora");
+		search.add("Emil");
+		search.add(expected);
+		search.add(removed);
+		final List<String> removedLastValues = ListExtensions.removeLastValues(search, 2);
+		assertTrue(removedLastValues.size() == 4);
+
+	}
+
+	@Test(expectedExceptions = IllegalArgumentException.class)
+	public void testRemoveLastValuesException()
+	{
+		final String expected = "Leonidas";
+		final String removed = "Berta";
+		final List<String> search = new ArrayList<>();
+		search.add("Anton");
+		search.add("Caesar");
+		search.add("Dora");
+		search.add("Emil");
+		search.add(expected);
+		search.add(removed);
+		final List<String> removedLastValues = ListExtensions.removeLastValues(search, 7);
+		assertTrue(removedLastValues.size() == 4);
+	}
+
+	@Test
+	public void testRevertOrder()
+	{
+		final String expected = "Leonidas";
+		final String removed = "Berta";
+		final List<String> search = new ArrayList<>();
+		search.add("Anton");
+		search.add("Caesar");
+		search.add("Dora");
+		search.add("Emil");
+		search.add(expected);
+		search.add(removed);
+		final List<String> revertOrdered = ListExtensions.revertOrder(search);
+		assertNotNull(revertOrdered);
+		// TODO check the order...
 	}
 
 	/**
