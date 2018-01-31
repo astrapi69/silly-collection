@@ -635,6 +635,37 @@ public class ListExtensionsTest
 		}
 	}
 
+
+	@Test
+	public void testToArray()
+	{
+		Integer actual;
+		Integer expected;
+		final Integer[] numbers = { 1, 2, 3 };
+		final Integer[] array = ListExtensions.toArray(1, 2, 3);
+		for (int i = 0; i < numbers.length; i++)
+		{
+			expected = numbers[i];
+			actual = array[i];
+			assertEquals(expected, actual);
+		}
+	}
+
+	@Test
+	public void testToListEnumerationOfT()
+	{
+	}
+
+	@Test
+	public void testToListSetOfT()
+	{
+	}
+
+	@Test
+	public void testToVector()
+	{
+	}
+
 	/**
 	 * Test the method {@link ListExtensions#toObjectArray(Object...)}.
 	 */
