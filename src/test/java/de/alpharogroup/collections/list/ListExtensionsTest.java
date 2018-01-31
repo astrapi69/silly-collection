@@ -110,16 +110,23 @@ public class ListExtensionsTest
 	@Test
 	public void testGetFirst()
 	{
-		final String expected = "Leonidas";
-		final List<String> search = new ArrayList<>();
+		String actual;
+		String expected;
+		expected = "Leonidas";
+		List<String> search = new ArrayList<>();
 		search.add(expected);
 		search.add("Berta");
 		search.add("Caesar");
 		search.add("Dora");
 		search.add("Emil");
 		search.add("Anton");
-		final String compare = ListExtensions.getFirst(search);
-		assertTrue("", expected.equals(compare));
+		actual = ListExtensions.getFirst(search);
+		assertEquals(expected, actual);
+
+		search = new ArrayList<>();
+		actual = ListExtensions.getFirst(search);
+		expected = null;
+		assertEquals(expected, actual);
 	}
 
 	/**
@@ -228,16 +235,24 @@ public class ListExtensionsTest
 	@Test
 	public void testIsLast()
 	{
-		final String expected = "Leonidas";
+		boolean actual;
+		boolean expected;
+		String name;
+		name = "Leonidas";
 		final List<String> search = new ArrayList<>();
 		search.add("Anton");
 		search.add("Berta");
 		search.add("Caesar");
 		search.add("Dora");
 		search.add("Emil");
-		search.add(expected);
-		final boolean actual = search.isLast(expected);
-		assertTrue("", actual);
+		search.add(name);
+		actual = search.isLast(name);
+		expected = true;
+		assertEquals(expected, actual);
+
+		actual = ListExtensions.isLast(search, "Emil");
+		expected = false;
+		assertEquals(expected, actual);
 	}
 
 	/**
@@ -273,9 +288,14 @@ public class ListExtensionsTest
 	@Test
 	public void testNewArrayListCollectionObjects()
 	{
-		final List<String> strings = ListExtensions.newArrayList(null, "foo");
+		List<String> strings = ListExtensions.newArrayList(null, "foo");
 		assertNotNull(strings);
 		assertTrue(strings.size() == 1);
+		assertTrue(strings.get(0).equals("foo"));
+
+		strings = ListExtensions.newArrayList(strings, "foo");
+		assertNotNull(strings);
+		assertTrue(strings.size() == 2);
 		assertTrue(strings.get(0).equals("foo"));
 	}
 
@@ -288,6 +308,14 @@ public class ListExtensionsTest
 		final List<String> strings = ListExtensions.newArrayList(2);
 		assertNotNull(strings);
 		assertTrue(strings.size() == 0);
+	}
+
+	@Test
+	public void testPrintCollection()
+	{
+		final List<String> strings = ListExtensions.newArrayList("2", "3");
+		assertNotNull(strings);
+		ListExtensions.printCollection(strings);
 	}
 
 	/**
@@ -320,6 +348,13 @@ public class ListExtensionsTest
 		assertTrue(Arrays.deepEquals(actual, expected));
 	}
 
+
+	@Test(expectedExceptions = IllegalArgumentException.class)
+	public void testNewRangeArrayException()
+	{
+		ListExtensions.newRangeArray(9, 8);
+	}
+
 	@SuppressWarnings("serial")
 	@Test
 	public void testNewRangeList()
@@ -345,7 +380,7 @@ public class ListExtensionsTest
 	@Test
 	public void testRemoveFirst()
 	{
-		final String expected = "Leonidas";
+		String expected = "Leonidas";
 		final String removed = "Berta";
 		final List<String> search = new ArrayList<>();
 		search.add(removed);
@@ -354,11 +389,17 @@ public class ListExtensionsTest
 		search.add("Dora");
 		search.add("Emil");
 		search.add("Anton");
-		String compare = ListExtensions.removeFirst(search);
-		assertTrue("", removed.equals(compare));
+		String actual = ListExtensions.removeFirst(search);
+		assertTrue("", removed.equals(actual));
 
-		compare = ListExtensions.getFirst(search);
-		assertTrue("", expected.equals(compare));
+		actual = ListExtensions.getFirst(search);
+		assertEquals(expected, actual);
+
+		search.clear();
+
+		actual = ListExtensions.removeFirst(search);
+		expected = null;
+		assertEquals(expected, actual);
 	}
 
 	/**
