@@ -36,7 +36,7 @@ import org.testng.annotations.Test;
 import de.alpharogroup.comparators.NullCheckComparator;
 
 /**
- * Test class for the class {@link IndexSortedProperties}.
+ * The unit test class for the class {@link IndexSortedProperties}.
  *
  * @author Asterios Raptis
  */
@@ -93,7 +93,9 @@ public class IndexSortedPropertiesTest
 			protected Comparator<Object> newComparator()
 			{
 
-				return NullCheckComparator.<Object> of((final Object o1, final Object o2) -> o1.toString().compareTo(o2.toString()), false);
+				return NullCheckComparator.<Object> of(
+					(final Object o1, final Object o2) -> o1.toString().compareTo(o2.toString()),
+					false);
 			}
 		};
 
@@ -240,7 +242,8 @@ public class IndexSortedPropertiesTest
 		unsortedProperties.put("E", "5");
 
 		IndexSortedProperties properties = IndexSortedProperties.of(unsortedProperties,
-			NullCheckComparator.of((final Object o1, final Object o2) -> o1.toString().compareTo(o2.toString())));
+			NullCheckComparator
+				.of((final Object o1, final Object o2) -> o1.toString().compareTo(o2.toString())));
 		expected = 4;
 		actual = properties.indexOf("5");
 		assertEquals(expected, actual);
@@ -258,8 +261,9 @@ public class IndexSortedPropertiesTest
 		assertEquals(expected, actual);
 
 		properties = IndexSortedProperties.of(unsortedProperties,
-			NullCheckComparator.of(
-					(final Object o1, final Object o2) -> o1.toString().compareTo(o2.toString())), false);
+			NullCheckComparator
+				.of((final Object o1, final Object o2) -> o1.toString().compareTo(o2.toString())),
+			false);
 		expected = 4;
 		actual = properties.indexOf("5");
 		assertEquals(expected, actual);
@@ -397,38 +401,38 @@ public class IndexSortedPropertiesTest
 		unsortedProperties.put("A", "1");
 		unsortedProperties.put("D", "4");
 		unsortedProperties.put("E", "5");
-		
+
 		final IndexSortedProperties properties = IndexSortedProperties.of();
 		properties.putAll(unsortedProperties);
 		Object expected;
 		Object actual;
 		Object removed;
-		
+
 		removed = properties.remove(0);
 		actual = removed;
 		expected = "1";
 		assertEquals(expected, actual);
-		
+
 		removed = properties.remove(0);
 		actual = removed;
 		expected = "2";
 		assertEquals(expected, actual);
-		
+
 		removed = properties.remove(0);
 		actual = removed;
 		expected = "3";
 		assertEquals(expected, actual);
-		
+
 		removed = properties.remove(0);
 		actual = removed;
 		expected = "4";
 		assertEquals(expected, actual);
-		
+
 		removed = properties.remove(0);
 		actual = removed;
 		expected = "5";
 		assertEquals(expected, actual);
-		
+
 		removed = properties.remove(0);
 		actual = removed;
 		expected = null;
@@ -444,38 +448,38 @@ public class IndexSortedPropertiesTest
 		unsortedProperties.put("A", "1");
 		unsortedProperties.put("D", "4");
 		unsortedProperties.put("E", "5");
-		
+
 		final IndexSortedProperties properties = IndexSortedProperties.of();
 		properties.putAll(unsortedProperties);
 		Object expected;
 		Object actual;
 		Object removed;
-		
+
 		removed = properties.remove("A");
 		actual = removed;
 		expected = "1";
 		assertEquals(expected, actual);
-		
+
 		removed = properties.remove("B");
 		actual = removed;
 		expected = "2";
 		assertEquals(expected, actual);
-		
+
 		removed = properties.remove("C");
 		actual = removed;
 		expected = "3";
 		assertEquals(expected, actual);
-		
+
 		removed = properties.remove("D");
 		actual = removed;
 		expected = "4";
 		assertEquals(expected, actual);
-		
+
 		removed = properties.remove("E");
 		actual = removed;
 		expected = "5";
 		assertEquals(expected, actual);
-		
+
 		removed = properties.remove("E");
 		actual = removed;
 		expected = null;
@@ -491,38 +495,38 @@ public class IndexSortedPropertiesTest
 		unsortedProperties.put("A", "1");
 		unsortedProperties.put("D", "4");
 		unsortedProperties.put("E", "5");
-		
+
 		final IndexSortedProperties properties = IndexSortedProperties.of();
 		properties.putAll(unsortedProperties);
 		Object expected;
 		Object actual;
 		Object removed;
-		
+
 		removed = properties.remove("A", "1");
 		actual = removed;
 		expected = Boolean.TRUE;
 		assertEquals(expected, actual);
-		
+
 		removed = properties.remove("B", "2");
 		actual = removed;
 		expected = Boolean.TRUE;
 		assertEquals(expected, actual);
-		
+
 		removed = properties.remove("C", "3");
 		actual = removed;
 		expected = Boolean.TRUE;
 		assertEquals(expected, actual);
-		
+
 		removed = properties.remove("D", "4");
 		actual = removed;
 		expected = Boolean.TRUE;
 		assertEquals(expected, actual);
-		
+
 		removed = properties.remove("E", "5");
 		actual = removed;
 		expected = Boolean.TRUE;
 		assertEquals(expected, actual);
-		
+
 		removed = properties.remove("E", "5");
 		actual = removed;
 		expected = Boolean.FALSE;

@@ -24,6 +24,8 @@
  */
 package de.alpharogroup.collections.properties;
 
+import static org.testng.AssertJUnit.assertNotNull;
+
 import java.util.Comparator;
 import java.util.Enumeration;
 import java.util.Properties;
@@ -35,14 +37,15 @@ import org.testng.annotations.Test;
 import de.alpharogroup.comparators.NullCheckComparator;
 
 /**
- * The test class for {@link SortedProperties}.
+ * The unit test class for the class {@link SortedProperties}.
  *
  * @author Asterios Raptis
  */
 public class SortedPropertiesTest
 {
+
 	/**
-	 * Test for constructor with unsorted Properties.
+	 * Test for constructor of {@link SortedProperties}.
 	 */
 	@Test
 	public void testConstructor()
@@ -91,14 +94,10 @@ public class SortedPropertiesTest
 			protected Comparator<Object> newComparator()
 			{
 
-				return NullCheckComparator.<Object> of(new Comparator<Object>()
-				{
-					@Override
-					public int compare(final Object o1, final Object o2)
-					{
-						return ((o1.toString().compareTo(o2.toString())) * (-1));
-					}
-				}, false);
+				return NullCheckComparator.<Object> of(
+					(final Object o1,
+						final Object o2) -> ((o1.toString().compareTo(o2.toString())) * (-1)),
+					false);
 			}
 		};
 
@@ -128,7 +127,7 @@ public class SortedPropertiesTest
 	}
 
 	/**
-	 * Test for method keys of class SortedProperties.
+	 * Test for method {@link SortedProperties#keys()}
 	 */
 	@Test
 	public void testKeys()
@@ -174,14 +173,10 @@ public class SortedPropertiesTest
 			protected Comparator<Object> newComparator()
 			{
 
-				return NullCheckComparator.<Object> of(new Comparator<Object>()
-				{
-					@Override
-					public int compare(final Object o1, final Object o2)
-					{
-						return ((o1.toString().compareTo(o2.toString())) * (-1));
-					}
-				}, false);
+				return NullCheckComparator.<Object> of(
+					(final Object o1,
+						final Object o2) -> ((o1.toString().compareTo(o2.toString())) * (-1)),
+					false);
 			}
 		};
 		sortedProperties.put("B", "2");
@@ -215,7 +210,7 @@ public class SortedPropertiesTest
 	}
 
 	/**
-	 * Test for method keySet of class SortedProperties.
+	 * Test for method {@link SortedProperties#keySet()}
 	 */
 	@Test
 	public void testKeySet()
@@ -260,14 +255,10 @@ public class SortedPropertiesTest
 			protected Comparator<Object> newComparator()
 			{
 
-				return NullCheckComparator.<Object> of(new Comparator<Object>()
-				{
-					@Override
-					public int compare(final Object o1, final Object o2)
-					{
-						return ((o1.toString().compareTo(o2.toString())) * (-1));
-					}
-				}, false);
+				return NullCheckComparator.<Object> of(
+					(final Object o1,
+						final Object o2) -> ((o1.toString().compareTo(o2.toString())) * (-1)),
+					false);
 			}
 		};
 		sortedProperties.put("B", "2");
@@ -300,7 +291,7 @@ public class SortedPropertiesTest
 	}
 
 	/**
-	 * Test for method propertyNames of class SortedProperties.
+	 * Test for method {@link SortedProperties#propertyNames()}
 	 */
 	@Test
 	public void testPropertyNames()
@@ -346,14 +337,10 @@ public class SortedPropertiesTest
 			protected Comparator<Object> newComparator()
 			{
 
-				return NullCheckComparator.<Object> of(new Comparator<Object>()
-				{
-					@Override
-					public int compare(final Object o1, final Object o2)
-					{
-						return ((o1.toString().compareTo(o2.toString())) * (-1));
-					}
-				}, false);
+				return NullCheckComparator.<Object> of(
+					(final Object o1,
+						final Object o2) -> ((o1.toString().compareTo(o2.toString())) * (-1)),
+					false);
 			}
 		};
 		sortedProperties.put("B", "2");
@@ -361,6 +348,78 @@ public class SortedPropertiesTest
 		sortedProperties.put("A", "1");
 		sortedProperties.put("D", "4");
 
+		propertyNames = sortedProperties.propertyNames();
+		count = 1;
+		while (propertyNames.hasMoreElements())
+		{
+			final Object key = propertyNames.nextElement();
+			if (count == 1)
+			{
+				AssertJUnit.assertEquals(key, "D");
+			}
+			if (count == 2)
+			{
+				AssertJUnit.assertEquals(key, "C");
+			}
+			if (count == 3)
+			{
+				AssertJUnit.assertEquals(key, "B");
+			}
+			if (count == 4)
+			{
+				AssertJUnit.assertEquals(key, "A");
+			}
+			count++;
+		}
+	}
+
+	/**
+	 * Test for factory method {@link SortedProperties#of()}
+	 */
+	@Test
+	public void testOf()
+	{
+
+		final Properties sortedProperties = SortedProperties.of();
+		assertNotNull(sortedProperties);
+
+	}
+
+	/**
+	 * Test for factory method {@link SortedProperties#of(Properties)}
+	 */
+	@Test
+	public void testOfProperties()
+	{
+		final Properties unsortedProperties = new Properties();
+		unsortedProperties.put("B", "2");
+		unsortedProperties.put("C", "3");
+		unsortedProperties.put("A", "1");
+		unsortedProperties.put("D", "4");
+		unsortedProperties.put("E", "5");
+
+		final Properties properties = SortedProperties.of(unsortedProperties);
+		assertNotNull(properties);
+
+	}
+
+	/**
+	 * Test for factory method {@link SortedProperties#of(Properties, Comparator)}
+	 */
+	@Test
+	public void testOfPropertiesComparatorOfObject()
+	{
+		final Properties unsortedProperties = new Properties();
+		unsortedProperties.put("B", "2");
+		unsortedProperties.put("C", "3");
+		unsortedProperties.put("A", "1");
+		unsortedProperties.put("D", "4");
+
+		final Properties sortedProperties = SortedProperties.of(unsortedProperties, (final Object o1,
+			final Object o2) -> ((o1.toString().compareTo(o2.toString())) * (-1)));
+		assertNotNull(sortedProperties);
+		Enumeration<?> propertyNames = sortedProperties.propertyNames();
+		int count = 1;
 		propertyNames = sortedProperties.propertyNames();
 		count = 1;
 		while (propertyNames.hasMoreElements())
