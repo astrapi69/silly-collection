@@ -24,14 +24,63 @@
  */
 package de.alpharogroup.collections.pairs;
 
+import static org.testng.AssertJUnit.assertEquals;
+
 import org.meanbean.test.BeanTester;
 import org.testng.annotations.Test;
+
+import de.alpharogroup.test.objects.Customer;
+import de.alpharogroup.test.objects.Employee;
+import de.alpharogroup.test.objects.Person;
+import de.alpharogroup.test.objects.evaluations.EqualsHashCodeAndToStringEvaluator;
 
 /**
  * The unit test class for the class {@link Triple}.
  */
 public class TripleTest
 {
+
+	/**
+	 * Test method for {@link Triple#equals(Object)} , {@link Triple#hashCode()} and
+	 * {@link Triple#toString()}
+	 */
+	@Test
+	public void testEqualsHashcodeAndToString()
+	{
+
+		boolean expected;
+		boolean actual;
+
+		final Customer customer = Customer.builder().build();
+
+		final Person person = Person.builder().name("John").married(Boolean.FALSE).build();
+
+		final Employee employee = Employee.builder()
+			.id("20")
+			.person(person)
+			.build();
+
+		final Triple<Integer, Employee, Customer> first = Triple.<Integer, Employee, Customer>builder()
+			.left(1)
+			.middle(employee)
+			.right(customer)
+			.build();
+		final Triple<String, Employee, Customer> second = Triple.<String, Employee, Customer>builder()
+			.left("left")
+			.middle(employee)
+			.right(customer)
+			.build();
+		final Triple<Integer, Employee, Customer> third = new Triple<Integer, Employee, Customer>(1, employee, customer);
+		final Triple<Integer, Employee, Customer> fourth = new Triple<>();
+		fourth.setLeft(1);
+		fourth.setMiddle(employee);
+		fourth.setRight(customer);
+
+		actual = EqualsHashCodeAndToStringEvaluator.evaluateEqualsHashcodeAndToString(first, second,
+			third, fourth);
+		expected = true;
+		assertEquals(expected, actual);
+	}
 
 	/**
 	 * Test method for {@link Triple}

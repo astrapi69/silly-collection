@@ -62,8 +62,10 @@ public class KeyMapPairTest
 			.person(person)
 			.build();
 
+		final Customer customer = Customer.builder().build();
+
 		final Map<Employee, Customer> map1 = new HashMap<>();
-		map1.put(employee, Customer.builder().build());
+		map1.put(employee, customer);
 
 		final KeyMapPair<Integer, Employee, Customer> first = KeyMapPair
 			.<Integer, Employee, Customer> builder()
