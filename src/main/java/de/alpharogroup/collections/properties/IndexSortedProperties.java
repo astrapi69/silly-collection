@@ -127,6 +127,7 @@ public class IndexSortedProperties extends SortedProperties
 	 */
 	public IndexSortedProperties()
 	{
+		this(new Properties());
 	}
 
 	/**
