@@ -41,6 +41,7 @@ public class StringLengthComparatorTest
 
 	boolean expected;
 	int actual;
+	Comparator<String> comparator;
 
 	/**
 	 * Test method for {@link StringLengthComparator#compare(String, String)}
@@ -48,11 +49,11 @@ public class StringLengthComparatorTest
 	@Test
 	public void testCompare()
 	{
-		String alex = "Alex";
-		String billy = "Billy";
-		String leo = "Leon";
+		final String alex = "Alex";
+		final String billy = "Billy";
+		final String leo = "Leon";
 
-		Comparator<String> comparator = StringLengthComparator.of();
+		comparator = StringLengthComparator.of();
 
 		// Leon length is equal with Alex length so the natural order will be taken
 		// so the alphabetic order is that Leon is smaller ...
@@ -69,7 +70,7 @@ public class StringLengthComparatorTest
 		expected = 0 < actual;
 		assertTrue(expected);
 		// Now lets see a demo on a list...
-		List<String> list = new ArrayList<>();
+		final List<String> list = new ArrayList<>();
 		list.add(leo);
 		list.add(alex);
 		list.add(billy);
@@ -90,6 +91,52 @@ public class StringLengthComparatorTest
 		expected = list.indexOf(leo) == 2;
 		assertTrue(expected);
 
+	}
+
+	/**
+	 * Test method for {@link StringLengthComparator#compare(String, String)} created with different factory methods.
+	 */
+	@Test
+	public void testCompareFactoryMethods()
+	{
+		final String alex = "Alex";
+		final String bill = "Billy";
+
+		comparator = StringLengthComparator.of(SortOrder.DESCENDING);
+
+		actual = comparator.compare(alex, alex);
+		expected = 0 == actual;
+		assertTrue(expected);
+
+		actual = comparator.compare(alex, bill);
+		expected = 0 < actual;
+		assertTrue(expected);
+
+		actual = comparator.compare(bill, alex);
+		expected = 0 > actual;
+		assertTrue(expected);
+		// null is greater...
+		actual = comparator.compare(null, bill);
+		expected = actual > 0;
+		assertTrue(expected);
+
+		comparator = StringLengthComparator.of(SortOrder.DESCENDING, false);
+
+		actual = comparator.compare(alex, alex);
+		expected = 0 == actual;
+		assertTrue(expected);
+
+		actual = comparator.compare(alex, bill);
+		expected = 0 < actual;
+		assertTrue(expected);
+
+		actual = comparator.compare(bill, alex);
+		expected = 0 > actual;
+		assertTrue(expected);
+		// null is smaller...
+		actual = comparator.compare(null, bill);
+		expected = actual < 0;
+		assertTrue(expected);
 	}
 
 }
