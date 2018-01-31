@@ -41,6 +41,7 @@ import org.apache.commons.collections4.ComparatorUtils;
 import de.alpharogroup.collections.array.ArrayExtensions;
 import de.alpharogroup.collections.modifications.ModifiedCollections;
 import de.alpharogroup.comparators.SortOrderComparator;
+import lombok.experimental.UtilityClass;
 
 /**
  * Extensions class for use with {@link List} objects.
@@ -48,7 +49,8 @@ import de.alpharogroup.comparators.SortOrderComparator;
  * @author Asterios Raptis
  * @version 1.0
  */
-public class ListExtensions
+@UtilityClass
+public final class ListExtensions
 {
 
 	/**

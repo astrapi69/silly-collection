@@ -35,13 +35,16 @@ import java.util.concurrent.ConcurrentHashMap;
 import org.apache.commons.collections4.functors.InstantiateFactory;
 import org.apache.commons.collections4.map.LazyMap;
 
+import lombok.experimental.UtilityClass;
+
 /**
  * Extensions class for use with Map objects.
  *
  * @version 1.0
  * @author Asterios Raptis
  */
-public class MapExtensions
+@UtilityClass
+public final class MapExtensions
 {
 
 	/**

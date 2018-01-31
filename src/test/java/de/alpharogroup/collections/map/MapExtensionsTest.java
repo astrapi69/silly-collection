@@ -24,14 +24,18 @@
  */
 package de.alpharogroup.collections.map;
 
+import static org.testng.Assert.assertNotNull;
+import static org.testng.AssertJUnit.assertEquals;
+import static org.testng.AssertJUnit.assertTrue;
+
 import java.util.ArrayList;
 import java.util.Collection;
 import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
 import java.util.Map.Entry;
+import java.util.concurrent.ConcurrentHashMap;
 
-import org.testng.AssertJUnit;
 import org.testng.annotations.AfterMethod;
 import org.testng.annotations.BeforeMethod;
 import org.testng.annotations.Test;
@@ -81,7 +85,7 @@ public class MapExtensionsTest
 		map.put("3", "othervalue");
 		map.put("5", "value");
 		final String foundedKey = MapExtensions.getKeyFromValue(map, value);
-		AssertJUnit.assertTrue("Expected value is not equal with key.",
+		assertTrue("Expected value is not equal with key.",
 			foundedKey.equals(expected));
 
 	}
@@ -105,23 +109,32 @@ public class MapExtensionsTest
 		final Collection<String> foundedKeys = MapExtensions.getKeysFromValue(map, value);
 		for (final String key : foundedKeys)
 		{
-			AssertJUnit.assertTrue("Key should be in the expected List.", expected.contains(key));
+			assertTrue("Key should be in the expected List.", expected.contains(key));
 
 		}
 	}
 
 	/**
 	 * Test for the Method {@link MapExtensions#newAssosiativeArrayMap()}.
+	 * <br>
+	 * Here an example:<br><br>
+	 * 	in js you can create and fetch associative arrays like this:<br><br>
+	 * 	$arrayObj[0]['firstName'] = 'Albert';<br>
+	 * 	$arrayObj[0]['lastName'] = 'Einstein';<br>
+	 * 	$arrayObj[1]['firstName'] = 'Neil';<br>
+	 * 	$arrayObj[1]['lastName'] = 'Armstrong';<br>
+	 *  <br>
+	 * to do the same in java we can do as the following code:
+	 * final Map<Integer, Map<String, String>> arrayMap = MapExtensions.newAssosiativeArrayMap();<br>
+	 * <br>
+	 * arrayMap.get(0).put("firstName", "Albert");<br>
+	 * arrayMap.get(0).put("lastName", "Einstein");<br>
+	 * arrayMap.get(1).put("firstName", "Neil");<br>
+	 * arrayMap.get(1).put("lastName", "Armstrong");<br>
 	 */
 	@Test
 	public void testNewAssosiativeArrayMap()
 	{
-		// in js you can create and fetch associative arrays like this:
-		// $arrayObj[0]['firstName'] = 'Albert';
-		// $arrayObj[0]['lastName'] = 'Einstein';
-		// $arrayObj[1]['firstName'] = 'Neil';
-		// $arrayObj[1]['lastName'] = 'Armstrong';
-		// to do the same in java we can do as the following code:
 		final Map<Integer, Map<String, String>> arrayMap = MapExtensions.newAssosiativeArrayMap();
 
 		arrayMap.get(0).put("firstName", "Albert");
@@ -131,25 +144,24 @@ public class MapExtensionsTest
 
 		String expected = "Albert";
 		String actual = arrayMap.get(0).get("firstName");
-		AssertJUnit.assertEquals(expected, actual);
+		assertEquals(expected, actual);
 
 		expected = "Einstein";
 		actual = arrayMap.get(0).get("lastName");
-		AssertJUnit.assertEquals(expected, actual);
+		assertEquals(expected, actual);
 
 		expected = "Neil";
 		actual = arrayMap.get(1).get("firstName");
-		AssertJUnit.assertEquals(expected, actual);
+		assertEquals(expected, actual);
 
 		expected = "Armstrong";
 		actual = arrayMap.get(1).get("lastName");
-		AssertJUnit.assertEquals(expected, actual);
+		assertEquals(expected, actual);
 
 		expected = null;
 		actual = arrayMap.get(2).get("firstName");
-		AssertJUnit.assertEquals(expected, actual);
+		assertEquals(expected, actual);
 	}
-
 
 	/**
 	 * Test for the Method {@link MapExtensions#toMap(String[][])}.
@@ -164,9 +176,70 @@ public class MapExtensionsTest
 		{
 			final String key = entry.getKey();
 			final String value = entry.getValue();
-			AssertJUnit.assertTrue(key.equals(twoDimArray[count][0]));
-			AssertJUnit.assertTrue(value.equals(twoDimArray[count][1]));
+			assertTrue(key.equals(twoDimArray[count][0]));
+			assertTrue(value.equals(twoDimArray[count][1]));
 			count++;
 		}
 	}
+
+	/**
+	 * Test for the Method {@link MapExtensions#newConcurrentHashMap()}.
+	 */
+	@Test
+	public void testNewConcurrentHashMap()
+	{
+		final ConcurrentHashMap<Object, Object> concurrentHashMap = MapExtensions.newConcurrentHashMap();
+		assertNotNull(concurrentHashMap);
+	}
+
+	/**
+	 * Test for the Method {@link MapExtensions#newConcurrentHashMap(int)}.
+	 */
+	@Test
+	public void testNewConcurrentHashMapInt()
+	{
+		final ConcurrentHashMap<Object, Object> concurrentHashMap = MapExtensions.newConcurrentHashMap(5);
+		assertNotNull(concurrentHashMap);
+	}
+
+	/**
+	 * Test for the Method {@link MapExtensions#newHashMap()}.
+	 */
+	@Test
+	public void testNewHashMap()
+	{
+		final Map<Object, Object> hashMap = MapExtensions.newHashMap();
+		assertNotNull(hashMap);
+	}
+
+	/**
+	 * Test for the Method {@link MapExtensions#newHashMap(int))}.
+	 */
+	@Test
+	public void testNewHashMapInt()
+	{
+		final Map<Object, Object> hashMap = MapExtensions.newHashMap(5);
+		assertNotNull(hashMap);
+	}
+
+	/**
+	 * Test for the Method {@link MapExtensions#toGenericMap(Object[][])}.
+	 */
+	@Test
+	public void testToGenericMap()
+	{
+		final String twoDimArray[][] = { { "1", "value1" }, { "3", "value3" }, { "4", "value4" },
+				{ "2", "value2" } };
+		final Map<String, String> map = MapExtensions.toGenericMap(twoDimArray);
+		int count = 0;
+		for (final Entry<String, String> entry : map.entrySet())
+		{
+			final String key = entry.getKey();
+			final String value = entry.getValue();
+			assertTrue(key.equals(twoDimArray[count][0]));
+			assertTrue(value.equals(twoDimArray[count][1]));
+			count++;
+		}
+	}
+
 }
