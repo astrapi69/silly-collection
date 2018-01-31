@@ -124,6 +124,7 @@ public class SortedProperties extends Properties
 	 */
 	public SortedProperties()
 	{
+		this(new Properties());
 	}
 
 	/**
