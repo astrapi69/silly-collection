@@ -111,18 +111,7 @@ public enum ModifiedState
 		{
 			return ModifiedState.FIRST_MATCH;
 		}
-
-		final boolean bothCollectionNotEmpty = !next.isEmpty() && !previous.isEmpty();
-		final boolean nextGreaterThanPrevious = previous.size() < next.size();
-		final boolean newMatch = bothCollectionNotEmpty && !collectionsEqual
-			|| nextGreaterThanPrevious;
-
-		if (newMatch)
-		{
-			return ModifiedState.NEW_MATCH;
-		}
-
-		return ModifiedState.UNMODIFIED;
+		return ModifiedState.NEW_MATCH;
 	}
 
 }
