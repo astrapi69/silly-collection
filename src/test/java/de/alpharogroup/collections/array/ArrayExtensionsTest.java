@@ -434,5 +434,4 @@ public class ArrayExtensionsTest
 		beanTester.testBean(ArrayExtensions.class);
 	}
 
-
 }

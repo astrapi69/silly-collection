@@ -242,7 +242,7 @@ public class ListExtensionsTest
 		boolean expected;
 		String name;
 		name = "Leonidas";
-		final List<String> search = new ArrayList<>();
+		final List<String> search = ListExtensions.newArrayList();
 		search.add("Anton");
 		search.add("Berta");
 		search.add("Caesar");
@@ -253,7 +253,11 @@ public class ListExtensionsTest
 		expected = true;
 		assertEquals(expected, actual);
 
-		actual = ListExtensions.isLast(search, "Emil");
+		actual = ListExtensions.isLast(search, "Foo");
+		expected = false;
+		assertEquals(expected, actual);
+
+		actual = ListExtensions.isLast(ListExtensions.newArrayList(), "Foo");
 		expected = false;
 		assertEquals(expected, actual);
 	}

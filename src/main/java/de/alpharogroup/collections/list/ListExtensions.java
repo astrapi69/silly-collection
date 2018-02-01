@@ -211,7 +211,7 @@ public final class ListExtensions
 		final T last = getLast(list);
 		if (last != null)
 		{
-			return last == element;
+			return last.equals(element);
 		}
 		return false;
 	}
