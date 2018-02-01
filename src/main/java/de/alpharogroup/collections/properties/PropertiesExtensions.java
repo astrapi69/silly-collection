@@ -41,12 +41,14 @@ import java.util.regex.Matcher;
 import java.util.regex.Pattern;
 
 import de.alpharogroup.collections.pairs.KeyValuePair;
+import lombok.experimental.UtilityClass;
 
 /**
  * The Class {@link PropertiesExtensions} provides methods loading properties and other related
  * operations for properties like find redundant values or getting all available languages from a
  * bundle.
  */
+@UtilityClass
 public final class PropertiesExtensions
 {
 
@@ -211,13 +213,11 @@ public final class PropertiesExtensions
 	 *            the xml file with the properties to convert.
 	 * @param comment
 	 *            the comment
-	 * @throws FileNotFoundException
-	 *             the file not found exception
 	 * @throws IOException
 	 *             Signals that an I/O exception has occurred.
 	 */
 	public static void toProperties(final File properties, final File xml, final String comment)
-		throws FileNotFoundException, IOException
+		throws IOException
 	{
 		toProperties(new FileOutputStream(properties), new FileInputStream(xml), comment);
 	}
@@ -288,13 +288,6 @@ public final class PropertiesExtensions
 		final Properties prop = new Properties();
 		prop.load(properties);
 		prop.storeToXML(xml, comment, encoding);
-	}
-
-	/**
-	 * Private constructor.
-	 */
-	private PropertiesExtensions()
-	{
 	}
 
 }

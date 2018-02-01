@@ -28,7 +28,10 @@ import static org.testng.Assert.assertEquals;
 import static org.testng.AssertJUnit.assertNotNull;
 import static org.testng.AssertJUnit.assertTrue;
 
+import java.io.File;
+import java.io.FileNotFoundException;
 import java.io.IOException;
+import java.net.URL;
 import java.util.ArrayList;
 import java.util.List;
 import java.util.Map;
@@ -48,11 +51,11 @@ import de.alpharogroup.collections.pairs.KeyValuePair;
 public class PropertiesExtensionsTest
 {
 
-
 	/**
 	 * Test for method {@link PropertiesExtensions#findRedundantValues(Properties)}
 	 *
-	 * @throws IOException Signals that an I/O exception has occurred.
+	 * @throws IOException
+	 *             Signals that an I/O exception has occurred.
 	 */
 	@SuppressWarnings("serial")
 	@Test(enabled = true)
@@ -88,7 +91,7 @@ public class PropertiesExtensionsTest
 	/**
 	 * Test for method {@link PropertiesExtensions#toKeyValuePairs(Properties)}
 	 */
-	@Test
+	@Test(enabled = true)
 	public void testToKeyValuePairs()
 	{
 		String key;
@@ -126,7 +129,8 @@ public class PropertiesExtensionsTest
 		properties.put("foo.bar", "OK");
 		properties.put("com.example.gui.window.buttons.cancel", "Cancel");
 
-		final Map<String, List<String>> matchedPrefixLists = PropertiesExtensions.getMatchedPrefixLists(properties);
+		final Map<String, List<String>> matchedPrefixLists = PropertiesExtensions
+			.getMatchedPrefixLists(properties);
 
 		assertEquals(matchedPrefixLists.size(), 5);
 	}
@@ -138,48 +142,87 @@ public class PropertiesExtensionsTest
 	public void testGetPropertyParameters()
 	{
 		final String propertyValue = "Hello, {0} {1} {2}!";
-		final List<String> propertyParameters = PropertiesExtensions.getPropertyParameters(propertyValue);
+		final List<String> propertyParameters = PropertiesExtensions
+			.getPropertyParameters(propertyValue);
 		assertEquals(propertyParameters.size(), 3);
 	}
 
 	/**
-	 * Test load properties.
+	 * Test for method {@link PropertiesExtensions#loadProperties(File)}
+	 *
+	 * @throws IOException
 	 */
 	@Test
-	public void testLoadProperties()
+	public void testLoadProperties() throws IOException
 	{
+		final URL resource = getClass().getClassLoader().getResource("resources.properties");
+		final File propertiesFile = new File(resource.getFile());
+		final Properties properties = PropertiesExtensions.loadProperties(propertiesFile);
+		assertNotNull(properties);
 	}
 
 	/**
-	 * Test to properties file file string.
+	 * Test for method {@link PropertiesExtensions#loadProperties(File)} with a file that does not exist
+	 *
+	 * @throws IOException
 	 */
-	@Test
-	public void testToPropertiesFileFileString()
+	@Test(expectedExceptions = FileNotFoundException.class)
+	public void testLoadPropertiesNotFound() throws IOException
 	{
+		final File propertiesFile = new File("foo.properties");
+		final Properties properties = PropertiesExtensions.loadProperties(propertiesFile);
+		assertNotNull(properties);
 	}
 
 	/**
-	 * Test to properties output stream input stream string.
+	 * Test for method {@link PropertiesExtensions#toProperties(File, File, String)}
+	 *
+	 * @throws IOException
 	 */
 	@Test
-	public void testToPropertiesOutputStreamInputStreamString()
+	public void testToPropertiesFileFileString() throws IOException
 	{
+		URL resource;
+		final File propertiesFile = new File("SigninPanel.properties");
+		resource = getClass().getClassLoader().getResource("SigninPanel.properties.xml");
+		final File xmlFile = new File(resource.getFile());
+		PropertiesExtensions.toProperties(propertiesFile, xmlFile, "a comment");
+		final Properties properties = PropertiesExtensions.loadProperties(propertiesFile);
+		assertNotNull(properties);
+		assertTrue(properties.size() == 4);
+		propertiesFile.delete();
 	}
 
 	/**
-	 * Test to xml file file string string.
+	 * Test for method {@link PropertiesExtensions#toXml(File, File, String, String)}
+	 *
+	 * @throws IOException
 	 */
 	@Test
-	public void testToXmlFileFileStringString()
+	public void testToXmlFileFileStringString() throws IOException
 	{
-	}
+		URL resource;
+		final File xmlOutputFile = new File("login.properties.xml");
+		final File propertiesOutputFile = new File("login.properties");
+		final File propertiesFile = new File("SigninPanel.properties");
+		resource = getClass().getClassLoader().getResource("SigninPanel.properties.xml");
+		final File xmlFile = new File(resource.getFile());
+		PropertiesExtensions.toProperties(propertiesFile, xmlFile, "a comment");
+		Properties properties = PropertiesExtensions.loadProperties(propertiesFile);
+		assertNotNull(properties);
+		assertTrue(properties.size() == 4);
 
-	/**
-	 * Test to xml input stream output stream string string.
-	 */
-	@Test
-	public void testToXmlInputStreamOutputStreamStringString()
-	{
+		PropertiesExtensions.toXml(propertiesFile, xmlOutputFile, "a comment", "UTF8");
+
+		PropertiesExtensions.toProperties(propertiesOutputFile, xmlOutputFile, "a comment");
+
+		properties = PropertiesExtensions.loadProperties(propertiesOutputFile);
+		assertNotNull(properties);
+		assertTrue(properties.size() == 4);
+		// clean up...
+		xmlOutputFile.delete();
+		propertiesOutputFile.delete();
+		propertiesFile.delete();
 	}
 
 }
