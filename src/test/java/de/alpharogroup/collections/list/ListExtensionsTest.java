@@ -111,8 +111,7 @@ public class ListExtensionsTest
 	}
 
 	/**
-	 * Test method for
-	 * {@link de.alpharogroup.collections.list.ListExtensions#getFirst(java.util.List)} .
+	 * Test method for {@link ListExtensions#getFirst(java.util.List)}
 	 */
 	@Test
 	public void testGetFirst()
@@ -137,8 +136,7 @@ public class ListExtensionsTest
 	}
 
 	/**
-	 * Test method for
-	 * {@link de.alpharogroup.collections.list.ListExtensions#getLast(java.util.List)} .
+	 * Test method for {@link ListExtensions#getLast(java.util.List)}
 	 */
 	@Test
 	public void testGetLast()
@@ -157,6 +155,10 @@ public class ListExtensionsTest
 		assertTrue("", expected.equals(compare));
 	}
 
+	/**
+	 * Test method for
+	 * {@link ListExtensions#getModifiedCollections(java.util.Collection, java.util.Collection)}
+	 */
 	@Test
 	public void testGetModifiedLists()
 	{
@@ -182,7 +184,7 @@ public class ListExtensionsTest
 	}
 
 	/**
-	 * Test the method ListExtensions.getSameElementsFromLists(List,List).
+	 * Test method for {@link ListExtensions#getSameElementsFromLists(List, List)}
 	 */
 	@Test
 	public void testGetSameElementsFromLists()
@@ -216,8 +218,7 @@ public class ListExtensionsTest
 	}
 
 	/**
-	 * Test method for {@link de.alpharogroup.collections.list.ListExtensions#isFirst(List, Object)}
-	 * .
+	 * Test method for {@link ListExtensions#isFirst(List, Object)}
 	 */
 	@Test
 	public void testIsFirst()
@@ -236,8 +237,7 @@ public class ListExtensionsTest
 	}
 
 	/**
-	 * Test method for {@link de.alpharogroup.collections.list.ListExtensions#isLast(List, Object)}
-	 * .
+	 * Test method for {@link ListExtensions#isLast(List, Object)}
 	 */
 	@Test
 	public void testIsLast()
@@ -267,10 +267,10 @@ public class ListExtensionsTest
 	}
 
 	/**
-	 * Test the method ListExtensions.isNullOrEmpty(List).
+	 * Test the method {@link ListExtensions#isEmpty(List)}
 	 */
 	@Test
-	public void testIsNullOrEmpty()
+	public void testIsEmpty()
 	{
 
 		List<String> nullList = null;
@@ -334,6 +334,9 @@ public class ListExtensionsTest
 		assertTrue(strings.get(1).equals("bar"));
 	}
 
+	/**
+	 * Test the method {@link ListExtensions#newRangeArray(int, int)}
+	 */
 	@Test
 	public void testNewRangeArray()
 	{
@@ -351,13 +354,19 @@ public class ListExtensionsTest
 		assertTrue(Arrays.deepEquals(actual, expected));
 	}
 
+	/**
+	 * Test the method {@link ListExtensions#newRangeArray(int, int)} where end is smaller then
+	 * start
+	 */
 	@Test(expectedExceptions = IllegalArgumentException.class)
 	public void testNewRangeArrayException()
 	{
 		ListExtensions.newRangeArray(9, 8);
 	}
 
-
+	/**
+	 * Test the method {@link ListExtensions#newRangeList(int, int)}
+	 */
 	@SuppressWarnings("serial")
 	@Test
 	public void testNewRangeList()
@@ -376,6 +385,9 @@ public class ListExtensionsTest
 		assertTrue(actual.equals(expected));
 	}
 
+	/**
+	 * Test the method {@link ListExtensions#printCollection(java.util.Collection)}
+	 */
 	@Test
 	public void testPrintCollection()
 	{
@@ -385,8 +397,7 @@ public class ListExtensionsTest
 	}
 
 	/**
-	 * Test method for
-	 * {@link de.alpharogroup.collections.list.ListExtensions#removeFirst(java.util.List)} .
+	 * Test method for {@link ListExtensions#removeFirst(java.util.List)}
 	 */
 	@Test
 	public void testRemoveFirst()
@@ -414,8 +425,7 @@ public class ListExtensionsTest
 	}
 
 	/**
-	 * Test method for
-	 * {@link de.alpharogroup.collections.list.ListExtensions#removeLast(java.util.List)} .
+	 * Test method for {@link ListExtensions#removeLast(java.util.List)}
 	 */
 	@Test
 	public void testRemoveLast()
@@ -442,6 +452,9 @@ public class ListExtensionsTest
 		assertEquals(expected, actual);
 	}
 
+	/**
+	 * Test method for {@link ListExtensions#removeLastValues(List, int)}
+	 */
 	@Test
 	public void testRemoveLastValues()
 	{
@@ -459,6 +472,10 @@ public class ListExtensionsTest
 
 	}
 
+	/**
+	 * Test method for {@link ListExtensions#removeLastValues(List, int)} where the remove value is
+	 * greater then the size of the given list
+	 */
 	@Test(expectedExceptions = IllegalArgumentException.class)
 	public void testRemoveLastValuesException()
 	{
@@ -475,25 +492,32 @@ public class ListExtensionsTest
 		assertTrue(removedLastValues.size() == 4);
 	}
 
+	/**
+	 * Test the method {@link ListExtensions#revertOrder(List)}
+	 */
 	@Test
 	public void testRevertOrder()
 	{
-		final String expected = "Leonidas";
-		final String removed = "Berta";
 		final List<String> search = new ArrayList<>();
 		search.add("Anton");
 		search.add("Caesar");
 		search.add("Dora");
 		search.add("Emil");
-		search.add(expected);
-		search.add(removed);
+		search.add("Leonidas");
+		search.add("Berta");
 		final List<String> revertOrdered = ListExtensions.revertOrder(search);
 		assertNotNull(revertOrdered);
-		// TODO check the order...
+
+		assertTrue(revertOrdered.get(0).equals("Berta"));
+		assertTrue(revertOrdered.get(1).equals("Leonidas"));
+		assertTrue(revertOrdered.get(2).equals("Emil"));
+		assertTrue(revertOrdered.get(3).equals("Dora"));
+		assertTrue(revertOrdered.get(4).equals("Caesar"));
+		assertTrue(revertOrdered.get(5).equals("Anton"));
 	}
 
 	/**
-	 * Test the method {@link ListExtensions#shuffle(List, List, int[])}.
+	 * Test the method {@link ListExtensions#shuffle(List, List, int[])}
 	 */
 	@Test
 	public void testShuffle()
@@ -522,8 +546,11 @@ public class ListExtensionsTest
 
 	}
 
+	/**
+	 * Test the method {@link ListExtensions#sortByProperty(List, String, boolean)}
+	 */
 	@Test
-	public void testSortWithProperty()
+	public void testSortByProperty()
 	{
 		final List<Person> persons = new ArrayList<>();
 		final Person obelix = new Person();
@@ -697,7 +724,7 @@ public class ListExtensionsTest
 	}
 
 	/**
-	 * Test the method {@link ListExtensions#toObjectArray(Object...)}.
+	 * Test the method {@link ListExtensions#toObjectArray(Object...)}
 	 */
 	@Test
 	public void testToObjectArray()
@@ -713,6 +740,9 @@ public class ListExtensionsTest
 		assertTrue(actual.length == 0);
 	}
 
+	/**
+	 * Test the method {@link ListExtensions#toVector(Enumeration)}
+	 */
 	@Test
 	public void testToVector()
 	{
