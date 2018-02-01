@@ -30,12 +30,15 @@ import static org.testng.AssertJUnit.assertFalse;
 import static org.testng.AssertJUnit.assertNull;
 import static org.testng.AssertJUnit.assertTrue;
 
+import java.lang.reflect.InvocationTargetException;
 import java.util.ArrayList;
 import java.util.Arrays;
 import java.util.HashSet;
 import java.util.List;
 import java.util.Set;
 
+import org.meanbean.test.BeanTestException;
+import org.meanbean.test.BeanTester;
 import org.testng.annotations.AfterMethod;
 import org.testng.annotations.BeforeMethod;
 import org.testng.annotations.Test;
@@ -310,14 +313,6 @@ public class ListExtensionsTest
 		assertTrue(strings.size() == 0);
 	}
 
-	@Test
-	public void testPrintCollection()
-	{
-		final List<String> strings = ListExtensions.newArrayList("2", "3");
-		assertNotNull(strings);
-		ListExtensions.printCollection(strings);
-	}
-
 	/**
 	 * Test the method {@link ListExtensions#newArrayList(Object...)}.
 	 */
@@ -348,12 +343,12 @@ public class ListExtensionsTest
 		assertTrue(Arrays.deepEquals(actual, expected));
 	}
 
-
 	@Test(expectedExceptions = IllegalArgumentException.class)
 	public void testNewRangeArrayException()
 	{
 		ListExtensions.newRangeArray(9, 8);
 	}
+
 
 	@SuppressWarnings("serial")
 	@Test
@@ -371,6 +366,14 @@ public class ListExtensionsTest
 			}
 		};
 		assertTrue(actual.equals(expected));
+	}
+
+	@Test
+	public void testPrintCollection()
+	{
+		final List<String> strings = ListExtensions.newArrayList("2", "3");
+		assertNotNull(strings);
+		ListExtensions.printCollection(strings);
 	}
 
 	/**
@@ -661,11 +664,6 @@ public class ListExtensionsTest
 	{
 	}
 
-	@Test
-	public void testToVector()
-	{
-	}
-
 	/**
 	 * Test the method {@link ListExtensions#toObjectArray(Object...)}.
 	 */
@@ -681,6 +679,22 @@ public class ListExtensionsTest
 		}
 		actual = ListExtensions.toObjectArray();
 		assertTrue(actual.length == 0);
+	}
+
+	@Test
+	public void testToVector()
+	{
+	}
+
+	/**
+	 * Test method for {@link ListExtensions} with {@link BeanTester}
+	 */
+	@Test(expectedExceptions = { BeanTestException.class, InvocationTargetException.class,
+			UnsupportedOperationException.class })
+	public void testWithBeanTester()
+	{
+		final BeanTester beanTester = new BeanTester();
+		beanTester.testBean(ListExtensions.class);
 	}
 
 }

@@ -291,6 +291,79 @@ public class SortedPropertiesTest
 	}
 
 	/**
+	 * Test for factory method {@link SortedProperties#of()}
+	 */
+	@Test
+	public void testOf()
+	{
+
+		final Properties sortedProperties = SortedProperties.of();
+		assertNotNull(sortedProperties);
+
+	}
+
+	/**
+	 * Test for factory method {@link SortedProperties#of(Properties)}
+	 */
+	@Test
+	public void testOfProperties()
+	{
+		final Properties unsortedProperties = new Properties();
+		unsortedProperties.put("B", "2");
+		unsortedProperties.put("C", "3");
+		unsortedProperties.put("A", "1");
+		unsortedProperties.put("D", "4");
+		unsortedProperties.put("E", "5");
+
+		final Properties properties = SortedProperties.of(unsortedProperties);
+		assertNotNull(properties);
+
+	}
+
+	/**
+	 * Test for factory method {@link SortedProperties#of(Properties, Comparator)}
+	 */
+	@Test
+	public void testOfPropertiesComparatorOfObject()
+	{
+		final Properties unsortedProperties = new Properties();
+		unsortedProperties.put("B", "2");
+		unsortedProperties.put("C", "3");
+		unsortedProperties.put("A", "1");
+		unsortedProperties.put("D", "4");
+
+		final Properties sortedProperties = SortedProperties.of(unsortedProperties,
+			(final Object o1,
+				final Object o2) -> ((o1.toString().compareTo(o2.toString())) * (-1)));
+		assertNotNull(sortedProperties);
+		Enumeration<?> propertyNames = sortedProperties.propertyNames();
+		int count = 1;
+		propertyNames = sortedProperties.propertyNames();
+		count = 1;
+		while (propertyNames.hasMoreElements())
+		{
+			final Object key = propertyNames.nextElement();
+			if (count == 1)
+			{
+				AssertJUnit.assertEquals(key, "D");
+			}
+			if (count == 2)
+			{
+				AssertJUnit.assertEquals(key, "C");
+			}
+			if (count == 3)
+			{
+				AssertJUnit.assertEquals(key, "B");
+			}
+			if (count == 4)
+			{
+				AssertJUnit.assertEquals(key, "A");
+			}
+			count++;
+		}
+	}
+
+	/**
 	 * Test for method {@link SortedProperties#propertyNames()}
 	 */
 	@Test
@@ -348,78 +421,6 @@ public class SortedPropertiesTest
 		sortedProperties.put("A", "1");
 		sortedProperties.put("D", "4");
 
-		propertyNames = sortedProperties.propertyNames();
-		count = 1;
-		while (propertyNames.hasMoreElements())
-		{
-			final Object key = propertyNames.nextElement();
-			if (count == 1)
-			{
-				AssertJUnit.assertEquals(key, "D");
-			}
-			if (count == 2)
-			{
-				AssertJUnit.assertEquals(key, "C");
-			}
-			if (count == 3)
-			{
-				AssertJUnit.assertEquals(key, "B");
-			}
-			if (count == 4)
-			{
-				AssertJUnit.assertEquals(key, "A");
-			}
-			count++;
-		}
-	}
-
-	/**
-	 * Test for factory method {@link SortedProperties#of()}
-	 */
-	@Test
-	public void testOf()
-	{
-
-		final Properties sortedProperties = SortedProperties.of();
-		assertNotNull(sortedProperties);
-
-	}
-
-	/**
-	 * Test for factory method {@link SortedProperties#of(Properties)}
-	 */
-	@Test
-	public void testOfProperties()
-	{
-		final Properties unsortedProperties = new Properties();
-		unsortedProperties.put("B", "2");
-		unsortedProperties.put("C", "3");
-		unsortedProperties.put("A", "1");
-		unsortedProperties.put("D", "4");
-		unsortedProperties.put("E", "5");
-
-		final Properties properties = SortedProperties.of(unsortedProperties);
-		assertNotNull(properties);
-
-	}
-
-	/**
-	 * Test for factory method {@link SortedProperties#of(Properties, Comparator)}
-	 */
-	@Test
-	public void testOfPropertiesComparatorOfObject()
-	{
-		final Properties unsortedProperties = new Properties();
-		unsortedProperties.put("B", "2");
-		unsortedProperties.put("C", "3");
-		unsortedProperties.put("A", "1");
-		unsortedProperties.put("D", "4");
-
-		final Properties sortedProperties = SortedProperties.of(unsortedProperties, (final Object o1,
-			final Object o2) -> ((o1.toString().compareTo(o2.toString())) * (-1)));
-		assertNotNull(sortedProperties);
-		Enumeration<?> propertyNames = sortedProperties.propertyNames();
-		int count = 1;
 		propertyNames = sortedProperties.propertyNames();
 		count = 1;
 		while (propertyNames.hasMoreElements())

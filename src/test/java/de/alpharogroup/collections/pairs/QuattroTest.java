@@ -62,24 +62,16 @@ public class QuattroTest
 
 		final Person person = Person.builder().name("John").married(Boolean.FALSE).build();
 
-		final Employee employee = Employee.builder()
-			.id("20")
-			.person(person)
-			.build();
+		final Employee employee = Employee.builder().id("20").person(person).build();
 
-		final Quattro<Integer, Employee, Customer, Brands> first = Quattro.<Integer, Employee, Customer, Brands>builder()
-			.topLeft(1)
-			.topRight(employee)
-			.bottomLeft(customer)
-			.bottomRight(ferrari)
-			.build();
-		final Quattro<String, Employee, Customer, Brands> second = Quattro.<String, Employee, Customer, Brands>builder()
-			.topLeft("left")
-			.topRight(employee)
-			.bottomLeft(customer)
-			.bottomRight(ferrari)
-			.build();
-		final Quattro<Integer, Employee, Customer, Brands> third = new Quattro<Integer, Employee, Customer, Brands>(1, employee, customer, ferrari);
+		final Quattro<Integer, Employee, Customer, Brands> first = Quattro
+			.<Integer, Employee, Customer, Brands> builder().topLeft(1).topRight(employee)
+			.bottomLeft(customer).bottomRight(ferrari).build();
+		final Quattro<String, Employee, Customer, Brands> second = Quattro
+			.<String, Employee, Customer, Brands> builder().topLeft("left").topRight(employee)
+			.bottomLeft(customer).bottomRight(ferrari).build();
+		final Quattro<Integer, Employee, Customer, Brands> third = new Quattro<Integer, Employee, Customer, Brands>(
+			1, employee, customer, ferrari);
 		final Quattro<Integer, Employee, Customer, Brands> fourth = new Quattro<>();
 		fourth.setTopLeft(1);
 		fourth.setTopRight(employee);

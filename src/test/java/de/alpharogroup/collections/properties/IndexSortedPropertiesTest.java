@@ -44,6 +44,44 @@ public class IndexSortedPropertiesTest
 {
 
 	/**
+	 * Test for method {@link IndexSortedProperties#clear()}
+	 */
+	@Test
+	public void testClear()
+	{
+		final Properties unsortedProperties = new Properties();
+		unsortedProperties.put("B", "2");
+		unsortedProperties.put("C", "3");
+		unsortedProperties.put("A", "1");
+		unsortedProperties.put("D", "4");
+		unsortedProperties.put("E", "5");
+
+		final IndexSortedProperties properties = IndexSortedProperties.of(unsortedProperties);
+		int expected;
+		int actual;
+		expected = 4;
+		actual = properties.indexOf("5");
+		assertEquals(expected, actual);
+		expected = 3;
+		actual = properties.indexOf("4");
+		assertEquals(expected, actual);
+		expected = 2;
+		actual = properties.indexOf("3");
+		assertEquals(expected, actual);
+		expected = 1;
+		actual = properties.indexOf("2");
+		assertEquals(expected, actual);
+		expected = 0;
+		actual = properties.indexOf("1");
+		assertEquals(expected, actual);
+
+		properties.clear();
+		actual = properties.size();
+		expected = 0;
+		assertEquals(expected, actual);
+	}
+
+	/**
 	 * Test for constructor of the class {@link IndexSortedProperties}.
 	 */
 	@Test
@@ -122,67 +160,6 @@ public class IndexSortedPropertiesTest
 			}
 			count++;
 		}
-	}
-
-	/**
-	 * Test for method {@link IndexSortedProperties#indexOf(Object)}
-	 */
-	@Test
-	public void testIndexOf()
-	{
-
-		final Properties unsortedProperties = new Properties();
-		unsortedProperties.put("B", "2");
-		unsortedProperties.put("C", "3");
-		unsortedProperties.put("A", "1");
-		unsortedProperties.put("D", "4");
-
-		final IndexSortedProperties properties = new IndexSortedProperties(unsortedProperties);
-
-		properties.setProperty("E", "5");
-		int expected;
-		int actual;
-		expected = 4;
-		actual = properties.indexOf("5");
-		assertEquals(expected, actual);
-		expected = -1;
-		actual = properties.indexOf("6");
-		assertEquals(expected, actual);
-	}
-
-	/**
-	 * Test for method {@link IndexSortedProperties#indexOf(Object)}
-	 */
-	@Test
-	public void testSetPropertyStringString()
-	{
-
-		final Properties unsortedProperties = new Properties();
-		unsortedProperties.put("B", "2");
-		unsortedProperties.put("C", "3");
-		unsortedProperties.put("A", "1");
-		unsortedProperties.put("D", "4");
-		unsortedProperties.put("E", "5");
-
-		final IndexSortedProperties properties = new IndexSortedProperties(unsortedProperties);
-
-		int expected;
-		int actual;
-		expected = 4;
-		actual = properties.indexOf("5");
-		assertEquals(expected, actual);
-		expected = 3;
-		actual = properties.indexOf("4");
-		assertEquals(expected, actual);
-		expected = 2;
-		actual = properties.indexOf("3");
-		assertEquals(expected, actual);
-		expected = 1;
-		actual = properties.indexOf("2");
-		assertEquals(expected, actual);
-		expected = 0;
-		actual = properties.indexOf("1");
-		assertEquals(expected, actual);
 	}
 
 	/**
@@ -282,45 +259,6 @@ public class IndexSortedPropertiesTest
 
 	}
 
-
-	/**
-	 * Test for method {@link IndexSortedProperties#clear()}
-	 */
-	@Test
-	public void testClear()
-	{
-		final Properties unsortedProperties = new Properties();
-		unsortedProperties.put("B", "2");
-		unsortedProperties.put("C", "3");
-		unsortedProperties.put("A", "1");
-		unsortedProperties.put("D", "4");
-		unsortedProperties.put("E", "5");
-
-		final IndexSortedProperties properties = IndexSortedProperties.of(unsortedProperties);
-		int expected;
-		int actual;
-		expected = 4;
-		actual = properties.indexOf("5");
-		assertEquals(expected, actual);
-		expected = 3;
-		actual = properties.indexOf("4");
-		assertEquals(expected, actual);
-		expected = 2;
-		actual = properties.indexOf("3");
-		assertEquals(expected, actual);
-		expected = 1;
-		actual = properties.indexOf("2");
-		assertEquals(expected, actual);
-		expected = 0;
-		actual = properties.indexOf("1");
-		assertEquals(expected, actual);
-
-		properties.clear();
-		actual = properties.size();
-		expected = 0;
-		assertEquals(expected, actual);
-	}
-
 	@Test
 	public void testGetInt()
 	{
@@ -346,6 +284,7 @@ public class IndexSortedPropertiesTest
 
 	}
 
+
 	@Test(enabled = true)
 	public void testGetPropertyInt()
 	{
@@ -368,6 +307,31 @@ public class IndexSortedPropertiesTest
 		assertEquals(expected, actual);
 	}
 
+	/**
+	 * Test for method {@link IndexSortedProperties#indexOf(Object)}
+	 */
+	@Test
+	public void testIndexOf()
+	{
+
+		final Properties unsortedProperties = new Properties();
+		unsortedProperties.put("B", "2");
+		unsortedProperties.put("C", "3");
+		unsortedProperties.put("A", "1");
+		unsortedProperties.put("D", "4");
+
+		final IndexSortedProperties properties = new IndexSortedProperties(unsortedProperties);
+
+		properties.setProperty("E", "5");
+		int expected;
+		int actual;
+		expected = 4;
+		actual = properties.indexOf("5");
+		assertEquals(expected, actual);
+		expected = -1;
+		actual = properties.indexOf("6");
+		assertEquals(expected, actual);
+	}
 
 	@Test(enabled = true)
 	public void testPutAllMapOfQextendsObjectQextendsObject()
@@ -391,6 +355,7 @@ public class IndexSortedPropertiesTest
 		expected = null;
 		assertEquals(expected, actual);
 	}
+
 
 	@Test(enabled = true)
 	public void testRemoveInt()
@@ -530,6 +495,41 @@ public class IndexSortedPropertiesTest
 		removed = properties.remove("E", "5");
 		actual = removed;
 		expected = Boolean.FALSE;
+		assertEquals(expected, actual);
+	}
+
+	/**
+	 * Test for method {@link IndexSortedProperties#indexOf(Object)}
+	 */
+	@Test
+	public void testSetPropertyStringString()
+	{
+
+		final Properties unsortedProperties = new Properties();
+		unsortedProperties.put("B", "2");
+		unsortedProperties.put("C", "3");
+		unsortedProperties.put("A", "1");
+		unsortedProperties.put("D", "4");
+		unsortedProperties.put("E", "5");
+
+		final IndexSortedProperties properties = new IndexSortedProperties(unsortedProperties);
+
+		int expected;
+		int actual;
+		expected = 4;
+		actual = properties.indexOf("5");
+		assertEquals(expected, actual);
+		expected = 3;
+		actual = properties.indexOf("4");
+		assertEquals(expected, actual);
+		expected = 2;
+		actual = properties.indexOf("3");
+		assertEquals(expected, actual);
+		expected = 1;
+		actual = properties.indexOf("2");
+		assertEquals(expected, actual);
+		expected = 0;
+		actual = properties.indexOf("1");
 		assertEquals(expected, actual);
 	}
 

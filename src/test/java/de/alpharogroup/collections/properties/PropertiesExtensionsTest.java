@@ -31,12 +31,15 @@ import static org.testng.AssertJUnit.assertTrue;
 import java.io.File;
 import java.io.FileNotFoundException;
 import java.io.IOException;
+import java.lang.reflect.InvocationTargetException;
 import java.net.URL;
 import java.util.ArrayList;
 import java.util.List;
 import java.util.Map;
 import java.util.Properties;
 
+import org.meanbean.test.BeanTestException;
+import org.meanbean.test.BeanTester;
 import org.testng.AssertJUnit;
 import org.testng.annotations.Test;
 
@@ -89,32 +92,6 @@ public class PropertiesExtensionsTest
 	}
 
 	/**
-	 * Test for method {@link PropertiesExtensions#toKeyValuePairs(Properties)}
-	 */
-	@Test(enabled = true)
-	public void testToKeyValuePairs()
-	{
-		String key;
-		String value;
-		final Properties properties = new Properties();
-
-		key = "foo";
-		value = "bar";
-		properties.setProperty(key, value);
-
-		key = "bla";
-		value = "fasel";
-		properties.setProperty(key, value);
-
-		final List<KeyValuePair<String, String>> list = PropertiesExtensions
-			.toKeyValuePairs(properties);
-
-		assertNotNull(list);
-		assertTrue(list.size() == 2);
-
-	}
-
-	/**
 	 * Test for method {@link PropertiesExtensions#getMatchedPrefixLists(Properties)}
 	 */
 	@Test(enabled = true)
@@ -162,7 +139,8 @@ public class PropertiesExtensionsTest
 	}
 
 	/**
-	 * Test for method {@link PropertiesExtensions#loadProperties(File)} with a file that does not exist
+	 * Test for method {@link PropertiesExtensions#loadProperties(File)} with a file that does not
+	 * exist
 	 *
 	 * @throws IOException
 	 */
@@ -172,6 +150,32 @@ public class PropertiesExtensionsTest
 		final File propertiesFile = new File("foo.properties");
 		final Properties properties = PropertiesExtensions.loadProperties(propertiesFile);
 		assertNotNull(properties);
+	}
+
+	/**
+	 * Test for method {@link PropertiesExtensions#toKeyValuePairs(Properties)}
+	 */
+	@Test(enabled = true)
+	public void testToKeyValuePairs()
+	{
+		String key;
+		String value;
+		final Properties properties = new Properties();
+
+		key = "foo";
+		value = "bar";
+		properties.setProperty(key, value);
+
+		key = "bla";
+		value = "fasel";
+		properties.setProperty(key, value);
+
+		final List<KeyValuePair<String, String>> list = PropertiesExtensions
+			.toKeyValuePairs(properties);
+
+		assertNotNull(list);
+		assertTrue(list.size() == 2);
+
 	}
 
 	/**
@@ -223,6 +227,17 @@ public class PropertiesExtensionsTest
 		xmlOutputFile.delete();
 		propertiesOutputFile.delete();
 		propertiesFile.delete();
+	}
+
+	/**
+	 * Test method for {@link PropertiesExtensions} with {@link BeanTester}
+	 */
+	@Test(expectedExceptions = { BeanTestException.class, InvocationTargetException.class,
+			UnsupportedOperationException.class })
+	public void testWithBeanTester()
+	{
+		final BeanTester beanTester = new BeanTester();
+		beanTester.testBean(PropertiesExtensions.class);
 	}
 
 }

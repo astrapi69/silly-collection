@@ -58,11 +58,11 @@ public class StringComparatorTest
 		String leo = "Leon";
 
 		Comparator<String> comparator = StringComparator.of(false);
-		
+
 		actual = comparator.compare(alex, alex);
 		expected = 0 == actual;
 		assertTrue(expected);
-		
+
 		actual = comparator.compare(alex, leo);
 		expected = 0 > actual;
 		assertTrue(expected);
@@ -77,7 +77,7 @@ public class StringComparatorTest
 		// null is smaller...
 		actual = comparator.compare(null, bill);
 		expected = actual < 0;
-		assertTrue(expected);		
+		assertTrue(expected);
 
 		// Now lets see a demo on a list...
 		List<String> list = new ArrayList<>();
@@ -104,10 +104,11 @@ public class StringComparatorTest
 		assertTrue(expected);
 
 	}
-	
-	
+
+
 	/**
-	 * Test method for {@link StringComparator#compare(String, String)} created with different factory methods.
+	 * Test method for {@link StringComparator#compare(String, String)} created with different
+	 * factory methods.
 	 */
 	@Test
 	public void testCompareFactoryMethods()
@@ -115,17 +116,17 @@ public class StringComparatorTest
 		String alex = "Alex";
 		String bill = "Billy";
 		String leo = "Leon";
-		
+
 		comparator = StringComparator.of();
-		
+
 		actual = comparator.compare(alex, alex);
 		expected = 0 == actual;
 		assertTrue(expected);
-		
+
 		actual = comparator.compare(alex, leo);
 		expected = 0 > actual;
 		assertTrue(expected);
-		
+
 		actual = comparator.compare(leo, alex);
 		expected = 0 < actual;
 		assertTrue(expected);
@@ -133,17 +134,17 @@ public class StringComparatorTest
 		actual = comparator.compare(null, bill);
 		expected = actual > 0;
 		assertTrue(expected);
-		
+
 		comparator = StringComparator.of(SortOrder.DESCENDING);
-		
+
 		actual = comparator.compare(alex, alex);
 		expected = 0 == actual;
 		assertTrue(expected);
-		
+
 		actual = comparator.compare(alex, leo);
 		expected = 0 < actual;
 		assertTrue(expected);
-		
+
 		actual = comparator.compare(leo, alex);
 		expected = 0 > actual;
 		assertTrue(expected);
@@ -151,17 +152,17 @@ public class StringComparatorTest
 		actual = comparator.compare(null, bill);
 		expected = actual > 0;
 		assertTrue(expected);
-		
+
 		comparator = StringComparator.of(SortOrder.DESCENDING, false);
-		
+
 		actual = comparator.compare(alex, alex);
 		expected = 0 == actual;
 		assertTrue(expected);
-		
+
 		actual = comparator.compare(alex, leo);
 		expected = 0 < actual;
 		assertTrue(expected);
-		
+
 		actual = comparator.compare(leo, alex);
 		expected = 0 > actual;
 		assertTrue(expected);
@@ -190,7 +191,7 @@ public class StringComparatorTest
 		actual = comparator.compare(leo, alex);
 		expected = 0 < actual;
 		assertTrue(expected);
-		
+
 		actual = comparator.compare(alex, bill);
 		expected = actual < 0;
 		assertTrue(expected);

@@ -267,7 +267,7 @@ public class IndexSortedProperties extends SortedProperties
 	public synchronized boolean remove(final Object key, final Object value)
 	{
 		final boolean removed = super.remove(key, value);
-		if(removed)
+		if (removed)
 			removeKey(key);
 		return removed;
 	}

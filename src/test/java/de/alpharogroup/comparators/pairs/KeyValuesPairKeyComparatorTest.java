@@ -68,7 +68,7 @@ public class KeyValuesPairKeyComparatorTest
 		final KeyValuesPair<Person, Employee> o2 = KeyValuesPair.<Person, Employee> builder()
 			.key(person2).values(employees).value(employee2).build();
 
-		final Comparator<KeyValuesPair<Person, Employee>> comparator =  new KeyValuesPairKeyComparator<>();
+		final Comparator<KeyValuesPair<Person, Employee>> comparator = new KeyValuesPairKeyComparator<>();
 
 		actual = comparator.compare(o1, o1);
 		expected = actual == 0;

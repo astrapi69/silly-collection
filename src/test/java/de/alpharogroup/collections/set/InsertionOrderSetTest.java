@@ -63,6 +63,26 @@ public class InsertionOrderSetTest
 	{
 	}
 
+	@Test
+	public void testAddE()
+	{
+		final String expected[] = { "value1", "value3", "value4", "value2" };
+		int count = 0;
+		final Set<String> set = new InsertionOrderSet<>(4, 4f);
+		set.add("value1");
+		set.add("value2");
+		set.add("value3");
+		set.add("value4");
+
+		set.add("value2"); // Add the same object.
+
+		for (final String element : set)
+		{
+			AssertJUnit.assertTrue(element.equals(expected[count]));
+			count++;
+		}
+	}
+
 	/**
 	 * Test the InsertionOrderMap.
 	 */
@@ -85,27 +105,6 @@ public class InsertionOrderSetTest
 			count++;
 		}
 
-	}
-
-	/**
-	 * Test the InsertionOrderMap.
-	 */
-	@Test
-	public void testInsertionOrderSetOf()
-	{
-		final String expected[] = { "value1", "value3", "value4", "value2" };
-
-		final Set<String> set = InsertionOrderSet.setOf("value1", "value2", "value3", "value4" );
-
-
-		set.add("value2"); // Add the same object.
-		int count = 0;
-		for (final String element : set)
-		{
-			final String exp = expected[count];
-			AssertJUnit.assertTrue(element.equals(exp));
-			count++;
-		}
 	}
 
 	@Test
@@ -168,22 +167,23 @@ public class InsertionOrderSetTest
 		}
 	}
 
+	/**
+	 * Test the InsertionOrderMap.
+	 */
 	@Test
-	public void testAddE()
+	public void testInsertionOrderSetOf()
 	{
 		final String expected[] = { "value1", "value3", "value4", "value2" };
-		int count = 0;
-		final Set<String> set = new InsertionOrderSet<>(4, 4f);
-		set.add("value1");
-		set.add("value2");
-		set.add("value3");
-		set.add("value4");
+
+		final Set<String> set = InsertionOrderSet.setOf("value1", "value2", "value3", "value4");
+
 
 		set.add("value2"); // Add the same object.
-
+		int count = 0;
 		for (final String element : set)
 		{
-			AssertJUnit.assertTrue(element.equals(expected[count]));
+			final String exp = expected[count];
+			AssertJUnit.assertTrue(element.equals(exp));
 			count++;
 		}
 	}

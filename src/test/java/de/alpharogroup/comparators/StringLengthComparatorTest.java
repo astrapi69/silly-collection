@@ -94,7 +94,8 @@ public class StringLengthComparatorTest
 	}
 
 	/**
-	 * Test method for {@link StringLengthComparator#compare(String, String)} created with different factory methods.
+	 * Test method for {@link StringLengthComparator#compare(String, String)} created with different
+	 * factory methods.
 	 */
 	@Test
 	public void testCompareFactoryMethods()

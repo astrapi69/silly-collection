@@ -57,10 +57,7 @@ public class KeyMapPairTest
 		final boolean actual;
 		final Person person = Person.builder().name("John").married(Boolean.FALSE).build();
 
-		final Employee employee = Employee.builder()
-			.id("20")
-			.person(person)
-			.build();
+		final Employee employee = Employee.builder().id("20").person(person).build();
 
 		final Customer customer = Customer.builder().build();
 
@@ -68,28 +65,16 @@ public class KeyMapPairTest
 		map1.put(employee, customer);
 
 		final KeyMapPair<Integer, Employee, Customer> first = KeyMapPair
-			.<Integer, Employee, Customer> builder()
-			.key(1)
-			.values(map1)
-			.build();
+			.<Integer, Employee, Customer> builder().key(1).values(map1).build();
 
 		final KeyMapPair<String, Employee, Customer> second = KeyMapPair
-			.<String, Employee, Customer> builder()
-			.key("1")
-			.values(map1)
-			.build();
+			.<String, Employee, Customer> builder().key("1").values(map1).build();
 
 		final KeyMapPair<Integer, Employee, Customer> third = KeyMapPair
-			.<Integer, Employee, Customer> builder()
-			.key(1)
-			.values(map1)
-			.build();
+			.<Integer, Employee, Customer> builder().key(1).values(map1).build();
 
 		final KeyMapPair<Integer, Employee, Customer> fourth = KeyMapPair
-			.<Integer, Employee, Customer> builder()
-			.key(1)
-			.values(map1)
-			.build();
+			.<Integer, Employee, Customer> builder().key(1).values(map1).build();
 
 		actual = EqualsHashCodeAndToStringEvaluator.evaluateEqualsHashcodeAndToString(first, second,
 			third, fourth);

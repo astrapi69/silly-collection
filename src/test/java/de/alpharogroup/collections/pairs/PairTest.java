@@ -48,23 +48,17 @@ public class PairTest
 		boolean expected;
 		boolean actual;
 
-		final Pair<String, String> first = Pair.<String, String> builder()
-			.leftContent("1")
-			.rightContent("value")
-			.build();
+		final Pair<String, String> first = Pair.<String, String> builder().leftContent("1")
+			.rightContent("value").build();
 		final Pair<Integer, String> second = new Pair<>();
 		second.setLeftContent(1);
 		second.setRightContent("somevalue");
 
-		final Pair<String, String> third = Pair.<String, String> builder()
-			.leftContent("1")
-			.rightContent("value")
-			.build();
+		final Pair<String, String> third = Pair.<String, String> builder().leftContent("1")
+			.rightContent("value").build();
 
-		final Pair<String, String> fourth = Pair.<String, String> builder()
-			.leftContent("1")
-			.rightContent("value")
-			.build();
+		final Pair<String, String> fourth = Pair.<String, String> builder().leftContent("1")
+			.rightContent("value").build();
 
 		actual = EqualsHashCodeAndToStringEvaluator.evaluateEqualsHashcodeAndToString(first, second,
 			third, fourth);

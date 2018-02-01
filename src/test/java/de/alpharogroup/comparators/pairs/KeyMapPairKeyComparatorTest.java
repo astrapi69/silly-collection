@@ -54,27 +54,18 @@ public class KeyMapPairKeyComparatorTest
 	{
 		final Person person = Person.builder().name("John").married(Boolean.FALSE).build();
 
-		final Employee employee = Employee.builder()
-				.id("20")
-				.person(person)
-				.build();
+		final Employee employee = Employee.builder().id("20").person(person).build();
 
 		final Map<Employee, Customer> map1 = new HashMap<>();
 		map1.put(employee, Customer.builder().build());
 
 		final KeyMapPair<Integer, Employee, Customer> o1 = KeyMapPair
-				.<Integer, Employee, Customer> builder()
-				.key(1)
-				.values(map1)
-				.build();
+			.<Integer, Employee, Customer> builder().key(1).values(map1).build();
 
 		final KeyMapPair<Integer, Employee, Customer> o2 = KeyMapPair
-				.<Integer, Employee, Customer> builder()
-				.key(2)
-				.values(map1)
-				.build();
+			.<Integer, Employee, Customer> builder().key(2).values(map1).build();
 
-		final Comparator<KeyMapPair<Integer, Employee, Customer>> comparator =  new KeyMapPairKeyComparator<>();
+		final Comparator<KeyMapPair<Integer, Employee, Customer>> comparator = new KeyMapPairKeyComparator<>();
 
 		actual = comparator.compare(o1, o1);
 		expected = actual == 0;

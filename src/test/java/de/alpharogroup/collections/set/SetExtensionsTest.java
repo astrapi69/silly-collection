@@ -24,10 +24,14 @@
  */
 package de.alpharogroup.collections.set;
 
+import static org.testng.Assert.assertNotNull;
+import static org.testng.AssertJUnit.assertEquals;
 import static org.testng.AssertJUnit.assertFalse;
 import static org.testng.AssertJUnit.assertTrue;
 
 import java.lang.reflect.InvocationTargetException;
+import java.util.ArrayList;
+import java.util.Collection;
 import java.util.Set;
 
 import org.meanbean.test.BeanTestException;
@@ -41,6 +45,27 @@ import de.alpharogroup.collections.list.ListExtensions;
  */
 public class SetExtensionsTest
 {
+	/**
+	 * Test for method {@link SetExtensions#isNotEmpty(Set)}
+	 */
+	@Test
+	public void testIsNotEmpty()
+	{
+		boolean expected;
+		boolean actual;
+		final Set<String> set = SetExtensions.newHashSet();
+
+		expected = false;
+		actual = SetExtensions.isNotEmpty(set);
+		assertEquals(expected, actual);
+
+		set.add("foo");
+
+		expected = true;
+		actual = SetExtensions.isNotEmpty(set);
+		assertEquals(expected, actual);
+	}
+
 	/**
 	 * Test the method {@link SetExtensions#isEmpty(Set)}
 	 */
@@ -66,6 +91,7 @@ public class SetExtensionsTest
 		assertFalse("Set should not be empty.", isNull);
 	}
 
+
 	/**
 	 * Test for method {@link SetExtensions#newHashSet(java.util.Collection, Object...)}
 	 */
@@ -86,7 +112,6 @@ public class SetExtensionsTest
 
 	}
 
-
 	/**
 	 * Test for method {@link SetExtensions#newHashSet(Object...)}
 	 */
@@ -97,6 +122,25 @@ public class SetExtensionsTest
 		assertTrue(set.size() == 0);
 		set = SetExtensions.newHashSet("foo", "bar", "foo");
 		assertTrue(set.size() == 2);
+	}
+
+	/**
+	 * Test for method {@link SetExtensions#toSet(Collection)}
+	 */
+	@Test
+	public void testToSet()
+	{
+		final Collection<String> nameList = new ArrayList<String>();
+
+		nameList.add("Anton");
+		nameList.add("Alex");
+		nameList.add("Berta");
+		nameList.add("Brad");
+		nameList.add("Caesar");
+		nameList.add("Leonardo");
+
+		final Set<String> set = SetExtensions.toSet(nameList);
+		assertNotNull(set);
 	}
 
 	/**

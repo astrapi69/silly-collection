@@ -55,22 +55,16 @@ public class TripleTest
 
 		final Person person = Person.builder().name("John").married(Boolean.FALSE).build();
 
-		final Employee employee = Employee.builder()
-			.id("20")
-			.person(person)
-			.build();
+		final Employee employee = Employee.builder().id("20").person(person).build();
 
-		final Triple<Integer, Employee, Customer> first = Triple.<Integer, Employee, Customer>builder()
-			.left(1)
-			.middle(employee)
-			.right(customer)
+		final Triple<Integer, Employee, Customer> first = Triple
+			.<Integer, Employee, Customer> builder().left(1).middle(employee).right(customer)
 			.build();
-		final Triple<String, Employee, Customer> second = Triple.<String, Employee, Customer>builder()
-			.left("left")
-			.middle(employee)
-			.right(customer)
+		final Triple<String, Employee, Customer> second = Triple
+			.<String, Employee, Customer> builder().left("left").middle(employee).right(customer)
 			.build();
-		final Triple<Integer, Employee, Customer> third = new Triple<Integer, Employee, Customer>(1, employee, customer);
+		final Triple<Integer, Employee, Customer> third = new Triple<Integer, Employee, Customer>(1,
+			employee, customer);
 		final Triple<Integer, Employee, Customer> fourth = new Triple<>();
 		fourth.setLeft(1);
 		fourth.setMiddle(employee);

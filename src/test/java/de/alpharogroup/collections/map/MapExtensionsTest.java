@@ -85,8 +85,7 @@ public class MapExtensionsTest
 		map.put("3", "othervalue");
 		map.put("5", "value");
 		final String foundedKey = MapExtensions.getKeyFromValue(map, value);
-		assertTrue("Expected value is not equal with key.",
-			foundedKey.equals(expected));
+		assertTrue("Expected value is not equal with key.", foundedKey.equals(expected));
 
 	}
 
@@ -115,17 +114,18 @@ public class MapExtensionsTest
 	}
 
 	/**
-	 * Test for the Method {@link MapExtensions#newAssosiativeArrayMap()}.
+	 * Test for the Method {@link MapExtensions#newAssosiativeArrayMap()}. <br>
+	 * Here an example:<br>
 	 * <br>
-	 * Here an example:<br><br>
-	 * 	in js you can create and fetch associative arrays like this:<br><br>
-	 * 	$arrayObj[0]['firstName'] = 'Albert';<br>
-	 * 	$arrayObj[0]['lastName'] = 'Einstein';<br>
-	 * 	$arrayObj[1]['firstName'] = 'Neil';<br>
-	 * 	$arrayObj[1]['lastName'] = 'Armstrong';<br>
-	 *  <br>
-	 * to do the same in java we can do as the following code:
-	 * final Map<Integer, Map<String, String>> arrayMap = MapExtensions.newAssosiativeArrayMap();<br>
+	 * in js you can create and fetch associative arrays like this:<br>
+	 * <br>
+	 * $arrayObj[0]['firstName'] = 'Albert';<br>
+	 * $arrayObj[0]['lastName'] = 'Einstein';<br>
+	 * $arrayObj[1]['firstName'] = 'Neil';<br>
+	 * $arrayObj[1]['lastName'] = 'Armstrong';<br>
+	 * <br>
+	 * to do the same in java we can do as the following code: final Map<Integer, Map<String,
+	 * String>> arrayMap = MapExtensions.newAssosiativeArrayMap();<br>
 	 * <br>
 	 * arrayMap.get(0).put("firstName", "Albert");<br>
 	 * arrayMap.get(0).put("lastName", "Einstein");<br>
@@ -164,31 +164,13 @@ public class MapExtensionsTest
 	}
 
 	/**
-	 * Test for the Method {@link MapExtensions#toMap(String[][])}.
-	 */
-	public void testToMap()
-	{
-		final String twoDimArray[][] = { { "1", "value1" }, { "3", "value3" }, { "4", "value4" },
-				{ "2", "value2" } };
-		final Map<String, String> map = MapExtensions.toMap(twoDimArray);
-		int count = 0;
-		for (final Entry<String, String> entry : map.entrySet())
-		{
-			final String key = entry.getKey();
-			final String value = entry.getValue();
-			assertTrue(key.equals(twoDimArray[count][0]));
-			assertTrue(value.equals(twoDimArray[count][1]));
-			count++;
-		}
-	}
-
-	/**
 	 * Test for the Method {@link MapExtensions#newConcurrentHashMap()}.
 	 */
 	@Test
 	public void testNewConcurrentHashMap()
 	{
-		final ConcurrentHashMap<Object, Object> concurrentHashMap = MapExtensions.newConcurrentHashMap();
+		final ConcurrentHashMap<Object, Object> concurrentHashMap = MapExtensions
+			.newConcurrentHashMap();
 		assertNotNull(concurrentHashMap);
 	}
 
@@ -198,7 +180,8 @@ public class MapExtensionsTest
 	@Test
 	public void testNewConcurrentHashMapInt()
 	{
-		final ConcurrentHashMap<Object, Object> concurrentHashMap = MapExtensions.newConcurrentHashMap(5);
+		final ConcurrentHashMap<Object, Object> concurrentHashMap = MapExtensions
+			.newConcurrentHashMap(5);
 		assertNotNull(concurrentHashMap);
 	}
 
@@ -231,6 +214,25 @@ public class MapExtensionsTest
 		final String twoDimArray[][] = { { "1", "value1" }, { "3", "value3" }, { "4", "value4" },
 				{ "2", "value2" } };
 		final Map<String, String> map = MapExtensions.toGenericMap(twoDimArray);
+		int count = 0;
+		for (final Entry<String, String> entry : map.entrySet())
+		{
+			final String key = entry.getKey();
+			final String value = entry.getValue();
+			assertTrue(key.equals(twoDimArray[count][0]));
+			assertTrue(value.equals(twoDimArray[count][1]));
+			count++;
+		}
+	}
+
+	/**
+	 * Test for the Method {@link MapExtensions#toMap(String[][])}.
+	 */
+	public void testToMap()
+	{
+		final String twoDimArray[][] = { { "1", "value1" }, { "3", "value3" }, { "4", "value4" },
+				{ "2", "value2" } };
+		final Map<String, String> map = MapExtensions.toMap(twoDimArray);
 		int count = 0;
 		for (final Entry<String, String> entry : map.entrySet())
 		{

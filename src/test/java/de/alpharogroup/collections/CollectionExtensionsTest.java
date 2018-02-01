@@ -24,12 +24,17 @@
  */
 package de.alpharogroup.collections;
 
-import static org.testng.AssertJUnit.*;
+import static org.testng.AssertJUnit.assertEquals;
+import static org.testng.AssertJUnit.assertNotNull;
+import static org.testng.AssertJUnit.assertNull;
 import static org.testng.AssertJUnit.assertTrue;
 
+import java.lang.reflect.InvocationTargetException;
 import java.util.ArrayList;
 import java.util.Collection;
 
+import org.meanbean.test.BeanTestException;
+import org.meanbean.test.BeanTester;
 import org.testng.annotations.Test;
 
 import de.alpharogroup.collections.list.ListExtensions;
@@ -39,6 +44,25 @@ import de.alpharogroup.collections.list.ListExtensions;
  */
 public class CollectionExtensionsTest
 {
+
+	@Test
+	public void testDifference()
+	{
+		Collection<Integer> expected;
+		final Collection<Integer> actual;
+		Collection<Integer> yourNumbers;
+		yourNumbers = ListExtensions.newArrayList(22, 33, 25, 45);
+		actual = ListExtensions.newArrayList(3, 7, 22, 23, 34, 45);
+		expected = ListExtensions.newArrayList(3, 7, 23, 34);
+		CollectionExtensions.difference(actual, yourNumbers);
+
+		assertEquals(expected.size(), actual.size());
+		for (final Integer number : actual)
+		{
+			assertTrue(expected.contains(number));
+		}
+	}
+
 
 	/**
 	 * Test the method for {@link CollectionExtensions#intersection(Collection...)}
@@ -122,23 +146,15 @@ public class CollectionExtensionsTest
 
 	}
 
-
-	@Test
-	public void testDifference()
+	/**
+	 * Test method for {@link CollectionExtensions} with {@link BeanTester}
+	 */
+	@Test(expectedExceptions = { BeanTestException.class, InvocationTargetException.class,
+			UnsupportedOperationException.class })
+	public void testWithBeanTester()
 	{
-		Collection<Integer> expected;
-		final Collection<Integer> actual;
-		Collection<Integer> yourNumbers;
-		yourNumbers = ListExtensions.newArrayList( 22, 33, 25, 45);
-		actual = ListExtensions.newArrayList(3, 7, 22, 23, 34, 45);
-		expected = ListExtensions.newArrayList(3, 7, 23, 34);
-		CollectionExtensions.difference(actual, yourNumbers);
-
-		assertEquals(expected.size(), actual.size());
-		for (final Integer number : actual)
-		{
-			assertTrue(expected.contains(number));
-		}
+		final BeanTester beanTester = new BeanTester();
+		beanTester.testBean(CollectionExtensions.class);
 	}
 
 
