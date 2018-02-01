@@ -30,23 +30,31 @@ import static org.testng.AssertJUnit.assertFalse;
 import static org.testng.AssertJUnit.assertNull;
 import static org.testng.AssertJUnit.assertTrue;
 
+import java.lang.reflect.InvocationTargetException;
 import java.util.ArrayList;
 import java.util.Arrays;
+import java.util.Collections;
+import java.util.Enumeration;
 import java.util.HashSet;
 import java.util.List;
 import java.util.Set;
+import java.util.Vector;
 
+import org.meanbean.test.BeanTestException;
+import org.meanbean.test.BeanTester;
 import org.testng.annotations.AfterMethod;
 import org.testng.annotations.BeforeMethod;
 import org.testng.annotations.Test;
 
+import de.alpharogroup.collections.array.ArrayExtensions;
 import de.alpharogroup.collections.modifications.ModifiedCollections;
+import de.alpharogroup.collections.set.SetExtensions;
 import de.alpharogroup.test.objects.Person;
 import de.alpharogroup.test.objects.enums.Gender;
 import lombok.experimental.ExtensionMethod;
 
 /**
- * Tests for the class {@link ListExtensions}.
+ * The unit test class for the class {@link ListExtensions}.
  *
  * @version 1.0
  * @author Asterios Raptis
@@ -103,27 +111,32 @@ public class ListExtensionsTest
 	}
 
 	/**
-	 * Test method for
-	 * {@link de.alpharogroup.collections.list.ListExtensions#getFirst(java.util.List)} .
+	 * Test method for {@link ListExtensions#getFirst(java.util.List)}
 	 */
 	@Test
 	public void testGetFirst()
 	{
-		final String expected = "Leonidas";
-		final List<String> search = new ArrayList<>();
+		String actual;
+		String expected;
+		expected = "Leonidas";
+		List<String> search = new ArrayList<>();
 		search.add(expected);
 		search.add("Berta");
 		search.add("Caesar");
 		search.add("Dora");
 		search.add("Emil");
 		search.add("Anton");
-		final String compare = ListExtensions.getFirst(search);
-		assertTrue("", expected.equals(compare));
+		actual = ListExtensions.getFirst(search);
+		assertEquals(expected, actual);
+
+		search = new ArrayList<>();
+		actual = ListExtensions.getFirst(search);
+		expected = null;
+		assertEquals(expected, actual);
 	}
 
 	/**
-	 * Test method for
-	 * {@link de.alpharogroup.collections.list.ListExtensions#getLast(java.util.List)} .
+	 * Test method for {@link ListExtensions#getLast(java.util.List)}
 	 */
 	@Test
 	public void testGetLast()
@@ -142,6 +155,10 @@ public class ListExtensionsTest
 		assertTrue("", expected.equals(compare));
 	}
 
+	/**
+	 * Test method for
+	 * {@link ListExtensions#getModifiedCollections(java.util.Collection, java.util.Collection)}
+	 */
 	@Test
 	public void testGetModifiedLists()
 	{
@@ -167,7 +184,7 @@ public class ListExtensionsTest
 	}
 
 	/**
-	 * Test the method ListExtensions.getSameElementsFromLists(List,List).
+	 * Test method for {@link ListExtensions#getSameElementsFromLists(List, List)}
 	 */
 	@Test
 	public void testGetSameElementsFromLists()
@@ -201,49 +218,10 @@ public class ListExtensionsTest
 	}
 
 	/**
-	 * Test method for {@link de.alpharogroup.collections.list.ListExtensions#isFirst(List, Object)}
-	 * .
+	 * Test the method {@link ListExtensions#isEmpty(List)}
 	 */
 	@Test
-	public void testIsFirst()
-	{
-		String expected;
-		expected = "Leonidas";
-		final List<String> search = new ArrayList<>();
-		search.add(expected);
-		search.add("Berta");
-		search.add("Caesar");
-		search.add("Dora");
-		search.add("Emil");
-		search.add("Anton");
-		final boolean actual = search.isFirst(expected);
-		assertTrue("", actual);
-	}
-
-	/**
-	 * Test method for {@link de.alpharogroup.collections.list.ListExtensions#isLast(List, Object)}
-	 * .
-	 */
-	@Test
-	public void testIsLast()
-	{
-		final String expected = "Leonidas";
-		final List<String> search = new ArrayList<>();
-		search.add("Anton");
-		search.add("Berta");
-		search.add("Caesar");
-		search.add("Dora");
-		search.add("Emil");
-		search.add(expected);
-		final boolean actual = search.isLast(expected);
-		assertTrue("", actual);
-	}
-
-	/**
-	 * Test the method ListExtensions.isNullOrEmpty(List).
-	 */
-	@Test
-	public void testIsNullOrEmpty()
+	public void testIsEmpty()
 	{
 
 		List<String> nullList = null;
@@ -267,6 +245,55 @@ public class ListExtensionsTest
 	}
 
 	/**
+	 * Test method for {@link ListExtensions#isFirst(List, Object)}
+	 */
+	@Test
+	public void testIsFirst()
+	{
+		String expected;
+		expected = "Leonidas";
+		final List<String> search = new ArrayList<>();
+		search.add(expected);
+		search.add("Berta");
+		search.add("Caesar");
+		search.add("Dora");
+		search.add("Emil");
+		search.add("Anton");
+		final boolean actual = search.isFirst(expected);
+		assertTrue("", actual);
+	}
+
+	/**
+	 * Test method for {@link ListExtensions#isLast(List, Object)}
+	 */
+	@Test
+	public void testIsLast()
+	{
+		boolean actual;
+		boolean expected;
+		String name;
+		name = "Leonidas";
+		final List<String> search = ListExtensions.newArrayList();
+		search.add("Anton");
+		search.add("Berta");
+		search.add("Caesar");
+		search.add("Dora");
+		search.add("Emil");
+		search.add(name);
+		actual = search.isLast(name);
+		expected = true;
+		assertEquals(expected, actual);
+
+		actual = ListExtensions.isLast(search, "Foo");
+		expected = false;
+		assertEquals(expected, actual);
+
+		actual = ListExtensions.isLast(ListExtensions.newArrayList(), "Foo");
+		expected = false;
+		assertEquals(expected, actual);
+	}
+
+	/**
 	 * Test the method {@link ListExtensions#newArrayList(java.util.Collection, Object...)}.
 	 */
 	@Test
@@ -276,6 +303,11 @@ public class ListExtensionsTest
 		assertNotNull(strings);
 		assertTrue(strings.size() == 1);
 		assertTrue(strings.get(0).equals("foo"));
+
+		strings = ListExtensions.newArrayList(strings, "foo");
+		assertNotNull(strings);
+		assertTrue(strings.size() == 2);
+		assertTrue(strings.get(0).equals("foo"));
 	}
 
 	/**
@@ -284,7 +316,7 @@ public class ListExtensionsTest
 	@Test
 	public void testNewArrayListInt()
 	{
-		List<String> strings = ListExtensions.newArrayList(2);
+		final List<String> strings = ListExtensions.newArrayList(2);
 		assertNotNull(strings);
 		assertTrue(strings.size() == 0);
 	}
@@ -295,22 +327,46 @@ public class ListExtensionsTest
 	@Test
 	public void testNewArrayListObjects()
 	{
-		List<String> strings = ListExtensions.newArrayList("foo", "bar");
+		final List<String> strings = ListExtensions.newArrayList("foo", "bar");
 		assertNotNull(strings);
 		assertTrue(strings.size() == 2);
 		assertTrue(strings.get(0).equals("foo"));
 		assertTrue(strings.get(1).equals("bar"));
 	}
 
+	/**
+	 * Test the method {@link ListExtensions#newRangeArray(int, int)}
+	 */
 	@Test
 	public void testNewRangeArray()
 	{
-		final Integer[] actual = ListExtensions.newRangeArray(5, 9);
-		final Integer[] expected = { 5, 6, 7, 8, 9 };
+		Integer[] actual;
+		Integer[] expected;
+		actual = ListExtensions.newRangeArray(5, 9);
+		expected = ArrayExtensions.newArray(5, 6, 7, 8, 9);
+		assertTrue(Arrays.deepEquals(actual, expected));
+
+		actual = ListExtensions.newRangeArray(1, 49);
+		expected = ArrayExtensions.newArray(1, 2, 3, 4, 5, 6, 7, 8, 9, 10, 11, 12, 13, 14, 15, 16,
+			17, 18, 19, 20, 21, 22, 23, 24, 25, 26, 27, 28, 29, 30, 31, 32, 33, 34, 35, 36, 37, 38,
+			39, 40, 41, 42, 43, 44, 45, 46, 47, 48, 49);
 
 		assertTrue(Arrays.deepEquals(actual, expected));
 	}
 
+	/**
+	 * Test the method {@link ListExtensions#newRangeArray(int, int)} where end is smaller then
+	 * start
+	 */
+	@Test(expectedExceptions = IllegalArgumentException.class)
+	public void testNewRangeArrayException()
+	{
+		ListExtensions.newRangeArray(9, 8);
+	}
+
+	/**
+	 * Test the method {@link ListExtensions#newRangeList(int, int)}
+	 */
 	@SuppressWarnings("serial")
 	@Test
 	public void testNewRangeList()
@@ -330,13 +386,23 @@ public class ListExtensionsTest
 	}
 
 	/**
-	 * Test method for
-	 * {@link de.alpharogroup.collections.list.ListExtensions#removeFirst(java.util.List)} .
+	 * Test the method {@link ListExtensions#printCollection(java.util.Collection)}
+	 */
+	@Test
+	public void testPrintCollection()
+	{
+		final List<String> strings = ListExtensions.newArrayList("2", "3");
+		assertNotNull(strings);
+		ListExtensions.printCollection(strings);
+	}
+
+	/**
+	 * Test method for {@link ListExtensions#removeFirst(java.util.List)}
 	 */
 	@Test
 	public void testRemoveFirst()
 	{
-		final String expected = "Leonidas";
+		String expected = "Leonidas";
 		final String removed = "Berta";
 		final List<String> search = new ArrayList<>();
 		search.add(removed);
@@ -345,21 +411,26 @@ public class ListExtensionsTest
 		search.add("Dora");
 		search.add("Emil");
 		search.add("Anton");
-		String compare = ListExtensions.removeFirst(search);
-		assertTrue("", removed.equals(compare));
+		String actual = ListExtensions.removeFirst(search);
+		assertTrue("", removed.equals(actual));
 
-		compare = ListExtensions.getFirst(search);
-		assertTrue("", expected.equals(compare));
+		actual = ListExtensions.getFirst(search);
+		assertEquals(expected, actual);
+
+		search.clear();
+
+		actual = ListExtensions.removeFirst(search);
+		expected = null;
+		assertEquals(expected, actual);
 	}
 
 	/**
-	 * Test method for
-	 * {@link de.alpharogroup.collections.list.ListExtensions#removeLast(java.util.List)} .
+	 * Test method for {@link ListExtensions#removeLast(java.util.List)}
 	 */
 	@Test
 	public void testRemoveLast()
 	{
-		final String expected = "Leonidas";
+		String expected = "Leonidas";
 		final String removed = "Berta";
 		final List<String> search = new ArrayList<>();
 		search.add("Anton");
@@ -373,10 +444,80 @@ public class ListExtensionsTest
 
 		compare = ListExtensions.getLast(search);
 		assertTrue("", expected.equals(compare));
+
+		search.clear();
+
+		final String actual = ListExtensions.removeLast(search);
+		expected = null;
+		assertEquals(expected, actual);
 	}
 
 	/**
-	 * Test the method {@link ListExtensions#shuffle(List, List, int[])}.
+	 * Test method for {@link ListExtensions#removeLastValues(List, int)}
+	 */
+	@Test
+	public void testRemoveLastValues()
+	{
+		final String expected = "Leonidas";
+		final String removed = "Berta";
+		final List<String> search = new ArrayList<>();
+		search.add("Anton");
+		search.add("Caesar");
+		search.add("Dora");
+		search.add("Emil");
+		search.add(expected);
+		search.add(removed);
+		final List<String> removedLastValues = ListExtensions.removeLastValues(search, 2);
+		assertTrue(removedLastValues.size() == 4);
+
+	}
+
+	/**
+	 * Test method for {@link ListExtensions#removeLastValues(List, int)} where the remove value is
+	 * greater then the size of the given list
+	 */
+	@Test(expectedExceptions = IllegalArgumentException.class)
+	public void testRemoveLastValuesException()
+	{
+		final String expected = "Leonidas";
+		final String removed = "Berta";
+		final List<String> search = new ArrayList<>();
+		search.add("Anton");
+		search.add("Caesar");
+		search.add("Dora");
+		search.add("Emil");
+		search.add(expected);
+		search.add(removed);
+		final List<String> removedLastValues = ListExtensions.removeLastValues(search, 7);
+		assertTrue(removedLastValues.size() == 4);
+	}
+
+	/**
+	 * Test the method {@link ListExtensions#revertOrder(List)}
+	 */
+	@Test
+	public void testRevertOrder()
+	{
+		final List<String> search = new ArrayList<>();
+		search.add("Anton");
+		search.add("Caesar");
+		search.add("Dora");
+		search.add("Emil");
+		search.add("Leonidas");
+		search.add("Berta");
+		final List<String> revertOrdered = ListExtensions.revertOrder(search);
+		assertNotNull(revertOrdered);
+
+		assertTrue(revertOrdered.get(0).equals("Berta"));
+		assertTrue(revertOrdered.get(1).equals("Leonidas"));
+		assertTrue(revertOrdered.get(2).equals("Emil"));
+		assertTrue(revertOrdered.get(3).equals("Dora"));
+		assertTrue(revertOrdered.get(4).equals("Caesar"));
+		assertTrue(revertOrdered.get(5).equals("Anton"));
+	}
+
+	/**
+	 * Test the method {@link ListExtensions#shuffle(List, List, int[])}
 	 */
 	@Test
 	public void testShuffle()
@@ -405,8 +546,11 @@ public class ListExtensionsTest
 
 	}
 
+	/**
+	 * Test the method {@link ListExtensions#sortByProperty(List, String, boolean)}
+	 */
 	@Test
-	public void testSortWithProperty()
+	public void testSortByProperty()
 	{
 		final List<Person> persons = new ArrayList<>();
 		final Person obelix = new Person();
@@ -475,7 +619,7 @@ public class ListExtensionsTest
 	 * Test the method ListExtensions.splitSetToParts(Set, int).
 	 */
 	@Test
-	@SuppressWarnings("rawtypes")
+	@SuppressWarnings({ "rawtypes", "deprecation" })
 	public void testSplitToParts()
 	{
 		final Set<Integer> set = new HashSet<>();
@@ -504,7 +648,7 @@ public class ListExtensionsTest
 	 * Test the method ListExtensions.splitListToParts(List,int).
 	 */
 	@Test
-	@SuppressWarnings("rawtypes")
+	@SuppressWarnings({ "rawtypes", "deprecation" })
 	public void testsplitToPartsInList()
 	{
 		final List<Integer> list = new ArrayList<>();
@@ -530,7 +674,57 @@ public class ListExtensionsTest
 	}
 
 	/**
-	 * Test the method {@link ListExtensions#toObjectArray(Object...)}.
+	 * Test the method {@link ListExtensions#toArray(Object...)}
+	 */
+	@Test
+	public void testToArray()
+	{
+		Integer actual;
+		Integer expected;
+		final Integer[] numbers = { 1, 2, 3 };
+		final Integer[] array = ListExtensions.toArray(1, 2, 3);
+		for (int i = 0; i < numbers.length; i++)
+		{
+			expected = numbers[i];
+			actual = array[i];
+			assertEquals(expected, actual);
+		}
+	}
+
+	/**
+	 * Test the method {@link ListExtensions#toList(Enumeration)}
+	 */
+	@Test
+	public void testToListEnumerationOfT()
+	{
+		final List<String> arrayList = ListExtensions.newArrayList("1", "2");
+		final Enumeration<String> elements = Collections.enumeration(arrayList);
+		final List<String> list = ListExtensions.toList(elements);
+		for (final String item : list)
+		{
+			assertTrue(arrayList.contains(item));
+		}
+	}
+
+	/**
+	 * Test the method {@link ListExtensions#toList(Set)}
+	 */
+	@Test
+	public void testToListSetOfT()
+	{
+		Set<String> set = SetExtensions.newHashSet();
+		assertTrue(set.size() == 0);
+		set = SetExtensions.newHashSet("foo", "bar", "foo");
+		assertTrue(set.size() == 2);
+		final List<String> list = ListExtensions.toList(set);
+		for (final String item : list)
+		{
+			assertTrue(set.contains(item));
+		}
+	}
+
+	/**
+	 * Test the method {@link ListExtensions#toObjectArray(Object...)}
 	 */
 	@Test
 	public void testToObjectArray()
@@ -544,6 +738,33 @@ public class ListExtensionsTest
 		}
 		actual = ListExtensions.toObjectArray();
 		assertTrue(actual.length == 0);
+	}
+
+	/**
+	 * Test the method {@link ListExtensions#toVector(Enumeration)}
+	 */
+	@Test
+	public void testToVector()
+	{
+		final List<String> arrayList = ListExtensions.newArrayList("1", "2");
+		final Enumeration<String> elements = Collections.enumeration(arrayList);
+		@SuppressWarnings("deprecation")
+		final Vector<String> vector = ListExtensions.toVector(elements);
+		for (final String string : vector)
+		{
+			assertTrue(arrayList.contains(string));
+		}
+	}
+
+	/**
+	 * Test method for {@link ListExtensions} with {@link BeanTester}
+	 */
+	@Test(expectedExceptions = { BeanTestException.class, InvocationTargetException.class,
+			UnsupportedOperationException.class })
+	public void testWithBeanTester()
+	{
+		final BeanTester beanTester = new BeanTester();
+		beanTester.testBean(ListExtensions.class);
 	}
 
 }

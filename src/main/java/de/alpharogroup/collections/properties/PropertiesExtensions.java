@@ -41,12 +41,14 @@ import java.util.regex.Matcher;
 import java.util.regex.Pattern;
 
 import de.alpharogroup.collections.pairs.KeyValuePair;
+import lombok.experimental.UtilityClass;
 
 /**
  * The Class {@link PropertiesExtensions} provides methods loading properties and other related
  * operations for properties like find redundant values or getting all available languages from a
  * bundle.
  */
+@UtilityClass
 public final class PropertiesExtensions
 {
 
@@ -104,13 +106,13 @@ public final class PropertiesExtensions
 	 * with the prefix as a key and holds a List with the whole keys the starts with the same key
 	 * prefix.
 	 *
-	 * @param enProperties
+	 * @param properties
 	 *            the en properties
 	 * @return the matched prefix lists
 	 */
-	public static Map<String, List<String>> getMatchedPrefixLists(final Properties enProperties)
+	public static Map<String, List<String>> getMatchedPrefixLists(final Properties properties)
 	{
-		final Enumeration<?> e = enProperties.propertyNames();
+		final Enumeration<?> e = properties.propertyNames();
 		final Map<String, List<String>> matchedPrefixes = new LinkedHashMap<>();
 		while (e.hasMoreElements())
 		{
@@ -211,13 +213,11 @@ public final class PropertiesExtensions
 	 *            the xml file with the properties to convert.
 	 * @param comment
 	 *            the comment
-	 * @throws FileNotFoundException
-	 *             the file not found exception
 	 * @throws IOException
 	 *             Signals that an I/O exception has occurred.
 	 */
 	public static void toProperties(final File properties, final File xml, final String comment)
-		throws FileNotFoundException, IOException
+		throws IOException
 	{
 		toProperties(new FileOutputStream(properties), new FileInputStream(xml), comment);
 	}
@@ -231,13 +231,11 @@ public final class PropertiesExtensions
 	 *            the xml file with the properties to convert.
 	 * @param comment
 	 *            the comment
-	 * @throws FileNotFoundException
-	 *             the file not found exception
 	 * @throws IOException
 	 *             Signals that an I/O exception has occurred.
 	 */
 	public static void toProperties(final OutputStream properties, final InputStream xml,
-		final String comment) throws FileNotFoundException, IOException
+		final String comment) throws IOException
 	{
 		final Properties prop = new Properties();
 		prop.loadFromXML(xml);
@@ -255,13 +253,11 @@ public final class PropertiesExtensions
 	 *            the comment
 	 * @param encoding
 	 *            the encoding for the xml file.
-	 * @throws FileNotFoundException
-	 *             the file not found exception
 	 * @throws IOException
 	 *             Signals that an I/O exception has occurred.
 	 */
 	public static void toXml(final File properties, final File xml, final String comment,
-		final String encoding) throws FileNotFoundException, IOException
+		final String encoding) throws IOException
 	{
 		toXml(new FileInputStream(properties), new FileOutputStream(xml), comment, encoding);
 	}
@@ -277,24 +273,15 @@ public final class PropertiesExtensions
 	 *            the comment
 	 * @param encoding
 	 *            the encoding for the xml file.
-	 * @throws FileNotFoundException
-	 *             the file not found exception
 	 * @throws IOException
 	 *             Signals that an I/O exception has occurred.
 	 */
 	public static void toXml(final InputStream properties, final OutputStream xml,
-		final String comment, final String encoding) throws FileNotFoundException, IOException
+		final String comment, final String encoding) throws IOException
 	{
 		final Properties prop = new Properties();
 		prop.load(properties);
 		prop.storeToXML(xml, comment, encoding);
-	}
-
-	/**
-	 * Private constructor.
-	 */
-	private PropertiesExtensions()
-	{
 	}
 
 }

@@ -24,8 +24,16 @@
  */
 package de.alpharogroup.collections.pairs;
 
+import static org.testng.AssertJUnit.assertEquals;
+
 import org.meanbean.test.BeanTester;
 import org.testng.annotations.Test;
+
+import de.alpharogroup.test.objects.Customer;
+import de.alpharogroup.test.objects.Employee;
+import de.alpharogroup.test.objects.Person;
+import de.alpharogroup.test.objects.enums.Brands;
+import de.alpharogroup.test.objects.evaluations.EqualsHashCodeAndToStringEvaluator;
 
 /**
  * The class {@link Quattro}.
@@ -36,6 +44,45 @@ import org.testng.annotations.Test;
  */
 public class QuattroTest
 {
+
+	/**
+	 * Test method for {@link Quattro#equals(Object)} , {@link Quattro#hashCode()} and
+	 * {@link Quattro#toString()}
+	 */
+	@Test
+	public void testEqualsHashcodeAndToString()
+	{
+
+		boolean expected;
+		boolean actual;
+
+		final Customer customer = Customer.builder().build();
+
+		final Brands ferrari = Brands.FERRARI;
+
+		final Person person = Person.builder().name("John").married(Boolean.FALSE).build();
+
+		final Employee employee = Employee.builder().id("20").person(person).build();
+
+		final Quattro<Integer, Employee, Customer, Brands> first = Quattro
+			.<Integer, Employee, Customer, Brands> builder().topLeft(1).topRight(employee)
+			.bottomLeft(customer).bottomRight(ferrari).build();
+		final Quattro<String, Employee, Customer, Brands> second = Quattro
+			.<String, Employee, Customer, Brands> builder().topLeft("left").topRight(employee)
+			.bottomLeft(customer).bottomRight(ferrari).build();
+		final Quattro<Integer, Employee, Customer, Brands> third = new Quattro<Integer, Employee, Customer, Brands>(
+			1, employee, customer, ferrari);
+		final Quattro<Integer, Employee, Customer, Brands> fourth = new Quattro<>();
+		fourth.setTopLeft(1);
+		fourth.setTopRight(employee);
+		fourth.setBottomLeft(customer);
+		fourth.setBottomRight(ferrari);
+
+		actual = EqualsHashCodeAndToStringEvaluator.evaluateEqualsHashcodeAndToString(first, second,
+			third, fourth);
+		expected = true;
+		assertEquals(expected, actual);
+	}
 
 	/**
 	 * Test method for {@link Quattro}

@@ -24,48 +24,51 @@
  */
 package de.alpharogroup.collections.pairs;
 
-import static org.testng.AssertJUnit.assertEquals;
+import java.io.Serializable;
+import java.util.Set;
 
-import org.meanbean.test.BeanTester;
-import org.testng.annotations.Test;
-
-import de.alpharogroup.test.objects.evaluations.EqualsHashCodeAndToStringEvaluator;
+import lombok.AccessLevel;
+import lombok.AllArgsConstructor;
+import lombok.Builder;
+import lombok.EqualsAndHashCode;
+import lombok.Getter;
+import lombok.NoArgsConstructor;
+import lombok.Setter;
+import lombok.Singular;
+import lombok.ToString;
+import lombok.experimental.FieldDefaults;
 
 /**
- * The unit test class for the class {@link ValueBox}.
+ * The class {@link KeySetPair} represents a key value pair where the value is a set with generic
+ * parameters.
+ *
+ *
+ * @param <K>
+ *            The type of the key.
+ * @param <V>
+ *            The type of the values in the set.
  */
-public class ValueBoxTest
+@Getter
+@Setter
+@EqualsAndHashCode
+@ToString
+@NoArgsConstructor
+@AllArgsConstructor
+@Builder(toBuilder = true)
+@FieldDefaults(level = AccessLevel.PRIVATE)
+public final class KeySetPair<K, V> implements Serializable
 {
 
 	/**
-	 * Test method for {@link ValueBox#equals(Object)} , {@link ValueBox#hashCode()} and
-	 * {@link ValueBox#toString()}
+	 * The Constant serialVersionUID.
 	 */
-	@Test
-	public void testEqualsHashcodeAndToString()
-	{
+	private static final long serialVersionUID = 1L;
 
-		boolean expected;
-		boolean actual;
-		final ValueBox<Integer> first = ValueBox.<Integer> builder().value(2).build();
-		final ValueBox<String> second = new ValueBox<>("Hello");
-		final ValueBox<Integer> third = new ValueBox<>(2);
-		final ValueBox<Integer> fourth = new ValueBox<>(2);
+	/** The key. */
+	K key;
 
-		actual = EqualsHashCodeAndToStringEvaluator.evaluateEqualsHashcodeAndToString(first, second,
-			third, fourth);
-		expected = true;
-		assertEquals(expected, actual);
-	}
-
-	/**
-	 * Test method for {@link ValueBox}
-	 */
-	@Test
-	public void testWithBeanTester()
-	{
-		final BeanTester beanTester = new BeanTester();
-		beanTester.testBean(ValueBox.class);
-	}
+	/** The collection with the values. */
+	@Singular
+	Set<V> values;
 
 }

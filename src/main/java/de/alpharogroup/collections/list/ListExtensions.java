@@ -38,8 +38,10 @@ import java.util.Vector;
 import org.apache.commons.beanutils.BeanComparator;
 import org.apache.commons.collections4.ComparatorUtils;
 
+import de.alpharogroup.collections.array.ArrayExtensions;
 import de.alpharogroup.collections.modifications.ModifiedCollections;
 import de.alpharogroup.comparators.SortOrderComparator;
+import lombok.experimental.UtilityClass;
 
 /**
  * Extensions class for use with {@link List} objects.
@@ -47,7 +49,8 @@ import de.alpharogroup.comparators.SortOrderComparator;
  * @author Asterios Raptis
  * @version 1.0
  */
-public class ListExtensions
+@UtilityClass
+public final class ListExtensions
 {
 
 	/**
@@ -208,7 +211,7 @@ public class ListExtensions
 		final T last = getLast(list);
 		if (last != null)
 		{
-			return last == element;
+			return last.equals(element);
 		}
 		return false;
 	}
@@ -394,7 +397,7 @@ public class ListExtensions
 	 *            How much to remove.
 	 * @return the list
 	 */
-	public static <T> List<T> removeLastValues(final ArrayList<T> v, final int remove)
+	public static <T> List<T> removeLastValues(final List<T> v, final int remove)
 	{
 		if (remove < v.size())
 		{
@@ -489,33 +492,13 @@ public class ListExtensions
 	 * @param times
 	 *            How to split.
 	 * @return An List with the Splitted Parts
+	 * @deprecated use instead {@link ListExtensions#splitToParts(Collection, int)}. Note: will be
+	 *             removed in the next minor release.
 	 */
+	@Deprecated
 	public static <T> List<List<T>> splitListToParts(final List<T> list, final int times)
 	{
-		final List<List<T>> returnList = new ArrayList<>();
-		List<T> tmp = new ArrayList<>();
-		final Iterator<T> it = list.iterator();
-		int count = 0;
-		while (it.hasNext())
-		{
-			if (count == times)
-			{
-				returnList.add(tmp);
-				tmp = new ArrayList<>();
-				tmp.add(it.next());
-				count = 1;
-			}
-			else
-			{
-				tmp.add(it.next());
-				count++;
-			}
-		}
-		if (!tmp.isEmpty())
-		{
-			returnList.add(tmp);
-		}
-		return returnList;
+		return splitToParts(list, times);
 	}
 
 	/**
@@ -528,8 +511,27 @@ public class ListExtensions
 	 * @param times
 	 *            How to split.
 	 * @return An ArrayList with the Splitted Parts
+	 * @deprecated use instead {@link ListExtensions#splitToParts(Collection, int)}. Note: will be
+	 *             removed in the next minor release.
 	 */
+	@Deprecated
 	public static <T> List<List<T>> splitSetToParts(final Set<T> set, final int times)
+	{
+		return splitToParts(set, times);
+	}
+
+	/**
+	 * Splits the given {@link Collection} to parts to the specified times.
+	 *
+	 * @param <T>
+	 *            the generic type
+	 * @param set
+	 *            The Set to Split
+	 * @param times
+	 *            How to split.
+	 * @return An ArrayList with the Splitted Parts
+	 */
+	public static <T> List<List<T>> splitToParts(final Collection<T> set, final int times)
 	{
 		final List<List<T>> returnList = new ArrayList<>();
 		ArrayList<T> tmp = new ArrayList<>();
@@ -555,6 +557,22 @@ public class ListExtensions
 			returnList.add(tmp);
 		}
 		return returnList;
+	}
+
+	/**
+	 * To array.
+	 *
+	 * @param <T>
+	 *            the generic type
+	 * @param elements
+	 *            the elements
+	 * @return the t[]
+	 */
+	@SafeVarargs
+	public static <T> T[] toArray(final T... elements)
+	{
+		final T[] decorator = ArrayExtensions.newArray(elements);
+		return decorator;
 	}
 
 	/**
@@ -592,20 +610,20 @@ public class ListExtensions
 	}
 
 	/**
-	 * Converts the given parameters to an object array.
+	 * Converts the given parameter elements to an object array.
 	 *
 	 * @param <T>
 	 *            the generic type
-	 * @param t
-	 *            The objects that will be in the returned object array
+	 * @param elements
+	 *            The elements that will be in the returned object array
 	 *
 	 * @return An Object array.
 	 */
 	@SafeVarargs
-	public static <T> Object[] toObjectArray(final T... t)
+	public static <T> Object[] toObjectArray(final T... elements)
 	{
-		final Object[] decorator = new Object[t.length];
-		System.arraycopy(t, 0, decorator, 0, t.length);
+		final Object[] decorator = new Object[elements.length];
+		System.arraycopy(elements, 0, decorator, 0, elements.length);
 		return decorator;
 	}
 
@@ -618,7 +636,8 @@ public class ListExtensions
 	 *            The Enumeration to convert.
 	 *
 	 * @return A new Vector with the content of the given Enumeration.
-	 * @deprecated use instead VectorExtensions.toVector
+	 * @deprecated use instead {@link VectorExtensions#toVector(Enumeration)}. Note: will be removed
+	 *             in the next minor release.
 	 */
 	@Deprecated
 	public static <T> Vector<T> toVector(final Enumeration<T> enumaration)

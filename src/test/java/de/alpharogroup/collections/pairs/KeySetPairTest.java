@@ -27,12 +27,11 @@ package de.alpharogroup.collections.pairs;
 import static org.testng.AssertJUnit.assertEquals;
 import static org.testng.AssertJUnit.assertTrue;
 
-import java.util.List;
 import java.util.Set;
 
+import org.meanbean.test.BeanTester;
 import org.testng.annotations.Test;
 
-import de.alpharogroup.collections.list.ListExtensions;
 import de.alpharogroup.collections.set.SetExtensions;
 import de.alpharogroup.test.objects.Customer;
 import de.alpharogroup.test.objects.Employee;
@@ -40,18 +39,19 @@ import de.alpharogroup.test.objects.Person;
 import de.alpharogroup.test.objects.evaluations.EqualsHashCodeAndToStringEvaluator;
 
 /**
- * The unit test class for the class {@link KeyValuesPair}.
+ * The unit test class for the class {@link KeySetPair}.
  */
-public class KeyValuesPairTest
+public class KeySetPairTest
 {
 
 	/**
-	 * Test method for {@link KeyValuesPair#equals(Object)} , {@link KeyValuesPair#hashCode()} and
-	 * {@link KeyValuesPair#toString()}
+	 * Test method for {@link KeySetPair#equals(Object)} , {@link KeySetPair#hashCode()} and
+	 * {@link KeySetPair#toString()}
 	 */
 	@Test
 	public void testEqualsHashcodeAndToString()
 	{
+
 		boolean expected;
 		boolean actual;
 		final Person person = Person.builder().name("John").married(Boolean.FALSE).build();
@@ -59,20 +59,20 @@ public class KeyValuesPairTest
 		employees.add(Employee.builder().id("10").build());
 		employees.add(Employee.builder().id("20").build());
 		final Employee employee = Employee.builder().id("20").build();
-		final KeyValuesPair<Person, Employee> first = KeyValuesPair.<Person, Employee> builder()
+		final KeySetPair<Person, Employee> first = KeySetPair.<Person, Employee> builder()
 			.key(person).values(employees).value(employee).build();
 
 		final Set<Customer> customers = SetExtensions.newHashSet();
 		final Customer customer = Customer.builder().name("jim").build();
-		final KeyValuesPair<Person, Customer> second = KeyValuesPair.<Person, Customer> builder()
+		final KeySetPair<Person, Customer> second = KeySetPair.<Person, Customer> builder()
 			.key(person).values(customers).value(customer).build();
 
 
-		final KeyValuesPair<Person, Employee> third = KeyValuesPair.<Person, Employee> builder()
+		final KeySetPair<Person, Employee> third = KeySetPair.<Person, Employee> builder()
 			.key(person).values(employees).value(employee).build();
 
 
-		final KeyValuesPair<Person, Employee> fourth = KeyValuesPair.<Person, Employee> builder()
+		final KeySetPair<Person, Employee> fourth = KeySetPair.<Person, Employee> builder()
 			.key(person).values(employees).value(employee).build();
 
 		actual = EqualsHashCodeAndToStringEvaluator.evaluateEqualsHashcodeAndToString(first, second,
@@ -82,23 +82,29 @@ public class KeyValuesPairTest
 	}
 
 	/**
-	 * Test for method {@link KeyValuesPair#builder()} with List as collection
+	 * Test for method {@link KeySetPair#builder()}
 	 */
 	@Test
-	public void testKeyValuesPairWithList()
+	public void testKeyValuesPairWithSet()
 	{
 		final Person person = Person.builder().name("John").married(Boolean.FALSE).build();
-		final List<Employee> employees = ListExtensions.newArrayList();
+		final Set<Employee> employees = SetExtensions.newHashSet();
 		employees.add(Employee.builder().id("10").build());
 		employees.add(Employee.builder().id("20").build());
 		final Employee employee = Employee.builder().id("20").build();
-		employees.add(employee);
-		final KeyValuesPair<Person, Employee> kvp = new KeyValuesPair<>();
-		kvp.setKey(person);
-		kvp.setValues(employees);
-
+		final KeySetPair<Person, Employee> kvp = KeySetPair.<Person, Employee> builder().key(person)
+			.values(employees).value(employee).build();
 		assertEquals(person, kvp.getKey());
-		assertTrue(kvp.getValues().size() == 3);
+		assertTrue(kvp.getValues().size() == 2);
 	}
 
+	/**
+	 * Test method for {@link KeySetPair}
+	 */
+	@Test
+	public void testWithBeanTester()
+	{
+		final BeanTester beanTester = new BeanTester();
+		beanTester.testBean(KeySetPair.class);
+	}
 }

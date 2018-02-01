@@ -24,29 +24,20 @@
  */
 package de.alpharogroup.collections.modifications;
 
+import java.lang.reflect.InvocationTargetException;
 import java.util.ArrayList;
 import java.util.List;
 
+import org.meanbean.test.BeanTestException;
+import org.meanbean.test.BeanTester;
 import org.testng.AssertJUnit;
-import org.testng.annotations.AfterMethod;
-import org.testng.annotations.BeforeMethod;
 import org.testng.annotations.Test;
 
 public class ModifiedStateTest
 {
 
-	@BeforeMethod
-	public void setUp() throws Exception
-	{
-	}
-
-	@AfterMethod
-	public void tearDown() throws Exception
-	{
-	}
-
 	/**
-	 * Test is modified.
+	 * Test for method {@link ModifiedState#isModified(java.util.Collection, java.util.Collection)}
 	 */
 	@Test
 	public void testIsModified()
@@ -120,6 +111,37 @@ public class ModifiedStateTest
 			"ModifiedState should have state <ModifiedState.CLEAR> but was <ModifiedState."
 				+ state.name() + ">",
 			state.equals(ModifiedState.CLEARED));
+	}
+
+	/**
+	 * Test for method {@link ModifiedState#isModified(java.util.Collection, java.util.Collection)}
+	 * with null value for next
+	 */
+	@Test(expectedExceptions = IllegalArgumentException.class)
+	public void testIsModifiedNextNull()
+	{
+		ModifiedState.isModified(new ArrayList<>(), null);
+	}
+
+	/**
+	 * Test for method {@link ModifiedState#isModified(java.util.Collection, java.util.Collection)}
+	 * with null value for previous
+	 */
+	@Test(expectedExceptions = IllegalArgumentException.class)
+	public void testIsModifiedPreviousNull()
+	{
+		ModifiedState.isModified(null, new ArrayList<>());
+	}
+
+	/**
+	 * Test method for {@link ModifiedState}
+	 */
+	@Test(expectedExceptions = { BeanTestException.class, InvocationTargetException.class,
+			UnsupportedOperationException.class })
+	public void testWithBeanTester()
+	{
+		final BeanTester beanTester = new BeanTester();
+		beanTester.testBean(ModifiedState.class);
 	}
 
 }

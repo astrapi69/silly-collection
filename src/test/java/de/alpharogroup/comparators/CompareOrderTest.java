@@ -22,32 +22,50 @@
  * OF CONTRACT, TORT OR OTHERWISE, ARISING FROM, OUT OF OR IN CONNECTION
  * WITH THE SOFTWARE OR THE USE OR OTHER DEALINGS IN THE SOFTWARE.
  */
-package de.alpharogroup.comparators.pairs;
+package de.alpharogroup.comparators;
 
-import java.util.Comparator;
+import static org.testng.Assert.assertEquals;
 
-import de.alpharogroup.collections.pairs.KeyValuesPair;
+import java.lang.reflect.InvocationTargetException;
+
+import org.meanbean.test.BeanTestException;
+import org.meanbean.test.BeanTester;
+import org.testng.annotations.Test;
 
 /**
- * The class {@link KeyValuePairsKeyComparator} compares {@linkplain KeyValuesPair} objects over the
- * key where the key have to implements the {@linkplain Comparable} interface.
- *
- * @param <K>
- *            The generic type of the key
- * @param <V>
- *            The generic type of the value
+ * The unit test class for the enum class {@link CompareOrder}.
  */
-public class KeyValuePairsKeyComparator<K extends Comparable<K>, V>
-	implements
-		Comparator<KeyValuesPair<K, V>>
+public class CompareOrderTest
 {
 
 	/**
-	 * {@inheritDoc}
+	 * Test method for {@link CompareOrder}
 	 */
-	@Override
-	public int compare(final KeyValuesPair<K, V> o1, final KeyValuesPair<K, V> o2)
+	@Test
+	public void test()
 	{
-		return o1.getKey().compareTo(o2.getKey());
+		int expected;
+		int actual;
+		actual = CompareOrder.AFTER.getOrder();
+		expected = 1;
+		assertEquals(actual, expected);
+		actual = CompareOrder.BEFORE.getOrder();
+		expected = -1;
+		assertEquals(actual, expected);
+		actual = CompareOrder.EQUAL.getOrder();
+		expected = 0;
+		assertEquals(actual, expected);
 	}
+
+	/**
+	 * Test method for {@link CompareOrder}
+	 */
+	@Test(expectedExceptions = { BeanTestException.class, InvocationTargetException.class,
+			UnsupportedOperationException.class })
+	public void testWithBeanTester()
+	{
+		final BeanTester beanTester = new BeanTester();
+		beanTester.testBean(CompareOrder.class);
+	}
+
 }

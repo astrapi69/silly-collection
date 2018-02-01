@@ -34,7 +34,7 @@ import java.util.Set;
  * the right order it was inserted in the Map. Note that the difference in the LinkedHashMap is the
  * order does not change if we put the same key with a new value. In this class the order changes
  * when we put a new value with the same key.
- * 
+ *
  * @author Asterios Raptis
  * @version 1.0
  * @param <E>
@@ -51,7 +51,7 @@ public class InsertionOrderSet<E> extends LinkedHashSet<E>
 
 	/**
 	 * Factory method for create an InsertionOrderSet with the given elements.
-	 * 
+	 *
 	 * @param <E>
 	 *            the generic type of the elements
 	 * @param elements
@@ -70,14 +70,13 @@ public class InsertionOrderSet<E> extends LinkedHashSet<E>
 	 */
 	public InsertionOrderSet()
 	{
-		super();
 	}
 
 	/**
 	 * Constructs a new insertion order hash set with the same elements as the specified collection.
 	 * The insertion order hash set is created with an initial capacity sufficient to hold the
 	 * elements in the specified collection and the default load factor (0.75).
-	 * 
+	 *
 	 * @param c
 	 *            the collection whose elements are to be placed into this set.
 	 * @throws NullPointerException
@@ -91,7 +90,7 @@ public class InsertionOrderSet<E> extends LinkedHashSet<E>
 	/**
 	 * Constructs an empty insertion-ordered <tt>InsertionOrderSet</tt> instance with the specified
 	 * initial capacity and a default load factor (0.75).
-	 * 
+	 *
 	 * @param initialCapacity
 	 *            the initial capacity.
 	 * @throws IllegalArgumentException
@@ -105,7 +104,7 @@ public class InsertionOrderSet<E> extends LinkedHashSet<E>
 	/**
 	 * Constructs an empty insertion-ordered <tt>InsertionOrderMap</tt> instance with the specified
 	 * initial capacity and load factor.
-	 * 
+	 *
 	 * @param initialCapacity
 	 *            the initial capacity.
 	 * @param loadFactor
@@ -124,7 +123,7 @@ public class InsertionOrderSet<E> extends LinkedHashSet<E>
 	 * was inserted in the Set. Note that the difference in the LinkedHashSet is the order does not
 	 * change if we try to add the same object. In this class the order changes when we add a object
 	 * that allready exists.
-	 * 
+	 *
 	 * @param o
 	 *            The object to add.
 	 * @return true if the set did not already contain the specified element.

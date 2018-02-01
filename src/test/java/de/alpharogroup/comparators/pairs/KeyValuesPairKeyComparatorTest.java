@@ -25,59 +25,72 @@
 package de.alpharogroup.comparators.pairs;
 
 import static org.testng.Assert.assertTrue;
-import static org.testng.AssertJUnit.assertNotSame;
 
 import java.util.Comparator;
+import java.util.List;
 
 import org.meanbean.test.BeanTester;
 import org.testng.annotations.Test;
 
-import de.alpharogroup.collections.pairs.KeyValuePair;
+import de.alpharogroup.collections.list.ListExtensions;
+import de.alpharogroup.collections.pairs.KeyValuesPair;
+import de.alpharogroup.test.objects.Employee;
+import de.alpharogroup.test.objects.Person;
 
 /**
- * The unit test class for the class {@link KeyValuePairKeyComparator}.
+ * The unit test class for the class {@link KeyValuesPairKeyComparator}.
  */
-public class KeyValuePairKeyComparatorTest
+public class KeyValuesPairKeyComparatorTest
 {
+
 	boolean expected;
 	int actual;
 
 	/**
-	 * Test method for {@link KeyValuePairKeyComparator#compare(Object, Object)}
+	 * Test method for {@link KeyValuesPairKeyComparator#compare(Object, Object)}
 	 */
 	@Test
 	public void testCompare()
 	{
-		KeyValuePair<String, String> o1 = KeyValuePair.<String, String> builder().key("1")
-			.value("novalue").build();
-		KeyValuePair<String, String> o2 = new KeyValuePair<>();
-		o2.setKey("2");
-		o2.setValue("somevalue");
+		final Person person = Person.builder().name("John").married(Boolean.FALSE).build();
+		final Person person2 = Person.builder().name("Anton").married(Boolean.FALSE).build();
+		final List<Employee> employees = ListExtensions.newArrayList();
+		employees.add(Employee.builder().id("10").build());
+		employees.add(Employee.builder().id("20").build());
+		final Employee employee = Employee.builder().id("20").build();
+		final KeyValuesPair<Person, Employee> o1 = KeyValuesPair.<Person, Employee> builder()
+			.key(person).values(employees).value(employee).build();
 
-		assertNotSame(expected, actual);
+		final List<Employee> employees2 = ListExtensions.newArrayList();
+		employees2.add(Employee.builder().id("30").build());
+		employees2.add(Employee.builder().id("40").build());
+		final Employee employee2 = Employee.builder().id("30").build();
+		final KeyValuesPair<Person, Employee> o2 = KeyValuesPair.<Person, Employee> builder()
+			.key(person2).values(employees).value(employee2).build();
 
-		Comparator<KeyValuePair<String, String>> comparator = new KeyValuePairKeyComparator<>();
+		final Comparator<KeyValuesPair<Person, Employee>> comparator = new KeyValuesPairKeyComparator<>();
 
 		actual = comparator.compare(o1, o1);
 		expected = actual == 0;
 		assertTrue(expected);
 
 		actual = comparator.compare(o1, o2);
-		expected = 0 > actual;
+		expected = 0 < actual;
 		assertTrue(expected);
 
 		actual = comparator.compare(o2, o1);
-		expected = 0 < actual;
+		expected = 0 > actual;
 		assertTrue(expected);
 	}
 
 	/**
-	 * Test method for {@link KeyValuePairKeyComparator}
+	 * Test method for {@link KeyValuesPairKeyComparator}
 	 */
 	@Test
 	public void testWithBeanTester()
 	{
-		BeanTester beanTester = new BeanTester();
-		beanTester.testBean(KeyValuePairKeyComparator.class);
+		final BeanTester beanTester = new BeanTester();
+		beanTester.testBean(KeyValuesPairKeyComparator.class);
 	}
+
 }

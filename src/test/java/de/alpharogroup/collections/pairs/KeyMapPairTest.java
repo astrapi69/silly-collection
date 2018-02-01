@@ -24,8 +24,18 @@
  */
 package de.alpharogroup.collections.pairs;
 
+import static org.testng.AssertJUnit.assertEquals;
+
+import java.util.HashMap;
+import java.util.Map;
+
 import org.meanbean.test.BeanTester;
 import org.testng.annotations.Test;
+
+import de.alpharogroup.test.objects.Customer;
+import de.alpharogroup.test.objects.Employee;
+import de.alpharogroup.test.objects.Person;
+import de.alpharogroup.test.objects.evaluations.EqualsHashCodeAndToStringEvaluator;
 
 /**
  * The unit test class for the class {@link KeyMapPair}.
@@ -33,6 +43,44 @@ import org.testng.annotations.Test;
 public class KeyMapPairTest
 {
 
+
+	/**
+	 * Test method for {@link KeyMapPair#equals(Object)} , {@link KeyMapPair#hashCode()} and
+	 * {@link KeyMapPair#toString()}
+	 */
+	@Test
+	public void testEqualsHashcodeAndToString()
+	{
+
+
+		final boolean expected;
+		final boolean actual;
+		final Person person = Person.builder().name("John").married(Boolean.FALSE).build();
+
+		final Employee employee = Employee.builder().id("20").person(person).build();
+
+		final Customer customer = Customer.builder().build();
+
+		final Map<Employee, Customer> map1 = new HashMap<>();
+		map1.put(employee, customer);
+
+		final KeyMapPair<Integer, Employee, Customer> first = KeyMapPair
+			.<Integer, Employee, Customer> builder().key(1).values(map1).build();
+
+		final KeyMapPair<String, Employee, Customer> second = KeyMapPair
+			.<String, Employee, Customer> builder().key("1").values(map1).build();
+
+		final KeyMapPair<Integer, Employee, Customer> third = KeyMapPair
+			.<Integer, Employee, Customer> builder().key(1).values(map1).build();
+
+		final KeyMapPair<Integer, Employee, Customer> fourth = KeyMapPair
+			.<Integer, Employee, Customer> builder().key(1).values(map1).build();
+
+		actual = EqualsHashCodeAndToStringEvaluator.evaluateEqualsHashcodeAndToString(first, second,
+			third, fourth);
+		expected = true;
+		assertEquals(expected, actual);
+	}
 
 	/**
 	 * Test method for {@link KeyMapPair}

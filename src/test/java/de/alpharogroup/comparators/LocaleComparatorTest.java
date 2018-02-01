@@ -22,62 +22,39 @@
  * OF CONTRACT, TORT OR OTHERWISE, ARISING FROM, OUT OF OR IN CONNECTION
  * WITH THE SOFTWARE OR THE USE OR OTHER DEALINGS IN THE SOFTWARE.
  */
-package de.alpharogroup.comparators.pairs;
+package de.alpharogroup.comparators;
 
 import static org.testng.Assert.assertTrue;
-import static org.testng.AssertJUnit.assertNotSame;
 
 import java.util.Comparator;
+import java.util.Locale;
 
-import org.meanbean.test.BeanTester;
 import org.testng.annotations.Test;
 
-import de.alpharogroup.collections.pairs.KeyValuePair;
-
 /**
- * The unit test class for the class {@link KeyValuePairKeyComparator}.
+ * The unit test class for the class {@link LocaleComparator}.
  */
-public class KeyValuePairKeyComparatorTest
+public class LocaleComparatorTest
 {
+
 	boolean expected;
 	int actual;
 
 	/**
-	 * Test method for {@link KeyValuePairKeyComparator#compare(Object, Object)}
+	 * Test method for {@link LocaleComparator#compare(Locale, Locale)}
 	 */
 	@Test
 	public void testCompare()
 	{
-		KeyValuePair<String, String> o1 = KeyValuePair.<String, String> builder().key("1")
-			.value("novalue").build();
-		KeyValuePair<String, String> o2 = new KeyValuePair<>();
-		o2.setKey("2");
-		o2.setValue("somevalue");
+		final Comparator<Locale> comparator = LocaleComparator.of();
 
-		assertNotSame(expected, actual);
-
-		Comparator<KeyValuePair<String, String>> comparator = new KeyValuePairKeyComparator<>();
-
-		actual = comparator.compare(o1, o1);
+		actual = comparator.compare(Locale.CANADA, Locale.CANADA);
 		expected = actual == 0;
 		assertTrue(expected);
 
-		actual = comparator.compare(o1, o2);
-		expected = 0 > actual;
-		assertTrue(expected);
-
-		actual = comparator.compare(o2, o1);
-		expected = 0 < actual;
+		actual = comparator.compare(Locale.CANADA, Locale.GERMAN);
+		expected = actual > 0;
 		assertTrue(expected);
 	}
 
-	/**
-	 * Test method for {@link KeyValuePairKeyComparator}
-	 */
-	@Test
-	public void testWithBeanTester()
-	{
-		BeanTester beanTester = new BeanTester();
-		beanTester.testBean(KeyValuePairKeyComparator.class);
-	}
 }

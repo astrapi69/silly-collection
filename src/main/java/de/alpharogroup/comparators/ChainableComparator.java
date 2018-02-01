@@ -55,7 +55,7 @@ public class ChainableComparator<T> extends ComparatorChain<T>
 	 *
 	 * @see <code> ComparatorChain </code>
 	 */
-	public static <T> Comparator<T> of()
+	public static <T> ChainableComparator<T> of()
 	{
 		return new ChainableComparator<T>();
 	}
@@ -73,7 +73,7 @@ public class ChainableComparator<T> extends ComparatorChain<T>
 	 *
 	 * @see <code> ComparatorChain </code>
 	 */
-	public static <T> Comparator<T> of(final Comparator<T> comparator)
+	public static <T> ChainableComparator<T> of(final Comparator<T> comparator)
 	{
 		return new ChainableComparator<T>(comparator);
 	}
@@ -93,7 +93,8 @@ public class ChainableComparator<T> extends ComparatorChain<T>
 	 *
 	 * @see <code> ComparatorChain </code>
 	 */
-	public static <T> Comparator<T> of(final Comparator<T> comparator, final boolean reverse)
+	public static <T> ChainableComparator<T> of(final Comparator<T> comparator,
+		final boolean reverse)
 	{
 		return new ChainableComparator<T>(comparator, reverse);
 	}
@@ -111,7 +112,7 @@ public class ChainableComparator<T> extends ComparatorChain<T>
 	 *
 	 * @see <code> ComparatorChain </code>
 	 */
-	public static <T> Comparator<T> of(final List<Comparator<T>> list)
+	public static <T> ChainableComparator<T> of(final List<Comparator<T>> list)
 	{
 		return new ChainableComparator<T>(list);
 	}
@@ -132,7 +133,7 @@ public class ChainableComparator<T> extends ComparatorChain<T>
 	 *
 	 * @see <code> ComparatorChain </code>
 	 */
-	public static <T> Comparator<T> of(final List<Comparator<T>> list, final BitSet bits)
+	public static <T> ChainableComparator<T> of(final List<Comparator<T>> list, final BitSet bits)
 	{
 		return new ChainableComparator<T>(list, bits);
 	}

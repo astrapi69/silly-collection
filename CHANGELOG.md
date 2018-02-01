@@ -1,6 +1,21 @@
 ## Change log
 ----------------------
 
+Version 4.24.0
+-------------
+
+ADDED:
+ 
+- new extension class CollectionExtensions for collections
+- new pair class with key and set
+
+CHANGED:
+
+- removed deprecated classes and methods
+- update of documentation of README.md 
+- unit tests extended for improve code coverage to 100%
+- several bugfixes
+
 Version 4.23.0
 -------------
 

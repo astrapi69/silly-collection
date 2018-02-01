@@ -36,6 +36,8 @@ import org.testng.annotations.AfterMethod;
 import org.testng.annotations.BeforeMethod;
 import org.testng.annotations.Test;
 
+import de.alpharogroup.collections.list.ListExtensions;
+
 /**
  * The unit test class for the class {@link EnumerationIterator}.
  *
@@ -294,6 +296,19 @@ public class EnumerationIteratorTest
 			elemements);
 
 		enumerationIterator.next();
+	}
+
+	/**
+	 * Test for method {@link EnumerationIterator#remove()}
+	 */
+	@Test(enabled = true, expectedExceptions = UnsupportedOperationException.class)
+	public void testRemove()
+	{
+		final Enumeration<String> elemements = Collections
+			.enumeration(ListExtensions.newArrayList("1", "2"));
+		final EnumerationIterator<String> enumerationIterator = new EnumerationIterator<>(
+			elemements);
+		enumerationIterator.remove();
 	}
 
 }
