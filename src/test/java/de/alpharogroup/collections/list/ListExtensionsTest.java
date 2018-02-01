@@ -592,7 +592,7 @@ public class ListExtensionsTest
 	 * Test the method ListExtensions.splitSetToParts(Set, int).
 	 */
 	@Test
-	@SuppressWarnings("rawtypes")
+	@SuppressWarnings({ "rawtypes", "deprecation" })
 	public void testSplitToParts()
 	{
 		final Set<Integer> set = new HashSet<>();
@@ -600,7 +600,7 @@ public class ListExtensionsTest
 		{
 			set.add(i);
 		}
-		final List al = ListExtensions.splitToParts(set, 50);
+		final List al = ListExtensions.splitSetToParts(set, 50);
 		assertTrue(al.size() == 20);
 		for (int i = 0; i < al.size(); i++)
 		{
@@ -621,7 +621,7 @@ public class ListExtensionsTest
 	 * Test the method ListExtensions.splitListToParts(List,int).
 	 */
 	@Test
-	@SuppressWarnings("rawtypes")
+	@SuppressWarnings({ "rawtypes", "deprecation" })
 	public void testsplitToPartsInList()
 	{
 		final List<Integer> list = new ArrayList<>();
@@ -629,7 +629,7 @@ public class ListExtensionsTest
 		{
 			list.add(i);
 		}
-		final List al = ListExtensions.splitToParts(list, 50);
+		final List al = ListExtensions.splitListToParts(list, 50);
 		assertTrue(al.size() == 20);
 		for (int i = 0; i < al.size(); i++)
 		{
