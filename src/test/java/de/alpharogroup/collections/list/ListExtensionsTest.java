@@ -218,6 +218,33 @@ public class ListExtensionsTest
 	}
 
 	/**
+	 * Test the method {@link ListExtensions#isEmpty(List)}
+	 */
+	@Test
+	public void testIsEmpty()
+	{
+
+		List<String> nullList = null;
+
+		boolean isNull = ListExtensions.isEmpty(nullList);
+
+		assertTrue("List should be null.", isNull);
+
+		nullList = new ArrayList<>();
+
+		isNull = ListExtensions.isEmpty(nullList);
+
+		assertTrue("List should be empty.", isNull);
+
+		nullList.add("");
+
+		isNull = ListExtensions.isEmpty(nullList);
+
+		assertFalse("List should not be empty.", isNull);
+
+	}
+
+	/**
 	 * Test method for {@link ListExtensions#isFirst(List, Object)}
 	 */
 	@Test
@@ -264,33 +291,6 @@ public class ListExtensionsTest
 		actual = ListExtensions.isLast(ListExtensions.newArrayList(), "Foo");
 		expected = false;
 		assertEquals(expected, actual);
-	}
-
-	/**
-	 * Test the method {@link ListExtensions#isEmpty(List)}
-	 */
-	@Test
-	public void testIsEmpty()
-	{
-
-		List<String> nullList = null;
-
-		boolean isNull = ListExtensions.isEmpty(nullList);
-
-		assertTrue("List should be null.", isNull);
-
-		nullList = new ArrayList<>();
-
-		isNull = ListExtensions.isEmpty(nullList);
-
-		assertTrue("List should be empty.", isNull);
-
-		nullList.add("");
-
-		isNull = ListExtensions.isEmpty(nullList);
-
-		assertFalse("List should not be empty.", isNull);
-
 	}
 
 	/**
