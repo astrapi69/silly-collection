@@ -231,6 +231,7 @@ public class MapExtensionsTest
 	/**
 	 * Test for the Method {@link MapExtensions#toMap(String[][])}.
 	 */
+	@Test
 	public void testToMap()
 	{
 		final String twoDimArray[][] = { { "1", "value1" }, { "3", "value3" }, { "4", "value4" },
