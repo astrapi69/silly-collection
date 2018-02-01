@@ -33,9 +33,12 @@ import static org.testng.AssertJUnit.assertTrue;
 import java.lang.reflect.InvocationTargetException;
 import java.util.ArrayList;
 import java.util.Arrays;
+import java.util.Collections;
+import java.util.Enumeration;
 import java.util.HashSet;
 import java.util.List;
 import java.util.Set;
+import java.util.Vector;
 
 import org.meanbean.test.BeanTestException;
 import org.meanbean.test.BeanTester;
@@ -45,6 +48,7 @@ import org.testng.annotations.Test;
 
 import de.alpharogroup.collections.array.ArrayExtensions;
 import de.alpharogroup.collections.modifications.ModifiedCollections;
+import de.alpharogroup.collections.set.SetExtensions;
 import de.alpharogroup.test.objects.Person;
 import de.alpharogroup.test.objects.enums.Gender;
 import lombok.experimental.ExtensionMethod;
@@ -642,7 +646,9 @@ public class ListExtensionsTest
 		}
 	}
 
-
+	/**
+	 * Test the method {@link ListExtensions#toArray(Object...)}
+	 */
 	@Test
 	public void testToArray()
 	{
@@ -658,14 +664,36 @@ public class ListExtensionsTest
 		}
 	}
 
+	/**
+	 * Test the method {@link ListExtensions#toList(Enumeration)}
+	 */
 	@Test
 	public void testToListEnumerationOfT()
 	{
+		final List<String> arrayList = ListExtensions.newArrayList("1", "2");
+		final Enumeration<String> elements = Collections.enumeration(arrayList);
+		final List<String> list = ListExtensions.toList(elements);
+		for (final String item : list)
+		{
+			assertTrue(arrayList.contains(item));
+		}
 	}
 
+	/**
+	 * Test the method {@link ListExtensions#toList(Set)}
+	 */
 	@Test
 	public void testToListSetOfT()
 	{
+		Set<String> set = SetExtensions.newHashSet();
+		assertTrue(set.size() == 0);
+		set = SetExtensions.newHashSet("foo", "bar", "foo");
+		assertTrue(set.size() == 2);
+		final List<String> list = ListExtensions.toList(set);
+		for (final String item : list)
+		{
+			assertTrue(set.contains(item));
+		}
 	}
 
 	/**
@@ -688,6 +716,14 @@ public class ListExtensionsTest
 	@Test
 	public void testToVector()
 	{
+		final List<String> arrayList = ListExtensions.newArrayList("1", "2");
+		final Enumeration<String> elements = Collections.enumeration(arrayList);
+		@SuppressWarnings("deprecation")
+		final Vector<String> vector = ListExtensions.toVector(elements);
+		for (final String string : vector)
+		{
+			assertTrue(arrayList.contains(string));
+		}
 	}
 
 	/**

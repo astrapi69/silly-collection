@@ -637,6 +637,8 @@ public final class ListExtensions
 	 *
 	 * @return A new Vector with the content of the given Enumeration.
 	 * @deprecated use instead VectorExtensions.toVector
+	 * @deprecated use instead {@link VectorExtensions#toVector(Enumeration)}.
+	 * Note: will be removed in the next minor release.
 	 */
 	@Deprecated
 	public static <T> Vector<T> toVector(final Enumeration<T> enumaration)
