@@ -4,6 +4,10 @@
 Version 4.25.0-SNAPSHOT
 -------------
 
+CHANGED:
+
+- javadoc extended and improved
+
 
 Version 4.24.0
 -------------
