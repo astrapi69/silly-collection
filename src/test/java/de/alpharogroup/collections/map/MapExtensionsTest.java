@@ -44,19 +44,18 @@ import org.testng.annotations.BeforeMethod;
 import org.testng.annotations.Test;
 
 /**
- * Test class for the class {@link MapExtensions}.
+ * The unit test class for the class {@link MapExtensions}.
  *
- * @version 1.0
  * @author Asterios Raptis
  */
 public class MapExtensionsTest
 {
 
 	/**
-	 * Sets up method will be invoked before every unit test method in this class.
+	 * Sets up method will be invoked before every unit test method
 	 *
 	 * @throws Exception
-	 *             the exception
+	 *             is thrown if an exception occurs
 	 */
 	@BeforeMethod
 	protected void setUp() throws Exception
@@ -64,10 +63,10 @@ public class MapExtensionsTest
 	}
 
 	/**
-	 * Tear down method will be invoked after every unit test method in this class.
+	 * Tear down method will be invoked after every unit test method
 	 *
 	 * @throws Exception
-	 *             the exception
+	 *             is thrown if an exception occurs
 	 */
 	@AfterMethod
 	protected void tearDown() throws Exception

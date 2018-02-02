@@ -24,25 +24,25 @@
  */
 package de.alpharogroup.collections.map;
 
+import static org.testng.AssertJUnit.assertTrue;
+
 import java.util.HashMap;
 import java.util.LinkedHashMap;
 import java.util.Map;
 import java.util.Map.Entry;
 
-import org.testng.AssertJUnit;
 import org.testng.annotations.Test;
 
 /**
- * Test class for the class {@link InsertionOrderMap}.
+ * The unit test class for the class {@link InsertionOrderMap}.
  *
- * @version 1.0
  * @author Asterios Raptis
  */
 public class InsertionOrderMapTest
 {
 
 	/**
-	 * Test the InsertionOrderMap.
+	 * Test the no argument constructor of {@link InsertionOrderMap}.
 	 */
 	@Test
 	public void testInsertionOrderMap()
@@ -67,14 +67,17 @@ public class InsertionOrderMapTest
 			final Object value = entry.getValue();
 			final String expectedKey = expected[count][0];
 			final String expectedValue = expected[count][1];
-			AssertJUnit.assertTrue(expectedKey.equals(key.toString()));
-			AssertJUnit.assertTrue(expectedValue.equals(value.toString()));
+			assertTrue(expectedKey.equals(key.toString()));
+			assertTrue(expectedValue.equals(value.toString()));
 			count++;
 		}
 		MapExtensions.printMap(map);
 		map.clear();
 	}
 
+	/**
+	 * Test the constructor with the initial capacity of {@link InsertionOrderMap}.
+	 */
 	@Test
 	public void testInsertionOrderMapInt()
 	{
@@ -95,15 +98,18 @@ public class InsertionOrderMapTest
 			final Object value = entry.getValue();
 			final String expectedKey = expected[count][0];
 			final String expectedValue = expected[count][1];
-			AssertJUnit.assertTrue(expectedKey.equals(key.toString()));
-			AssertJUnit.assertTrue(expectedValue.equals(value.toString()));
+			assertTrue(expectedKey.equals(key.toString()));
+			assertTrue(expectedValue.equals(value.toString()));
 			count++;
 
 		}
 		map.clear();
 	}
 
-
+	/**
+	 * Test the constructor with the initial capacity and the load factor of
+	 * {@link InsertionOrderMap}.
+	 */
 	@Test
 	public void testInsertionOrderMapIntFloat()
 	{
@@ -124,14 +130,18 @@ public class InsertionOrderMapTest
 			final Object value = entry.getValue();
 			final String expectedKey = expected[count][0];
 			final String expectedValue = expected[count][1];
-			AssertJUnit.assertTrue(expectedKey.equals(key.toString()));
-			AssertJUnit.assertTrue(expectedValue.equals(value.toString()));
+			assertTrue(expectedKey.equals(key.toString()));
+			assertTrue(expectedValue.equals(value.toString()));
 			count++;
 
 		}
 		map.clear();
 	}
 
+	/**
+	 * Test the constructor with the initial capacity, load factor and the ordering mode of
+	 * {@link InsertionOrderMap}.
+	 */
 	@Test
 	public void testInsertionOrderMapIntFloatBoolean()
 	{
@@ -152,14 +162,17 @@ public class InsertionOrderMapTest
 			final Object value = entry.getValue();
 			final String expectedKey = expected[count][0];
 			final String expectedValue = expected[count][1];
-			AssertJUnit.assertTrue(expectedKey.equals(key.toString()));
-			AssertJUnit.assertTrue(expectedValue.equals(value.toString()));
+			assertTrue(expectedKey.equals(key.toString()));
+			assertTrue(expectedValue.equals(value.toString()));
 			count++;
 
 		}
 		map.clear();
 	}
 
+	/**
+	 * Test the constructor with a map of {@link InsertionOrderMap}.
+	 */
 	@Test
 	public void testInsertionOrderMapMapOfQextendsKQextendsV()
 	{
@@ -181,8 +194,8 @@ public class InsertionOrderMapTest
 			final Object value = entry.getValue();
 			final String expectedKey = expected[count][0];
 			final String expectedValue = expected[count][1];
-			AssertJUnit.assertTrue(expectedKey.equals(key.toString()));
-			AssertJUnit.assertTrue(expectedValue.equals(value.toString()));
+			assertTrue(expectedKey.equals(key.toString()));
+			assertTrue(expectedValue.equals(value.toString()));
 			count++;
 
 		}
@@ -212,8 +225,8 @@ public class InsertionOrderMapTest
 			final Object value = entry.getValue();
 			final String expectedKey = expected[count][0];
 			final String expectedValue = expected[count][1];
-			AssertJUnit.assertTrue(expectedKey.equals(key.toString()));
-			AssertJUnit.assertTrue(expectedValue.equals(value.toString()));
+			assertTrue(expectedKey.equals(key.toString()));
+			assertTrue(expectedValue.equals(value.toString()));
 			count++;
 
 		}
@@ -238,8 +251,8 @@ public class InsertionOrderMapTest
 			final Object value = entry.getValue();
 			final String expectedKey = expected[count][0];
 			final String expectedValue = expected[count][1];
-			AssertJUnit.assertTrue(expectedKey.equals(key.toString()));
-			AssertJUnit.assertTrue(expectedValue.equals(value.toString()));
+			assertTrue(expectedKey.equals(key.toString()));
+			assertTrue(expectedValue.equals(value.toString()));
 			count++;
 		}
 		map2.clear();
@@ -262,11 +275,5 @@ public class InsertionOrderMapTest
 		System.out.println("---------initInsertionOrderMap---------------");
 		map3.clear();
 	}
-
-	@Test
-	public void testPutKV()
-	{
-	}
-
 
 }

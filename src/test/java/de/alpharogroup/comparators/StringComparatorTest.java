@@ -43,9 +43,15 @@ import lombok.experimental.FieldDefaults;
 public class StringComparatorTest
 {
 
+	/** For use of the expected result. */
 	boolean expected;
+
+	/** For use of the result of the comparator. */
 	int actual;
+
+	/** The comparator. */
 	Comparator<String> comparator;
+
 
 	/**
 	 * Test method for {@link StringComparator#compare(String, String)} with null smaller.
@@ -57,7 +63,7 @@ public class StringComparatorTest
 		String bill = "Billy";
 		String leo = "Leon";
 
-		Comparator<String> comparator = StringComparator.of(false);
+		comparator = StringComparator.of(false);
 
 		actual = comparator.compare(alex, alex);
 		expected = 0 == actual;
@@ -182,7 +188,7 @@ public class StringComparatorTest
 		String bill = "Billy";
 		String leo = "Leon";
 
-		Comparator<String> comparator = StringComparator.of(true);
+		comparator = StringComparator.of(true);
 
 		actual = comparator.compare(alex, leo);
 		expected = actual < 0;

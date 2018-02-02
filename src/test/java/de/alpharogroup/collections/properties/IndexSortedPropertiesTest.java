@@ -259,6 +259,9 @@ public class IndexSortedPropertiesTest
 
 	}
 
+	/**
+	 * Test for method {@link IndexSortedProperties#get(int)}
+	 */
 	@Test
 	public void testGetInt()
 	{
@@ -284,7 +287,9 @@ public class IndexSortedPropertiesTest
 
 	}
 
-
+	/**
+	 * Test for method {@link IndexSortedProperties#getProperty(int)}
+	 */
 	@Test(enabled = true)
 	public void testGetPropertyInt()
 	{
@@ -333,6 +338,9 @@ public class IndexSortedPropertiesTest
 		assertEquals(expected, actual);
 	}
 
+	/**
+	 * Test for method {@link IndexSortedProperties#putAll(java.util.Map)}
+	 */
 	@Test(enabled = true)
 	public void testPutAllMapOfQextendsObjectQextendsObject()
 	{
@@ -356,7 +364,9 @@ public class IndexSortedPropertiesTest
 		assertEquals(expected, actual);
 	}
 
-
+	/**
+	 * Test for method {@link IndexSortedProperties#remove(int)}
+	 */
 	@Test(enabled = true)
 	public void testRemoveInt()
 	{
@@ -404,6 +414,9 @@ public class IndexSortedPropertiesTest
 		assertEquals(expected, actual);
 	}
 
+	/**
+	 * Test for method {@link IndexSortedProperties#remove(Object)}
+	 */
 	@Test(enabled = true)
 	public void testRemoveObject()
 	{
@@ -451,6 +464,9 @@ public class IndexSortedPropertiesTest
 		assertEquals(expected, actual);
 	}
 
+	/**
+	 * Test for method {@link IndexSortedProperties#remove(Object, Object)}
+	 */
 	@Test(enabled = true)
 	public void testRemoveObjectObject()
 	{
@@ -499,20 +515,17 @@ public class IndexSortedPropertiesTest
 	}
 
 	/**
-	 * Test for method {@link IndexSortedProperties#indexOf(Object)}
+	 * Test for method {@link IndexSortedProperties#setProperty(String, String)}
 	 */
 	@Test
 	public void testSetPropertyStringString()
 	{
-
-		final Properties unsortedProperties = new Properties();
-		unsortedProperties.put("B", "2");
-		unsortedProperties.put("C", "3");
-		unsortedProperties.put("A", "1");
-		unsortedProperties.put("D", "4");
-		unsortedProperties.put("E", "5");
-
-		final IndexSortedProperties properties = new IndexSortedProperties(unsortedProperties);
+		final IndexSortedProperties properties = new IndexSortedProperties();
+		properties.setProperty("B", "2");
+		properties.setProperty("C", "3");
+		properties.setProperty("A", "1");
+		properties.setProperty("D", "4");
+		properties.setProperty("E", "5");
 
 		int expected;
 		int actual;

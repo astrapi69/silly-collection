@@ -24,28 +24,28 @@
  */
 package de.alpharogroup.collections.set;
 
+import static org.testng.AssertJUnit.assertTrue;
+
 import java.util.Arrays;
 import java.util.Set;
 
-import org.testng.AssertJUnit;
 import org.testng.annotations.AfterMethod;
 import org.testng.annotations.BeforeMethod;
 import org.testng.annotations.Test;
 
 /**
- * Test class for the class {@link InsertionOrderSet}.
+ * The unit test class for the class {@link InsertionOrderSet}
  *
- * @version 1.0
  * @author Asterios Raptis
  */
 public class InsertionOrderSetTest
 {
 
 	/**
-	 * Sets up method will be invoked before every unit test method in this class.
+	 * Sets up method will be invoked before every unit test method
 	 *
 	 * @throws Exception
-	 *             the exception
+	 *             is thrown if an exception occurs
 	 */
 	@BeforeMethod
 	protected void setUp() throws Exception
@@ -53,16 +53,19 @@ public class InsertionOrderSetTest
 	}
 
 	/**
-	 * Tear down method will be invoked after every unit test method in this class.
+	 * Tear down method will be invoked after every unit test method
 	 *
 	 * @throws Exception
-	 *             the exception
+	 *             is thrown if an exception occurs
 	 */
 	@AfterMethod
 	protected void tearDown() throws Exception
 	{
 	}
 
+	/**
+	 * Test method for {@link InsertionOrderSet#add(Object)}
+	 */
 	@Test
 	public void testAddE()
 	{
@@ -78,13 +81,13 @@ public class InsertionOrderSetTest
 
 		for (final String element : set)
 		{
-			AssertJUnit.assertTrue(element.equals(expected[count]));
+			assertTrue(element.equals(expected[count]));
 			count++;
 		}
 	}
 
 	/**
-	 * Test the InsertionOrderMap.
+	 * Test the no argument constructor of {@link InsertionOrderSet}.
 	 */
 	@Test
 	public void testInsertionOrderSet()
@@ -101,12 +104,16 @@ public class InsertionOrderSetTest
 
 		for (final String element : set)
 		{
-			AssertJUnit.assertTrue(element.equals(expected[count]));
+			assertTrue(element.equals(expected[count]));
 			count++;
 		}
 
 	}
 
+	/**
+	 * Test method for {@link InsertionOrderSet#add(Object)} initialized with the constructor that
+	 * takes a collection
+	 */
 	@Test
 	public void testInsertionOrderSetCollectionOfQextendsE()
 	{
@@ -122,11 +129,14 @@ public class InsertionOrderSetTest
 		for (final String element : set)
 		{
 			final String exp = expected[count];
-			AssertJUnit.assertTrue(element.equals(exp));
+			assertTrue(element.equals(exp));
 			count++;
 		}
 	}
 
+	/**
+	 * Test the constructor with the initial capacity of {@link InsertionOrderSet}.
+	 */
 	@Test
 	public void testInsertionOrderSetInt()
 	{
@@ -142,11 +152,15 @@ public class InsertionOrderSetTest
 
 		for (final String element : set)
 		{
-			AssertJUnit.assertTrue(element.equals(expected[count]));
+			assertTrue(element.equals(expected[count]));
 			count++;
 		}
 	}
 
+	/**
+	 * Test the constructor with the initial capacity and the load factor of
+	 * {@link InsertionOrderSet}.
+	 */
 	@Test
 	public void testInsertionOrderSetIntFloat()
 	{
@@ -162,13 +176,13 @@ public class InsertionOrderSetTest
 
 		for (final String element : set)
 		{
-			AssertJUnit.assertTrue(element.equals(expected[count]));
+			assertTrue(element.equals(expected[count]));
 			count++;
 		}
 	}
 
 	/**
-	 * Test the InsertionOrderMap.
+	 * Test method for {@link InsertionOrderSet#setOf(Object...)}.
 	 */
 	@Test
 	public void testInsertionOrderSetOf()
@@ -177,16 +191,14 @@ public class InsertionOrderSetTest
 
 		final Set<String> set = InsertionOrderSet.setOf("value1", "value2", "value3", "value4");
 
-
 		set.add("value2"); // Add the same object.
 		int count = 0;
 		for (final String element : set)
 		{
 			final String exp = expected[count];
-			AssertJUnit.assertTrue(element.equals(exp));
+			assertTrue(element.equals(exp));
 			count++;
 		}
 	}
-
 
 }

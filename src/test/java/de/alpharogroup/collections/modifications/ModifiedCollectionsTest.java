@@ -24,20 +24,26 @@
  */
 package de.alpharogroup.collections.modifications;
 
+import static org.testng.AssertJUnit.assertTrue;
+
 import java.util.ArrayList;
 import java.util.Arrays;
 import java.util.List;
 
-import org.testng.AssertJUnit;
 import org.testng.annotations.Test;
 
+/**
+ * The unit test class for the class {@link ModifiedCollections}
+ */
 public class ModifiedCollectionsTest
 {
 
+	/**
+	 *Test method for {@link ModifiedCollections#getModifiedLists(java.util.Collection, java.util.Collection)}
+	 */
 	@Test
 	public void testGetModifiedLists()
 	{
-
 		final String previous[] = { "1", "2", "3", "4", "5", "6", "7" };
 		final String next[] = { "2", "5", "6", "7", "8", "9" };
 
@@ -53,8 +59,8 @@ public class ModifiedCollectionsTest
 		ModifiedCollections<String> result = new ModifiedCollections<>();
 		result = result.getModifiedLists(previousList, nextList);
 
-		AssertJUnit.assertTrue(result.getRemovedElements().equals(expectedremovedList));
-		AssertJUnit.assertTrue(result.getAddedElements().equals(expectedaddedList));
+		assertTrue(result.getRemovedElements().equals(expectedremovedList));
+		assertTrue(result.getAddedElements().equals(expectedaddedList));
 
 	}
 

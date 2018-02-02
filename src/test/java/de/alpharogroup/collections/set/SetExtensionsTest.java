@@ -41,10 +41,11 @@ import org.testng.annotations.Test;
 import de.alpharogroup.collections.list.ListExtensions;
 
 /**
- * The class {@link SetExtensionsTest}.
+ * The unit test class for the class {@link SetExtensionsTest}.
  */
 public class SetExtensionsTest
 {
+
 	/**
 	 * Test for method {@link SetExtensions#isNotEmpty(Set)}
 	 */
@@ -91,7 +92,6 @@ public class SetExtensionsTest
 		assertFalse("Set should not be empty.", isNull);
 	}
 
-
 	/**
 	 * Test for method {@link SetExtensions#newHashSet(java.util.Collection, Object...)}
 	 */
@@ -108,7 +108,6 @@ public class SetExtensionsTest
 		assertTrue(set.size() == 3);
 		set = SetExtensions.newHashSet(ListExtensions.newArrayList(), "foo", "bar", "foo");
 		assertTrue(set.size() == 2);
-
 
 	}
 
@@ -130,7 +129,7 @@ public class SetExtensionsTest
 	@Test
 	public void testToSet()
 	{
-		final Collection<String> nameList = new ArrayList<String>();
+		final Collection<String> nameList = new ArrayList<>();
 
 		nameList.add("Anton");
 		nameList.add("Alex");

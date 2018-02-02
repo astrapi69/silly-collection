@@ -24,46 +24,58 @@
  */
 package de.alpharogroup.comparators;
 
-import org.testng.AssertJUnit;
+import static org.testng.AssertJUnit.assertTrue;
+
+import java.util.Comparator;
+
 import org.testng.annotations.AfterMethod;
 import org.testng.annotations.BeforeMethod;
 import org.testng.annotations.Test;
 
 /**
- * Test class for the class HashCodeComparator.
- * 
+ * The unit test class for the class {@link HashCodeComparator}.
+ *
  * @version 1.0
  * @author Asterios Raptis
  */
 public class HashCodeComparatorTest
 {
 
+	/** For use of the expected result. */
+	boolean expected;
+
+	/** For use of the result of the comparator. */
+	int actual;
+
+	/** The comparator. */
+	Comparator<String> comparator;
+
 	/**
-	 * Sets up method will be invoked before every unit test method in this class.
+	 * Sets up method will be invoked before every unit test method
 	 *
 	 * @throws Exception
-	 *             the exception
+	 *             is thrown if an exception occurs
 	 */
 	@BeforeMethod
-	protected void setUp() throws Exception
+	public void setUp() throws Exception
 	{
+		comparator = new HashCodeComparator<>();
 	}
 
 	/**
-	 * Tear down method will be invoked after every unit test method in this class.
+	 * Tear down method will be invoked after every unit test method
 	 *
 	 * @throws Exception
-	 *             the exception
+	 *             is thrown if an exception occurs
 	 */
 	@AfterMethod
-	protected void tearDown() throws Exception
+	public void tearDown() throws Exception
 	{
+		comparator = null;
 	}
 
 	/**
-	 * Test method for
-	 * {@link de.alpharogroup.comparators.HashCodeComparator#compare(java.lang.Object, java.lang.Object)}
-	 * .
+	 * Test method for {@link HashCodeComparator#compare(java.lang.Object, java.lang.Object)} .
 	 */
 	@Test
 	public void testCompare()
@@ -72,13 +84,12 @@ public class HashCodeComparatorTest
 		final String notExpected = "Asterios";
 		final String expected = "Albert";
 
-		final HashCodeComparator<String> comparator = new HashCodeComparator<>();
 		int i = comparator.compare(testString, notExpected);
 		System.out.println("comparator.compare(testString, notExpected)=i:" + i);
 		System.out.println("testString.hashCode():" + testString.hashCode());
 		System.out.println("notExpected.hashCode():" + notExpected.hashCode());
 		System.out.println(testString.hashCode() + ">" + notExpected.hashCode());
-		AssertJUnit.assertTrue(
+		assertTrue(
 			"Hashcodes should be " + testString.hashCode() + ">" + notExpected.hashCode() + ".",
 			comparator.compare(testString, notExpected) == 1);
 
@@ -87,7 +98,7 @@ public class HashCodeComparatorTest
 		System.out.println("notExpected.hashCode():" + notExpected.hashCode());
 		System.out.println("testString.hashCode():" + testString.hashCode());
 		System.out.println(notExpected.hashCode() + "<" + testString.hashCode());
-		AssertJUnit.assertTrue(
+		assertTrue(
 			"Hashcodes should be " + notExpected.hashCode() + "<" + testString.hashCode() + ".",
 			comparator.compare(notExpected, testString) == -1);
 
@@ -96,8 +107,7 @@ public class HashCodeComparatorTest
 		System.out.println("testString.hashCode():" + testString.hashCode());
 		System.out.println("expected.hashCode():" + expected.hashCode());
 		System.out.println(testString.hashCode() + "=" + expected.hashCode());
-		AssertJUnit.assertTrue(
-			"Hashcodes should be " + testString.hashCode() + "=" + expected.hashCode() + ".",
+		assertTrue("Hashcodes should be " + testString.hashCode() + "=" + expected.hashCode() + ".",
 			comparator.compare(testString, expected) == 0);
 	}
 

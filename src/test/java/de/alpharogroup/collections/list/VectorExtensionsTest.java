@@ -37,7 +37,7 @@ import org.testng.annotations.Test;
 import lombok.experimental.ExtensionMethod;
 
 /**
- * Tests for the class {@link VectorExtensions}.
+ * The unit test class for the class {@link VectorExtensions}.
  *
  * @version 1.0
  * @author Asterios Raptis

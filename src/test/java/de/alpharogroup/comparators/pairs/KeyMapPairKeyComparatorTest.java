@@ -43,7 +43,11 @@ import de.alpharogroup.test.objects.Person;
  */
 public class KeyMapPairKeyComparatorTest
 {
+
+	/** For use of the expected result. */
 	boolean expected;
+
+	/** For use of the result of the comparator. */
 	int actual;
 
 	/**

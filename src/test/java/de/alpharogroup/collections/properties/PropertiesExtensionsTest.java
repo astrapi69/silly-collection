@@ -46,10 +46,9 @@ import org.testng.annotations.Test;
 import de.alpharogroup.collections.pairs.KeyValuePair;
 
 /**
- * Test class for the class {@link PropertiesExtensions}.
+ * The unit test class for the class {@link PropertiesExtensions}.
  *
  * @author Asterios Raptis
- * @version 1.0
  */
 public class PropertiesExtensionsTest
 {

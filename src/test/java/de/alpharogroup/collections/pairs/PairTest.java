@@ -66,7 +66,6 @@ public class PairTest
 		assertEquals(expected, actual);
 	}
 
-
 	/**
 	 * Test method for {@link Pair}
 	 */

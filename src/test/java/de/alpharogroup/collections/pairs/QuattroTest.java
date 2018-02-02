@@ -36,10 +36,6 @@ import de.alpharogroup.test.objects.enums.Brands;
 import de.alpharogroup.test.objects.evaluations.EqualsHashCodeAndToStringEvaluator;
 
 /**
- * The class {@link Quattro}.
- */
-
-/**
  * The unit test class for the class {@link Quattro}.
  */
 public class QuattroTest
@@ -70,7 +66,7 @@ public class QuattroTest
 		final Quattro<String, Employee, Customer, Brands> second = Quattro
 			.<String, Employee, Customer, Brands> builder().topLeft("left").topRight(employee)
 			.bottomLeft(customer).bottomRight(ferrari).build();
-		final Quattro<Integer, Employee, Customer, Brands> third = new Quattro<Integer, Employee, Customer, Brands>(
+		final Quattro<Integer, Employee, Customer, Brands> third = new Quattro<>(
 			1, employee, customer, ferrari);
 		final Quattro<Integer, Employee, Customer, Brands> fourth = new Quattro<>();
 		fourth.setTopLeft(1);

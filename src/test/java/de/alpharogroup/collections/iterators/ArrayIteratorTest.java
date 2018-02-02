@@ -38,7 +38,6 @@ import org.testng.annotations.Test;
 /**
  * The unit test class for the class {@link ArrayIterator}.
  *
- * @version 1.0
  * @author Asterios Raptis
  */
 public class ArrayIteratorTest
@@ -55,10 +54,13 @@ public class ArrayIteratorTest
 	private Integer[] testArray;
 
 	/**
-	 * Executes every time before a test method.
+	 * Sets up method will be invoked before every unit test method
+	 *
+	 * @throws Exception
+	 *             is thrown if an exception occurs
 	 */
 	@BeforeMethod
-	protected void setUp()
+	protected void setUp() throws Exception
 	{
 		this.testArray = new Integer[4];
 		this.testArray[0] = new Integer("0");
@@ -69,10 +71,13 @@ public class ArrayIteratorTest
 	}
 
 	/**
-	 * Executes every time after a test method.
+	 * Tear down method will be invoked after every unit test method
+	 *
+	 * @throws Exception
+	 *             is thrown if an exception occurs
 	 */
 	@AfterMethod
-	protected void tearDown()
+	protected void tearDown() throws Exception
 	{
 	}
 

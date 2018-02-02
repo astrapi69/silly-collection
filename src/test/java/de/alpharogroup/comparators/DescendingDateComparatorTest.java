@@ -24,12 +24,14 @@
  */
 package de.alpharogroup.comparators;
 
+import static org.testng.AssertJUnit.assertTrue;
+
 import java.util.ArrayList;
 import java.util.Collections;
+import java.util.Comparator;
 import java.util.Date;
 import java.util.List;
 
-import org.testng.AssertJUnit;
 import org.testng.annotations.AfterMethod;
 import org.testng.annotations.BeforeMethod;
 import org.testng.annotations.Test;
@@ -37,35 +39,46 @@ import org.testng.annotations.Test;
 import de.alpharogroup.date.CreateDateExtensions;
 
 /**
- * The class DescendingDateComparatorTest.
+ * The unit test class for the class {@link DescendingDateComparator}.
  */
 public class DescendingDateComparatorTest
 {
 
+	/** For use of the expected result. */
+	boolean expected;
+
+	/** For use of the result of the comparator. */
+	int actual;
+
+	/** The comparator. */
+	Comparator<Date> comparator;
+
 	/**
-	 * Sets the up.
+	 * Sets up method will be invoked before every unit test method
 	 *
 	 * @throws Exception
-	 *             the exception
+	 *             is thrown if an exception occurs
 	 */
 	@BeforeMethod
 	public void setUp() throws Exception
 	{
+		comparator = new DateComparator();
 	}
 
 	/**
-	 * Tear down.
+	 * Tear down method will be invoked after every unit test method
 	 *
 	 * @throws Exception
-	 *             the exception
+	 *             is thrown if an exception occurs
 	 */
 	@AfterMethod
 	public void tearDown() throws Exception
 	{
+		comparator = null;
 	}
 
 	/**
-	 * Test compare.
+	 * Test method for {@link DescendingDateComparator#compare(Date, Date)}.
 	 */
 	@Test
 	public void testCompare()
@@ -83,42 +96,27 @@ public class DescendingDateComparatorTest
 		dates.add(past);
 		dates.add(after);
 		dates.add(null);
-		// int i = 1;
-		// for (Iterator<Date> iterator = dates.iterator(); iterator.hasNext();)
-		// {
-		// Date date = iterator.next();
-		// System.out.println(i+"."+date);
-		// i++;
-		// }
-		AssertJUnit.assertTrue("List object with index 0 should be 'before'-object.",
+		assertTrue("List object with index 0 should be 'before'-object.",
 			dates.get(0).equals(before));
-		AssertJUnit.assertTrue("List object with index 1 should be 'future'-object.",
+		assertTrue("List object with index 1 should be 'future'-object.",
 			dates.get(1).equals(future));
-		AssertJUnit.assertTrue("List object with index 2 should be 'past'-object.",
+		assertTrue("List object with index 2 should be 'past'-object.",
 			dates.get(2).equals(past));
-		AssertJUnit.assertTrue("List object with index 3 should be 'after'-object.",
+		assertTrue("List object with index 3 should be 'after'-object.",
 			dates.get(3).equals(after));
-		AssertJUnit.assertTrue("List object with index 4 should be 'null'", dates.get(4) == null);
+		assertTrue("List object with index 4 should be 'null'", dates.get(4) == null);
 		// Sort collection with our DescendingDateComparator...
-		Collections.sort(dates, new DescendingDateComparator());
-		System.out.println("===================================================");
-		// i = 1;
-		// for (Iterator<Date> iterator = dates.iterator(); iterator.hasNext();)
-		// {
-		// Date date = iterator.next();
-		// System.out.println(i+"."+date);
-		// i++;
-		// }
-
-		AssertJUnit.assertTrue("List object with index 0 should be 'future'-object.",
+		comparator = new DescendingDateComparator();
+		Collections.sort(dates, comparator);
+		assertTrue("List object with index 0 should be 'future'-object.",
 			dates.get(0).equals(future));
-		AssertJUnit.assertTrue("List object with index 1 should be 'after'-object.",
+		assertTrue("List object with index 1 should be 'after'-object.",
 			dates.get(1).equals(after));
-		AssertJUnit.assertTrue("List object with index 2 should be 'before'-object.",
+		assertTrue("List object with index 2 should be 'before'-object.",
 			dates.get(2).equals(before));
-		AssertJUnit.assertTrue("List object with index 3 should be 'past'-object.",
+		assertTrue("List object with index 3 should be 'past'-object.",
 			dates.get(3).equals(past));
-		AssertJUnit.assertTrue("List object with index 4 should be 'null'", dates.get(4) == null);
+		assertTrue("List object with index 4 should be 'null'", dates.get(4) == null);
 	}
 
 }

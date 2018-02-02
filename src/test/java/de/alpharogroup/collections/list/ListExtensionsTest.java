@@ -56,7 +56,6 @@ import lombok.experimental.ExtensionMethod;
 /**
  * The unit test class for the class {@link ListExtensions}.
  *
- * @version 1.0
  * @author Asterios Raptis
  */
 @ExtensionMethod(ListExtensions.class)
@@ -64,10 +63,10 @@ public class ListExtensionsTest
 {
 
 	/**
-	 * Sets up method will be invoked before every unit test method in this class.
+	 * Sets up method will be invoked before every unit test method
 	 *
 	 * @throws Exception
-	 *             the exception
+	 *             is thrown if an exception occurs
 	 */
 	@BeforeMethod
 	protected void setUp() throws Exception
@@ -75,10 +74,10 @@ public class ListExtensionsTest
 	}
 
 	/**
-	 * Tear down method will be invoked after every unit test method in this class.
+	 * Tear down method will be invoked after every unit test method
 	 *
 	 * @throws Exception
-	 *             the exception
+	 *             is thrown if an exception occurs
 	 */
 	@AfterMethod
 	protected void tearDown() throws Exception
@@ -86,7 +85,7 @@ public class ListExtensionsTest
 	}
 
 	/**
-	 * Test the method ListExtensions.containAtleastOneObject(List,List).
+	 * Test the method {@link ListExtensions#containAtleastOneObject(List, List)}
 	 */
 	@Test
 	public void testContainAtleastOneObject()
@@ -616,7 +615,7 @@ public class ListExtensionsTest
 	}
 
 	/**
-	 * Test the method ListExtensions.splitSetToParts(Set, int).
+	 * Test the method {@link ListExtensions#splitSetToParts(Set, int)}
 	 */
 	@Test
 	@SuppressWarnings({ "rawtypes", "deprecation" })
@@ -645,7 +644,7 @@ public class ListExtensionsTest
 	}
 
 	/**
-	 * Test the method ListExtensions.splitListToParts(List,int).
+	 * Test the method {@link ListExtensions#splitListToParts(List, int)}
 	 */
 	@Test
 	@SuppressWarnings({ "rawtypes", "deprecation" })

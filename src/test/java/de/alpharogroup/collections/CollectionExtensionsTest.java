@@ -45,6 +45,9 @@ import de.alpharogroup.collections.list.ListExtensions;
 public class CollectionExtensionsTest
 {
 
+	/**
+	 *Test method for {@link CollectionExtensions#difference(Collection, Collection)}
+	 */
 	@Test
 	public void testDifference()
 	{
@@ -63,7 +66,6 @@ public class CollectionExtensionsTest
 		}
 	}
 
-
 	/**
 	 * Test the method for {@link CollectionExtensions#intersection(Collection...)}
 	 */
@@ -72,7 +74,7 @@ public class CollectionExtensionsTest
 	{
 		Collection<String> expected;
 		Collection<String> actual;
-		final Collection<String> nameList = new ArrayList<String>();
+		final Collection<String> nameList = new ArrayList<>();
 
 		nameList.add("Anton");
 		nameList.add("Alex");
@@ -81,7 +83,7 @@ public class CollectionExtensionsTest
 		nameList.add("Caesar");
 		nameList.add("Leonardo");
 
-		final Collection<String> otherNames = new ArrayList<String>();
+		final Collection<String> otherNames = new ArrayList<>();
 
 		otherNames.add("Alex");
 		otherNames.add("Berta");
@@ -89,14 +91,14 @@ public class CollectionExtensionsTest
 		otherNames.add("Caesar");
 		otherNames.add("Leonardo");
 
-		final Collection<String> vipNames = new ArrayList<String>();
+		final Collection<String> vipNames = new ArrayList<>();
 		vipNames.add("Alex");
 		vipNames.add("Brad");
 		vipNames.add("Caesar");
 		vipNames.add("Leonardo");
 		vipNames.add("Jesus");
 
-		expected = new ArrayList<String>();
+		expected = new ArrayList<>();
 		expected.add("Alex");
 		expected.add("Brad");
 		expected.add("Caesar");
@@ -113,7 +115,6 @@ public class CollectionExtensionsTest
 		assertNull(actual);
 
 	}
-
 
 	/**
 	 * Test the method for {@link CollectionExtensions#intersection(Collection...)} with the
@@ -156,6 +157,5 @@ public class CollectionExtensionsTest
 		final BeanTester beanTester = new BeanTester();
 		beanTester.testBean(CollectionExtensions.class);
 	}
-
 
 }

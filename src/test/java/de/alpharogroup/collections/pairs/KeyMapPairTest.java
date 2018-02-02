@@ -43,7 +43,6 @@ import de.alpharogroup.test.objects.evaluations.EqualsHashCodeAndToStringEvaluat
 public class KeyMapPairTest
 {
 
-
 	/**
 	 * Test method for {@link KeyMapPair#equals(Object)} , {@link KeyMapPair#hashCode()} and
 	 * {@link KeyMapPair#toString()}
