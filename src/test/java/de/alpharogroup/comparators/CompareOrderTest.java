@@ -39,10 +39,10 @@ public class CompareOrderTest
 {
 
 	/**
-	 * Test method for {@link CompareOrder}
+	 * Test method for {@link CompareOrder#getOrder()}
 	 */
 	@Test
-	public void test()
+	public void testGetOrder()
 	{
 		int expected;
 		int actual;
