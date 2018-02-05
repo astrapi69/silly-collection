@@ -97,9 +97,7 @@ public class EnumerationIteratorTest
 	}
 
 	/**
-	 * Test method for
-	 * {@link EnumerationIterator#EnumerationIterator(java.util.Enumeration)}
-	 * .
+	 * Test method for {@link EnumerationIterator#EnumerationIterator(java.util.Enumeration)} .
 	 */
 	@Test
 	public void testEnumerationIterator()

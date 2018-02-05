@@ -100,8 +100,7 @@ public class DescendingDateComparatorTest
 			dates.get(0).equals(before));
 		assertTrue("List object with index 1 should be 'future'-object.",
 			dates.get(1).equals(future));
-		assertTrue("List object with index 2 should be 'past'-object.",
-			dates.get(2).equals(past));
+		assertTrue("List object with index 2 should be 'past'-object.", dates.get(2).equals(past));
 		assertTrue("List object with index 3 should be 'after'-object.",
 			dates.get(3).equals(after));
 		assertTrue("List object with index 4 should be 'null'", dates.get(4) == null);
@@ -114,8 +113,7 @@ public class DescendingDateComparatorTest
 			dates.get(1).equals(after));
 		assertTrue("List object with index 2 should be 'before'-object.",
 			dates.get(2).equals(before));
-		assertTrue("List object with index 3 should be 'past'-object.",
-			dates.get(3).equals(past));
+		assertTrue("List object with index 3 should be 'past'-object.", dates.get(3).equals(past));
 		assertTrue("List object with index 4 should be 'null'", dates.get(4) == null);
 	}
 

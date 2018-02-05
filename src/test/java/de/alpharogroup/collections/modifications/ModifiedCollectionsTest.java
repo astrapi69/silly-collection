@@ -39,7 +39,8 @@ public class ModifiedCollectionsTest
 {
 
 	/**
-	 *Test method for {@link ModifiedCollections#getModifiedLists(java.util.Collection, java.util.Collection)}
+	 * Test method for
+	 * {@link ModifiedCollections#getModifiedLists(java.util.Collection, java.util.Collection)}
 	 */
 	@Test
 	public void testGetModifiedLists()

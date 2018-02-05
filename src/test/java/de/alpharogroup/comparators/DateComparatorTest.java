@@ -32,13 +32,13 @@ import java.util.Comparator;
 import java.util.Date;
 import java.util.List;
 
-import lombok.AccessLevel;
-import lombok.experimental.FieldDefaults;
 import org.testng.annotations.AfterMethod;
 import org.testng.annotations.BeforeMethod;
 import org.testng.annotations.Test;
 
 import de.alpharogroup.date.CreateDateExtensions;
+import lombok.AccessLevel;
+import lombok.experimental.FieldDefaults;
 
 /**
  * The unit test class for the class {@link DateComparator}.

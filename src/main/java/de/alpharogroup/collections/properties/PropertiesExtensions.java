@@ -291,6 +291,8 @@ public final class PropertiesExtensions
 	 * Try to get a number from the given properties key from the given properties. If it does not
 	 * exists an empty {@link Optional} will be returned and a log message will be logged.
 	 *
+	 * @param properties
+	 *            the properties
 	 * @param propertiesKey
 	 *            the properties key
 	 * @return the port number or an empty {@linkplain Optional}

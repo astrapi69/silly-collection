@@ -46,7 +46,7 @@ public class CollectionExtensionsTest
 {
 
 	/**
-	 *Test method for {@link CollectionExtensions#difference(Collection, Collection)}
+	 * Test method for {@link CollectionExtensions#difference(Collection, Collection)}
 	 */
 	@Test
 	public void testDifference()
