@@ -36,6 +36,7 @@ import java.net.URL;
 import java.util.ArrayList;
 import java.util.List;
 import java.util.Map;
+import java.util.Optional;
 import java.util.Properties;
 
 import org.meanbean.test.BeanTestException;
@@ -52,6 +53,64 @@ import de.alpharogroup.collections.pairs.KeyValuePair;
  */
 public class PropertiesExtensionsTest
 {
+
+	/**
+	 * Test for method {@link PropertiesExtensions#getInteger(Properties, String)}
+	 */
+	@Test
+	public void testGetInteger()
+	{
+		Integer expected;
+		Integer actual;
+		Optional<Integer> number;
+		Properties properties;
+		properties = new Properties();
+
+		properties.put("com", "5");
+
+		number = PropertiesExtensions.getInteger(properties, "com");
+		actual = number.get();
+		expected = 5;
+		assertEquals(actual, expected);
+
+		properties = new Properties();
+
+		properties.put("com", "8");
+
+		number = PropertiesExtensions.getInteger(properties, "com");
+		actual = number.get();
+		expected = 8;
+		assertEquals(actual, expected);
+
+		properties = new Properties();
+	}
+
+	/**
+	 * Test for method {@link PropertiesExtensions#getInteger(Properties, String)} where value is
+	 * not a number
+	 */
+	@Test
+	public void testGetIntegerWithNoNumberValue()
+	{
+		boolean expected;
+		boolean actual;
+		Optional<Integer> number;
+		Properties properties;
+		properties = new Properties();
+
+		properties.put("com", "foo");
+
+		number = PropertiesExtensions.getInteger(properties, "com");
+		actual = number.isPresent();
+		expected = false;
+		assertEquals(actual, expected);
+
+		number = PropertiesExtensions.getInteger(null, "com");
+		actual = number.isPresent();
+		expected = false;
+		assertEquals(actual, expected);
+
+	}
 
 	/**
 	 * Test for method {@link PropertiesExtensions#findRedundantValues(Properties)}

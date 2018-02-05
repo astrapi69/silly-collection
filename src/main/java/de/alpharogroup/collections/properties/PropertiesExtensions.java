@@ -36,12 +36,14 @@ import java.util.Enumeration;
 import java.util.LinkedHashMap;
 import java.util.List;
 import java.util.Map;
+import java.util.Optional;
 import java.util.Properties;
 import java.util.regex.Matcher;
 import java.util.regex.Pattern;
 
 import de.alpharogroup.collections.pairs.KeyValuePair;
 import lombok.experimental.UtilityClass;
+import lombok.extern.slf4j.Slf4j;
 
 /**
  * The Class {@link PropertiesExtensions} provides methods loading properties and other related
@@ -49,6 +51,7 @@ import lombok.experimental.UtilityClass;
  * bundle.
  */
 @UtilityClass
+@Slf4j
 public final class PropertiesExtensions
 {
 
@@ -282,6 +285,35 @@ public final class PropertiesExtensions
 		final Properties prop = new Properties();
 		prop.load(properties);
 		prop.storeToXML(xml, comment, encoding);
+	}
+
+	/**
+	 * Try to get a number from the given properties key from the given properties. If it does not
+	 * exists an empty {@link Optional} will be returned and a log message will be logged.
+	 *
+	 * @param propertiesKey
+	 *            the properties key
+	 * @return the port number or an empty {@linkplain Optional}
+	 */
+	public static Optional<Integer> getInteger(final Properties properties,
+		final String propertiesKey)
+	{
+		if (properties != null && properties.containsKey(propertiesKey))
+		{
+			final String portAsString = properties.getProperty(propertiesKey);
+			try
+			{
+				final Integer port = Integer.valueOf(portAsString);
+				return Optional.of(port);
+			}
+			catch (final NumberFormatException e)
+			{
+				log.error("Value of given properties key:" + propertiesKey + " is not a number.",
+					e);
+				return Optional.empty();
+			}
+		}
+		return Optional.empty();
 	}
 
 }
