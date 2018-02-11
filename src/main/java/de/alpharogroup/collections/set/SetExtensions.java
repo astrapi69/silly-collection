@@ -88,13 +88,13 @@ public class SetExtensions
 	}
 
 	/**
-	 * Factory method for create new {@link HashSet} and will be returned as {@link Set}
+	 * Factory method for create new {@link TreeSet} and will be returned as {@link Set}
 	 *
 	 * @param <T>
 	 *            the generic type of the elements
 	 * @param elements
-	 *            the elements to add in the new {@link HashSet}
-	 * @return the new {@link HashSet}
+	 *            the elements to add in the new {@link TreeSet}
+	 * @return the new {@link TreeSet}
 	 */
 	@SafeVarargs
 	public static final <T> SortedSet<T> newTreeSet(final T... elements)
@@ -110,8 +110,8 @@ public class SetExtensions
 	 * @param collection
 	 *            the optional collection that will be added to the new list
 	 * @param elements
-	 *            the elements to add in the new {@link HashSet}
-	 * @return the new {@link HashSet}
+	 *            the elements to add in the new {@link TreeSet}
+	 * @return the new {@link TreeSet}
 	 */
 	@SafeVarargs
 	public static final <T> SortedSet<T> newTreeSet(final Collection<T> collection,
@@ -130,8 +130,8 @@ public class SetExtensions
 	 * @param comparator
 	 *            the comparator
 	 * @param elements
-	 *            the elements to add in the new {@link HashSet}
-	 * @return the new {@link HashSet}
+	 *            the elements to add in the new {@link TreeSet}
+	 * @return the new {@link TreeSet}
 	 */
 	@SafeVarargs
 	public static final <T> SortedSet<T> newTreeSet(final Collection<T> collection,
