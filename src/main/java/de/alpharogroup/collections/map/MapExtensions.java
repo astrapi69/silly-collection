@@ -246,29 +246,6 @@ public final class MapExtensions
 	}
 
 	/**
-	 * The Method printMap prints the HashMap to the console.
-	 *
-	 * @param <K>
-	 *            the generic type of the key
-	 * @param <V>
-	 *            the generic type of the value
-	 * @param msg
-	 *            The map to print.
-	 * @deprecated use instead the new Stream methods from java 8.<br>
-	 *             Note: will be removed in the next minor release.
-	 */
-	@Deprecated
-	public static <K, V> void printMap(final Map<K, V> msg)
-	{
-		for (final Entry<K, V> entry : msg.entrySet())
-		{
-			final K key = entry.getKey();
-			final V value = entry.getValue();
-			System.out.println("[" + key.toString() + "=" + value.toString() + "]");
-		}
-	}
-
-	/**
 	 * Converts a two dimensional Array to a Map.
 	 *
 	 * @param <T>
