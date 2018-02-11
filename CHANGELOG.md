@@ -13,6 +13,7 @@ CHANGED:
 
 - javadoc extended and improved
 - moved method isEmpty and isNotEmpty to class CollectionExtensions
+- update of parent version
 
 
 Version 4.24.0
