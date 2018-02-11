@@ -31,6 +31,7 @@ import static org.testng.AssertJUnit.assertTrue;
 import java.lang.reflect.InvocationTargetException;
 import java.util.ArrayList;
 import java.util.Collection;
+import java.util.Comparator;
 import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
@@ -205,6 +206,26 @@ public class MapExtensionsTest
 	{
 		final Map<Object, Object> hashMap = MapExtensions.newHashMap(5);
 		assertNotNull(hashMap);
+	}
+
+	/**
+	 * Test for the Method {@link MapExtensions#newTreeMap()}.
+	 */
+	@Test
+	public void testNewTreeMap()
+	{
+		final Map<Integer, String> treeMap = MapExtensions.<Integer, String>newTreeMap();
+		assertNotNull(treeMap);
+	}
+
+	/**
+	 * Test for the Method {@link MapExtensions#newTreeMap(Comparator)}.
+	 */
+	@Test
+	public void testNewTreeMapComparator()
+	{
+		final Map<Integer, String> treeMap = MapExtensions.<Integer, String>newTreeMap((o1, o2) -> o1-o2);
+		assertNotNull(treeMap);
 	}
 
 	/**

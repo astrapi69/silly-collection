@@ -71,7 +71,9 @@ public class InsertionOrderMapTest
 			assertTrue(expectedValue.equals(value.toString()));
 			count++;
 		}
-		MapExtensions.printMap(map);
+		map.forEach((key, value) -> System.out
+			.println("[" + key.toString() + "=" + value.toString() + "]"));
+
 		map.clear();
 	}
 
@@ -267,11 +269,17 @@ public class InsertionOrderMapTest
 		map3.put("4", "value4");
 		map3.put("2", "value5");
 		System.out.println("----------initHashMap--------------");
-		MapExtensions.printMap(map3);
+
+		map3.forEach((key, value) -> System.out
+			.println("[" + key.toString() + "=" + value.toString() + "]"));
+
 		System.out.println("------------------------");
 		System.out.println("----------Map linkedMap = new LinkedHashMap(map3);--------------");
 		final Map<String, String> linkedMap = new LinkedHashMap<>(map3);
-		MapExtensions.printMap(linkedMap);
+
+		linkedMap.forEach((key, value) -> System.out
+			.println("[" + key.toString() + "=" + value.toString() + "]"));
+
 		System.out.println("---------initInsertionOrderMap---------------");
 		map3.clear();
 	}

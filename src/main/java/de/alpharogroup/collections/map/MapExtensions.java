@@ -26,10 +26,12 @@ package de.alpharogroup.collections.map;
 
 import java.util.ArrayList;
 import java.util.Collection;
+import java.util.Comparator;
 import java.util.HashMap;
 import java.util.LinkedHashMap;
 import java.util.Map;
 import java.util.Map.Entry;
+import java.util.TreeMap;
 import java.util.concurrent.ConcurrentHashMap;
 
 import org.apache.commons.collections4.functors.InstantiateFactory;
@@ -213,6 +215,37 @@ public final class MapExtensions
 	}
 
 	/**
+	 * Factory method for create a new {@link TreeMap}.
+	 *
+	 * @param <K>
+	 *            the generic type of the key
+	 * @param <V>
+	 *            the generic type of the value
+	 *
+	 * @return The new {@link TreeMap}.
+	 */
+	public static <K, V> Map<K, V> newTreeMap()
+	{
+		return new TreeMap<>();
+	}
+
+	/**
+	 * Factory method for create a new {@link TreeMap}.
+	 *
+	 * @param <K>
+	 *            the generic type of the key
+	 * @param <V>
+	 *            the generic type of the value
+	 * @param comparator
+	 *            the comparator
+	 * @return The new {@link TreeMap}.
+	 */
+	public static <K, V> Map<K, V> newTreeMap(final Comparator<? super K> comparator)
+	{
+		return new TreeMap<>(comparator);
+	}
+
+	/**
 	 * The Method printMap prints the HashMap to the console.
 	 *
 	 * @param <K>
@@ -221,7 +254,10 @@ public final class MapExtensions
 	 *            the generic type of the value
 	 * @param msg
 	 *            The map to print.
+	 * @deprecated use instead the new Stream methods from java 8.<br>
+	 *             Note: will be removed in the next minor release.
 	 */
+	@Deprecated
 	public static <K, V> void printMap(final Map<K, V> msg)
 	{
 		for (final Entry<K, V> entry : msg.entrySet())
