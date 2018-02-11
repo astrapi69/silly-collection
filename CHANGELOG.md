@@ -7,6 +7,7 @@ Version 4.25.0-SNAPSHOT
 ADDED:
  
 - created new method for get an Integer from properties object with a given properties key
+- new factory methods for create new Treeset as SortedSet objects
 
 CHANGED:
 
