@@ -79,4 +79,32 @@ public final class CollectionExtensions
 		return null;
 	}
 
+	/**
+	 * Checks if the given {@link Collection} is not null or empty
+	 *
+	 * @param <T>
+	 *            the generic type
+	 * @param collection
+	 *            The collection to check
+	 * @return true if the given {@link Collection} is null or empty otherwise false
+	 */
+	public static <T> boolean isNotEmpty(final Collection<T> collection)
+	{
+		return collection != null && !collection.isEmpty();
+	}
+
+	/**
+	 * Checks if the given {@link Collection} is null or empty.
+	 *
+	 * @param <T>
+	 *            the generic type
+	 * @param collection
+	 *            The collection to check
+	 * @return true if the given {@link Collection} is null or empty otherwise false.
+	 */
+	public static <T> boolean isEmpty(final Collection<T> collection)
+	{
+		return collection == null || collection.isEmpty();
+	}
+
 }

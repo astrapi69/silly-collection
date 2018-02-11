@@ -219,6 +219,7 @@ public class ListExtensionsTest
 	/**
 	 * Test the method {@link ListExtensions#isEmpty(List)}
 	 */
+	@SuppressWarnings("deprecation")
 	@Test
 	public void testIsEmpty()
 	{

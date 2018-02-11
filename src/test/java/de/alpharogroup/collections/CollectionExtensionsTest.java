@@ -148,6 +148,62 @@ public class CollectionExtensionsTest
 	}
 
 	/**
+	 * Test the method {@link CollectionExtensions#isEmpty(Collection)}
+	 */
+	@Test
+	public void testIsEmpty()
+	{
+		boolean actual;
+		boolean expected;
+
+		Collection<String> nullCollection = null;
+
+		actual = CollectionExtensions.isEmpty(nullCollection);
+		expected = true;
+		assertEquals(expected, actual);
+
+		nullCollection = new ArrayList<>();
+
+		actual = CollectionExtensions.isEmpty(nullCollection);
+		expected = true;
+		assertEquals(expected, actual);
+
+		nullCollection.add("foo");
+
+		actual = CollectionExtensions.isEmpty(nullCollection);
+		expected = false;
+		assertEquals(expected, actual);
+	}
+
+	/**
+	 * Test the method {@link CollectionExtensions#isNotEmpty(Collection)}
+	 */
+	@Test
+	public void testIsNotEmpty()
+	{
+		boolean actual;
+		boolean expected;
+
+		Collection<String> nullCollection = null;
+
+		actual = CollectionExtensions.isNotEmpty(nullCollection);
+		expected = false;
+		assertEquals(expected, actual);
+
+		nullCollection = new ArrayList<>();
+
+		actual = CollectionExtensions.isNotEmpty(nullCollection);
+		expected = false;
+		assertEquals(expected, actual);
+
+		nullCollection.add("foo");
+
+		actual = CollectionExtensions.isNotEmpty(nullCollection);
+		expected = true;
+		assertEquals(expected, actual);
+	}
+
+	/**
 	 * Test method for {@link CollectionExtensions} with {@link BeanTester}
 	 */
 	@Test(expectedExceptions = { BeanTestException.class, InvocationTargetException.class,

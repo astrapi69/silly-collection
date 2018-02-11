@@ -24,7 +24,6 @@
  */
 package de.alpharogroup.collections.properties;
 
-import java.util.ArrayList;
 import java.util.Collections;
 import java.util.Comparator;
 import java.util.List;
@@ -32,6 +31,7 @@ import java.util.Map;
 import java.util.Properties;
 import java.util.Set;
 
+import de.alpharogroup.collections.CollectionExtensions;
 import de.alpharogroup.collections.list.ListExtensions;
 import de.alpharogroup.comparators.NullCheckComparator;
 
@@ -160,7 +160,7 @@ public class IndexSortedProperties extends SortedProperties
 	@Override
 	public synchronized void clear()
 	{
-		if (ListExtensions.isNotEmpty(keys))
+		if (CollectionExtensions.isNotEmpty(keys))
 		{
 			keys.clear();
 		}
@@ -300,7 +300,7 @@ public class IndexSortedProperties extends SortedProperties
 	 */
 	private void sortKeyList(final Set<Object> keySet)
 	{
-		keys = new ArrayList<Object>(keySet);
+		keys = ListExtensions.newArrayList(keySet);
 		resortKeyList();
 	}
 

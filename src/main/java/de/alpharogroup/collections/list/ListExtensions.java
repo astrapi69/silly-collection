@@ -38,6 +38,7 @@ import java.util.Vector;
 import org.apache.commons.beanutils.BeanComparator;
 import org.apache.commons.collections4.ComparatorUtils;
 
+import de.alpharogroup.collections.CollectionExtensions;
 import de.alpharogroup.collections.array.ArrayExtensions;
 import de.alpharogroup.collections.modifications.ModifiedCollections;
 import de.alpharogroup.comparators.SortOrderComparator;
@@ -172,10 +173,13 @@ public final class ListExtensions
 	 * @param list
 	 *            The List to check.
 	 * @return true if the list is null or empty otherwise false.
+	 * @deprecated use instead the same name method in the class CollectionExtensions. Note: will be
+	 *             removed in the next minor release.
 	 */
+	@Deprecated
 	public static <T> boolean isEmpty(final List<T> list)
 	{
-		return list == null || list.isEmpty();
+		return CollectionExtensions.isEmpty(list);
 	}
 
 	/**
@@ -224,10 +228,13 @@ public final class ListExtensions
 	 * @param list
 	 *            The List to check.
 	 * @return true if the list is null or empty otherwise false.
+	 * @deprecated use instead the same name method in the class CollectionExtensions. Note: will be
+	 *             removed in the next minor release.
 	 */
+	@Deprecated
 	public static <T> boolean isNotEmpty(final List<T> list)
 	{
-		return list != null && !list.isEmpty();
+		return CollectionExtensions.isNotEmpty(list);
 	}
 
 	/**
@@ -246,7 +253,7 @@ public final class ListExtensions
 	public static <T> List<T> newArrayList(final Collection<T> collection, final T... elements)
 	{
 		final List<T> list;
-		if (collection != null && !collection.isEmpty())
+		if (CollectionExtensions.isNotEmpty(collection))
 		{
 			list = new ArrayList<>(collection);
 			Collections.addAll(list, elements);
