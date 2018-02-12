@@ -53,6 +53,15 @@ public class MapExtensionsTest
 {
 
 	/**
+	 * Test for the Method {@link MapExtensions#newInsertionOrderMap()}.
+	 */
+	@Test public void testNewInsertionOrderMap() throws Exception {
+		
+		final Map<Integer, String> map = MapExtensions.<Integer, String>newInsertionOrderMap();
+		assertNotNull(map);
+	}
+	
+	/**
 	 * Sets up method will be invoked before every unit test method
 	 *
 	 * @throws Exception
