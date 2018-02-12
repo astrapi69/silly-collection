@@ -199,7 +199,7 @@ public final class MapExtensions
 	}
 
 	/**
-	 * Factory method for create a new {@link LazyMap} from commons-collections4.
+	 * Factory method for create a new {@link LazyMap} from commons-collections4 that encapsulates a {@link HashMap}.
 	 *
 	 * @param <K>
 	 *            the generic type of the key
@@ -212,6 +212,40 @@ public final class MapExtensions
 	public static <K, V> Map<K, V> newLazyMap()
 	{
 		return LazyMap.lazyMap(new HashMap<K, V>(), new InstantiateFactory(HashMap.class));
+	}
+	
+	/**
+	 * Factory method for create a new {@link LazyMap} from commons-collections4 that encapsulates a {@link TreeMap}.
+	 *
+	 * @param <K>
+	 *            the generic type of the key
+	 * @param <V>
+	 *            the generic type of the value
+	 *
+	 * @return The new {@link LazyMap}.
+	 */
+	@SuppressWarnings({ "unchecked", "rawtypes" })
+	public static <K, V> Map<K, V> newLazyTreeMap()
+	{
+		return LazyMap.lazyMap(new TreeMap<K, V>(), new InstantiateFactory(TreeMap.class));
+	}
+	
+	/**
+	 * Factory method for create a new {@link LazyMap} from commons-collections4 that encapsulates a {@link TreeMap}.
+	 *
+	 * @param <K>
+	 *            the generic type of the key
+	 * @param <V>
+	 *            the generic type of the value    
+	 * @param comparator
+	 *            the comparator
+	 *
+	 * @return The new {@link LazyMap}.
+	 */
+	@SuppressWarnings({ "unchecked", "rawtypes" })
+	public static <K, V> Map<K, V> newLazyTreeMap(final Comparator<? super K> comparator)
+	{
+		return LazyMap.lazyMap(new TreeMap<K, V>(comparator), new InstantiateFactory(TreeMap.class));
 	}
 
 	/**
