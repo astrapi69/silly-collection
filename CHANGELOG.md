@@ -8,6 +8,8 @@ ADDED:
  
 - created new method for get an Integer from properties object with a given properties key
 - new factory methods for create new Treeset as SortedSet objects
+- new factory methods for create new TreeMap as SortedMap objects
+- new factory method for create new InsertionOrderMap
 
 CHANGED:
 
