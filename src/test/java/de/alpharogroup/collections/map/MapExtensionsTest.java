@@ -53,33 +53,6 @@ public class MapExtensionsTest
 {
 
 	/**
-	 * Test for the Method {@link MapExtensions#newInsertionOrderMap()}.
-	 */
-	@Test public void testNewInsertionOrderMap() throws Exception {
-		
-		final Map<Integer, String> map = MapExtensions.<Integer, String>newInsertionOrderMap();
-		assertNotNull(map);
-	}
-	
-	/**
-	 * Test for the Method {@link MapExtensions#newLazyTreeMap()}.
-	 */
-	@Test public void testNewLazyTreeMap() throws Exception
-	{
-		final Map<Integer, String> treeMap = MapExtensions.<Integer, String>newLazyTreeMap();
-		assertNotNull(treeMap);
-	}
-	
-	/**
-	 * Test for the Method {@link MapExtensions#newLazyTreeMap(Comparator)}.
-	 */
-	@Test public void testNewLazyTreeMapComparator() throws Exception
-	{
-		final Map<Integer, String> treeMap = MapExtensions.<Integer, String>newLazyTreeMap((o1, o2) -> o1-o2);
-		assertNotNull(treeMap);
-	}
-		
-	/**
 	 * Sets up method will be invoked before every unit test method
 	 *
 	 * @throws Exception
@@ -236,12 +209,44 @@ public class MapExtensionsTest
 	}
 
 	/**
+	 * Test for the Method {@link MapExtensions#newInsertionOrderMap()}.
+	 */
+	@Test
+	public void testNewInsertionOrderMap() throws Exception
+	{
+
+		final Map<Integer, String> map = MapExtensions.<Integer, String> newInsertionOrderMap();
+		assertNotNull(map);
+	}
+
+	/**
+	 * Test for the Method {@link MapExtensions#newLazyTreeMap()}.
+	 */
+	@Test
+	public void testNewLazyTreeMap() throws Exception
+	{
+		final Map<Integer, String> treeMap = MapExtensions.<Integer, String> newLazyTreeMap();
+		assertNotNull(treeMap);
+	}
+
+	/**
+	 * Test for the Method {@link MapExtensions#newLazyTreeMap(Comparator)}.
+	 */
+	@Test
+	public void testNewLazyTreeMapComparator() throws Exception
+	{
+		final Map<Integer, String> treeMap = MapExtensions
+			.<Integer, String> newLazyTreeMap((o1, o2) -> o1 - o2);
+		assertNotNull(treeMap);
+	}
+
+	/**
 	 * Test for the Method {@link MapExtensions#newTreeMap()}.
 	 */
 	@Test
 	public void testNewTreeMap()
 	{
-		final Map<Integer, String> treeMap = MapExtensions.<Integer, String>newTreeMap();
+		final Map<Integer, String> treeMap = MapExtensions.<Integer, String> newTreeMap();
 		assertNotNull(treeMap);
 	}
 
@@ -251,7 +256,8 @@ public class MapExtensionsTest
 	@Test
 	public void testNewTreeMapComparator()
 	{
-		final Map<Integer, String> treeMap = MapExtensions.<Integer, String>newTreeMap((o1, o2) -> o1-o2);
+		final Map<Integer, String> treeMap = MapExtensions
+			.<Integer, String> newTreeMap((o1, o2) -> o1 - o2);
 		assertNotNull(treeMap);
 	}
 

@@ -48,7 +48,7 @@ import lombok.experimental.UtilityClass;
 @UtilityClass
 public final class MapExtensions
 {
-	
+
 	/**
 	 * Factory method for create a new {@link InsertionOrderMap}.
 	 *
@@ -214,7 +214,8 @@ public final class MapExtensions
 	}
 
 	/**
-	 * Factory method for create a new {@link LazyMap} from commons-collections4 that encapsulates a {@link HashMap}.
+	 * Factory method for create a new {@link LazyMap} from commons-collections4 that encapsulates a
+	 * {@link HashMap}.
 	 *
 	 * @param <K>
 	 *            the generic type of the key
@@ -228,9 +229,10 @@ public final class MapExtensions
 	{
 		return LazyMap.lazyMap(new HashMap<K, V>(), new InstantiateFactory(HashMap.class));
 	}
-	
+
 	/**
-	 * Factory method for create a new {@link LazyMap} from commons-collections4 that encapsulates a {@link TreeMap}.
+	 * Factory method for create a new {@link LazyMap} from commons-collections4 that encapsulates a
+	 * {@link TreeMap}.
 	 *
 	 * @param <K>
 	 *            the generic type of the key
@@ -244,14 +246,15 @@ public final class MapExtensions
 	{
 		return LazyMap.lazyMap(new TreeMap<K, V>(), new InstantiateFactory(TreeMap.class));
 	}
-	
+
 	/**
-	 * Factory method for create a new {@link LazyMap} from commons-collections4 that encapsulates a {@link TreeMap}.
+	 * Factory method for create a new {@link LazyMap} from commons-collections4 that encapsulates a
+	 * {@link TreeMap}.
 	 *
 	 * @param <K>
 	 *            the generic type of the key
 	 * @param <V>
-	 *            the generic type of the value    
+	 *            the generic type of the value
 	 * @param comparator
 	 *            the comparator
 	 *
@@ -260,7 +263,8 @@ public final class MapExtensions
 	@SuppressWarnings({ "unchecked", "rawtypes" })
 	public static <K, V> Map<K, V> newLazyTreeMap(final Comparator<? super K> comparator)
 	{
-		return LazyMap.lazyMap(new TreeMap<K, V>(comparator), new InstantiateFactory(TreeMap.class));
+		return LazyMap.lazyMap(new TreeMap<K, V>(comparator),
+			new InstantiateFactory(TreeMap.class));
 	}
 
 	/**

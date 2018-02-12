@@ -130,6 +130,44 @@ public class SetExtensionsTest
 	}
 
 	/**
+	 * Test for method {@link SetExtensions#newTreeSet(Collection, Object...)}
+	 */
+	@Test
+	public void testNewTreeSetCollectionObjects()
+	{
+		SortedSet<String> set = SetExtensions.newTreeSet();
+		assertTrue(set.size() == 0);
+		set.add("foo");
+		assertTrue(set.size() == 1);
+		set = SetExtensions.newTreeSet(ListExtensions.newArrayList("foo", "fasel"), "foo", "bar",
+			"foo");
+		assertTrue(set.size() == 3);
+		set = SetExtensions.newTreeSet(ListExtensions.newArrayList(), "foo", "bar", "foo");
+		assertTrue(set.size() == 2);
+
+	}
+
+
+	/**
+	 * Test method for {@link SetExtensions#newTreeSet(Collection, Comparator, T[])}.
+	 */
+	@Test
+	public void testNewTreeSetCollectionOfTComparatorOfTTArray()
+	{
+		SortedSet<String> set = SetExtensions.newTreeSet();
+		assertTrue(set.size() == 0);
+		set.add("foo");
+		assertTrue(set.size() == 1);
+		final Comparator<String> comparator = StringLengthComparator.of(SortOrder.ASCENDING);
+		final List<String> list = ListExtensions.newArrayList("foo", "fasel");
+		set = SetExtensions.newTreeSet(list, comparator, "food", "barista", "fao");
+		assertTrue(set.size() == 5);
+		set = SetExtensions.newTreeSet(ListExtensions.<String> newArrayList(), comparator, "foo",
+			"bar", "foo");
+		assertTrue(set.size() == 2);
+	}
+
+	/**
 	 * Test for method {@link SetExtensions#toSet(Collection)}
 	 */
 	@Test
@@ -147,8 +185,6 @@ public class SetExtensionsTest
 		final Set<String> set = SetExtensions.toSet(nameList);
 		assertNotNull(set);
 	}
-
-
 
 	/**
 	 * Test for method {@link SetExtensions#toSortedSet(Collection)}
@@ -178,43 +214,6 @@ public class SetExtensionsTest
 	{
 		final BeanTester beanTester = new BeanTester();
 		beanTester.testBean(SetExtensions.class);
-	}
-
-	/**
-	 * Test method for {@link SetExtensions#newTreeSet(Collection, Comparator, T[])}.
-	 */
-	@Test
-	public void testNewTreeSetCollectionOfTComparatorOfTTArray()
-	{
-		SortedSet<String> set = SetExtensions.newTreeSet();
-		assertTrue(set.size() == 0);
-		set.add("foo");
-		assertTrue(set.size() == 1);
-		final Comparator<String> comparator = StringLengthComparator.of(SortOrder.ASCENDING);
-		final List<String> list =
-			ListExtensions.newArrayList("foo", "fasel");
-		set = SetExtensions.newTreeSet(list, comparator, "food", "barista", "fao");
-		assertTrue(set.size() == 5);
-		set = SetExtensions.newTreeSet(ListExtensions.<String>newArrayList(), comparator, "foo", "bar", "foo");
-		assertTrue(set.size() == 2);
-	}
-
-	/**
-	 * Test for method {@link SetExtensions#newTreeSet(Collection, Object...)}
-	 */
-	@Test
-	public void testNewTreeSetCollectionObjects()
-	{
-		SortedSet<String> set = SetExtensions.newTreeSet();
-		assertTrue(set.size() == 0);
-		set.add("foo");
-		assertTrue(set.size() == 1);
-		set = SetExtensions.newTreeSet(ListExtensions.newArrayList("foo", "fasel"), "foo", "bar",
-			"foo");
-		assertTrue(set.size() == 3);
-		set = SetExtensions.newTreeSet(ListExtensions.newArrayList(), "foo", "bar", "foo");
-		assertTrue(set.size() == 2);
-
 	}
 
 }
