@@ -48,6 +48,21 @@ import lombok.experimental.UtilityClass;
 @UtilityClass
 public final class MapExtensions
 {
+	
+	/**
+	 * Factory method for create a new {@link InsertionOrderMap}.
+	 *
+	 * @param <K>
+	 *            the generic type of the key
+	 * @param <V>
+	 *            the generic type of the value
+	 *
+	 * @return The new {@link InsertionOrderMap}.
+	 */
+	public static <K, V> Map<K, V> newInsertionOrderMap()
+	{
+		return new InsertionOrderMap<>();
+	}
 
 	/**
 	 * Returns the first founded key from the given value or null if nothing is found.
