@@ -62,6 +62,24 @@ public class MapExtensionsTest
 	}
 	
 	/**
+	 * Test for the Method {@link MapExtensions#newLazyTreeMap()}.
+	 */
+	@Test public void testNewLazyTreeMap() throws Exception
+	{
+		final Map<Integer, String> treeMap = MapExtensions.<Integer, String>newLazyTreeMap();
+		assertNotNull(treeMap);
+	}
+	
+	/**
+	 * Test for the Method {@link MapExtensions#newLazyTreeMap(Comparator)}.
+	 */
+	@Test public void testNewLazyTreeMapComparator() throws Exception
+	{
+		final Map<Integer, String> treeMap = MapExtensions.<Integer, String>newLazyTreeMap((o1, o2) -> o1-o2);
+		assertNotNull(treeMap);
+	}
+		
+	/**
 	 * Sets up method will be invoked before every unit test method
 	 *
 	 * @throws Exception
