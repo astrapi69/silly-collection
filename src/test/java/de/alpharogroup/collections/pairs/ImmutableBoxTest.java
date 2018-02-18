@@ -30,6 +30,7 @@ import static org.testng.AssertJUnit.assertTrue;
 
 import org.testng.annotations.Test;
 
+import de.alpharogroup.test.objects.evaluations.EqualsEvaluator;
 import de.alpharogroup.test.objects.evaluations.HashcodeEvaluator;
 import de.alpharogroup.test.objects.evaluations.ToStringEvaluator;
 
@@ -43,25 +44,41 @@ public class ImmutableBoxTest
 	 * Test method for {@link ImmutableBox#equals(Object)}
 	 */
 	@Test
-	public void testImmutableBox()
+	public void testEqualsObject()
 	{
 		final ImmutableBox<Integer> expected = ImmutableBox.<Integer> builder().value(2).build();
-
-		final ImmutableBox<String> actual = ImmutableBox.<String> builder().value("Hello").build();
+		final ImmutableBox<String> actual = new ImmutableBox<>("Hello");
 
 		assertNotSame(expected, actual);
-		final ImmutableBox<Integer> twoBox = new ImmutableBox<>(2);
-		assertEquals(expected, twoBox);
+		final ImmutableBox<Integer> integerBox = new ImmutableBox<>(2);
+		assertEquals(expected, integerBox);
+		assertTrue(
+			EqualsEvaluator.evaluateReflexivityNonNullSymmetricAndConsistency(expected, actual));
+		assertTrue(EqualsEvaluator.evaluateReflexivityNonNullSymmetricConsistencyAndTransitivity(
+			expected, integerBox, new ImmutableBox<>(2)));
+	}
 
-		assertTrue(HashcodeEvaluator.evaluateConsistency(expected));
-		assertTrue(HashcodeEvaluator.evaluateEquality(expected, twoBox));
+	/**
+	 * Test method for {@link ImmutableBox#hashCode()}
+	 */
+	@Test
+	public void testHashcode()
+	{
+		boolean expected;
+		boolean actual;
+		final ImmutableBox<Integer> integerBox = ImmutableBox.<Integer> builder().value(2).build();
+		ImmutableBox<String> stringBox = ImmutableBox.<String> builder().value("Hello").build();
+		actual = HashcodeEvaluator.evaluateEquality(integerBox, new ImmutableBox<>(2));
+		expected = true;
+		assertEquals(expected, actual);
 
-		final ImmutableBox<Integer> threeBox = ImmutableBox.<Integer> builder().value(3).build();
-		assertTrue(HashcodeEvaluator.evaluateUnequality(expected, threeBox));
-		assertTrue(ToStringEvaluator.evaluate(ImmutableBox.class));
-		assertTrue(ToStringEvaluator.evaluateConsistency(threeBox));
-		assertEquals(Integer.valueOf(3), threeBox.getValue());
+		actual = HashcodeEvaluator.evaluateConsistency(integerBox);
+		expected = true;
+		assertEquals(expected, actual);
 
+		expected = true;
+		actual = HashcodeEvaluator.evaluateUnequality(integerBox, stringBox);
+		assertEquals(expected, actual);
 	}
 
 	/**
@@ -71,6 +88,25 @@ public class ImmutableBoxTest
 	public void testImmutableBoxNullValue()
 	{
 		ImmutableBox.<Integer> builder().build();
+	}
+
+	/**
+	 * Test method for {@link ImmutableBox#toString()}
+	 */
+	@Test
+	public void testToString()
+	{
+		boolean expected;
+		boolean actual;
+		actual = ToStringEvaluator.evaluate(ImmutableBox.class);
+		expected = true;
+		assertEquals(expected, actual);
+
+		final ImmutableBox<Integer> integerBox = ImmutableBox.<Integer> builder().value(2).build();
+
+		actual = ToStringEvaluator.evaluateConsistency(integerBox);
+		expected = true;
+		assertEquals(expected, actual);
 	}
 
 }

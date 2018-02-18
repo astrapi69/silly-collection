@@ -37,21 +37,30 @@ import org.testng.annotations.BeforeMethod;
 import org.testng.annotations.Test;
 
 import de.alpharogroup.date.CreateDateExtensions;
+import lombok.AccessLevel;
+import lombok.experimental.FieldDefaults;
 
 /**
- * The class DateComparatorTest.
+ * The unit test class for the class {@link DateComparator}.
  */
+@FieldDefaults(level = AccessLevel.PRIVATE)
 public class DateComparatorTest
 {
 
+	/** For use of the expected result. */
+	boolean expected;
+
+	/** For use of the result of the comparator. */
+	int actual;
+
 	/** The comparator. */
-	private Comparator<Date> comparator;
+	Comparator<Date> comparator;
 
 	/**
-	 * Sets the up.
+	 * Sets up method will be invoked before every unit test method
 	 *
 	 * @throws Exception
-	 *             the exception
+	 *             is thrown if an exception occurs
 	 */
 	@BeforeMethod
 	public void setUp() throws Exception
@@ -60,18 +69,19 @@ public class DateComparatorTest
 	}
 
 	/**
-	 * Tear down.
+	 * Tear down method will be invoked after every unit test method
 	 *
 	 * @throws Exception
-	 *             the exception
+	 *             is thrown if an exception occurs
 	 */
 	@AfterMethod
 	public void tearDown() throws Exception
 	{
+		comparator = null;
 	}
 
 	/**
-	 * Test compare.
+	 * Test method for {@link DateComparator#compare(Date, Date)}.
 	 */
 	@Test
 	public void testCompare()
@@ -105,7 +115,6 @@ public class DateComparatorTest
 		assertTrue("List object with index 4 should be 'null'", dates.get(4) == null);
 		// Sort collection with our DateComparator...
 		Collections.sort(dates, comparator);
-		System.out.println("===================================================");
 		i = 1;
 		for (final Date date : dates)
 		{
@@ -129,6 +138,14 @@ public class DateComparatorTest
 	@Test
 	public void testEqual()
 	{
+		final Date o1 = CreateDateExtensions.newDate(2009, 3, 26, 10, 37, 04);
+		final Date o2 = CreateDateExtensions.newDate(2009, 3, 26, 10, 37, 04);
+
+		actual = comparator.compare(o1, o2);
+
+		expected = actual == 0;
+		assertTrue(expected);
+
 	}
 
 	/**
@@ -138,6 +155,13 @@ public class DateComparatorTest
 	@Test
 	public void testGreaterThan()
 	{
+		final Date o1 = CreateDateExtensions.newDate(2011, 3, 27, 10, 37, 04);
+		final Date o2 = CreateDateExtensions.newDate(2010, 3, 26, 10, 37, 04);
+
+		actual = comparator.compare(o1, o2);
+
+		expected = actual > 0;
+		assertTrue(expected);
 	}
 
 	/**
@@ -147,6 +171,13 @@ public class DateComparatorTest
 	@Test
 	public void testLessThan()
 	{
+		final Date o1 = CreateDateExtensions.newDate(2009, 3, 26, 10, 37, 04);
+		final Date o2 = CreateDateExtensions.newDate(2010, 3, 26, 10, 37, 04);
+
+		actual = comparator.compare(o1, o2);
+
+		expected = actual < 0;
+		assertTrue(expected);
 	}
 
 }

@@ -29,25 +29,23 @@ import java.util.Comparator;
 import lombok.NoArgsConstructor;
 
 /**
- * The class StringComparator sorts String object in ascending order as default.
+ * The class {@link StringComparator} sorts String objects in ascending order as default.
+ *
+ * @author Asterios Raptis
  */
 @NoArgsConstructor
 public class StringComparator extends SortOrderComparator<String>
 {
 
 	/**
-	 * The serialVersionUID
-	 */
-	private static final long serialVersionUID = 1L;
-
-	/**
 	 * Factory method to create a new {@link StringComparator} object.
 	 *
 	 * @return the new {@link StringComparator} object
 	 */
+	@SuppressWarnings("unchecked")
 	public static Comparator<String> of()
 	{
-		return StringComparator.of(false);
+		return StringComparator.of(true);
 	}
 
 	/**
@@ -69,9 +67,10 @@ public class StringComparator extends SortOrderComparator<String>
 	 *            the sort order
 	 * @return the new {@link StringComparator} object
 	 */
+	@SuppressWarnings("unchecked")
 	public static Comparator<String> of(final SortOrder sortOrder)
 	{
-		return StringComparator.of(sortOrder, false);
+		return StringComparator.of(sortOrder, true);
 	}
 
 	/**

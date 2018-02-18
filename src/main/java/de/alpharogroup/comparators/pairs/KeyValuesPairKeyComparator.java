@@ -22,52 +22,32 @@
  * OF CONTRACT, TORT OR OTHERWISE, ARISING FROM, OUT OF OR IN CONNECTION
  * WITH THE SOFTWARE OR THE USE OR OTHER DEALINGS IN THE SOFTWARE.
  */
-package de.alpharogroup.comparators;
-
-import static org.testng.AssertJUnit.assertEquals;
+package de.alpharogroup.comparators.pairs;
 
 import java.util.Comparator;
-import java.util.Locale;
 
-import org.testng.annotations.Test;
+import de.alpharogroup.collections.pairs.KeyValuesPair;
 
-public class NullCheckComparatorTest
+/**
+ * The class {@link KeyValuesPairKeyComparator} compares {@linkplain KeyValuesPair} objects over the
+ * key where the key have to implements the {@linkplain Comparable} interface.
+ *
+ * @param <K>
+ *            The generic type of the key
+ * @param <V>
+ *            The generic type of the value
+ */
+public class KeyValuesPairKeyComparator<K extends Comparable<K>, V>
+	implements
+		Comparator<KeyValuesPair<K, V>>
 {
 
-	@Test
-	public void testCompare()
+	/**
+	 * {@inheritDoc}
+	 */
+	@Override
+	public int compare(final KeyValuesPair<K, V> o1, final KeyValuesPair<K, V> o2)
 	{
-		int expected;
-		int actual;
-		Comparator<Locale> localeComparator = NullCheckComparator
-			.<Locale> of(new LocaleComparator());
-		actual = localeComparator.compare(Locale.CANADA, null);
-		expected = 1;
-		assertEquals(expected, actual);
-
-		actual = localeComparator.compare(null, null);
-		expected = 0;
-		assertEquals(expected, actual);
-
-		actual = localeComparator.compare(null, Locale.CANADA);
-		expected = -1;
-		assertEquals(expected, actual);
-
-		// set null flag to true so null are greater...
-		localeComparator = LocaleComparator.of(true);
-
-		actual = localeComparator.compare(Locale.CANADA, null);
-		expected = -1;
-		assertEquals(expected, actual);
-
-		actual = localeComparator.compare(null, null);
-		expected = 0;
-		assertEquals(expected, actual);
-
-		actual = localeComparator.compare(null, Locale.CANADA);
-		expected = 1;
-		assertEquals(expected, actual);
-
+		return o1.getKey().compareTo(o2.getKey());
 	}
-
 }

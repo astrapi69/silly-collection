@@ -24,7 +24,6 @@
  */
 package de.alpharogroup.collections.properties;
 
-import java.util.ArrayList;
 import java.util.Collections;
 import java.util.Comparator;
 import java.util.List;
@@ -32,6 +31,7 @@ import java.util.Map;
 import java.util.Properties;
 import java.util.Set;
 
+import de.alpharogroup.collections.CollectionExtensions;
 import de.alpharogroup.collections.list.ListExtensions;
 import de.alpharogroup.comparators.NullCheckComparator;
 
@@ -127,6 +127,7 @@ public class IndexSortedProperties extends SortedProperties
 	 */
 	public IndexSortedProperties()
 	{
+		this(new Properties());
 	}
 
 	/**
@@ -159,7 +160,7 @@ public class IndexSortedProperties extends SortedProperties
 	@Override
 	public synchronized void clear()
 	{
-		if (ListExtensions.isNotEmpty(keys))
+		if (CollectionExtensions.isNotEmpty(keys))
 		{
 			keys.clear();
 		}
@@ -175,8 +176,8 @@ public class IndexSortedProperties extends SortedProperties
 	 */
 	public synchronized Object get(final int index)
 	{
-		if (index < size())
-			return get(keys.get(index));
+		if (index < keys.size())
+			return getProperty((String)keys.get(index));
 		return null;
 	}
 
@@ -189,7 +190,7 @@ public class IndexSortedProperties extends SortedProperties
 	 */
 	public String getProperty(final int index)
 	{
-		if (index < size())
+		if (index < keys.size())
 			return getProperty((String)keys.get(index));
 		return null;
 	}
@@ -244,7 +245,7 @@ public class IndexSortedProperties extends SortedProperties
 	 */
 	public synchronized Object remove(final int index)
 	{
-		if (index < size())
+		if (index < keys.size())
 			return remove(keys.get(index));
 		return null;
 	}
@@ -265,8 +266,10 @@ public class IndexSortedProperties extends SortedProperties
 	@Override
 	public synchronized boolean remove(final Object key, final Object value)
 	{
-		removeKey(key);
-		return super.remove(key, value);
+		final boolean removed = super.remove(key, value);
+		if (removed)
+			removeKey(key);
+		return removed;
 	}
 
 	/**
@@ -297,7 +300,7 @@ public class IndexSortedProperties extends SortedProperties
 	 */
 	private void sortKeyList(final Set<Object> keySet)
 	{
-		keys = new ArrayList<Object>(keySet);
+		keys = ListExtensions.newArrayList(keySet);
 		resortKeyList();
 	}
 

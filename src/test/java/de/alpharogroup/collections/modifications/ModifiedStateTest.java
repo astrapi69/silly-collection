@@ -24,29 +24,24 @@
  */
 package de.alpharogroup.collections.modifications;
 
+import static org.testng.AssertJUnit.assertTrue;
+
+import java.lang.reflect.InvocationTargetException;
 import java.util.ArrayList;
 import java.util.List;
 
-import org.testng.AssertJUnit;
-import org.testng.annotations.AfterMethod;
-import org.testng.annotations.BeforeMethod;
+import org.meanbean.test.BeanTestException;
+import org.meanbean.test.BeanTester;
 import org.testng.annotations.Test;
 
+/**
+ * The unit test class for the class {@link ModifiedState}.
+ */
 public class ModifiedStateTest
 {
 
-	@BeforeMethod
-	public void setUp() throws Exception
-	{
-	}
-
-	@AfterMethod
-	public void tearDown() throws Exception
-	{
-	}
-
 	/**
-	 * Test is modified.
+	 * Test for method {@link ModifiedState#isModified(java.util.Collection, java.util.Collection)}
 	 */
 	@Test
 	public void testIsModified()
@@ -56,7 +51,7 @@ public class ModifiedStateTest
 		final List<String> next = new ArrayList<>();
 		// Get the current modified state...
 		ModifiedState state = ModifiedState.isModified(previous, next);
-		AssertJUnit.assertTrue(
+		assertTrue(
 			"ModifiedState should have state <ModifiedState.UNMODIFIED> but was <ModifiedState."
 				+ state.name() + ">",
 			state.equals(ModifiedState.UNMODIFIED));
@@ -64,7 +59,7 @@ public class ModifiedStateTest
 		next.add("one");
 		// And get the current modified state...
 		state = ModifiedState.isModified(previous, next);
-		AssertJUnit.assertTrue(
+		assertTrue(
 			"ModifiedState should have state <ModifiedState.FIRST_MATCH> but was <ModifiedState."
 				+ state.name() + ">",
 			state.equals(ModifiedState.FIRST_MATCH));
@@ -73,7 +68,7 @@ public class ModifiedStateTest
 		previous.add("one");
 		// And get the current modified state...
 		state = ModifiedState.isModified(previous, next);
-		AssertJUnit.assertTrue(
+		assertTrue(
 			"ModifiedState should have state <ModifiedState.UNMODIFIED> but was <ModifiedState."
 				+ state.name() + ">",
 			state.equals(ModifiedState.UNMODIFIED));
@@ -81,7 +76,7 @@ public class ModifiedStateTest
 		next.add("two");
 		// And get the current modified state...
 		state = ModifiedState.isModified(previous, next);
-		AssertJUnit.assertTrue(
+		assertTrue(
 			"ModifiedState should have state <ModifiedState.NEW_MATCH> but was <ModifiedState."
 				+ state.name() + ">",
 			state.equals(ModifiedState.NEW_MATCH));
@@ -90,7 +85,7 @@ public class ModifiedStateTest
 		previous.add("two");
 		// And get the current modified state...
 		state = ModifiedState.isModified(previous, next);
-		AssertJUnit.assertTrue(
+		assertTrue(
 			"ModifiedState should have state <ModifiedState.UNMODIFIED> but was <ModifiedState."
 				+ state.name() + ">",
 			state.equals(ModifiedState.UNMODIFIED));
@@ -100,7 +95,7 @@ public class ModifiedStateTest
 		next.add("three");
 		// And get the current modified state...
 		state = ModifiedState.isModified(previous, next);
-		AssertJUnit.assertTrue(
+		assertTrue(
 			"ModifiedState should have state <ModifiedState.NEW_MATCH> but was <ModifiedState."
 				+ state.name() + ">",
 			state.equals(ModifiedState.NEW_MATCH));
@@ -108,18 +103,45 @@ public class ModifiedStateTest
 		next.remove("three");
 		// And get the current modified state...
 		state = ModifiedState.isModified(previous, next);
-		AssertJUnit.assertTrue(
-			"ModifiedState should have state <ModifiedState.REMOVED> but was <ModifiedState."
-				+ state.name() + ">",
-			state.equals(ModifiedState.REMOVED));
+		assertTrue("ModifiedState should have state <ModifiedState.REMOVED> but was <ModifiedState."
+			+ state.name() + ">", state.equals(ModifiedState.REMOVED));
 		// Clear now the next list...
 		next.clear();
 		// And get the current modified state...
 		state = ModifiedState.isModified(previous, next);
-		AssertJUnit.assertTrue(
-			"ModifiedState should have state <ModifiedState.CLEAR> but was <ModifiedState."
-				+ state.name() + ">",
-			state.equals(ModifiedState.CLEARED));
+		assertTrue("ModifiedState should have state <ModifiedState.CLEAR> but was <ModifiedState."
+			+ state.name() + ">", state.equals(ModifiedState.CLEARED));
+	}
+
+	/**
+	 * Test for method {@link ModifiedState#isModified(java.util.Collection, java.util.Collection)}
+	 * with null value for next
+	 */
+	@Test(expectedExceptions = IllegalArgumentException.class)
+	public void testIsModifiedNextNull()
+	{
+		ModifiedState.isModified(new ArrayList<>(), null);
+	}
+
+	/**
+	 * Test for method {@link ModifiedState#isModified(java.util.Collection, java.util.Collection)}
+	 * with null value for previous
+	 */
+	@Test(expectedExceptions = IllegalArgumentException.class)
+	public void testIsModifiedPreviousNull()
+	{
+		ModifiedState.isModified(null, new ArrayList<>());
+	}
+
+	/**
+	 * Test method for {@link ModifiedState}
+	 */
+	@Test(expectedExceptions = { BeanTestException.class, InvocationTargetException.class,
+			UnsupportedOperationException.class })
+	public void testWithBeanTester()
+	{
+		final BeanTester beanTester = new BeanTester();
+		beanTester.testBean(ModifiedState.class);
 	}
 
 }

@@ -26,15 +26,18 @@ package de.alpharogroup.collections.list;
 
 import static org.testng.AssertJUnit.assertTrue;
 
+import java.lang.reflect.InvocationTargetException;
 import java.util.Enumeration;
 import java.util.Vector;
 
+import org.meanbean.test.BeanTestException;
+import org.meanbean.test.BeanTester;
 import org.testng.annotations.Test;
 
 import lombok.experimental.ExtensionMethod;
 
 /**
- * Tests for the class {@link VectorExtensions}.
+ * The unit test class for the class {@link VectorExtensions}.
  *
  * @version 1.0
  * @author Asterios Raptis
@@ -44,7 +47,7 @@ public class VectorExtensionsTest
 {
 
 	/**
-	 * Test the method {@link VectorExtensions#toVector(Object...)}.
+	 * Test the method {@link VectorExtensions#toVector(Enumeration)}.
 	 */
 	@Test
 	public void testToVector()
@@ -60,6 +63,17 @@ public class VectorExtensionsTest
 		{
 			assertTrue(expectedValues.contains(actual));
 		}
+	}
+
+	/**
+	 * Test method for {@link VectorExtensions} with {@link BeanTester}
+	 */
+	@Test(expectedExceptions = { BeanTestException.class, InvocationTargetException.class,
+			UnsupportedOperationException.class })
+	public void testWithBeanTester()
+	{
+		final BeanTester beanTester = new BeanTester();
+		beanTester.testBean(VectorExtensions.class);
 	}
 
 }

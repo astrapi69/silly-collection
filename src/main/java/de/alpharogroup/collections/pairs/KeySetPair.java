@@ -22,36 +22,53 @@
  * OF CONTRACT, TORT OR OTHERWISE, ARISING FROM, OUT OF OR IN CONNECTION
  * WITH THE SOFTWARE OR THE USE OR OTHER DEALINGS IN THE SOFTWARE.
  */
-package de.alpharogroup.collections.iterators;
+package de.alpharogroup.collections.pairs;
 
-import java.util.Iterator;
+import java.io.Serializable;
+import java.util.Set;
+
+import lombok.AccessLevel;
+import lombok.AllArgsConstructor;
+import lombok.Builder;
+import lombok.EqualsAndHashCode;
+import lombok.Getter;
+import lombok.NoArgsConstructor;
+import lombok.Setter;
+import lombok.Singular;
+import lombok.ToString;
+import lombok.experimental.FieldDefaults;
 
 /**
- * Utility class for the use of Iterator objects.
- * 
- * @version 1.0
- * @author Asterios Raptis
+ * The class {@link KeySetPair} represents a key value pair where the value is a set with generic
+ * parameters.
+ *
+ *
+ * @param <K>
+ *            The type of the key.
+ * @param <V>
+ *            The type of the values in the set.
  */
-public class IteratorExtensions
+@Getter
+@Setter
+@EqualsAndHashCode
+@ToString
+@NoArgsConstructor
+@AllArgsConstructor
+@Builder(toBuilder = true)
+@FieldDefaults(level = AccessLevel.PRIVATE)
+public final class KeySetPair<K, V> implements Serializable
 {
 
 	/**
-	 * Helper method for printing the content from an Iterator.
-	 * 
-	 * @param <T>
-	 *            the generic type
-	 * @param iterator
-	 *            The Iterator to print.
+	 * The Constant serialVersionUID.
 	 */
-	public static <T> void printIterator(final Iterator<T> iterator)
-	{
-		int i = 1;
-		while (iterator.hasNext())
-		{
-			final T element = iterator.next();
-			System.out.println(i + ".)Element:" + element);
-			i++;
-		}
-	}
+	private static final long serialVersionUID = 1L;
+
+	/** The key. */
+	K key;
+
+	/** The collection with the values. */
+	@Singular
+	Set<V> values;
 
 }

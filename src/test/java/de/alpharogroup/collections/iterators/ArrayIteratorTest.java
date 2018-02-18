@@ -29,6 +29,8 @@ import static org.testng.AssertJUnit.assertNotNull;
 
 import java.util.NoSuchElementException;
 
+import org.meanbean.test.BeanTestException;
+import org.meanbean.test.BeanTester;
 import org.testng.annotations.AfterMethod;
 import org.testng.annotations.BeforeMethod;
 import org.testng.annotations.Test;
@@ -36,7 +38,6 @@ import org.testng.annotations.Test;
 /**
  * The unit test class for the class {@link ArrayIterator}.
  *
- * @version 1.0
  * @author Asterios Raptis
  */
 public class ArrayIteratorTest
@@ -53,10 +54,13 @@ public class ArrayIteratorTest
 	private Integer[] testArray;
 
 	/**
-	 * Executes every time before a test method.
+	 * Sets up method will be invoked before every unit test method
+	 *
+	 * @throws Exception
+	 *             is thrown if an exception occurs
 	 */
 	@BeforeMethod
-	protected void setUp()
+	protected void setUp() throws Exception
 	{
 		this.testArray = new Integer[4];
 		this.testArray[0] = new Integer("0");
@@ -67,10 +71,13 @@ public class ArrayIteratorTest
 	}
 
 	/**
-	 * Executes every time after a test method.
+	 * Tear down method will be invoked after every unit test method
+	 *
+	 * @throws Exception
+	 *             is thrown if an exception occurs
 	 */
 	@AfterMethod
-	protected void tearDown()
+	protected void tearDown() throws Exception
 	{
 	}
 
@@ -110,9 +117,11 @@ public class ArrayIteratorTest
 	{
 		boolean expected;
 		boolean actual;
-
-		final ArrayIterator<Object> arrayIterator = new ArrayIterator<>(new Object[] { });
+		Object[] array = new Object[] { };
+		final ArrayIterator<Object> arrayIterator = new ArrayIterator<>(array);
 		assertNotNull(arrayIterator);
+
+		assertEquals(array, arrayIterator.getArray());
 
 		expected = false;
 		actual = arrayIterator.hasNext();
@@ -286,6 +295,16 @@ public class ArrayIteratorTest
 	{
 		final ArrayIterator<Object> arrayIterator = new ArrayIterator<>(new Object[] { });
 		arrayIterator.remove();
+	}
+
+	/**
+	 * Test method for {@link ArrayIterator}
+	 */
+	@Test(expectedExceptions = { BeanTestException.class })
+	public void testWithBeanTester()
+	{
+		final BeanTester beanTester = new BeanTester();
+		beanTester.testBean(ArrayIterator.class);
 	}
 
 }

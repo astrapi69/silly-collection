@@ -90,32 +90,6 @@ public class SortedProperties extends Properties
 		};
 	}
 
-	/**
-	 * Factory method to create a new {@link SortedProperties} object.
-	 *
-	 * @param defaults
-	 *            the defaults
-	 * @param comparator
-	 *            the comparator
-	 * @param nullIsGreaterThan
-	 *            the null is greater than
-	 * @return the new {@link SortedProperties} object
-	 */
-	public static SortedProperties of(final Properties defaults,
-		final Comparator<Object> comparator, final boolean nullIsGreaterThan)
-	{
-		return new SortedProperties(defaults)
-		{
-			private static final long serialVersionUID = 1L;
-
-			@Override
-			protected Comparator<Object> newComparator()
-			{
-				return NullCheckComparator.<Object> of(comparator, nullIsGreaterThan);
-			}
-		};
-	}
-
 	/** The {@link Comparator} object. */
 	private Comparator<Object> comparator;
 
@@ -124,6 +98,7 @@ public class SortedProperties extends Properties
 	 */
 	public SortedProperties()
 	{
+		this(new Properties());
 	}
 
 	/**
@@ -182,14 +157,8 @@ public class SortedProperties extends Properties
 	 */
 	protected Comparator<Object> newComparator()
 	{
-		return NullCheckComparator.<Object> of(new Comparator<Object>()
-		{
-			@Override
-			public int compare(final Object o1, final Object o2)
-			{
-				return o1.toString().compareTo(o2.toString());
-			}
-		}, false);
+		return NullCheckComparator.<Object> of(
+			(final Object o1, final Object o2) -> o1.toString().compareTo(o2.toString()), false);
 	}
 
 	/**

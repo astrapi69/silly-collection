@@ -26,14 +26,18 @@ package de.alpharogroup.collections.map;
 
 import java.util.ArrayList;
 import java.util.Collection;
+import java.util.Comparator;
 import java.util.HashMap;
 import java.util.LinkedHashMap;
 import java.util.Map;
 import java.util.Map.Entry;
+import java.util.TreeMap;
 import java.util.concurrent.ConcurrentHashMap;
 
 import org.apache.commons.collections4.functors.InstantiateFactory;
 import org.apache.commons.collections4.map.LazyMap;
+
+import lombok.experimental.UtilityClass;
 
 /**
  * Extensions class for use with Map objects.
@@ -41,8 +45,24 @@ import org.apache.commons.collections4.map.LazyMap;
  * @version 1.0
  * @author Asterios Raptis
  */
-public class MapExtensions
+@UtilityClass
+public final class MapExtensions
 {
+
+	/**
+	 * Factory method for create a new {@link InsertionOrderMap}.
+	 *
+	 * @param <K>
+	 *            the generic type of the key
+	 * @param <V>
+	 *            the generic type of the value
+	 *
+	 * @return The new {@link InsertionOrderMap}.
+	 */
+	public static <K, V> Map<K, V> newInsertionOrderMap()
+	{
+		return new InsertionOrderMap<>();
+	}
 
 	/**
 	 * Returns the first founded key from the given value or null if nothing is found.
@@ -194,7 +214,8 @@ public class MapExtensions
 	}
 
 	/**
-	 * Factory method for create a new {@link LazyMap} from commons-collections4.
+	 * Factory method for create a new {@link LazyMap} from commons-collections4 that encapsulates a
+	 * {@link HashMap}.
 	 *
 	 * @param <K>
 	 *            the generic type of the key
@@ -210,23 +231,71 @@ public class MapExtensions
 	}
 
 	/**
-	 * The Method printMap prints the HashMap to the console.
+	 * Factory method for create a new {@link LazyMap} from commons-collections4 that encapsulates a
+	 * {@link TreeMap}.
 	 *
 	 * @param <K>
 	 *            the generic type of the key
 	 * @param <V>
 	 *            the generic type of the value
-	 * @param msg
-	 *            The map to print.
+	 *
+	 * @return The new {@link LazyMap}.
 	 */
-	public static <K, V> void printMap(final Map<K, V> msg)
+	@SuppressWarnings({ "unchecked", "rawtypes" })
+	public static <K, V> Map<K, V> newLazyTreeMap()
 	{
-		for (final Entry<K, V> entry : msg.entrySet())
-		{
-			final K key = entry.getKey();
-			final V value = entry.getValue();
-			System.out.println("[" + key.toString() + "=" + value.toString() + "]");
-		}
+		return LazyMap.lazyMap(new TreeMap<K, V>(), new InstantiateFactory(TreeMap.class));
+	}
+
+	/**
+	 * Factory method for create a new {@link LazyMap} from commons-collections4 that encapsulates a
+	 * {@link TreeMap}.
+	 *
+	 * @param <K>
+	 *            the generic type of the key
+	 * @param <V>
+	 *            the generic type of the value
+	 * @param comparator
+	 *            the comparator
+	 *
+	 * @return The new {@link LazyMap}.
+	 */
+	@SuppressWarnings({ "unchecked", "rawtypes" })
+	public static <K, V> Map<K, V> newLazyTreeMap(final Comparator<? super K> comparator)
+	{
+		return LazyMap.lazyMap(new TreeMap<K, V>(comparator),
+			new InstantiateFactory(TreeMap.class));
+	}
+
+	/**
+	 * Factory method for create a new {@link TreeMap}.
+	 *
+	 * @param <K>
+	 *            the generic type of the key
+	 * @param <V>
+	 *            the generic type of the value
+	 *
+	 * @return The new {@link TreeMap}.
+	 */
+	public static <K, V> Map<K, V> newTreeMap()
+	{
+		return new TreeMap<>();
+	}
+
+	/**
+	 * Factory method for create a new {@link TreeMap}.
+	 *
+	 * @param <K>
+	 *            the generic type of the key
+	 * @param <V>
+	 *            the generic type of the value
+	 * @param comparator
+	 *            the comparator
+	 * @return The new {@link TreeMap}.
+	 */
+	public static <K, V> Map<K, V> newTreeMap(final Comparator<? super K> comparator)
+	{
+		return new TreeMap<>(comparator);
 	}
 
 	/**

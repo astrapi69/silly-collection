@@ -24,6 +24,10 @@
  */
 package de.alpharogroup.collections.iterators;
 
+import static org.testng.AssertJUnit.assertEquals;
+import static org.testng.AssertJUnit.assertNotNull;
+import static org.testng.AssertJUnit.assertTrue;
+
 import java.util.ArrayList;
 import java.util.Collections;
 import java.util.Enumeration;
@@ -31,16 +35,16 @@ import java.util.List;
 
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
-import org.testng.AssertJUnit;
 import org.testng.annotations.AfterMethod;
 import org.testng.annotations.BeforeMethod;
 import org.testng.annotations.Test;
+
+import de.alpharogroup.collections.list.ListExtensions;
 
 /**
  * The unit test class for the class {@link EnumerationIterator}.
  *
  * @author Asterios Raptis
- * @version 1.0
  */
 public class EnumerationIteratorTest
 {
@@ -48,6 +52,7 @@ public class EnumerationIteratorTest
 	/** The LOGGER. */
 	private static final Logger logger = LoggerFactory
 		.getLogger(EnumerationIteratorTest.class.getName());
+
 	/** The List for the test. */
 	private final List<String> list = new ArrayList<String>()
 	{
@@ -63,6 +68,7 @@ public class EnumerationIteratorTest
 			add("four");
 		}
 	};
+
 	/** The EnumerationIterator. */
 	private EnumerationIterator<String> iterator;
 
@@ -70,7 +76,7 @@ public class EnumerationIteratorTest
 	 * Sets up method will be invoked before every unit test method in this class.
 	 *
 	 * @throws Exception
-	 *             the exception
+	 *             is thrown if an exception occurs
 	 */
 	@BeforeMethod
 	protected void setUp() throws Exception
@@ -83,7 +89,7 @@ public class EnumerationIteratorTest
 	 * Tear down method will be invoked after every unit test method in this class.
 	 *
 	 * @throws Exception
-	 *             the exception
+	 *             is thrown if an exception occurs
 	 */
 	@AfterMethod
 	protected void tearDown() throws Exception
@@ -91,9 +97,7 @@ public class EnumerationIteratorTest
 	}
 
 	/**
-	 * Test method for
-	 * {@link de.alpharogroup.collections.iterators.EnumerationIterator#EnumerationIterator(java.util.Enumeration)}
-	 * .
+	 * Test method for {@link EnumerationIterator#EnumerationIterator(java.util.Enumeration)} .
 	 */
 	@Test
 	public void testEnumerationIterator()
@@ -105,7 +109,7 @@ public class EnumerationIteratorTest
 			logger.debug(iteratorLength + ".)Object:" + stringNumber);
 			iteratorLength++;
 		}
-		AssertJUnit.assertTrue("The length from the array should be equal with "
+		assertTrue("The length from the array should be equal with "
 			+ "the length from the enumerationIterator.", list.size() == iteratorLength);
 	}
 
@@ -121,7 +125,7 @@ public class EnumerationIteratorTest
 		final Enumeration<String> elem = Collections.enumeration(list);
 		final EnumerationIterator<String> result = new EnumerationIterator<>(elem);
 
-		AssertJUnit.assertNotNull(result);
+		assertNotNull(result);
 	}
 
 	/**
@@ -148,7 +152,7 @@ public class EnumerationIteratorTest
 			elemements);
 
 		final boolean result = enumerationIterator.hasNext();
-		AssertJUnit.assertEquals(true, result);
+		assertEquals(true, result);
 	}
 
 	/**
@@ -166,7 +170,7 @@ public class EnumerationIteratorTest
 
 		final boolean result = enumerationIterator.hasNext();
 
-		AssertJUnit.assertEquals(false, result);
+		assertEquals(false, result);
 	}
 
 	/**
@@ -195,8 +199,8 @@ public class EnumerationIteratorTest
 
 		final String actual = enumerationIterator.next();
 
-		AssertJUnit.assertNotNull(actual);
-		AssertJUnit.assertEquals(expected, actual);
+		assertNotNull(actual);
+		assertEquals(expected, actual);
 	}
 
 	/**
@@ -229,18 +233,18 @@ public class EnumerationIteratorTest
 
 		String actual = enumerationIterator.next();
 
-		AssertJUnit.assertNotNull(actual);
-		AssertJUnit.assertEquals(expected, actual);
+		assertNotNull(actual);
+		assertEquals(expected, actual);
 
 		actual = enumerationIterator.next();
 
-		AssertJUnit.assertNotNull(actual);
-		AssertJUnit.assertEquals(expected2, actual);
+		assertNotNull(actual);
+		assertEquals(expected2, actual);
 
 		actual = enumerationIterator.next();
 
-		AssertJUnit.assertNotNull(actual);
-		AssertJUnit.assertEquals(expected3, actual);
+		assertNotNull(actual);
+		assertEquals(expected3, actual);
 	}
 
 	/**
@@ -271,13 +275,13 @@ public class EnumerationIteratorTest
 
 		String actual = enumerationIterator.next();
 
-		AssertJUnit.assertNotNull(actual);
-		AssertJUnit.assertEquals(expected, actual);
+		assertNotNull(actual);
+		assertEquals(expected, actual);
 
 		actual = enumerationIterator.next();
 
-		AssertJUnit.assertNotNull(actual);
-		AssertJUnit.assertEquals(expected2, actual);
+		assertNotNull(actual);
+		assertEquals(expected2, actual);
 	}
 
 	/**
@@ -294,6 +298,19 @@ public class EnumerationIteratorTest
 			elemements);
 
 		enumerationIterator.next();
+	}
+
+	/**
+	 * Test for method {@link EnumerationIterator#remove()}
+	 */
+	@Test(enabled = true, expectedExceptions = UnsupportedOperationException.class)
+	public void testRemove()
+	{
+		final Enumeration<String> elemements = Collections
+			.enumeration(ListExtensions.newArrayList("1", "2"));
+		final EnumerationIterator<String> enumerationIterator = new EnumerationIterator<>(
+			elemements);
+		enumerationIterator.remove();
 	}
 
 }

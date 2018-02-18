@@ -24,25 +24,25 @@
  */
 package de.alpharogroup.collections.map;
 
+import static org.testng.AssertJUnit.assertTrue;
+
 import java.util.HashMap;
 import java.util.LinkedHashMap;
 import java.util.Map;
 import java.util.Map.Entry;
 
-import org.testng.AssertJUnit;
 import org.testng.annotations.Test;
 
 /**
- * Test class for the class {@link InsertionOrderMap}.
+ * The unit test class for the class {@link InsertionOrderMap}.
  *
- * @version 1.0
  * @author Asterios Raptis
  */
 public class InsertionOrderMapTest
 {
 
 	/**
-	 * Test the InsertionOrderMap.
+	 * Test the no argument constructor of {@link InsertionOrderMap}.
 	 */
 	@Test
 	public void testInsertionOrderMap()
@@ -67,11 +67,140 @@ public class InsertionOrderMapTest
 			final Object value = entry.getValue();
 			final String expectedKey = expected[count][0];
 			final String expectedValue = expected[count][1];
-			AssertJUnit.assertTrue(expectedKey.equals(key.toString()));
-			AssertJUnit.assertTrue(expectedValue.equals(value.toString()));
+			assertTrue(expectedKey.equals(key.toString()));
+			assertTrue(expectedValue.equals(value.toString()));
 			count++;
 		}
-		MapExtensions.printMap(map);
+		map.forEach((key, value) -> System.out
+			.println("[" + key.toString() + "=" + value.toString() + "]"));
+
+		map.clear();
+	}
+
+	/**
+	 * Test the constructor with the initial capacity of {@link InsertionOrderMap}.
+	 */
+	@Test
+	public void testInsertionOrderMapInt()
+	{
+		/* Shows that the elements are ordered in insertion-order from the Map. */
+		final Map<String, String> map = new InsertionOrderMap<>(4);
+
+		// Add some elements
+		map.put("1", "value1");
+		map.put("2", "value2");
+		map.put("3", "value3");
+		map.put("4", "value4");
+		final String expected[][] = { { "1", "value1" }, { "2", "value2" }, { "3", "value3" },
+				{ "4", "value4" } };
+		int count = 0;
+		for (final Entry<String, String> entry : map.entrySet())
+		{
+			final Object key = entry.getKey();
+			final Object value = entry.getValue();
+			final String expectedKey = expected[count][0];
+			final String expectedValue = expected[count][1];
+			assertTrue(expectedKey.equals(key.toString()));
+			assertTrue(expectedValue.equals(value.toString()));
+			count++;
+
+		}
+		map.clear();
+	}
+
+	/**
+	 * Test the constructor with the initial capacity and the load factor of
+	 * {@link InsertionOrderMap}.
+	 */
+	@Test
+	public void testInsertionOrderMapIntFloat()
+	{
+		/* Shows that the elements are ordered in insertion-order from the Map. */
+		final Map<String, String> map = new InsertionOrderMap<>(4, 4f);
+
+		// Add some elements
+		map.put("1", "value1");
+		map.put("2", "value2");
+		map.put("3", "value3");
+		map.put("4", "value4");
+		final String expected[][] = { { "1", "value1" }, { "2", "value2" }, { "3", "value3" },
+				{ "4", "value4" } };
+		int count = 0;
+		for (final Entry<String, String> entry : map.entrySet())
+		{
+			final Object key = entry.getKey();
+			final Object value = entry.getValue();
+			final String expectedKey = expected[count][0];
+			final String expectedValue = expected[count][1];
+			assertTrue(expectedKey.equals(key.toString()));
+			assertTrue(expectedValue.equals(value.toString()));
+			count++;
+
+		}
+		map.clear();
+	}
+
+	/**
+	 * Test the constructor with the initial capacity, load factor and the ordering mode of
+	 * {@link InsertionOrderMap}.
+	 */
+	@Test
+	public void testInsertionOrderMapIntFloatBoolean()
+	{
+		/* Shows that the elements are ordered in insertion-order from the Map. */
+		final Map<String, String> map = new InsertionOrderMap<>(4, 4f, true);
+
+		// Add some elements
+		map.put("1", "value1");
+		map.put("2", "value2");
+		map.put("3", "value3");
+		map.put("4", "value4");
+		final String expected[][] = { { "1", "value1" }, { "2", "value2" }, { "3", "value3" },
+				{ "4", "value4" } };
+		int count = 0;
+		for (final Entry<String, String> entry : map.entrySet())
+		{
+			final Object key = entry.getKey();
+			final Object value = entry.getValue();
+			final String expectedKey = expected[count][0];
+			final String expectedValue = expected[count][1];
+			assertTrue(expectedKey.equals(key.toString()));
+			assertTrue(expectedValue.equals(value.toString()));
+			count++;
+
+		}
+		map.clear();
+	}
+
+	/**
+	 * Test the constructor with a map of {@link InsertionOrderMap}.
+	 */
+	@Test
+	public void testInsertionOrderMapMapOfQextendsKQextendsV()
+	{
+		final Map<String, String> map3 = new HashMap<>();
+		// Add some elements
+		map3.put("1", "value1");
+		map3.put("2", "value2");
+		map3.put("3", "value3");
+		map3.put("4", "value4");
+		/* Shows that the elements are ordered in insertion-order from the Map. */
+		final Map<String, String> map = new InsertionOrderMap<>(map3);
+
+		final String expected[][] = { { "1", "value1" }, { "2", "value2" }, { "3", "value3" },
+				{ "4", "value4" } };
+		int count = 0;
+		for (final Entry<String, String> entry : map.entrySet())
+		{
+			final Object key = entry.getKey();
+			final Object value = entry.getValue();
+			final String expectedKey = expected[count][0];
+			final String expectedValue = expected[count][1];
+			assertTrue(expectedKey.equals(key.toString()));
+			assertTrue(expectedValue.equals(value.toString()));
+			count++;
+
+		}
 		map.clear();
 	}
 
@@ -98,8 +227,8 @@ public class InsertionOrderMapTest
 			final Object value = entry.getValue();
 			final String expectedKey = expected[count][0];
 			final String expectedValue = expected[count][1];
-			AssertJUnit.assertTrue(expectedKey.equals(key.toString()));
-			AssertJUnit.assertTrue(expectedValue.equals(value.toString()));
+			assertTrue(expectedKey.equals(key.toString()));
+			assertTrue(expectedValue.equals(value.toString()));
 			count++;
 
 		}
@@ -124,8 +253,8 @@ public class InsertionOrderMapTest
 			final Object value = entry.getValue();
 			final String expectedKey = expected[count][0];
 			final String expectedValue = expected[count][1];
-			AssertJUnit.assertTrue(expectedKey.equals(key.toString()));
-			AssertJUnit.assertTrue(expectedValue.equals(value.toString()));
+			assertTrue(expectedKey.equals(key.toString()));
+			assertTrue(expectedValue.equals(value.toString()));
 			count++;
 		}
 		map2.clear();
@@ -140,11 +269,17 @@ public class InsertionOrderMapTest
 		map3.put("4", "value4");
 		map3.put("2", "value5");
 		System.out.println("----------initHashMap--------------");
-		MapExtensions.printMap(map3);
+
+		map3.forEach((key, value) -> System.out
+			.println("[" + key.toString() + "=" + value.toString() + "]"));
+
 		System.out.println("------------------------");
 		System.out.println("----------Map linkedMap = new LinkedHashMap(map3);--------------");
 		final Map<String, String> linkedMap = new LinkedHashMap<>(map3);
-		MapExtensions.printMap(linkedMap);
+
+		linkedMap.forEach((key, value) -> System.out
+			.println("[" + key.toString() + "=" + value.toString() + "]"));
+
 		System.out.println("---------initInsertionOrderMap---------------");
 		map3.clear();
 	}

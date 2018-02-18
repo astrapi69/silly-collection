@@ -22,32 +22,42 @@
  * OF CONTRACT, TORT OR OTHERWISE, ARISING FROM, OUT OF OR IN CONNECTION
  * WITH THE SOFTWARE OR THE USE OR OTHER DEALINGS IN THE SOFTWARE.
  */
-package de.alpharogroup.comparators.pairs;
+package de.alpharogroup.comparators;
+
+import static org.testng.Assert.assertTrue;
 
 import java.util.Comparator;
+import java.util.Locale;
 
-import de.alpharogroup.collections.pairs.KeyValuesPair;
+import org.testng.annotations.Test;
 
 /**
- * The class {@link KeyValuePairsKeyComparator} compares {@linkplain KeyValuesPair} objects over the
- * key where the key have to implements the {@linkplain Comparable} interface.
- *
- * @param <K>
- *            The generic type of the key
- * @param <V>
- *            The generic type of the value
+ * The unit test class for the class {@link LocaleComparator}.
  */
-public class KeyValuePairsKeyComparator<K extends Comparable<K>, V>
-	implements
-		Comparator<KeyValuesPair<K, V>>
+public class LocaleComparatorTest
 {
 
+	/** For use of the expected result. */
+	boolean expected;
+
+	/** For use of the result of the comparator. */
+	int actual;
+
 	/**
-	 * {@inheritDoc}
+	 * Test method for {@link LocaleComparator#compare(Locale, Locale)}
 	 */
-	@Override
-	public int compare(final KeyValuesPair<K, V> o1, final KeyValuesPair<K, V> o2)
+	@Test
+	public void testCompare()
 	{
-		return o1.getKey().compareTo(o2.getKey());
+		final Comparator<Locale> comparator = LocaleComparator.of();
+
+		actual = comparator.compare(Locale.CANADA, Locale.CANADA);
+		expected = actual == 0;
+		assertTrue(expected);
+
+		actual = comparator.compare(Locale.CANADA, Locale.GERMAN);
+		expected = actual > 0;
+		assertTrue(expected);
 	}
+
 }

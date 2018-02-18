@@ -36,17 +36,22 @@ import java.util.Enumeration;
 import java.util.LinkedHashMap;
 import java.util.List;
 import java.util.Map;
+import java.util.Optional;
 import java.util.Properties;
 import java.util.regex.Matcher;
 import java.util.regex.Pattern;
 
 import de.alpharogroup.collections.pairs.KeyValuePair;
+import lombok.experimental.UtilityClass;
+import lombok.extern.slf4j.Slf4j;
 
 /**
  * The Class {@link PropertiesExtensions} provides methods loading properties and other related
  * operations for properties like find redundant values or getting all available languages from a
  * bundle.
  */
+@UtilityClass
+@Slf4j
 public final class PropertiesExtensions
 {
 
@@ -104,13 +109,13 @@ public final class PropertiesExtensions
 	 * with the prefix as a key and holds a List with the whole keys the starts with the same key
 	 * prefix.
 	 *
-	 * @param enProperties
+	 * @param properties
 	 *            the en properties
 	 * @return the matched prefix lists
 	 */
-	public static Map<String, List<String>> getMatchedPrefixLists(final Properties enProperties)
+	public static Map<String, List<String>> getMatchedPrefixLists(final Properties properties)
 	{
-		final Enumeration<?> e = enProperties.propertyNames();
+		final Enumeration<?> e = properties.propertyNames();
 		final Map<String, List<String>> matchedPrefixes = new LinkedHashMap<>();
 		while (e.hasMoreElements())
 		{
@@ -172,15 +177,39 @@ public final class PropertiesExtensions
 	 */
 	public static Properties loadProperties(final File propertiesFile) throws IOException
 	{
+		return loadProperties(propertiesFile, false);
+	}
+
+	/**
+	 * Load a Properties-object from the given File-object.
+	 *
+	 * @param propertiesFile
+	 *            the properties file
+	 * @param loadFromXML
+	 *            the load from XML
+	 * @return the properties or null if the file is not found.
+	 * @throws IOException
+	 *             Signals that an I/O exception has occurred.
+	 */
+	public static Properties loadProperties(final File propertiesFile, boolean loadFromXML)
+		throws IOException
+	{
 		Properties properties = null;
-		InputStream is = null;
+		InputStream inputStream = null;
 		if (propertiesFile.exists())
 		{
-			is = propertiesFile.toURI().toURL().openStream();
-			if (is != null)
+			inputStream = propertiesFile.toURI().toURL().openStream();
+			if (inputStream != null)
 			{
 				properties = new Properties();
-				properties.load(is);
+				if (loadFromXML)
+				{
+					properties.loadFromXML(inputStream);
+				}
+				else
+				{
+					properties.load(inputStream);
+				}
 			}
 		}
 		else
@@ -211,13 +240,11 @@ public final class PropertiesExtensions
 	 *            the xml file with the properties to convert.
 	 * @param comment
 	 *            the comment
-	 * @throws FileNotFoundException
-	 *             the file not found exception
 	 * @throws IOException
 	 *             Signals that an I/O exception has occurred.
 	 */
 	public static void toProperties(final File properties, final File xml, final String comment)
-		throws FileNotFoundException, IOException
+		throws IOException
 	{
 		toProperties(new FileOutputStream(properties), new FileInputStream(xml), comment);
 	}
@@ -231,17 +258,149 @@ public final class PropertiesExtensions
 	 *            the xml file with the properties to convert.
 	 * @param comment
 	 *            the comment
-	 * @throws FileNotFoundException
-	 *             the file not found exception
 	 * @throws IOException
 	 *             Signals that an I/O exception has occurred.
 	 */
 	public static void toProperties(final OutputStream properties, final InputStream xml,
-		final String comment) throws FileNotFoundException, IOException
+		final String comment) throws IOException
 	{
-		final Properties prop = new Properties();
-		prop.loadFromXML(xml);
-		prop.store(properties, comment);
+		toProperties(properties, xml, comment, true);
+	}
+
+	/**
+	 * Converts the given properties InputStream to the given properties {@link OutputStream} that
+	 * represents the output file.
+	 *
+	 * @param outputStream
+	 *            the properties file. The xml file does not have to exist.
+	 * @param inputStream
+	 *            the xml file with the properties to convert.
+	 * @param comment
+	 *            the comment
+	 * @throws IOException
+	 *             Signals that an I/O exception has occurred.
+	 */
+	public static void toPropertiesFile(final OutputStream outputStream,
+		final InputStream inputStream, final String comment) throws IOException
+	{
+		toProperties(outputStream, inputStream, comment, false);
+	}
+
+	/**
+	 * Exports the given {@link InputStream} that represents a properties file to the given
+	 * properties {@link OutputStream} that represents the output file. The flag xmlFile tells if
+	 * the output shell be an xml file or a properties file.
+	 *
+	 * @param outputStream
+	 *            the stream from the output properties file. If the file does not exists a new file
+	 *            will be created.
+	 * @param inputStream
+	 *            the stream from input file with the properties to convert
+	 * @param comment
+	 *            the comment
+	 * @param xmlFile
+	 *            the flag that tells if the output shell be an xml file if true otherwise it will
+	 *            be an properties file
+	 * @throws IOException
+	 *             Signals that an I/O exception has occurred.
+	 */
+	public static void toProperties(final OutputStream outputStream, final InputStream inputStream,
+		final String comment, boolean xmlFile) throws IOException
+	{
+		export(null, outputStream, inputStream, comment, xmlFile, false);
+	}
+
+	/**
+	 * Exports the given {@link InputStream} that represents a properties file to the given
+	 * properties {@link OutputStream} that represents the output file. The flag xmlFile tells if
+	 * the output shell be an xml file or a properties file.
+	 *
+	 * @param properties
+	 *            the properties to store
+	 * @param outputStream
+	 *            the stream from the output properties file. If the file does not exists a new file
+	 *            will be created.
+	 * @param inputStream
+	 *            the input stream
+	 * @param comment
+	 *            the comment
+	 * @param loadFromXML
+	 *            the flag that tells if the input shell be loaded from a XML file if true otherwise
+	 *            it will be loaded from a properties file
+	 * @param storeToXML
+	 *            the flag that tells if the output shell be stored to a XML file if true otherwise
+	 *            it will be stored to a properties file
+	 * @throws IOException
+	 *             Signals that an I/O exception has occurred.
+	 */
+	public static void export(Properties properties, OutputStream outputStream,
+		InputStream inputStream, String comment, boolean loadFromXML, boolean storeToXML)
+		throws IOException
+	{ // create a new properties if given properties object is null
+		if (properties == null)
+		{
+			properties = new Properties();
+		}
+		// load from input stream if not null
+		if (inputStream != null)
+		{
+			if (loadFromXML)
+			{
+				properties.loadFromXML(inputStream);
+			}
+			else
+			{
+				properties.load(inputStream);
+			}
+		}
+		// store as xml or as normal properties format
+		if (storeToXML)
+		{
+			properties.storeToXML(outputStream, comment);
+		}
+		else
+		{
+			properties.store(outputStream, comment);
+		}
+	}
+
+	/**
+	 * Exports the given {@link InputStream} that represents a properties file to the given
+	 * properties {@link OutputStream} that represents the output file. The flag xmlFile tells if
+	 * the output shell be an xml file or a properties file.
+	 *
+	 * @param properties
+	 *            the properties to store
+	 * @param outputStream
+	 *            the stream from the output properties file. If the file does not exists a new file
+	 *            will be created.
+	 * @throws IOException
+	 *             Signals that an I/O exception has occurred.
+	 */
+	public static void export(Properties properties, OutputStream outputStream) throws IOException
+	{
+		export(properties, outputStream, null);
+	}
+
+	/**
+	 * Exports the given {@link InputStream} that represents a properties file to the given
+	 * properties {@link OutputStream} that represents the output file. The flag xmlFile tells if
+	 * the output shell be an xml file or a properties file.
+	 *
+	 * @param properties
+	 *            the properties to store
+	 * @param outputStream
+	 *            the stream from the output properties file. If the file does not exists a new file
+	 *            will be created.
+	 * @param comment
+	 *            the comment
+	 * @throws IOException
+	 *             Signals that an I/O exception has occurred.
+	 */
+	public static void export(Properties properties, OutputStream outputStream, String comment)
+		throws IOException
+	{
+		export(properties, outputStream, null, comment, false, false);
 	}
 
 	/**
@@ -255,13 +414,11 @@ public final class PropertiesExtensions
 	 *            the comment
 	 * @param encoding
 	 *            the encoding for the xml file.
-	 * @throws FileNotFoundException
-	 *             the file not found exception
 	 * @throws IOException
 	 *             Signals that an I/O exception has occurred.
 	 */
 	public static void toXml(final File properties, final File xml, final String comment,
-		final String encoding) throws FileNotFoundException, IOException
+		final String encoding) throws IOException
 	{
 		toXml(new FileInputStream(properties), new FileOutputStream(xml), comment, encoding);
 	}
@@ -277,13 +434,11 @@ public final class PropertiesExtensions
 	 *            the comment
 	 * @param encoding
 	 *            the encoding for the xml file.
-	 * @throws FileNotFoundException
-	 *             the file not found exception
 	 * @throws IOException
 	 *             Signals that an I/O exception has occurred.
 	 */
 	public static void toXml(final InputStream properties, final OutputStream xml,
-		final String comment, final String encoding) throws FileNotFoundException, IOException
+		final String comment, final String encoding) throws IOException
 	{
 		final Properties prop = new Properties();
 		prop.load(properties);
@@ -291,10 +446,34 @@ public final class PropertiesExtensions
 	}
 
 	/**
-	 * Private constructor.
+	 * Try to get a number from the given properties key from the given properties. If it does not
+	 * exists an empty {@link Optional} will be returned and a log message will be logged.
+	 *
+	 * @param properties
+	 *            the properties
+	 * @param propertiesKey
+	 *            the properties key
+	 * @return the port number or an empty {@linkplain Optional}
 	 */
-	private PropertiesExtensions()
+	public static Optional<Integer> getInteger(final Properties properties,
+		final String propertiesKey)
 	{
+		if (properties != null && properties.containsKey(propertiesKey))
+		{
+			final String portAsString = properties.getProperty(propertiesKey);
+			try
+			{
+				final Integer port = Integer.valueOf(portAsString);
+				return Optional.of(port);
+			}
+			catch (final NumberFormatException e)
+			{
+				log.error("Value of given properties key:" + propertiesKey + " is not a number.",
+					e);
+				return Optional.empty();
+			}
+		}
+		return Optional.empty();
 	}
 
 }
