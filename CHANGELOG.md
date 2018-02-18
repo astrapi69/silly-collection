@@ -10,12 +10,14 @@ ADDED:
 - new factory methods for create new Treeset as SortedSet objects
 - new factory methods for create new TreeMap as SortedMap objects
 - new factory method for create new InsertionOrderMap
+- new methods created for export properties objects to xml and properties format
 
 CHANGED:
 
 - javadoc extended and improved
 - moved method isEmpty and isNotEmpty to class CollectionExtensions
 - update of parent version
+- unit tests extended for new created methods
 
 
 Version 4.24.0

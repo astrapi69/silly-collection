@@ -30,7 +30,9 @@ import static org.testng.AssertJUnit.assertTrue;
 
 import java.io.File;
 import java.io.FileNotFoundException;
+import java.io.FileOutputStream;
 import java.io.IOException;
+import java.io.OutputStream;
 import java.lang.reflect.InvocationTargetException;
 import java.net.URL;
 import java.util.ArrayList;
@@ -54,8 +56,130 @@ import de.alpharogroup.collections.pairs.KeyValuePair;
 public class PropertiesExtensionsTest
 {
 
+
 	/**
-	 * Test for method {@link PropertiesExtensions#findRedundantValues(Properties)}
+	 * Test method for
+	 * {@link PropertiesExtensions#export(Properties, OutputStream, InputStream, String, boolean, boolean)}.
+	 * <br>
+	 * Scenario of export an existing {@link Properties} object to an given {@link OutputStream} as
+	 * *.properties file where the flag loadFromXML and the flag storeToXML are both false. <br>
+	 *
+	 * @throws IOException
+	 *             Signals that an I/O exception has occurred.
+	 */
+	@Test
+	public void testExportToProperties() throws IOException
+	{
+		final Properties properties = new Properties();
+		properties.setProperty("foo", "bar");
+		File propertiesFile = new File(".", "output2.properties");
+		OutputStream outputStream = new FileOutputStream(propertiesFile);
+		PropertiesExtensions.export(properties, outputStream, null, null, false, false);
+		final Properties propertiesOutput = PropertiesExtensions.loadProperties(propertiesFile);
+		assertNotNull(propertiesOutput);
+		assertEquals(properties, propertiesOutput);
+		propertiesFile.delete();
+	}
+
+	/**
+	 * Test method for {@link PropertiesExtensions#export(Properties, OutputStream)}. <br>
+	 * Scenario of export an existing {@link Properties} object to an given {@link OutputStream} as
+	 * *.properties file where the flag loadFromXML and the flag storeToXML are both false. <br>
+	 *
+	 * @throws IOException
+	 *             Signals that an I/O exception has occurred.
+	 */
+	@Test
+	public void testExportToProperties2() throws IOException
+	{
+		final Properties properties = new Properties();
+		properties.setProperty("foo", "bar");
+		File propertiesFile = new File(".", "output2.properties");
+		OutputStream outputStream = new FileOutputStream(propertiesFile);
+		PropertiesExtensions.export(properties, outputStream);
+		final Properties propertiesOutput = PropertiesExtensions.loadProperties(propertiesFile);
+		assertNotNull(propertiesOutput);
+		assertEquals(properties, propertiesOutput);
+		propertiesFile.delete();
+	}
+
+	/**
+	 * Test method for {@link PropertiesExtensions#export(Properties, OutputStream, String)}. <br>
+	 * Scenario of export an existing {@link Properties} object to an given {@link OutputStream} as
+	 * *.properties file where the flag loadFromXML and the flag storeToXML are both false. <br>
+	 *
+	 * @throws IOException
+	 *             Signals that an I/O exception has occurred.
+	 */
+	@Test
+	public void testExportToProperties3() throws IOException
+	{
+		final Properties properties = new Properties();
+		properties.setProperty("foo", "bar");
+		File propertiesFile = new File(".", "output2.properties");
+		OutputStream outputStream = new FileOutputStream(propertiesFile);
+		PropertiesExtensions.export(properties, outputStream, "Foo comment");
+		final Properties propertiesOutput = PropertiesExtensions.loadProperties(propertiesFile);
+		assertNotNull(propertiesOutput);
+		assertEquals(properties, propertiesOutput);
+		propertiesFile.delete();
+	}
+
+	/**
+	 * Test method for
+	 * {@link PropertiesExtensions#export(Properties, OutputStream, InputStream, String, boolean, boolean)}.
+	 *
+	 * <br>
+	 * Scenario of export an existing {@link Properties} object to an given {@link OutputStream} as
+	 * *.xml properties file where the flag loadFromXML and the flag storeToXML are both true. <br>
+	 *
+	 * @throws IOException
+	 *             Signals that an I/O exception has occurred.
+	 */
+	@Test
+	public void testExportToXml() throws IOException
+	{
+		final Properties properties = new Properties();
+		properties.setProperty("foo", "bar");
+		File propertiesFile = new File(".", "output1.xml");
+		OutputStream outputStream = new FileOutputStream(propertiesFile);
+		PropertiesExtensions.export(properties, outputStream, null, null, true, true);
+		final Properties propertiesOutput = PropertiesExtensions.loadProperties(propertiesFile,
+			true);
+		assertNotNull(propertiesOutput);
+		assertEquals(properties, propertiesOutput);
+		propertiesFile.delete();
+	}
+
+	/**
+	 * Test method for
+	 * {@link PropertiesExtensions#export(Properties, OutputStream, InputStream, String, boolean, boolean)}.
+	 *
+	 * <br>
+	 * Scenario of export an existing {@link Properties} object to an given {@link OutputStream} as
+	 * *.xml properties file where the flag loadFromXML is false and the flag storeToXML is true.
+	 * <br>
+	 *
+	 * @throws IOException
+	 *             Signals that an I/O exception has occurred.
+	 */
+	@Test
+	public void testExportToXml2() throws IOException
+	{
+		final Properties properties = new Properties();
+		properties.setProperty("foo", "bar");
+		File propertiesFile = new File(".", "output2.xml");
+		OutputStream outputStream = new FileOutputStream(propertiesFile);
+		PropertiesExtensions.export(properties, outputStream, null, null, false, true);
+		final Properties propertiesOutput = PropertiesExtensions.loadProperties(propertiesFile,
+			true);
+		assertNotNull(propertiesOutput);
+		assertEquals(properties, propertiesOutput);
+		propertiesFile.delete();
+	}
+
+	/**
+	 * Test for method {@link PropertiesExtensions#findRedundantValues(Properties)}.
 	 *
 	 * @throws IOException
 	 *             Signals that an I/O exception has occurred.
@@ -92,7 +216,7 @@ public class PropertiesExtensionsTest
 	}
 
 	/**
-	 * Test for method {@link PropertiesExtensions#getInteger(Properties, String)}
+	 * Test for method {@link PropertiesExtensions#getInteger(Properties, String)}.
 	 */
 	@Test
 	public void testGetInteger()
@@ -124,7 +248,7 @@ public class PropertiesExtensionsTest
 
 	/**
 	 * Test for method {@link PropertiesExtensions#getInteger(Properties, String)} where value is
-	 * not a number
+	 * not a number.
 	 */
 	@Test
 	public void testGetIntegerWithNoNumberValue()
@@ -150,7 +274,7 @@ public class PropertiesExtensionsTest
 	}
 
 	/**
-	 * Test for method {@link PropertiesExtensions#getMatchedPrefixLists(Properties)}
+	 * Test for method {@link PropertiesExtensions#getMatchedPrefixLists(Properties)}.
 	 */
 	@Test(enabled = true)
 	public void testGetMatchedPrefixLists()
@@ -171,7 +295,7 @@ public class PropertiesExtensionsTest
 	}
 
 	/**
-	 * Test for method {@link PropertiesExtensions#getPropertyParameters(String)}
+	 * Test for method {@link PropertiesExtensions#getPropertyParameters(String)}.
 	 */
 	@Test
 	public void testGetPropertyParameters()
@@ -183,9 +307,10 @@ public class PropertiesExtensionsTest
 	}
 
 	/**
-	 * Test for method {@link PropertiesExtensions#loadProperties(File)}
+	 * Test for method {@link PropertiesExtensions#loadProperties(File)}.
 	 *
 	 * @throws IOException
+	 *             Signals that an I/O exception has occurred.
 	 */
 	@Test
 	public void testLoadProperties() throws IOException
@@ -198,20 +323,19 @@ public class PropertiesExtensionsTest
 
 	/**
 	 * Test for method {@link PropertiesExtensions#loadProperties(File)} with a file that does not
-	 * exist
+	 * exist.
 	 *
 	 * @throws IOException
+	 *             Signals that an I/O exception has occurred.
 	 */
 	@Test(expectedExceptions = FileNotFoundException.class)
 	public void testLoadPropertiesNotFound() throws IOException
 	{
-		final File propertiesFile = new File("foo.properties");
-		final Properties properties = PropertiesExtensions.loadProperties(propertiesFile);
-		assertNotNull(properties);
+		PropertiesExtensions.loadProperties(new File("foo.properties"));
 	}
 
 	/**
-	 * Test for method {@link PropertiesExtensions#toKeyValuePairs(Properties)}
+	 * Test for method {@link PropertiesExtensions#toKeyValuePairs(Properties)}.
 	 */
 	@Test(enabled = true)
 	public void testToKeyValuePairs()
@@ -237,9 +361,34 @@ public class PropertiesExtensionsTest
 	}
 
 	/**
-	 * Test for method {@link PropertiesExtensions#toProperties(File, File, String)}
+	 * Test method for
+	 * {@link PropertiesExtensions#toPropertiesFile(OutputStream, InputStream, String)}.
 	 *
 	 * @throws IOException
+	 *             Signals that an I/O exception has occurred.
+	 */
+	@Test(enabled = true)
+	public void testToPropertiesFile() throws IOException
+	{
+		File propertiesFile = new File("output1.properties");
+		OutputStream outputStream = new FileOutputStream(propertiesFile);
+		final URL resource = getClass().getClassLoader().getResource("resources.properties");
+		final File propertiesInputFile = new File(resource.getFile());
+		PropertiesExtensions.toPropertiesFile(outputStream, resource.openStream(), null);
+		final Properties propertiesInput = PropertiesExtensions.loadProperties(propertiesInputFile);
+		assertNotNull(propertiesInput);
+		final Properties propertiesOutput = PropertiesExtensions.loadProperties(propertiesFile);
+		assertNotNull(propertiesOutput);
+		assertEquals(propertiesInput, propertiesOutput);
+		propertiesFile.delete();
+
+	}
+
+	/**
+	 * Test for method {@link PropertiesExtensions#toProperties(File, File, String)}.
+	 *
+	 * @throws IOException
+	 *             Signals that an I/O exception has occurred.
 	 */
 	@Test
 	public void testToPropertiesFileFileString() throws IOException
@@ -256,9 +405,10 @@ public class PropertiesExtensionsTest
 	}
 
 	/**
-	 * Test for method {@link PropertiesExtensions#toXml(File, File, String, String)}
+	 * Test for method {@link PropertiesExtensions#toXml(File, File, String, String)}.
 	 *
 	 * @throws IOException
+	 *             Signals that an I/O exception has occurred.
 	 */
 	@Test
 	public void testToXmlFileFileStringString() throws IOException
@@ -288,7 +438,7 @@ public class PropertiesExtensionsTest
 	}
 
 	/**
-	 * Test method for {@link PropertiesExtensions} with {@link BeanTester}
+	 * Test method for {@link PropertiesExtensions} with {@link BeanTester}.
 	 */
 	@Test(expectedExceptions = { BeanTestException.class, InvocationTargetException.class,
 			UnsupportedOperationException.class })
