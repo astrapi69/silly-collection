@@ -270,15 +270,7 @@ public class MapExtensionsTest
 		final String twoDimArray[][] = { { "1", "value1" }, { "3", "value3" }, { "4", "value4" },
 				{ "2", "value2" } };
 		final Map<String, String> map = MapExtensions.toGenericMap(twoDimArray);
-		int count = 0;
-		for (final Entry<String, String> entry : map.entrySet())
-		{
-			final String key = entry.getKey();
-			final String value = entry.getValue();
-			assertTrue(key.equals(twoDimArray[count][0]));
-			assertTrue(value.equals(twoDimArray[count][1]));
-			count++;
-		}
+		assertMapToArray(map, twoDimArray);
 	}
 
 	/**
@@ -290,6 +282,10 @@ public class MapExtensionsTest
 		final String twoDimArray[][] = { { "1", "value1" }, { "3", "value3" }, { "4", "value4" },
 				{ "2", "value2" } };
 		final Map<String, String> map = MapExtensions.toMap(twoDimArray);
+		assertMapToArray(map, twoDimArray);
+	}	
+	
+	private void assertMapToArray( Map<String, String> map, String[][] twoDimArray) {
 		int count = 0;
 		for (final Entry<String, String> entry : map.entrySet())
 		{
