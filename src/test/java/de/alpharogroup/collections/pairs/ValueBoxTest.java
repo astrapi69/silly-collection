@@ -26,6 +26,9 @@ package de.alpharogroup.collections.pairs;
 
 import static org.testng.AssertJUnit.assertEquals;
 
+import java.io.IOException;
+import java.lang.reflect.InvocationTargetException;
+
 import org.meanbean.test.BeanTester;
 import org.testng.annotations.Test;
 
@@ -44,7 +47,6 @@ public class ValueBoxTest
 	@Test
 	public void testEqualsHashcodeAndToString()
 	{
-
 		boolean expected;
 		boolean actual;
 		final ValueBox<Integer> first = ValueBox.<Integer> builder().value(2).build();
@@ -54,6 +56,33 @@ public class ValueBoxTest
 
 		actual = EqualsHashCodeAndToStringEvaluator.evaluateEqualsHashcodeAndToString(first, second,
 			third, fourth);
+		expected = true;
+		assertEquals(expected, actual);
+	}
+
+	/**
+	 * Test method for {@link ValueBox#equals(Object)} , {@link ValueBox#hashCode()} and
+	 * {@link ValueBox#toString()}
+	 *
+	 * @throws NoSuchMethodException
+	 *             if an accessor method for this property cannot be found
+	 * @throws IllegalAccessException
+	 *             if the caller does not have access to the property accessor method
+	 * @throws InvocationTargetException
+	 *             if the property accessor method throws an exception
+	 * @throws InstantiationException
+	 *             if a new instance of the bean's class cannot be instantiated
+	 * @throws IOException
+	 *             Signals that an I/O exception has occurred
+	 */
+	@Test
+	public void testEqualsHashcodeAndToStringWithClass() throws NoSuchMethodException,
+		IllegalAccessException, InvocationTargetException, InstantiationException, IOException
+	{
+		boolean expected;
+		boolean actual;
+		actual = EqualsHashCodeAndToStringEvaluator
+			.evaluateEqualsHashcodeAndToString(ValueBox.class);
 		expected = true;
 		assertEquals(expected, actual);
 	}
