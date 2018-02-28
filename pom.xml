@@ -6,7 +6,7 @@
 	<parent>
 		<groupId>de.alpharogroup</groupId>
 		<artifactId>mvn-java-parent</artifactId>
-		<version>3.7.0</version>
+		<version>3.8.0</version>
 		<relativePath></relativePath>
 	</parent>
 
@@ -31,8 +31,6 @@
 		<test-objects.version>4.23.0</test-objects.version>
 		<!-- EXTERNAL LIBRARIES versions -->
 		<commons-collections4.version>4.1</commons-collections4.version>
-		<!-- MEANBEAN version -->
-		<meanbean.version>2.0.3</meanbean.version>
 		<!-- RANDOM-BEANS version -->
 		<random-beans.version>3.7.0</random-beans.version>
 	</properties>
@@ -99,12 +97,6 @@
 				<groupId>de.alpharogroup</groupId>
 				<artifactId>jobject-core</artifactId>
 				<version>${jobject-core.version}</version>
-			</dependency>
-			<!-- MEANBEAN DEPENDENCY -->
-			<dependency>
-				<groupId>org.meanbean</groupId>
-				<artifactId>meanbean</artifactId>
-				<version>${meanbean.version}</version>
 			</dependency>
 			<!-- RANDOM-BEANS DEPENDENCY -->
 			<dependency>
