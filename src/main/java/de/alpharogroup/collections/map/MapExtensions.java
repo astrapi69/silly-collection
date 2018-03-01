@@ -198,6 +198,38 @@ public final class MapExtensions
 	}
 
 	/**
+	 * Factory method for create a new {@link LinkedHashMap}.
+	 *
+	 * @param <K>
+	 *            the generic type of the key
+	 * @param <V>
+	 *            the generic type of the value
+	 *
+	 * @return The new {@link LinkedHashMap}.
+	 */
+	public static <K, V> Map<K, V> newLinkedHashMap()
+	{
+		return new LinkedHashMap<>();
+	}
+
+	/**
+	 * Factory method for create a new {@link LinkedHashMap}.
+	 *
+	 * @param <K>
+	 *            the generic type of the key
+	 * @param <V>
+	 *            the generic type of the value
+	 * @param initialCapacity
+	 *            the initial capacity
+	 *
+	 * @return The new {@link LinkedHashMap}.
+	 */
+	public static <K, V> Map<K, V> newLinkedHashMap(final int initialCapacity)
+	{
+		return new LinkedHashMap<>(initialCapacity);
+	}
+
+	/**
 	 * Factory method for create a new {@link HashMap}.
 	 *
 	 * @param <K>

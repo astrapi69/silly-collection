@@ -52,6 +52,19 @@ import org.testng.annotations.Test;
 public class MapExtensionsTest
 {
 
+	private void assertMapToArray(Map<String, String> map, String[][] twoDimArray)
+	{
+		int count = 0;
+		for (final Entry<String, String> entry : map.entrySet())
+		{
+			final String key = entry.getKey();
+			final String value = entry.getValue();
+			assertTrue(key.equals(twoDimArray[count][0]));
+			assertTrue(value.equals(twoDimArray[count][1]));
+			count++;
+		}
+	}
+
 	/**
 	 * Sets up method will be invoked before every unit test method
 	 *
@@ -214,7 +227,6 @@ public class MapExtensionsTest
 	@Test
 	public void testNewInsertionOrderMap() throws Exception
 	{
-
 		final Map<Integer, String> map = MapExtensions.<Integer, String> newInsertionOrderMap();
 		assertNotNull(map);
 	}
@@ -238,6 +250,26 @@ public class MapExtensionsTest
 		final Map<Integer, String> treeMap = MapExtensions
 			.<Integer, String> newLazyTreeMap((o1, o2) -> o1 - o2);
 		assertNotNull(treeMap);
+	}
+
+	/**
+	 * Test for the Method {@link MapExtensions#newLinkedHashMap()}.
+	 */
+	@Test
+	public void testNewLinkedHashMap()
+	{
+		final Map<Object, Object> hashMap = MapExtensions.newLinkedHashMap();
+		assertNotNull(hashMap);
+	}
+
+	/**
+	 * Test for the Method {@link MapExtensions#newLinkedHashMap(int)}.
+	 */
+	@Test
+	public void testNewLinkedHashMapInt()
+	{
+		final Map<Object, Object> hashMap = MapExtensions.newLinkedHashMap(5);
+		assertNotNull(hashMap);
 	}
 
 	/**
@@ -283,18 +315,6 @@ public class MapExtensionsTest
 				{ "2", "value2" } };
 		final Map<String, String> map = MapExtensions.toMap(twoDimArray);
 		assertMapToArray(map, twoDimArray);
-	}	
-	
-	private void assertMapToArray( Map<String, String> map, String[][] twoDimArray) {
-		int count = 0;
-		for (final Entry<String, String> entry : map.entrySet())
-		{
-			final String key = entry.getKey();
-			final String value = entry.getValue();
-			assertTrue(key.equals(twoDimArray[count][0]));
-			assertTrue(value.equals(twoDimArray[count][1]));
-			count++;
-		}
 	}
 
 	/**
