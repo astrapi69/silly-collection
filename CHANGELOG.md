@@ -4,6 +4,10 @@
 Version 4.26.0-SNAPSHOT
 -------------
 
+ADDED:
+ 
+- new factory methods for LinkedHashMap created
+
 CHANGED:
 
 - update of parent version to 3.9.0
