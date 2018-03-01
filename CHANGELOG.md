@@ -6,7 +6,7 @@ Version 4.26.0-SNAPSHOT
 
 CHANGED:
 
-- update of parent version to 3.8.0
+- update of parent version to 3.9.0
 
 
 Version 4.25.0
