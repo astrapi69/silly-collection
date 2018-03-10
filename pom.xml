@@ -28,7 +28,7 @@
 		<!-- VINTAGE-TIME version -->
 		<vintage-time.version>4.11.0</vintage-time.version>
 		<!-- TEST-OBJECTS version -->
-		<test-objects.version>4.23.0</test-objects.version>
+		<test-objects.version>4.24.0</test-objects.version>
 		<!-- EXTERNAL LIBRARIES versions -->
 		<commons-collections4.version>4.1</commons-collections4.version>
 	</properties>
