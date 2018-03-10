@@ -11,6 +11,7 @@ ADDED:
 CHANGED:
 
 - update of parent version to 3.9.0
+- update of test-objects dependency version from 4.23.0 to 4.24.0 
 
 
 Version 4.25.0
