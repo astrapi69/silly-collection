@@ -33,6 +33,7 @@ import org.meanbean.test.BeanTester;
 import org.testng.annotations.Test;
 
 import de.alpharogroup.test.objects.evaluations.EqualsHashCodeAndToStringEvaluator;
+import de.alpharogroup.test.objects.evaluations.SilentEqualsHashCodeAndToStringEvaluator;
 
 /**
  * The unit test class for the class {@link ValueBox}.
@@ -83,6 +84,21 @@ public class ValueBoxTest
 		boolean actual;
 		actual = EqualsHashCodeAndToStringEvaluator
 			.evaluateEqualsHashcodeAndToString(ValueBox.class);
+		expected = true;
+		assertEquals(expected, actual);
+	}
+
+	/**
+	 * Test method for {@link ValueBox#equals(Object)} , {@link ValueBox#hashCode()} and
+	 * {@link ValueBox#toString()}
+	 */
+	@Test
+	public void testEqualsHashcodeAndToStringWithClassSilently()
+	{
+		boolean expected;
+		boolean actual;
+		actual = SilentEqualsHashCodeAndToStringEvaluator
+			.evaluateEqualsHashcodeAndToStringQuietly(ValueBox.class);
 		expected = true;
 		assertEquals(expected, actual);
 	}
