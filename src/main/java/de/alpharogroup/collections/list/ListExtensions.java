@@ -298,7 +298,8 @@ public final class ListExtensions
 	/**
 	 * Creates a new {@link Integer} array with the given range that is defined through start and
 	 * end. For instance if the start is 5 and the end is 9 the resulted array will be [5,6,7,8,9]
-	 *
+	 * @deprecated use instead same name method from {@link ArrayExtensions}. <br>
+	 *     Note: will be removed in next minor release.
 	 * @param start
 	 *            The number to start
 	 * @param end
