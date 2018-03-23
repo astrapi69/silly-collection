@@ -25,6 +25,7 @@
 package de.alpharogroup.collections.array;
 
 import static org.testng.AssertJUnit.assertEquals;
+import static org.testng.AssertJUnit.assertTrue;
 
 import java.lang.reflect.InvocationTargetException;
 import java.util.List;
