@@ -69,6 +69,16 @@ public class ArrayExtensionsTest
 	}
 	
 	/**
+	 * Test the method {@link ArrayExtensions#newRangeArray(int, int)} where end is smaller then
+	 * start
+	 */
+	@Test(expectedExceptions = IllegalArgumentException.class)
+	public void testNewRangeArrayException()
+	{
+		ArrayExtensions.newRangeArray(9, 8);
+	}
+	
+	/**
 	 * Test for method {@link ArrayExtensions#asList(Object[])}
 	 */
 	@Test
