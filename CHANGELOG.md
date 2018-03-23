@@ -12,7 +12,7 @@ CHANGED:
 
 - update of parent version to 3.9.0
 - update of test-objects dependency version from 4.23.0 to 4.24.0 
-
+- update of jobject-extensions dependency version from 1.8.0 to 1.10.0
 
 Version 4.25.0
 -------------
