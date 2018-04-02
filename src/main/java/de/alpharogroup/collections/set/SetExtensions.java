@@ -154,40 +154,6 @@ public class SetExtensions
 	}
 
 	/**
-	 * Checks if a Set is null or empty
-	 *
-	 * @param <T>
-	 *            the generic type of the elements
-	 * @param set
-	 *            The Set to check
-	 * @return true if the set is null or empty otherwise false
-	 * @deprecated use instead the same name method in the class CollectionExtensions. Note: will be
-	 *             removed in the next minor release
-	 */
-	@Deprecated
-	public static <T> boolean isEmpty(final Set<T> set)
-	{
-		return CollectionExtensions.isEmpty(set);
-	}
-
-	/**
-	 * Checks if the given Set is not null or empty
-	 *
-	 * @param <T>
-	 *            the generic type of the elements
-	 * @param set
-	 *            The Set to check
-	 * @return true if the set is null or empty otherwise false.
-	 * @deprecated use instead the same name method in the class CollectionExtensions. Note: will be
-	 *             removed in the next minor release
-	 */
-	@Deprecated
-	public static <T> boolean isNotEmpty(final Set<T> set)
-	{
-		return CollectionExtensions.isNotEmpty(set);
-	}
-
-	/**
 	 * Converts the given {@link Collection} to a {@link Set}.
 	 *
 	 * @param <T>
