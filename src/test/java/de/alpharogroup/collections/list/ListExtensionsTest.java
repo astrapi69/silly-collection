@@ -616,6 +616,35 @@ public class ListExtensionsTest
 		actual = ListExtensions.toObjectArray();
 		assertTrue(actual.length == 0);
 	}
+	
+	/**	
+	 * Test the method {@link ListExtensions#splitListToParts(List, int)}	
+	 */	
+	@Test	
+	@SuppressWarnings({ "rawtypes" })	
+	public void testsplitToPartsInList()	
+	{	
+		final List<Integer> list = new ArrayList<>();	
+		for (int i = 0; i < 999; i++)	
+		{	
+			list.add(i);	
+		}	
+		final List al = ListExtensions.splitToParts(list, 50);	
+		assertTrue(al.size() == 20);	
+		for (int i = 0; i < al.size(); i++)	
+		{	
+			if (i == al.size() - 1)	
+			{	
+				final List lastPart = (ArrayList)al.get(i);	
+				assertTrue(lastPart.size() == 49);	
+			}	
+			else	
+			{	
+				final List aPart = (ArrayList)al.get(i);	
+				assertTrue(aPart.size() == 50);	
+			}	
+		}	
+	}
 
 	/**
 	 * Test method for {@link ListExtensions} with {@link BeanTester}

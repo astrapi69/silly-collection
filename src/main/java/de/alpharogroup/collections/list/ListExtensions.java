@@ -429,17 +429,17 @@ public final class ListExtensions
 	 *
 	 * @param <T>
 	 *            the generic type
-	 * @param set
-	 *            The Set to Split
+	 * @param collection
+	 *            The collection to split
 	 * @param times
 	 *            How to split.
-	 * @return An ArrayList with the Splitted Parts
+	 * @return a List with the splited Parts
 	 */
-	public static <T> List<List<T>> splitToParts(final Collection<T> set, final int times)
+	public static <T> List<List<T>> splitToParts(final Collection<T> collection, final int times)
 	{
 		final List<List<T>> returnList = new ArrayList<>();
 		ArrayList<T> tmp = new ArrayList<>();
-		final Iterator<T> it = set.iterator();
+		final Iterator<T> it = collection.iterator();
 		int count = 0;
 		while (it.hasNext())
 		{
