@@ -148,6 +148,7 @@ public class MapExtensionsTest
 	 * arrayMap.get(1).put("firstName", "Neil");<br>
 	 * arrayMap.get(1).put("lastName", "Armstrong");<br>
 	 */
+	@SuppressWarnings("deprecation")
 	@Test
 	public void testNewAssosiativeArrayMap()
 	{
@@ -182,6 +183,7 @@ public class MapExtensionsTest
 	/**
 	 * Test for the Method {@link MapExtensions#newConcurrentHashMap()}.
 	 */
+	@SuppressWarnings("deprecation")
 	@Test
 	public void testNewConcurrentHashMap()
 	{
@@ -193,6 +195,7 @@ public class MapExtensionsTest
 	/**
 	 * Test for the Method {@link MapExtensions#newConcurrentHashMap(int)}.
 	 */
+	@SuppressWarnings("deprecation")
 	@Test
 	public void testNewConcurrentHashMapInt()
 	{
@@ -204,6 +207,7 @@ public class MapExtensionsTest
 	/**
 	 * Test for the Method {@link MapExtensions#newHashMap()}.
 	 */
+	@SuppressWarnings("deprecation")
 	@Test
 	public void testNewHashMap()
 	{
@@ -214,6 +218,7 @@ public class MapExtensionsTest
 	/**
 	 * Test for the Method {@link MapExtensions#newHashMap(int))}.
 	 */
+	@SuppressWarnings("deprecation")
 	@Test
 	public void testNewHashMapInt()
 	{
@@ -224,6 +229,7 @@ public class MapExtensionsTest
 	/**
 	 * Test for the Method {@link MapExtensions#newInsertionOrderMap()}.
 	 */
+	@SuppressWarnings("deprecation")
 	@Test
 	public void testNewInsertionOrderMap() throws Exception
 	{
@@ -234,6 +240,7 @@ public class MapExtensionsTest
 	/**
 	 * Test for the Method {@link MapExtensions#newLazyTreeMap()}.
 	 */
+	@SuppressWarnings("deprecation")
 	@Test
 	public void testNewLazyTreeMap() throws Exception
 	{
@@ -244,6 +251,7 @@ public class MapExtensionsTest
 	/**
 	 * Test for the Method {@link MapExtensions#newLazyTreeMap(Comparator)}.
 	 */
+	@SuppressWarnings("deprecation")
 	@Test
 	public void testNewLazyTreeMapComparator() throws Exception
 	{
@@ -255,6 +263,7 @@ public class MapExtensionsTest
 	/**
 	 * Test for the Method {@link MapExtensions#newLinkedHashMap()}.
 	 */
+	@SuppressWarnings("deprecation")
 	@Test
 	public void testNewLinkedHashMap()
 	{
@@ -265,6 +274,7 @@ public class MapExtensionsTest
 	/**
 	 * Test for the Method {@link MapExtensions#newLinkedHashMap(int)}.
 	 */
+	@SuppressWarnings("deprecation")
 	@Test
 	public void testNewLinkedHashMapInt()
 	{
@@ -275,6 +285,7 @@ public class MapExtensionsTest
 	/**
 	 * Test for the Method {@link MapExtensions#newTreeMap()}.
 	 */
+	@SuppressWarnings("deprecation")
 	@Test
 	public void testNewTreeMap()
 	{
@@ -285,6 +296,7 @@ public class MapExtensionsTest
 	/**
 	 * Test for the Method {@link MapExtensions#newTreeMap(Comparator)}.
 	 */
+	@SuppressWarnings("deprecation")
 	@Test
 	public void testNewTreeMapComparator()
 	{

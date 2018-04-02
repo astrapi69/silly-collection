@@ -7,12 +7,14 @@ Version 4.26.0-SNAPSHOT
 ADDED:
  
 - new factory methods for LinkedHashMap created
+- new factory class for maps created and moved all factory methods from MapExtensions to it
 
 CHANGED:
 
 - update of parent version to 3.9.0
 - update of test-objects dependency version from 4.23.0 to 4.24.0 
 - update of jobject-extensions dependency version from 1.8.0 to 1.10.0
+- moved method newRangeArray from ListExtensions to ArrayExtensions
 
 Version 4.25.0
 -------------
