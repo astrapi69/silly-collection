@@ -3,24 +3,20 @@
  *
  * Copyright (C) 2015 Asterios Raptis
  *
- * Permission is hereby granted, free of charge, to any person obtaining
- * a copy of this software and associated documentation files (the
- * "Software"), to deal in the Software without restriction, including
- * without limitation the rights to use, copy, modify, merge, publish,
- * distribute, sublicense, and/or sell copies of the Software, and to
- * permit persons to whom the Software is furnished to do so, subject to
- * the following conditions:
+ * Permission is hereby granted, free of charge, to any person obtaining a copy of this software and
+ * associated documentation files (the "Software"), to deal in the Software without restriction,
+ * including without limitation the rights to use, copy, modify, merge, publish, distribute,
+ * sublicense, and/or sell copies of the Software, and to permit persons to whom the Software is
+ * furnished to do so, subject to the following conditions:
  *
- * The above copyright notice and this permission notice shall be
- * included in all copies or substantial portions of the Software.
+ * The above copyright notice and this permission notice shall be included in all copies or
+ * substantial portions of the Software.
  *
- * THE SOFTWARE IS PROVIDED "AS IS", WITHOUT WARRANTY OF ANY KIND,
- * EXPRESS OR IMPLIED, INCLUDING BUT NOT LIMITED TO THE WARRANTIES OF
- * MERCHANTABILITY, FITNESS FOR A PARTICULAR PURPOSE AND
- * NONINFRINGEMENT. IN NO EVENT SHALL THE AUTHORS OR COPYRIGHT HOLDERS BE
- * LIABLE FOR ANY CLAIM, DAMAGES OR OTHER LIABILITY, WHETHER IN AN ACTION
- * OF CONTRACT, TORT OR OTHERWISE, ARISING FROM, OUT OF OR IN CONNECTION
- * WITH THE SOFTWARE OR THE USE OR OTHER DEALINGS IN THE SOFTWARE.
+ * THE SOFTWARE IS PROVIDED "AS IS", WITHOUT WARRANTY OF ANY KIND, EXPRESS OR IMPLIED, INCLUDING BUT
+ * NOT LIMITED TO THE WARRANTIES OF MERCHANTABILITY, FITNESS FOR A PARTICULAR PURPOSE AND
+ * NONINFRINGEMENT. IN NO EVENT SHALL THE AUTHORS OR COPYRIGHT HOLDERS BE LIABLE FOR ANY CLAIM,
+ * DAMAGES OR OTHER LIABILITY, WHETHER IN AN ACTION OF CONTRACT, TORT OR OTHERWISE, ARISING FROM,
+ * OUT OF OR IN CONNECTION WITH THE SOFTWARE OR THE USE OR OTHER DEALINGS IN THE SOFTWARE.
  */
 package de.alpharogroup.collections.map;
 
@@ -51,6 +47,19 @@ import org.testng.annotations.Test;
  */
 public class MapExtensionsTest
 {
+
+	private void assertMapToArray(Map<String, String> map, String[][] twoDimArray)
+	{
+		int count = 0;
+		for (final Entry<String, String> entry : map.entrySet())
+		{
+			final String key = entry.getKey();
+			final String value = entry.getValue();
+			assertTrue(key.equals(twoDimArray[count][0]));
+			assertTrue(value.equals(twoDimArray[count][1]));
+			count++;
+		}
+	}
 
 	/**
 	 * Sets up method will be invoked before every unit test method
@@ -135,6 +144,7 @@ public class MapExtensionsTest
 	 * arrayMap.get(1).put("firstName", "Neil");<br>
 	 * arrayMap.get(1).put("lastName", "Armstrong");<br>
 	 */
+	@SuppressWarnings("deprecation")
 	@Test
 	public void testNewAssosiativeArrayMap()
 	{
@@ -169,6 +179,7 @@ public class MapExtensionsTest
 	/**
 	 * Test for the Method {@link MapExtensions#newConcurrentHashMap()}.
 	 */
+	@SuppressWarnings("deprecation")
 	@Test
 	public void testNewConcurrentHashMap()
 	{
@@ -180,6 +191,7 @@ public class MapExtensionsTest
 	/**
 	 * Test for the Method {@link MapExtensions#newConcurrentHashMap(int)}.
 	 */
+	@SuppressWarnings("deprecation")
 	@Test
 	public void testNewConcurrentHashMapInt()
 	{
@@ -191,6 +203,7 @@ public class MapExtensionsTest
 	/**
 	 * Test for the Method {@link MapExtensions#newHashMap()}.
 	 */
+	@SuppressWarnings("deprecation")
 	@Test
 	public void testNewHashMap()
 	{
@@ -201,6 +214,7 @@ public class MapExtensionsTest
 	/**
 	 * Test for the Method {@link MapExtensions#newHashMap(int))}.
 	 */
+	@SuppressWarnings("deprecation")
 	@Test
 	public void testNewHashMapInt()
 	{
@@ -211,10 +225,10 @@ public class MapExtensionsTest
 	/**
 	 * Test for the Method {@link MapExtensions#newInsertionOrderMap()}.
 	 */
+	@SuppressWarnings("deprecation")
 	@Test
 	public void testNewInsertionOrderMap() throws Exception
 	{
-
 		final Map<Integer, String> map = MapExtensions.<Integer, String> newInsertionOrderMap();
 		assertNotNull(map);
 	}
@@ -222,6 +236,7 @@ public class MapExtensionsTest
 	/**
 	 * Test for the Method {@link MapExtensions#newLazyTreeMap()}.
 	 */
+	@SuppressWarnings("deprecation")
 	@Test
 	public void testNewLazyTreeMap() throws Exception
 	{
@@ -232,6 +247,7 @@ public class MapExtensionsTest
 	/**
 	 * Test for the Method {@link MapExtensions#newLazyTreeMap(Comparator)}.
 	 */
+	@SuppressWarnings("deprecation")
 	@Test
 	public void testNewLazyTreeMapComparator() throws Exception
 	{
@@ -241,8 +257,31 @@ public class MapExtensionsTest
 	}
 
 	/**
+	 * Test for the Method {@link MapExtensions#newLinkedHashMap()}.
+	 */
+	@SuppressWarnings("deprecation")
+	@Test
+	public void testNewLinkedHashMap()
+	{
+		final Map<Object, Object> hashMap = MapExtensions.newLinkedHashMap();
+		assertNotNull(hashMap);
+	}
+
+	/**
+	 * Test for the Method {@link MapExtensions#newLinkedHashMap(int)}.
+	 */
+	@SuppressWarnings("deprecation")
+	@Test
+	public void testNewLinkedHashMapInt()
+	{
+		final Map<Object, Object> hashMap = MapExtensions.newLinkedHashMap(5);
+		assertNotNull(hashMap);
+	}
+
+	/**
 	 * Test for the Method {@link MapExtensions#newTreeMap()}.
 	 */
+	@SuppressWarnings("deprecation")
 	@Test
 	public void testNewTreeMap()
 	{
@@ -253,6 +292,7 @@ public class MapExtensionsTest
 	/**
 	 * Test for the Method {@link MapExtensions#newTreeMap(Comparator)}.
 	 */
+	@SuppressWarnings("deprecation")
 	@Test
 	public void testNewTreeMapComparator()
 	{
@@ -270,15 +310,7 @@ public class MapExtensionsTest
 		final String twoDimArray[][] = { { "1", "value1" }, { "3", "value3" }, { "4", "value4" },
 				{ "2", "value2" } };
 		final Map<String, String> map = MapExtensions.toGenericMap(twoDimArray);
-		int count = 0;
-		for (final Entry<String, String> entry : map.entrySet())
-		{
-			final String key = entry.getKey();
-			final String value = entry.getValue();
-			assertTrue(key.equals(twoDimArray[count][0]));
-			assertTrue(value.equals(twoDimArray[count][1]));
-			count++;
-		}
+		assertMapToArray(map, twoDimArray);
 	}
 
 	/**
@@ -290,15 +322,7 @@ public class MapExtensionsTest
 		final String twoDimArray[][] = { { "1", "value1" }, { "3", "value3" }, { "4", "value4" },
 				{ "2", "value2" } };
 		final Map<String, String> map = MapExtensions.toMap(twoDimArray);
-		int count = 0;
-		for (final Entry<String, String> entry : map.entrySet())
-		{
-			final String key = entry.getKey();
-			final String value = entry.getValue();
-			assertTrue(key.equals(twoDimArray[count][0]));
-			assertTrue(value.equals(twoDimArray[count][1]));
-			count++;
-		}
+		assertMapToArray(map, twoDimArray);
 	}
 
 	/**

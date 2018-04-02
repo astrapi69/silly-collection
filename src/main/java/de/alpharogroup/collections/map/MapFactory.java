@@ -20,13 +20,10 @@
  */
 package de.alpharogroup.collections.map;
 
-import java.util.ArrayList;
-import java.util.Collection;
 import java.util.Comparator;
 import java.util.HashMap;
 import java.util.LinkedHashMap;
 import java.util.Map;
-import java.util.Map.Entry;
 import java.util.TreeMap;
 import java.util.concurrent.ConcurrentHashMap;
 
@@ -36,13 +33,13 @@ import org.apache.commons.collections4.map.LazyMap;
 import lombok.experimental.UtilityClass;
 
 /**
- * Extensions class for use with Map objects.
+ * Factory class for create new Map objects
  *
  * @version 1.0
  * @author Asterios Raptis
  */
 @UtilityClass
-public final class MapExtensions
+public final class MapFactory
 {
 
 	/**
@@ -53,68 +50,11 @@ public final class MapExtensions
 	 * @param <V>
 	 *            the generic type of the value
 	 *
-	 * @return The new {@link InsertionOrderMap}
-	 * @deprecated use instead the same name method from <code>MapFactory</code> Note: will be
-	 *             removed with the next minor release
+	 * @return The new {@link InsertionOrderMap}.
 	 */
 	public static <K, V> Map<K, V> newInsertionOrderMap()
 	{
 		return new InsertionOrderMap<>();
-	}
-
-	/**
-	 * Returns the first founded key from the given value or null if nothing is found.
-	 *
-	 * @param <K>
-	 *            the generic type of the key
-	 * @param <V>
-	 *            the generic type of the value
-	 * @param map
-	 *            The Map.
-	 * @param value
-	 *            The value.
-	 * @return Returns the first key from the given value or null if nothing found.
-	 */
-	public static <K, V> K getKeyFromValue(final Map<K, V> map, final V value)
-	{
-		K key = null;
-		for (final Entry<K, V> entry : map.entrySet())
-		{
-			key = entry.getKey();
-			if (map.get(key).equals(value))
-			{
-				break;
-			}
-		}
-		return key;
-	}
-
-	/**
-	 * Returns a Collection from all founded keys from the given value or null if nothing found.
-	 *
-	 * @param <K>
-	 *            the generic type of the key
-	 * @param <V>
-	 *            the generic type of the value
-	 * @param map
-	 *            The Map.
-	 * @param value
-	 *            The value.
-	 * @return Returns the key from the given value or an empty Collection if nothing found.
-	 */
-	public static <K, V> Collection<K> getKeysFromValue(final Map<K, V> map, final V value)
-	{
-		final Collection<K> keys = new ArrayList<>();
-		for (final Entry<K, V> entry : map.entrySet())
-		{
-			final V val = entry.getValue();
-			if (val.equals(value))
-			{
-				final K key = entry.getKey();
-				keys.add(key);
-			}
-		}
-		return keys;
 	}
 
 	/**
@@ -143,8 +83,6 @@ public final class MapExtensions
 	 * </pre>
 	 *
 	 * @return The {@link java.util.Map} that acts like a javascript associative array.
-	 * @deprecated use instead the same name method from <code>MapFactory</code> Note: will be
-	 *             removed with the next minor release
 	 */
 	public static Map<Integer, Map<String, String>> newAssosiativeArrayMap()
 	{
@@ -160,8 +98,6 @@ public final class MapExtensions
 	 *            the generic type of the value
 	 *
 	 * @return The new {@link ConcurrentHashMap}.
-	 * @deprecated use instead the same name method from <code>MapFactory</code> Note: will be
-	 *             removed with the next minor release
 	 */
 	public static <K, V> ConcurrentHashMap<K, V> newConcurrentHashMap()
 	{
@@ -178,8 +114,6 @@ public final class MapExtensions
 	 * @param initialCapacity
 	 *            the initial capacity
 	 * @return The new {@link ConcurrentHashMap}.
-	 * @deprecated use instead the same name method from <code>MapFactory</code> Note: will be
-	 *             removed with the next minor release
 	 */
 	public static <K, V> ConcurrentHashMap<K, V> newConcurrentHashMap(final int initialCapacity)
 	{
@@ -195,8 +129,6 @@ public final class MapExtensions
 	 *            the generic type of the value
 	 *
 	 * @return The new {@link HashMap}.
-	 * @deprecated use instead the same name method from <code>MapFactory</code> Note: will be
-	 *             removed with the next minor release
 	 */
 	public static <K, V> Map<K, V> newHashMap()
 	{
@@ -212,8 +144,6 @@ public final class MapExtensions
 	 *            the generic type of the value
 	 *
 	 * @return The new {@link LinkedHashMap}.
-	 * @deprecated use instead the same name method from <code>MapFactory</code> Note: will be
-	 *             removed with the next minor release
 	 */
 	public static <K, V> Map<K, V> newLinkedHashMap()
 	{
@@ -231,8 +161,6 @@ public final class MapExtensions
 	 *            the initial capacity
 	 *
 	 * @return The new {@link LinkedHashMap}.
-	 * @deprecated use instead the same name method from <code>MapFactory</code> Note: will be
-	 *             removed with the next minor release
 	 */
 	public static <K, V> Map<K, V> newLinkedHashMap(final int initialCapacity)
 	{
@@ -249,8 +177,6 @@ public final class MapExtensions
 	 * @param initialCapacity
 	 *            the initial capacity
 	 * @return The new {@link HashMap}.
-	 * @deprecated use instead the same name method from <code>MapFactory</code> Note: will be
-	 *             removed with the next minor release
 	 */
 	public static <K, V> Map<K, V> newHashMap(final int initialCapacity)
 	{
@@ -267,8 +193,6 @@ public final class MapExtensions
 	 *            the generic type of the value
 	 *
 	 * @return The new {@link LazyMap}.
-	 * @deprecated use instead the same name method from <code>MapFactory</code> Note: will be
-	 *             removed with the next minor release
 	 */
 	@SuppressWarnings({ "unchecked", "rawtypes" })
 	public static <K, V> Map<K, V> newLazyMap()
@@ -286,8 +210,6 @@ public final class MapExtensions
 	 *            the generic type of the value
 	 *
 	 * @return The new {@link LazyMap}.
-	 * @deprecated use instead the same name method from <code>MapFactory</code> Note: will be
-	 *             removed with the next minor release
 	 */
 	@SuppressWarnings({ "unchecked", "rawtypes" })
 	public static <K, V> Map<K, V> newLazyTreeMap()
@@ -307,8 +229,6 @@ public final class MapExtensions
 	 *            the comparator
 	 *
 	 * @return The new {@link LazyMap}.
-	 * @deprecated use instead the same name method from <code>MapFactory</code> Note: will be
-	 *             removed with the next minor release
 	 */
 	@SuppressWarnings({ "unchecked", "rawtypes" })
 	public static <K, V> Map<K, V> newLazyTreeMap(final Comparator<? super K> comparator)
@@ -326,8 +246,6 @@ public final class MapExtensions
 	 *            the generic type of the value
 	 *
 	 * @return The new {@link TreeMap}.
-	 * @deprecated use instead the same name method from <code>MapFactory</code> Note: will be
-	 *             removed with the next minor release
 	 */
 	public static <K, V> Map<K, V> newTreeMap()
 	{
@@ -344,45 +262,10 @@ public final class MapExtensions
 	 * @param comparator
 	 *            the comparator
 	 * @return The new {@link TreeMap}.
-	 * @deprecated use instead the same name method from <code>MapFactory</code> Note: will be
-	 *             removed with the next minor release
 	 */
 	public static <K, V> Map<K, V> newTreeMap(final Comparator<? super K> comparator)
 	{
 		return new TreeMap<>(comparator);
-	}
-
-	/**
-	 * Converts a two dimensional Array to a Map.
-	 *
-	 * @param <T>
-	 *            the generic type
-	 * @param twoDimArray
-	 *            The two dimensional Array.
-	 * @return The map produced from the two dimensional Array.
-	 */
-	public static <T> Map<T, T> toGenericMap(final T[][] twoDimArray)
-	{
-		final Map<T, T> map = new LinkedHashMap<>();
-		for (final T[] element : twoDimArray)
-		{
-			final T key = element[0];
-			final T value = element[1];
-			map.put(key, value);
-		}
-		return map;
-	}
-
-	/**
-	 * Converts a two dimensional String Array to a Map.
-	 *
-	 * @param twoDimArray
-	 *            The two dimensional String Array.
-	 * @return The map produced from the two dimensional String Array.
-	 */
-	public static Map<String, String> toMap(final String[][] twoDimArray)
-	{
-		return toGenericMap(twoDimArray);
 	}
 
 }
