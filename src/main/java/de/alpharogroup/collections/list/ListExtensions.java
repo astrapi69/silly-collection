@@ -530,5 +530,5 @@ public final class ListExtensions
 		System.arraycopy(elements, 0, decorator, 0, elements.length);
 		return decorator;
 	}
-	
+
 }
