@@ -45,7 +45,7 @@ public final class ArrayExtensions
 	 */
 	public static <T> List<T> asList(final T[] array)
 	{
-		return ArrayExtensions.toList(array);
+		return Arrays.asList(array);
 	}
 
 	/**
@@ -355,7 +355,7 @@ public final class ArrayExtensions
 	 */
 	public static <T> List<T> toList(final T[] array)
 	{
-		return Arrays.asList(array);
+		return asList(array);
 	}
 
 }
