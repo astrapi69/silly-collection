@@ -3,20 +3,24 @@
  *
  * Copyright (C) 2015 Asterios Raptis
  *
- * Permission is hereby granted, free of charge, to any person obtaining a copy of this software and
- * associated documentation files (the "Software"), to deal in the Software without restriction,
- * including without limitation the rights to use, copy, modify, merge, publish, distribute,
- * sublicense, and/or sell copies of the Software, and to permit persons to whom the Software is
- * furnished to do so, subject to the following conditions:
+ * Permission is hereby granted, free of charge, to any person obtaining
+ * a copy of this software and associated documentation files (the
+ * "Software"), to deal in the Software without restriction, including
+ * without limitation the rights to use, copy, modify, merge, publish,
+ * distribute, sublicense, and/or sell copies of the Software, and to
+ * permit persons to whom the Software is furnished to do so, subject to
+ * the following conditions:
  *
- * The above copyright notice and this permission notice shall be included in all copies or
- * substantial portions of the Software.
+ * The above copyright notice and this permission notice shall be
+ * included in all copies or substantial portions of the Software.
  *
- * THE SOFTWARE IS PROVIDED "AS IS", WITHOUT WARRANTY OF ANY KIND, EXPRESS OR IMPLIED, INCLUDING BUT
- * NOT LIMITED TO THE WARRANTIES OF MERCHANTABILITY, FITNESS FOR A PARTICULAR PURPOSE AND
- * NONINFRINGEMENT. IN NO EVENT SHALL THE AUTHORS OR COPYRIGHT HOLDERS BE LIABLE FOR ANY CLAIM,
- * DAMAGES OR OTHER LIABILITY, WHETHER IN AN ACTION OF CONTRACT, TORT OR OTHERWISE, ARISING FROM,
- * OUT OF OR IN CONNECTION WITH THE SOFTWARE OR THE USE OR OTHER DEALINGS IN THE SOFTWARE.
+ * THE SOFTWARE IS PROVIDED "AS IS", WITHOUT WARRANTY OF ANY KIND,
+ * EXPRESS OR IMPLIED, INCLUDING BUT NOT LIMITED TO THE WARRANTIES OF
+ * MERCHANTABILITY, FITNESS FOR A PARTICULAR PURPOSE AND
+ * NONINFRINGEMENT. IN NO EVENT SHALL THE AUTHORS OR COPYRIGHT HOLDERS BE
+ * LIABLE FOR ANY CLAIM, DAMAGES OR OTHER LIABILITY, WHETHER IN AN ACTION
+ * OF CONTRACT, TORT OR OTHERWISE, ARISING FROM, OUT OF OR IN CONNECTION
+ * WITH THE SOFTWARE OR THE USE OR OTHER DEALINGS IN THE SOFTWARE.
  */
 package de.alpharogroup.collections.list;
 
@@ -31,10 +35,8 @@ import java.util.ArrayList;
 import java.util.Arrays;
 import java.util.Collections;
 import java.util.Enumeration;
-import java.util.HashSet;
 import java.util.List;
 import java.util.Set;
-import java.util.Vector;
 
 import org.meanbean.test.BeanTestException;
 import org.meanbean.test.BeanTester;
@@ -42,7 +44,6 @@ import org.testng.annotations.AfterMethod;
 import org.testng.annotations.BeforeMethod;
 import org.testng.annotations.Test;
 
-import de.alpharogroup.collections.array.ArrayExtensions;
 import de.alpharogroup.collections.modifications.ModifiedCollections;
 import de.alpharogroup.collections.set.SetExtensions;
 import de.alpharogroup.test.objects.Person;
@@ -213,34 +214,6 @@ public class ListExtensionsTest
 	}
 
 	/**
-	 * Test the method {@link ListExtensions#isEmpty(List)}
-	 */
-	@SuppressWarnings("deprecation")
-	@Test
-	public void testIsEmpty()
-	{
-
-		List<String> nullList = null;
-
-		boolean isNull = ListExtensions.isEmpty(nullList);
-
-		assertTrue("List should be null.", isNull);
-
-		nullList = new ArrayList<>();
-
-		isNull = ListExtensions.isEmpty(nullList);
-
-		assertTrue("List should be empty.", isNull);
-
-		nullList.add("");
-
-		isNull = ListExtensions.isEmpty(nullList);
-
-		assertFalse("List should not be empty.", isNull);
-
-	}
-
-	/**
 	 * Test method for {@link ListExtensions#isFirst(List, Object)}
 	 */
 	@Test
@@ -328,38 +301,6 @@ public class ListExtensionsTest
 		assertTrue(strings.size() == 2);
 		assertTrue(strings.get(0).equals("foo"));
 		assertTrue(strings.get(1).equals("bar"));
-	}
-
-	/**
-	 * Test the method {@link ListExtensions#newRangeArray(int, int)}
-	 */
-	@SuppressWarnings("deprecation")
-	@Test
-	public void testNewRangeArray()
-	{
-		Integer[] actual;
-		Integer[] expected;
-		actual = ListExtensions.newRangeArray(5, 9);
-		expected = ArrayExtensions.newArray(5, 6, 7, 8, 9);
-		assertTrue(Arrays.deepEquals(actual, expected));
-
-		actual = ListExtensions.newRangeArray(1, 49);
-		expected = ArrayExtensions.newArray(1, 2, 3, 4, 5, 6, 7, 8, 9, 10, 11, 12, 13, 14, 15, 16,
-			17, 18, 19, 20, 21, 22, 23, 24, 25, 26, 27, 28, 29, 30, 31, 32, 33, 34, 35, 36, 37, 38,
-			39, 40, 41, 42, 43, 44, 45, 46, 47, 48, 49);
-
-		assertTrue(Arrays.deepEquals(actual, expected));
-	}
-
-	/**
-	 * Test the method {@link ListExtensions#newRangeArray(int, int)} where end is smaller then
-	 * start
-	 */
-	@SuppressWarnings("deprecation")
-	@Test(expectedExceptions = IllegalArgumentException.class)
-	public void testNewRangeArrayException()
-	{
-		ListExtensions.newRangeArray(9, 8);
 	}
 
 	/**
@@ -614,39 +555,10 @@ public class ListExtensionsTest
 	}
 
 	/**
-	 * Test the method {@link ListExtensions#splitSetToParts(Set, int)}
-	 */
-	@Test
-	@SuppressWarnings({ "rawtypes", "deprecation" })
-	public void testSplitToParts()
-	{
-		final Set<Integer> set = new HashSet<>();
-		for (int i = 0; i < 999; i++)
-		{
-			set.add(i);
-		}
-		final List al = ListExtensions.splitSetToParts(set, 50);
-		assertTrue(al.size() == 20);
-		for (int i = 0; i < al.size(); i++)
-		{
-			if (i == al.size() - 1)
-			{
-				final ArrayList lastPart = (ArrayList)al.get(i);
-				assertTrue(lastPart.size() == 49);
-			}
-			else
-			{
-				final ArrayList aPart = (ArrayList)al.get(i);
-				assertTrue(aPart.size() == 50);
-			}
-		}
-	}
-
-	/**
 	 * Test the method {@link ListExtensions#splitListToParts(List, int)}
 	 */
 	@Test
-	@SuppressWarnings({ "rawtypes", "deprecation" })
+	@SuppressWarnings({ "rawtypes" })
 	public void testsplitToPartsInList()
 	{
 		final List<Integer> list = new ArrayList<>();
@@ -654,7 +566,7 @@ public class ListExtensionsTest
 		{
 			list.add(i);
 		}
-		final List al = ListExtensions.splitListToParts(list, 50);
+		final List al = ListExtensions.splitToParts(list, 50);
 		assertTrue(al.size() == 20);
 		for (int i = 0; i < al.size(); i++)
 		{
@@ -736,22 +648,6 @@ public class ListExtensionsTest
 		}
 		actual = ListExtensions.toObjectArray();
 		assertTrue(actual.length == 0);
-	}
-
-	/**
-	 * Test the method {@link ListExtensions#toVector(Enumeration)}
-	 */
-	@Test
-	public void testToVector()
-	{
-		final List<String> arrayList = ListExtensions.newArrayList("1", "2");
-		final Enumeration<String> elements = Collections.enumeration(arrayList);
-		@SuppressWarnings("deprecation")
-		final Vector<String> vector = ListExtensions.toVector(elements);
-		for (final String string : vector)
-		{
-			assertTrue(arrayList.contains(string));
-		}
 	}
 
 	/**

@@ -1,6 +1,14 @@
 ## Change log
 ----------------------
 
+Version 4.27.0
+-------------
+
+CHANGED:
+
+- removed all depracated methods
+- optimization of readability
+
 Version 4.26.0
 -------------
 

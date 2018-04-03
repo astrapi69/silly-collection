@@ -3,20 +3,24 @@
  *
  * Copyright (C) 2015 Asterios Raptis
  *
- * Permission is hereby granted, free of charge, to any person obtaining a copy of this software and
- * associated documentation files (the "Software"), to deal in the Software without restriction,
- * including without limitation the rights to use, copy, modify, merge, publish, distribute,
- * sublicense, and/or sell copies of the Software, and to permit persons to whom the Software is
- * furnished to do so, subject to the following conditions:
+ * Permission is hereby granted, free of charge, to any person obtaining
+ * a copy of this software and associated documentation files (the
+ * "Software"), to deal in the Software without restriction, including
+ * without limitation the rights to use, copy, modify, merge, publish,
+ * distribute, sublicense, and/or sell copies of the Software, and to
+ * permit persons to whom the Software is furnished to do so, subject to
+ * the following conditions:
  *
- * The above copyright notice and this permission notice shall be included in all copies or
- * substantial portions of the Software.
+ * The above copyright notice and this permission notice shall be
+ * included in all copies or substantial portions of the Software.
  *
- * THE SOFTWARE IS PROVIDED "AS IS", WITHOUT WARRANTY OF ANY KIND, EXPRESS OR IMPLIED, INCLUDING BUT
- * NOT LIMITED TO THE WARRANTIES OF MERCHANTABILITY, FITNESS FOR A PARTICULAR PURPOSE AND
- * NONINFRINGEMENT. IN NO EVENT SHALL THE AUTHORS OR COPYRIGHT HOLDERS BE LIABLE FOR ANY CLAIM,
- * DAMAGES OR OTHER LIABILITY, WHETHER IN AN ACTION OF CONTRACT, TORT OR OTHERWISE, ARISING FROM,
- * OUT OF OR IN CONNECTION WITH THE SOFTWARE OR THE USE OR OTHER DEALINGS IN THE SOFTWARE.
+ * THE SOFTWARE IS PROVIDED "AS IS", WITHOUT WARRANTY OF ANY KIND,
+ * EXPRESS OR IMPLIED, INCLUDING BUT NOT LIMITED TO THE WARRANTIES OF
+ * MERCHANTABILITY, FITNESS FOR A PARTICULAR PURPOSE AND
+ * NONINFRINGEMENT. IN NO EVENT SHALL THE AUTHORS OR COPYRIGHT HOLDERS BE
+ * LIABLE FOR ANY CLAIM, DAMAGES OR OTHER LIABILITY, WHETHER IN AN ACTION
+ * OF CONTRACT, TORT OR OTHERWISE, ARISING FROM, OUT OF OR IN CONNECTION
+ * WITH THE SOFTWARE OR THE USE OR OTHER DEALINGS IN THE SOFTWARE.
  */
 package de.alpharogroup.collections.list;
 
@@ -29,7 +33,6 @@ import java.util.Enumeration;
 import java.util.Iterator;
 import java.util.List;
 import java.util.Set;
-import java.util.Vector;
 
 import org.apache.commons.beanutils.BeanComparator;
 import org.apache.commons.collections4.ComparatorUtils;
@@ -87,7 +90,7 @@ public final class ListExtensions
 	 */
 	public static <T> T getFirst(final List<T> list)
 	{
-		if (isNotEmpty(list))
+		if (CollectionExtensions.isNotEmpty(list))
 		{
 			return list.get(0);
 		}
@@ -105,7 +108,7 @@ public final class ListExtensions
 	 */
 	public static <T> T getLast(final List<T> list)
 	{
-		if (isNotEmpty(list))
+		if (CollectionExtensions.isNotEmpty(list))
 		{
 			return list.get(list.size() - 1);
 		}
@@ -162,23 +165,6 @@ public final class ListExtensions
 	}
 
 	/**
-	 * Checks if a List is null or empty.
-	 *
-	 * @param <T>
-	 *            the generic type
-	 * @param list
-	 *            The List to check.
-	 * @return true if the list is null or empty otherwise false.
-	 * @deprecated use instead the same name method in the class CollectionExtensions. Note: will be
-	 *             removed in the next minor release.
-	 */
-	@Deprecated
-	public static <T> boolean isEmpty(final List<T> list)
-	{
-		return CollectionExtensions.isEmpty(list);
-	}
-
-	/**
 	 * Checks if the given element is the first in the given list.
 	 *
 	 * @param <T>
@@ -214,23 +200,6 @@ public final class ListExtensions
 			return last.equals(element);
 		}
 		return false;
-	}
-
-	/**
-	 * Checks if the given List is not null or empty.
-	 *
-	 * @param <T>
-	 *            the generic type
-	 * @param list
-	 *            The List to check.
-	 * @return true if the list is null or empty otherwise false.
-	 * @deprecated use instead the same name method in the class CollectionExtensions. Note: will be
-	 *             removed in the next minor release.
-	 */
-	@Deprecated
-	public static <T> boolean isNotEmpty(final List<T> list)
-	{
-		return CollectionExtensions.isNotEmpty(list);
 	}
 
 	/**
@@ -292,34 +261,6 @@ public final class ListExtensions
 	}
 
 	/**
-	 * Creates a new {@link Integer} array with the given range that is defined through start and
-	 * end. For instance if the start is 5 and the end is 9 the resulted array will be [5,6,7,8,9]
-	 * 
-	 * @deprecated use instead same name method from {@link ArrayExtensions}. <br>
-	 *             Note: will be removed in next minor release.
-	 * @param start
-	 *            The number to start
-	 * @param end
-	 *            The number to end minus one
-	 * @return the generated {@link Integer} array
-	 */
-	public static Integer[] newRangeArray(final int start, final int end)
-	{
-		if (end < start)
-		{
-			throw new IllegalArgumentException(
-				"Parameter end should be greater than parameter start.");
-		}
-		final int length = end - start + 1;
-		final Integer[] array = new Integer[length];
-		for (int i = start; i <= end; i++)
-		{
-			array[i - start] = i;
-		}
-		return array;
-	}
-
-	/**
 	 * Creates a new {@link Integer} {@link List} with the given range that is defined through start
 	 * and end. For instance if the start is 5 and the end is 9 the resulted {@link List} will be
 	 * [5,6,7,8,9]
@@ -332,7 +273,7 @@ public final class ListExtensions
 	 */
 	public static List<Integer> newRangeList(final int start, final int end)
 	{
-		return Arrays.asList(newRangeArray(start, end));
+		return Arrays.asList(ArrayExtensions.newRangeArray(start, end));
 	}
 
 	/**
@@ -365,7 +306,7 @@ public final class ListExtensions
 	 */
 	public static <T> T removeFirst(final List<T> list)
 	{
-		if (!isEmpty(list) && 0 < list.size())
+		if (!CollectionExtensions.isEmpty(list) && 0 < list.size())
 		{
 			return list.remove(0);
 		}
@@ -384,7 +325,7 @@ public final class ListExtensions
 	 */
 	public static <T> T removeLast(final List<T> list)
 	{
-		if (!isEmpty(list) && 0 < list.size())
+		if (!CollectionExtensions.isEmpty(list) && 0 < list.size())
 		{
 			return list.remove(list.size() - 1);
 		}
@@ -488,59 +429,21 @@ public final class ListExtensions
 	}
 
 	/**
-	 * Splits the List to Parts to the specified times.
-	 *
-	 * @param <T>
-	 *            the generic type
-	 * @param list
-	 *            The List to Split
-	 * @param times
-	 *            How to split.
-	 * @return An List with the Splitted Parts
-	 * @deprecated use instead {@link ListExtensions#splitToParts(Collection, int)}. Note: will be
-	 *             removed in the next minor release.
-	 */
-	@Deprecated
-	public static <T> List<List<T>> splitListToParts(final List<T> list, final int times)
-	{
-		return splitToParts(list, times);
-	}
-
-	/**
-	 * Splits the Set to Parts to the specified times.
-	 *
-	 * @param <T>
-	 *            the generic type
-	 * @param set
-	 *            The Set to Split
-	 * @param times
-	 *            How to split.
-	 * @return An ArrayList with the Splitted Parts
-	 * @deprecated use instead {@link ListExtensions#splitToParts(Collection, int)}. Note: will be
-	 *             removed in the next minor release.
-	 */
-	@Deprecated
-	public static <T> List<List<T>> splitSetToParts(final Set<T> set, final int times)
-	{
-		return splitToParts(set, times);
-	}
-
-	/**
 	 * Splits the given {@link Collection} to parts to the specified times.
 	 *
 	 * @param <T>
 	 *            the generic type
-	 * @param set
-	 *            The Set to Split
+	 * @param collection
+	 *            The collection to split
 	 * @param times
 	 *            How to split.
-	 * @return An ArrayList with the Splitted Parts
+	 * @return a List with the splited Parts
 	 */
-	public static <T> List<List<T>> splitToParts(final Collection<T> set, final int times)
+	public static <T> List<List<T>> splitToParts(final Collection<T> collection, final int times)
 	{
 		final List<List<T>> returnList = new ArrayList<>();
 		ArrayList<T> tmp = new ArrayList<>();
-		final Iterator<T> it = set.iterator();
+		final Iterator<T> it = collection.iterator();
 		int count = 0;
 		while (it.hasNext())
 		{
@@ -632,21 +535,4 @@ public final class ListExtensions
 		return decorator;
 	}
 
-	/**
-	 * Converts the given enumaration to a Vector.
-	 *
-	 * @param <T>
-	 *            the generic type
-	 * @param enumaration
-	 *            The Enumeration to convert.
-	 *
-	 * @return A new Vector with the content of the given Enumeration.
-	 * @deprecated use instead {@link VectorExtensions#toVector(Enumeration)}. Note: will be removed
-	 *             in the next minor release.
-	 */
-	@Deprecated
-	public static <T> Vector<T> toVector(final Enumeration<T> enumaration)
-	{
-		return VectorExtensions.toVector(enumaration);
-	}
 }
