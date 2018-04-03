@@ -7,7 +7,7 @@ Version 4.27.0-SNAPSHOT
 CHANGED:
 
 - removed all depracated methods
-
+- optimization of readability
 
 Version 4.26.0
 -------------
