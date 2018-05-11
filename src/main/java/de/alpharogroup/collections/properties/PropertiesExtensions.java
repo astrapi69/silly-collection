@@ -312,8 +312,7 @@ public final class PropertiesExtensions
 
 	/**
 	 * Exports the given {@link InputStream} that represents a properties file to the given
-	 * properties {@link OutputStream} that represents the output file. The flag xmlFile tells if
-	 * the output shell be an xml file or a properties file.
+	 * properties {@link OutputStream} that represents the output file.
 	 *
 	 * @param properties
 	 *            the properties to store
