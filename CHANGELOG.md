@@ -4,6 +4,10 @@
 Version 4.28.0-SNAPSHOT
 -------------
 
+ADDED:
+ 
+- new generic Enumeration class created that associates a Set and an Enumeration
+
 Version 4.27.0
 -------------
 
