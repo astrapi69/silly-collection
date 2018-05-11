@@ -79,6 +79,26 @@ public class SetEnumerationTest
 		boolean hasMoreElements = stringSetEnumeration.hasMoreElements();
 		assertTrue(hasMoreElements);
 	}
+	
+
+	/**
+	 * Test method for {@link SetEnumeration#hasMoreElements()} with null value from the {@link Enumeration} 
+	 */
+	@Test
+	public void testHasMoreElementsEnumerationNull() throws Exception
+	{
+		Set<String> set = SetExtensions.toSet(list);
+		set.clear();
+		Enumeration<String> numbers;
+		Vector<String> numbersNames = new Vector<>(list);
+		numbers = numbersNames.elements();
+
+		SetEnumeration<String> stringSetEnumeration = new SetEnumeration<>(set, numbers);
+		assertNotNull(stringSetEnumeration);
+
+		boolean hasMoreElements = stringSetEnumeration.hasMoreElements();
+		assertTrue(hasMoreElements);
+	}
 
 	/**
 	 * Test method for {@link SetEnumeration#nextElement()}
