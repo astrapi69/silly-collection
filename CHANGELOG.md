@@ -8,6 +8,10 @@ ADDED:
  
 - new generic Enumeration class created that associates a Set and an Enumeration
 
+CHANGED:
+
+- update of parent version to 3.10.0
+
 Version 4.27.0
 -------------
 

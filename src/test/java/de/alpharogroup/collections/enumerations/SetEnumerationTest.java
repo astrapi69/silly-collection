@@ -80,85 +80,38 @@ public class SetEnumerationTest
 
 		boolean hasMoreElements = stringSetEnumeration.hasMoreElements();
 		assertTrue(hasMoreElements);
-		
+
 		hasMoreElements = stringSetEnumeration.hasMoreElements();
 		assertTrue(hasMoreElements);
-		
+
 		String nextElement = stringSetEnumeration.nextElement();
 		assertNotNull(nextElement);
-		
+
 		hasMoreElements = stringSetEnumeration.hasMoreElements();
 		assertTrue(hasMoreElements);
-		
+
 		nextElement = stringSetEnumeration.nextElement();
 		assertNotNull(nextElement);
-		
+
 		hasMoreElements = stringSetEnumeration.hasMoreElements();
 		assertTrue(hasMoreElements);
-		
+
 		nextElement = stringSetEnumeration.nextElement();
 		assertNotNull(nextElement);
-		
+
 		hasMoreElements = stringSetEnumeration.hasMoreElements();
 		assertTrue(hasMoreElements);
-		
+
 		nextElement = stringSetEnumeration.nextElement();
 		assertNotNull(nextElement);
-		
+
 		hasMoreElements = stringSetEnumeration.hasMoreElements();
 		assertFalse(hasMoreElements);
 	}
 
 	/**
-	 * Test method for {@link SetEnumeration#hasMoreElements()}
-	 */
-	@Test(expectedExceptions = NoSuchElementException.class)
-	public void testHasMoreElementsThrowNoSuchElementException() 
-	{
-		Set<String> set = SetExtensions.toSet(list);
-		Enumeration<String> numbers;
-		Vector<String> numbersNames = new Vector<>(list);
-		numbers = numbersNames.elements();
-
-		SetEnumeration<String> stringSetEnumeration = new SetEnumeration<>(set, numbers);
-		assertNotNull(stringSetEnumeration);
-
-		boolean hasMoreElements = stringSetEnumeration.hasMoreElements();
-		assertTrue(hasMoreElements);
-		
-		hasMoreElements = stringSetEnumeration.hasMoreElements();
-		assertTrue(hasMoreElements);
-		
-		String nextElement = stringSetEnumeration.nextElement();
-		assertNotNull(nextElement);
-		
-		hasMoreElements = stringSetEnumeration.hasMoreElements();
-		assertTrue(hasMoreElements);
-		
-		nextElement = stringSetEnumeration.nextElement();
-		assertNotNull(nextElement);
-		
-		hasMoreElements = stringSetEnumeration.hasMoreElements();
-		assertTrue(hasMoreElements);
-		
-		nextElement = stringSetEnumeration.nextElement();
-		assertNotNull(nextElement);
-		
-		hasMoreElements = stringSetEnumeration.hasMoreElements();
-		assertTrue(hasMoreElements);
-		
-		nextElement = stringSetEnumeration.nextElement();
-		assertNotNull(nextElement);
-		
-		hasMoreElements = stringSetEnumeration.hasMoreElements();
-		assertFalse(hasMoreElements);
-
-		nextElement = stringSetEnumeration.nextElement();
-	}
-	
-
-	/**
-	 * Test method for {@link SetEnumeration#hasMoreElements()} with null value from the {@link Enumeration} 
+	 * Test method for {@link SetEnumeration#hasMoreElements()} with null value from the
+	 * {@link Enumeration}
 	 */
 	@Test
 	public void testHasMoreElementsEnumerationNull() throws Exception
@@ -174,6 +127,54 @@ public class SetEnumerationTest
 
 		boolean hasMoreElements = stringSetEnumeration.hasMoreElements();
 		assertTrue(hasMoreElements);
+	}
+
+
+	/**
+	 * Test method for {@link SetEnumeration#hasMoreElements()}
+	 */
+	@Test(expectedExceptions = NoSuchElementException.class)
+	public void testHasMoreElementsThrowNoSuchElementException()
+	{
+		Set<String> set = SetExtensions.toSet(list);
+		Enumeration<String> numbers;
+		Vector<String> numbersNames = new Vector<>(list);
+		numbers = numbersNames.elements();
+
+		SetEnumeration<String> stringSetEnumeration = new SetEnumeration<>(set, numbers);
+		assertNotNull(stringSetEnumeration);
+
+		boolean hasMoreElements = stringSetEnumeration.hasMoreElements();
+		assertTrue(hasMoreElements);
+
+		hasMoreElements = stringSetEnumeration.hasMoreElements();
+		assertTrue(hasMoreElements);
+
+		String nextElement = stringSetEnumeration.nextElement();
+		assertNotNull(nextElement);
+
+		hasMoreElements = stringSetEnumeration.hasMoreElements();
+		assertTrue(hasMoreElements);
+
+		nextElement = stringSetEnumeration.nextElement();
+		assertNotNull(nextElement);
+
+		hasMoreElements = stringSetEnumeration.hasMoreElements();
+		assertTrue(hasMoreElements);
+
+		nextElement = stringSetEnumeration.nextElement();
+		assertNotNull(nextElement);
+
+		hasMoreElements = stringSetEnumeration.hasMoreElements();
+		assertTrue(hasMoreElements);
+
+		nextElement = stringSetEnumeration.nextElement();
+		assertNotNull(nextElement);
+
+		hasMoreElements = stringSetEnumeration.hasMoreElements();
+		assertFalse(hasMoreElements);
+
+		nextElement = stringSetEnumeration.nextElement();
 	}
 
 	/**
