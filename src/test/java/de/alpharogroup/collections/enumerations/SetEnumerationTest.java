@@ -63,22 +63,6 @@ public class SetEnumerationTest
 	};
 
 	/**
-	 * Test method for the SetEnumeration constructor
-	 */
-	@Test
-	public void testSetEnumeration() throws Exception
-	{
-		Set<String> set = SetExtensions.toSet(list);
-		Enumeration<String> numbers;
-		Vector<String> numbersNames = new Vector<>(list);
-		numbers = numbersNames.elements();
-
-		SetEnumeration<String> stringSetEnumeration = new SetEnumeration<>(set, numbers);
-		assertNotNull(stringSetEnumeration);
-
-	}
-
-	/**
 	 * Test method for {@link SetEnumeration#hasMoreElements()}
 	 */
 	@Test
@@ -112,6 +96,22 @@ public class SetEnumerationTest
 
 		String nextElement = stringSetEnumeration.nextElement();
 		assertNotNull(nextElement);
+	}
+
+	/**
+	 * Test method for the SetEnumeration constructor
+	 */
+	@Test
+	public void testSetEnumeration() throws Exception
+	{
+		Set<String> set = SetExtensions.toSet(list);
+		Enumeration<String> numbers;
+		Vector<String> numbersNames = new Vector<>(list);
+		numbers = numbersNames.elements();
+
+		SetEnumeration<String> stringSetEnumeration = new SetEnumeration<>(set, numbers);
+		assertNotNull(stringSetEnumeration);
+
 	}
 
 	/**
