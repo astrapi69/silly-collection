@@ -24,6 +24,7 @@
  */
 package de.alpharogroup.collections.enumerations;
 
+import static org.testng.Assert.assertFalse;
 import static org.testng.Assert.assertNotNull;
 import static org.testng.Assert.assertTrue;
 
@@ -78,6 +79,33 @@ public class SetEnumerationTest
 
 		boolean hasMoreElements = stringSetEnumeration.hasMoreElements();
 		assertTrue(hasMoreElements);
+		
+		hasMoreElements = stringSetEnumeration.hasMoreElements();
+		assertTrue(hasMoreElements);
+		
+		String nextElement = stringSetEnumeration.nextElement();
+		assertNotNull(nextElement);
+		
+		hasMoreElements = stringSetEnumeration.hasMoreElements();
+		assertTrue(hasMoreElements);
+		
+		nextElement = stringSetEnumeration.nextElement();
+		assertNotNull(nextElement);
+		
+		hasMoreElements = stringSetEnumeration.hasMoreElements();
+		assertTrue(hasMoreElements);
+		
+		nextElement = stringSetEnumeration.nextElement();
+		assertNotNull(nextElement);
+		
+		hasMoreElements = stringSetEnumeration.hasMoreElements();
+		assertTrue(hasMoreElements);
+		
+		nextElement = stringSetEnumeration.nextElement();
+		assertNotNull(nextElement);
+		
+		hasMoreElements = stringSetEnumeration.hasMoreElements();
+		assertFalse(hasMoreElements);
 	}
 	
 
