@@ -1,9 +1,13 @@
 ## Change log
 ----------------------
 
-Version 4.29.0-SNAPSHOT
+Version 4.29-SNAPSHOT
 -------------
 
+CHANGED:
+
+- update of parent version to 3.11
+- removed unneeded .0 at the end of version
 
 Version 4.28.0
 -------------
