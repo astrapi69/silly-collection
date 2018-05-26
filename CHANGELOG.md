@@ -4,6 +4,10 @@
 Version 4.29-SNAPSHOT
 -------------
 
+ADDED:
+ 
+- new section 'Semantic Versioning' in README.md file
+
 CHANGED:
 
 - update of parent version to 3.11
