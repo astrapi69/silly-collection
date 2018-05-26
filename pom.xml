@@ -21,7 +21,7 @@
 
 	<properties>
 		<!-- JOBJECT-EXTENSIONS versions -->
-		<jobject-extensions.version>1.10.0</jobject-extensions.version>
+		<jobject-extensions.version>1.11</jobject-extensions.version>
 		<jobject-clone.version>${jobject-extensions.version}</jobject-clone.version>
 		<jobject-compare.version>${jobject-extensions.version}</jobject-compare.version>
 		<jobject-core.version>${jobject-extensions.version}</jobject-core.version>
