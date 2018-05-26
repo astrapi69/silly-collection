@@ -33,10 +33,10 @@ import org.meanbean.test.BeanTester;
 import org.testng.annotations.Test;
 
 import de.alpharogroup.collections.set.SetExtensions;
+import de.alpharogroup.evaluate.object.EqualsHashCodeAndToStringEvaluator;
 import de.alpharogroup.test.objects.Customer;
 import de.alpharogroup.test.objects.Employee;
 import de.alpharogroup.test.objects.Person;
-import de.alpharogroup.test.objects.evaluations.EqualsHashCodeAndToStringEvaluator;
 
 /**
  * The unit test class for the class {@link KeySetPair}.

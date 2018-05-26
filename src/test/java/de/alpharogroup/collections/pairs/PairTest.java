@@ -29,7 +29,7 @@ import static org.testng.AssertJUnit.assertEquals;
 import org.meanbean.test.BeanTester;
 import org.testng.annotations.Test;
 
-import de.alpharogroup.test.objects.evaluations.EqualsHashCodeAndToStringEvaluator;
+import de.alpharogroup.evaluate.object.EqualsHashCodeAndToStringEvaluator;
 
 /**
  * The unit test class for the class {@link Pair}.

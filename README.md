@@ -52,13 +52,13 @@ The only exception from the official guidelines are the following:
 
 If the minor and patch version ends with a zero then the minor and the patch can be omitted.
  
-For instance if the project version is '7.0.0' we will write '7'. So we omit the '.0.0'.
+For instance if the project version is '1.0.0' we will write '1'. So we omit the '.0.0'.
 
 The same applies if only the patch version ends with a zero then the patch can be omitted.
  
-For instance if the project version is '7.7.0' we will write '7.7'. So we omit the '.0'.
+For instance if the project version is '1.1.0' we will write '1.1'. So we omit the '.0'.
 
-For more information on SemVer you can visit [semver.org](http://semver.org/).
+For more information on SemVer you can visit [semver.org](http://semver.org/).	
 
 ## Want to Help and improve it? ###
 

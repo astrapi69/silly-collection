@@ -25,10 +25,11 @@
 		<jobject-clone.version>${jobject-extensions.version}</jobject-clone.version>
 		<jobject-compare.version>${jobject-extensions.version}</jobject-compare.version>
 		<jobject-core.version>${jobject-extensions.version}</jobject-core.version>
+		<jobject-evaluate.version>${jobject-extensions.version}</jobject-evaluate.version>
 		<!-- VINTAGE-TIME version -->
 		<vintage-time.version>4.11.0</vintage-time.version>
 		<!-- TEST-OBJECTS version -->
-		<test-objects.version>4.24.0</test-objects.version>
+		<test-objects.version>4.26</test-objects.version>
 		<!-- EXTERNAL LIBRARIES versions -->
 		<commons-collections4.version>4.1</commons-collections4.version>
 	</properties>
@@ -96,6 +97,12 @@
 				<artifactId>jobject-core</artifactId>
 				<version>${jobject-core.version}</version>
 			</dependency>
+			<!-- JOBJECT-EVALUATE DEPENDENCY -->
+			<dependency>
+				<groupId>de.alpharogroup</groupId>
+				<artifactId>jobject-evaluate</artifactId>
+				<version>${jobject-evaluate.version}</version>
+			</dependency>
 
 		</dependencies>
 
@@ -117,6 +124,12 @@
 		<dependency>
 			<groupId>de.alpharogroup</groupId>
 			<artifactId>jobject-core</artifactId>
+		</dependency>
+		<!-- JOBJECT-EVALUATE DEPENDENCY -->
+		<dependency>
+			<groupId>de.alpharogroup</groupId>
+			<artifactId>jobject-evaluate</artifactId>
+			<scope>test</scope>
 		</dependency>
 		<!-- UNIT-TESTS DEPENDENCIES -->
 		<!-- VINTAGE-TIME DEPENDENCY -->
