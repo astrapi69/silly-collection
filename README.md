@@ -48,7 +48,7 @@ Release version numbers will be incremented in the following format:
 
 `<major>.<minor>.<patch>`
 
-The only exception from the oficial guidelines are the following:
+The only exception from the official guidelines are the following:
 
 If the minor and patch version ends with a zero then the minor and the patch can be omitted.
  
