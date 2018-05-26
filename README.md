@@ -42,7 +42,7 @@ Than you can add the dependency to your dependencies:
 
 ## Semantic Versioning
 
-The versions of jcommons-lang are maintained with the Semantic Versioning guidelines.
+The versions of silly-collections are maintained with the Semantic Versioning guidelines.
 
 Release version numbers will be incremented in the following format:
 
