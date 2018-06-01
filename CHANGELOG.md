@@ -7,6 +7,9 @@ Version 4.29-SNAPSHOT
 ADDED:
  
 - new section 'Semantic Versioning' in README.md file
+- new ArrayFactory class created and moved all factory method to it
+- new ListFactory class created and moved all factory method to it
+- new SetFactory class created and moved all factory method to it
 
 CHANGED:
 
