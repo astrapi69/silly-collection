@@ -265,15 +265,16 @@ public class ListExtensionsTest
 	/**
 	 * Test the method {@link ListExtensions#newArrayList(java.util.Collection, Object...)}.
 	 */
+	@SuppressWarnings("deprecation")
 	@Test
 	public void testNewArrayListCollectionObjects()
 	{
-		List<String> strings = ListFactory.newArrayList(null, "foo");
+		List<String> strings = ListExtensions.newArrayList(null, "foo");
 		assertNotNull(strings);
 		assertTrue(strings.size() == 1);
 		assertTrue(strings.get(0).equals("foo"));
 
-		strings = ListFactory.newArrayList(strings, "foo");
+		strings = ListExtensions.newArrayList(strings, "foo");
 		assertNotNull(strings);
 		assertTrue(strings.size() == 2);
 		assertTrue(strings.get(0).equals("foo"));
@@ -282,10 +283,11 @@ public class ListExtensionsTest
 	/**
 	 * Test the method {@link ListExtensions#newArrayList(int)}.
 	 */
+	@SuppressWarnings("deprecation")
 	@Test
 	public void testNewArrayListInt()
 	{
-		final List<String> strings = ListFactory.newArrayList(2);
+		final List<String> strings = ListExtensions.newArrayList(2);
 		assertNotNull(strings);
 		assertTrue(strings.size() == 0);
 	}
@@ -293,10 +295,11 @@ public class ListExtensionsTest
 	/**
 	 * Test the method {@link ListExtensions#newArrayList(Object...)}.
 	 */
+	@SuppressWarnings("deprecation")
 	@Test
 	public void testNewArrayListObjects()
 	{
-		final List<String> strings = ListFactory.newArrayList("foo", "bar");
+		final List<String> strings = ListExtensions.newArrayList("foo", "bar");
 		assertNotNull(strings);
 		assertTrue(strings.size() == 2);
 		assertTrue(strings.get(0).equals("foo"));
@@ -306,11 +309,11 @@ public class ListExtensionsTest
 	/**
 	 * Test the method {@link ListExtensions#newRangeList(int, int)}
 	 */
-	@SuppressWarnings("serial")
+	@SuppressWarnings({ "serial", "deprecation" })
 	@Test
 	public void testNewRangeList()
 	{
-		final List<Integer> actual = ListFactory.newRangeList(5, 9);
+		final List<Integer> actual = ListExtensions.newRangeList(5, 9);
 		final List<Integer> expected = new ArrayList<Integer>()
 		{
 			{
@@ -323,7 +326,7 @@ public class ListExtensionsTest
 		};
 		assertTrue(actual.equals(expected));
 	}
-
+	
 	/**
 	 * Test the method {@link ListExtensions#printCollection(java.util.Collection)}
 	 */

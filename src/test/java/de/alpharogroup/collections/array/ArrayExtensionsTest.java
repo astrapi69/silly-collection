@@ -364,6 +364,7 @@ public class ArrayExtensionsTest
 	/**
 	 * Test for method {@link ArrayExtensions#newArray(Object...)}
 	 */
+	@SuppressWarnings("deprecation")
 	@Test
 	public void testNewArray()
 	{
@@ -387,6 +388,7 @@ public class ArrayExtensionsTest
 	/**
 	 * Test the method {@link ArrayExtensions#newRangeArray(int, int)}
 	 */
+	@SuppressWarnings("deprecation")
 	@Test
 	public void testNewRangeArray()
 	{
@@ -408,6 +410,7 @@ public class ArrayExtensionsTest
 	 * Test the method {@link ArrayExtensions#newRangeArray(int, int)} where end is smaller then
 	 * start
 	 */
+	@SuppressWarnings("deprecation")
 	@Test(expectedExceptions = IllegalArgumentException.class)
 	public void testNewRangeArrayException()
 	{

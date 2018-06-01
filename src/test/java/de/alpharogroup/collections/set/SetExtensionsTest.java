@@ -39,7 +39,7 @@ import org.meanbean.test.BeanTestException;
 import org.meanbean.test.BeanTester;
 import org.testng.annotations.Test;
 
-import de.alpharogroup.collections.list.ListFactory;
+import de.alpharogroup.collections.list.ListExtensions;
 import de.alpharogroup.comparators.SortOrder;
 import de.alpharogroup.comparators.StringLengthComparator;
 
@@ -50,70 +50,77 @@ public class SetExtensionsTest
 {
 
 	/**
-	 * Test for method {@link SetFactory#newHashSet(java.util.Collection, Object...)}
+	 * Test for method {@link SetExtensions#newHashSet(java.util.Collection, Object...)}
 	 */
+	@SuppressWarnings("deprecation")
 	@Test
 	public void testNewHashSetCollectionObjects()
 	{
-		Set<String> set = SetFactory.newHashSet();
+		Set<String> set = SetExtensions.newHashSet();
 		assertTrue(set.size() == 0);
 		set.add("foo");
 		assertTrue(set.size() == 1);
-		set = SetFactory.newHashSet(ListFactory.newArrayList("foo", "fasel"), "foo", "bar", "foo");
+		set = SetExtensions.newHashSet(ListExtensions.newArrayList("foo", "fasel"), "foo", "bar",
+			"foo");
 		assertTrue(set.size() == 3);
-		set = SetFactory.newHashSet(ListFactory.newArrayList(), "foo", "bar", "foo");
+		set = SetExtensions.newHashSet(ListExtensions.newArrayList(), "foo", "bar", "foo");
 		assertTrue(set.size() == 2);
 
 	}
 
 	/**
-	 * Test for method {@link SetFactory#newHashSet(Object...)}
+	 * Test for method {@link SetExtensions#newHashSet(Object...)}
 	 */
+	@SuppressWarnings("deprecation")
 	@Test
 	public void testNewHashSetObjects()
 	{
-		Set<String> set = SetFactory.newHashSet();
+		Set<String> set = SetExtensions.newHashSet();
 		assertTrue(set.size() == 0);
-		set = SetFactory.newHashSet("foo", "bar", "foo");
+		set = SetExtensions.newHashSet("foo", "bar", "foo");
 		assertTrue(set.size() == 2);
 	}
 
 	/**
-	 * Test for method {@link SetFactory#newTreeSet(Collection, Object...)}
+	 * Test for method {@link SetExtensions#newTreeSet(Collection, Object...)}
 	 */
+	@SuppressWarnings("deprecation")
 	@Test
 	public void testNewTreeSetCollectionObjects()
 	{
-		SortedSet<String> set = SetFactory.newTreeSet();
+		SortedSet<String> set = SetExtensions.newTreeSet();
 		assertTrue(set.size() == 0);
 		set.add("foo");
 		assertTrue(set.size() == 1);
-		set = SetFactory.newTreeSet(ListFactory.newArrayList("foo", "fasel"), "foo", "bar", "foo");
+		set = SetExtensions.newTreeSet(ListExtensions.newArrayList("foo", "fasel"), "foo", "bar",
+			"foo");
 		assertTrue(set.size() == 3);
-		set = SetFactory.newTreeSet(ListFactory.newArrayList(), "foo", "bar", "foo");
+		set = SetExtensions.newTreeSet(ListExtensions.newArrayList(), "foo", "bar", "foo");
 		assertTrue(set.size() == 2);
 
 	}
 
 
 	/**
-	 * Test method for {@link SetFactory#newTreeSet(Collection, Comparator, T[])}.
+	 * Test method for {@link SetExtensions#newTreeSet(Collection, Comparator, T[])}.
 	 */
+	@SuppressWarnings("deprecation")
 	@Test
 	public void testNewTreeSetCollectionOfTComparatorOfTTArray()
 	{
-		SortedSet<String> set = SetFactory.newTreeSet();
+		SortedSet<String> set = SetExtensions.newTreeSet();
 		assertTrue(set.size() == 0);
 		set.add("foo");
 		assertTrue(set.size() == 1);
 		final Comparator<String> comparator = StringLengthComparator.of(SortOrder.ASCENDING);
-		final List<String> list = ListFactory.newArrayList("foo", "fasel");
-		set = SetFactory.newTreeSet(list, comparator, "food", "barista", "fao");
+		final List<String> list = ListExtensions.newArrayList("foo", "fasel");
+		set = SetExtensions.newTreeSet(list, comparator, "food", "barista", "fao");
 		assertTrue(set.size() == 5);
-		set = SetFactory.newTreeSet(ListFactory.<String> newArrayList(), comparator, "foo", "bar",
-			"foo");
+		set = SetExtensions.newTreeSet(ListExtensions.<String> newArrayList(), comparator, "foo",
+			"bar", "foo");
 		assertTrue(set.size() == 2);
 	}
+
 
 	/**
 	 * Test for method {@link SetExtensions#toSet(Collection)}
