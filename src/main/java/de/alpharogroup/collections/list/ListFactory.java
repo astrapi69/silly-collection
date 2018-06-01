@@ -32,7 +32,7 @@ import java.util.List;
 import java.util.Map;
 
 import de.alpharogroup.collections.CollectionExtensions;
-import de.alpharogroup.collections.array.ArrayExtensions;
+import de.alpharogroup.collections.array.ArrayFactory;
 import lombok.experimental.UtilityClass;
 
 /**
@@ -116,7 +116,7 @@ public final class ListFactory
 	 */
 	public static List<Integer> newRangeList(final int start, final int end)
 	{
-		return Arrays.asList(ArrayExtensions.newRangeArray(start, end));
+		return Arrays.asList(ArrayFactory.newRangeArray(start, end));
 	}
 
 }

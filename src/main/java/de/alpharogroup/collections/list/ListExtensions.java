@@ -39,6 +39,7 @@ import org.apache.commons.collections4.ComparatorUtils;
 
 import de.alpharogroup.collections.CollectionExtensions;
 import de.alpharogroup.collections.array.ArrayExtensions;
+import de.alpharogroup.collections.array.ArrayFactory;
 import de.alpharogroup.collections.modifications.ModifiedCollections;
 import de.alpharogroup.comparators.SortOrderComparator;
 import lombok.experimental.UtilityClass;
@@ -491,7 +492,7 @@ public final class ListExtensions
 	@SafeVarargs
 	public static <T> T[] toArray(final T... elements)
 	{
-		final T[] decorator = ArrayExtensions.newArray(elements);
+		final T[] decorator = ArrayFactory.newArray(elements);
 		return decorator;
 	}
 
