@@ -1,27 +1,3 @@
-/**
- * The MIT License
- *
- * Copyright (C) 2015 Asterios Raptis
- *
- * Permission is hereby granted, free of charge, to any person obtaining
- * a copy of this software and associated documentation files (the
- * "Software"), to deal in the Software without restriction, including
- * without limitation the rights to use, copy, modify, merge, publish,
- * distribute, sublicense, and/or sell copies of the Software, and to
- * permit persons to whom the Software is furnished to do so, subject to
- * the following conditions:
- *
- * The above copyright notice and this permission notice shall be
- * included in all copies or substantial portions of the Software.
- *
- * THE SOFTWARE IS PROVIDED "AS IS", WITHOUT WARRANTY OF ANY KIND,
- * EXPRESS OR IMPLIED, INCLUDING BUT NOT LIMITED TO THE WARRANTIES OF
- * MERCHANTABILITY, FITNESS FOR A PARTICULAR PURPOSE AND
- * NONINFRINGEMENT. IN NO EVENT SHALL THE AUTHORS OR COPYRIGHT HOLDERS BE
- * LIABLE FOR ANY CLAIM, DAMAGES OR OTHER LIABILITY, WHETHER IN AN ACTION
- * OF CONTRACT, TORT OR OTHERWISE, ARISING FROM, OUT OF OR IN CONNECTION
- * WITH THE SOFTWARE OR THE USE OR OTHER DEALINGS IN THE SOFTWARE.
- */
 package de.alpharogroup.collections.set;
 
 import java.util.Collection;
@@ -36,10 +12,10 @@ import de.alpharogroup.collections.CollectionExtensions;
 import lombok.experimental.UtilityClass;
 
 /**
- * Extensions class for use with {@link Set} objects.
+ * The factory class {@link SetFactory} provides factory methods for create new {@link Set} objects
  */
 @UtilityClass
-public class SetExtensions
+public final class SetFactory
 {
 
 	/**
@@ -50,12 +26,8 @@ public class SetExtensions
 	 * @param elements
 	 *            the elements to add in the new {@link HashSet}
 	 * @return the new {@link HashSet}
-	 * @deprecated use instead the same name method from the class {@link SetFactory} <br>
-	 * 			<br>
-	 *             Note: This method will be removed in next minor release.
 	 */
 	@SafeVarargs
-	@Deprecated
 	public static final <T> Set<T> newHashSet(final T... elements)
 	{
 		return newHashSet(null, elements);
@@ -71,12 +43,8 @@ public class SetExtensions
 	 * @param elements
 	 *            the elements to add in the new {@link HashSet}
 	 * @return the new {@link HashSet}
-	 * @deprecated use instead the same name method from the class {@link SetFactory} <br>
-	 * 			<br>
-	 *             Note: This method will be removed in next minor release.
 	 */
 	@SafeVarargs
-	@Deprecated
 	public static final <T> Set<T> newHashSet(final Collection<T> collection, final T... elements)
 	{
 		final Set<T> set;
@@ -103,12 +71,8 @@ public class SetExtensions
 	 * @param elements
 	 *            the elements to add in the new {@link TreeSet}
 	 * @return the new {@link TreeSet}
-	 * @deprecated use instead the same name method from the class {@link SetFactory} <br>
-	 * 			<br>
-	 *             Note: This method will be removed in next minor release.
 	 */
 	@SafeVarargs
-	@Deprecated
 	public static final <T> SortedSet<T> newTreeSet(final T... elements)
 	{
 		return newTreeSet(null, elements);
@@ -124,12 +88,8 @@ public class SetExtensions
 	 * @param elements
 	 *            the elements to add in the new {@link TreeSet}
 	 * @return the new {@link TreeSet}
-	 * @deprecated use instead the same name method from the class {@link SetFactory} <br>
-	 * 			<br>
-	 *             Note: This method will be removed in next minor release.
 	 */
 	@SafeVarargs
-	@Deprecated
 	public static final <T> SortedSet<T> newTreeSet(final Collection<T> collection,
 		final T... elements)
 	{
@@ -148,12 +108,8 @@ public class SetExtensions
 	 * @param elements
 	 *            the elements to add in the new {@link TreeSet}
 	 * @return the new {@link TreeSet}
-	 * @deprecated use instead the same name method from the class {@link SetFactory} <br>
-	 * 			<br>
-	 *             Note: This method will be removed in next minor release.
 	 */
 	@SafeVarargs
-	@Deprecated
 	public static final <T> SortedSet<T> newTreeSet(final Collection<T> collection,
 		final Comparator<T> comparator, final T... elements)
 	{
@@ -175,34 +131,6 @@ public class SetExtensions
 			Collections.addAll(sortedSet, elements);
 		}
 		return sortedSet;
-	}
-
-	/**
-	 * Converts the given {@link Collection} to a {@link Set}.
-	 *
-	 * @param <T>
-	 *            the generic type of the elements
-	 * @param collection
-	 *            the collection
-	 * @return A new {@link Set}
-	 */
-	public static <T> Set<T> toSet(final Collection<T> collection)
-	{
-		return SetFactory.newHashSet(collection);
-	}
-
-	/**
-	 * Converts the given {@link Collection} to a {@link SortedSet}.
-	 *
-	 * @param <T>
-	 *            the generic type of the elements
-	 * @param collection
-	 *            the collection
-	 * @return A new {@link SortedSet}
-	 */
-	public static <T> SortedSet<T> toSortedSet(final Collection<T> collection)
-	{
-		return SetFactory.newTreeSet(collection);
 	}
 
 }
