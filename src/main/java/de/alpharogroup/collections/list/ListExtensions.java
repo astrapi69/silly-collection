@@ -39,6 +39,7 @@ import org.apache.commons.collections4.ComparatorUtils;
 
 import de.alpharogroup.collections.CollectionExtensions;
 import de.alpharogroup.collections.array.ArrayExtensions;
+import de.alpharogroup.collections.array.ArrayFactory;
 import de.alpharogroup.collections.modifications.ModifiedCollections;
 import de.alpharogroup.comparators.SortOrderComparator;
 import lombok.experimental.UtilityClass;
@@ -213,6 +214,9 @@ public final class ListExtensions
 	 * @param elements
 	 *            the optional elements to be added in the new {@link ArrayList}.
 	 * @return the new {@link ArrayList} as {@link List}.
+	 * @deprecated use instead the same name method from the class {@link ListFactory} <br>
+	 *             <br>
+	 *             Note: This method will be removed in next minor release.
 	 */
 	@SafeVarargs
 	public static <T> List<T> newArrayList(final Collection<T> collection, final T... elements)
@@ -239,6 +243,9 @@ public final class ListExtensions
 	 * @param initialCapacity
 	 *            the initial capacity
 	 * @return the new {@link ArrayList} as {@link List}.
+	 * @deprecated use instead the same name method from the class {@link ListFactory} <br>
+	 *             <br>
+	 *             Note: This method will be removed in next minor release.
 	 */
 	public static <T> List<T> newArrayList(final int initialCapacity)
 	{
@@ -253,6 +260,9 @@ public final class ListExtensions
 	 * @param elements
 	 *            the elements to add in the new {@link ArrayList}.
 	 * @return the new {@link ArrayList} as {@link List}.
+	 * @deprecated use instead the same name method from the class {@link ListFactory} <br>
+	 *             <br>
+	 *             Note: This method will be removed in next minor release.
 	 */
 	@SafeVarargs
 	public static <T> List<T> newArrayList(final T... elements)
@@ -270,6 +280,9 @@ public final class ListExtensions
 	 * @param end
 	 *            The number to end minus one
 	 * @return the generated {@link Integer} List
+	 * @deprecated use instead the same name method from the class {@link ListFactory} <br>
+	 *             <br>
+	 *             Note: This method will be removed in next minor release.
 	 */
 	public static List<Integer> newRangeList(final int start, final int end)
 	{
@@ -479,7 +492,7 @@ public final class ListExtensions
 	@SafeVarargs
 	public static <T> T[] toArray(final T... elements)
 	{
-		final T[] decorator = ArrayExtensions.newArray(elements);
+		final T[] decorator = ArrayFactory.newArray(elements);
 		return decorator;
 	}
 

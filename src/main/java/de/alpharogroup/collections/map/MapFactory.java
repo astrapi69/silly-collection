@@ -37,7 +37,7 @@ import org.apache.commons.collections4.map.LazyMap;
 import lombok.experimental.UtilityClass;
 
 /**
- * Factory class for create new Map objects
+ * The factory class {@link MapFactory} provides factory methods for create new {@link Map} objects
  *
  * @version 1.0
  * @author Asterios Raptis

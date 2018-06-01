@@ -32,8 +32,8 @@ import java.lang.reflect.InvocationTargetException;
 import org.meanbean.test.BeanTester;
 import org.testng.annotations.Test;
 
-import de.alpharogroup.test.objects.evaluations.EqualsHashCodeAndToStringEvaluator;
-import de.alpharogroup.test.objects.evaluations.SilentEqualsHashCodeAndToStringEvaluator;
+import de.alpharogroup.evaluate.object.EqualsHashCodeAndToStringEvaluator;
+import de.alpharogroup.evaluate.object.SilentEqualsHashCodeAndToStringEvaluator;
 
 /**
  * The unit test class for the class {@link ValueBox}.

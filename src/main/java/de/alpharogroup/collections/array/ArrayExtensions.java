@@ -287,8 +287,12 @@ public final class ArrayExtensions
 	 * @param elements
 	 *            the optional elements that will be in the returned array.
 	 * @return the new array.
+	 * @deprecated use instead the same name method from the class {@link ArrayFactory} <br>
+	 *             <br>
+	 *             Note: This method will be removed in next minor release.
 	 */
 	@SafeVarargs
+	@Deprecated
 	public static <T> T[] newArray(final T... elements)
 	{
 		return elements;
@@ -303,7 +307,11 @@ public final class ArrayExtensions
 	 * @param end
 	 *            The number to end minus one
 	 * @return the generated {@link Integer} array
+	 * @deprecated use instead the same name method from the class {@link ArrayFactory} <br>
+	 *             <br>
+	 *             Note: This method will be removed in next minor release.
 	 */
+	@Deprecated
 	public static Integer[] newRangeArray(final int start, final int end)
 	{
 		if (end < start)

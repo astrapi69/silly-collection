@@ -45,7 +45,7 @@ import org.testng.annotations.BeforeMethod;
 import org.testng.annotations.Test;
 
 import de.alpharogroup.collections.modifications.ModifiedCollections;
-import de.alpharogroup.collections.set.SetExtensions;
+import de.alpharogroup.collections.set.SetFactory;
 import de.alpharogroup.test.objects.Person;
 import de.alpharogroup.test.objects.enums.Gender;
 import lombok.experimental.ExtensionMethod;
@@ -242,7 +242,7 @@ public class ListExtensionsTest
 		boolean expected;
 		String name;
 		name = "Leonidas";
-		final List<String> search = ListExtensions.newArrayList();
+		final List<String> search = ListFactory.newArrayList();
 		search.add("Anton");
 		search.add("Berta");
 		search.add("Caesar");
@@ -257,7 +257,7 @@ public class ListExtensionsTest
 		expected = false;
 		assertEquals(expected, actual);
 
-		actual = ListExtensions.isLast(ListExtensions.newArrayList(), "Foo");
+		actual = ListExtensions.isLast(ListFactory.newArrayList(), "Foo");
 		expected = false;
 		assertEquals(expected, actual);
 	}
@@ -265,6 +265,7 @@ public class ListExtensionsTest
 	/**
 	 * Test the method {@link ListExtensions#newArrayList(java.util.Collection, Object...)}.
 	 */
+	@SuppressWarnings("deprecation")
 	@Test
 	public void testNewArrayListCollectionObjects()
 	{
@@ -282,6 +283,7 @@ public class ListExtensionsTest
 	/**
 	 * Test the method {@link ListExtensions#newArrayList(int)}.
 	 */
+	@SuppressWarnings("deprecation")
 	@Test
 	public void testNewArrayListInt()
 	{
@@ -293,6 +295,7 @@ public class ListExtensionsTest
 	/**
 	 * Test the method {@link ListExtensions#newArrayList(Object...)}.
 	 */
+	@SuppressWarnings("deprecation")
 	@Test
 	public void testNewArrayListObjects()
 	{
@@ -306,7 +309,7 @@ public class ListExtensionsTest
 	/**
 	 * Test the method {@link ListExtensions#newRangeList(int, int)}
 	 */
-	@SuppressWarnings("serial")
+	@SuppressWarnings({ "serial", "deprecation" })
 	@Test
 	public void testNewRangeList()
 	{
@@ -330,7 +333,7 @@ public class ListExtensionsTest
 	@Test
 	public void testPrintCollection()
 	{
-		final List<String> strings = ListExtensions.newArrayList("2", "3");
+		final List<String> strings = ListFactory.newArrayList("2", "3");
 		assertNotNull(strings);
 		ListExtensions.printCollection(strings);
 	}
@@ -607,7 +610,7 @@ public class ListExtensionsTest
 	@Test
 	public void testToListEnumerationOfT()
 	{
-		final List<String> arrayList = ListExtensions.newArrayList("1", "2");
+		final List<String> arrayList = ListFactory.newArrayList("1", "2");
 		final Enumeration<String> elements = Collections.enumeration(arrayList);
 		final List<String> list = ListExtensions.toList(elements);
 		for (final String item : list)
@@ -622,9 +625,9 @@ public class ListExtensionsTest
 	@Test
 	public void testToListSetOfT()
 	{
-		Set<String> set = SetExtensions.newHashSet();
+		Set<String> set = SetFactory.newHashSet();
 		assertTrue(set.size() == 0);
-		set = SetExtensions.newHashSet("foo", "bar", "foo");
+		set = SetFactory.newHashSet("foo", "bar", "foo");
 		assertTrue(set.size() == 2);
 		final List<String> list = ListExtensions.toList(set);
 		for (final String item : list)

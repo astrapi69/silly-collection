@@ -1,6 +1,23 @@
 ## Change log
 ----------------------
 
+Version 4.29
+-------------
+
+ADDED:
+ 
+- new section 'Semantic Versioning' in README.md file
+- new ArrayFactory class created and moved all factory method to it
+- new ListFactory class created and moved all factory method to it
+- new SetFactory class created and moved all factory method to it
+
+CHANGED:
+
+- update of parent version to 3.11
+- removed unneeded .0 at the end of version
+- update of test-objects dependency version from 4.24.0 to 4.26 
+- update of jobject-extensions version to 1.11
+
 Version 4.28.0
 -------------
 

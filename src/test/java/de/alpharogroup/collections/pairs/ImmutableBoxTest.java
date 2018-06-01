@@ -30,9 +30,9 @@ import static org.testng.AssertJUnit.assertTrue;
 
 import org.testng.annotations.Test;
 
-import de.alpharogroup.test.objects.evaluations.EqualsEvaluator;
-import de.alpharogroup.test.objects.evaluations.HashcodeEvaluator;
-import de.alpharogroup.test.objects.evaluations.ToStringEvaluator;
+import de.alpharogroup.evaluate.object.EqualsEvaluator;
+import de.alpharogroup.evaluate.object.HashcodeEvaluator;
+import de.alpharogroup.evaluate.object.ToStringEvaluator;
 
 /**
  * The unit test class for the class {@link ImmutableBox}.
