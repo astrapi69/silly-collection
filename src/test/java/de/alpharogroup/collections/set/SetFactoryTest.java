@@ -57,8 +57,7 @@ public class SetFactoryTest
 		assertTrue(set.size() == 0);
 		set.add("foo");
 		assertTrue(set.size() == 1);
-		set = SetFactory.newHashSet(ListFactory.newArrayList("foo", "fasel"), "foo", "bar",
-			"foo");
+		set = SetFactory.newHashSet(ListFactory.newArrayList("foo", "fasel"), "foo", "bar", "foo");
 		assertTrue(set.size() == 3);
 		set = SetFactory.newHashSet(ListFactory.newArrayList(), "foo", "bar", "foo");
 		assertTrue(set.size() == 2);
@@ -87,8 +86,7 @@ public class SetFactoryTest
 		assertTrue(set.size() == 0);
 		set.add("foo");
 		assertTrue(set.size() == 1);
-		set = SetFactory.newTreeSet(ListFactory.newArrayList("foo", "fasel"), "foo", "bar",
-			"foo");
+		set = SetFactory.newTreeSet(ListFactory.newArrayList("foo", "fasel"), "foo", "bar", "foo");
 		assertTrue(set.size() == 3);
 		set = SetFactory.newTreeSet(ListFactory.newArrayList(), "foo", "bar", "foo");
 		assertTrue(set.size() == 2);
@@ -110,8 +108,8 @@ public class SetFactoryTest
 		final List<String> list = ListFactory.newArrayList("foo", "fasel");
 		set = SetFactory.newTreeSet(list, comparator, "food", "barista", "fao");
 		assertTrue(set.size() == 5);
-		set = SetFactory.newTreeSet(ListFactory.<String> newArrayList(), comparator, "foo",
-			"bar", "foo");
+		set = SetFactory.newTreeSet(ListFactory.<String> newArrayList(), comparator, "foo", "bar",
+			"foo");
 		assertTrue(set.size() == 2);
 	}
 
@@ -125,5 +123,5 @@ public class SetFactoryTest
 		final BeanTester beanTester = new BeanTester();
 		beanTester.testBean(SetFactory.class);
 	}
-	
+
 }

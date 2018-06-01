@@ -214,7 +214,7 @@ public final class ListExtensions
 	 *            the optional elements to be added in the new {@link ArrayList}.
 	 * @return the new {@link ArrayList} as {@link List}.
 	 * @deprecated use instead the same name method from the class {@link ListFactory} <br>
-	 * 			<br>
+	 *             <br>
 	 *             Note: This method will be removed in next minor release.
 	 */
 	@SafeVarargs
@@ -243,7 +243,7 @@ public final class ListExtensions
 	 *            the initial capacity
 	 * @return the new {@link ArrayList} as {@link List}.
 	 * @deprecated use instead the same name method from the class {@link ListFactory} <br>
-	 * 			<br>
+	 *             <br>
 	 *             Note: This method will be removed in next minor release.
 	 */
 	public static <T> List<T> newArrayList(final int initialCapacity)
@@ -260,7 +260,7 @@ public final class ListExtensions
 	 *            the elements to add in the new {@link ArrayList}.
 	 * @return the new {@link ArrayList} as {@link List}.
 	 * @deprecated use instead the same name method from the class {@link ListFactory} <br>
-	 * 			<br>
+	 *             <br>
 	 *             Note: This method will be removed in next minor release.
 	 */
 	@SafeVarargs
@@ -280,7 +280,7 @@ public final class ListExtensions
 	 *            The number to end minus one
 	 * @return the generated {@link Integer} List
 	 * @deprecated use instead the same name method from the class {@link ListFactory} <br>
-	 * 			<br>
+	 *             <br>
 	 *             Note: This method will be removed in next minor release.
 	 */
 	public static List<Integer> newRangeList(final int start, final int end)

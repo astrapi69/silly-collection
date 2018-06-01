@@ -113,5 +113,5 @@ public class ListFactoryTest
 		final BeanTester beanTester = new BeanTester();
 		beanTester.testBean(ListFactory.class);
 	}
-	
+
 }

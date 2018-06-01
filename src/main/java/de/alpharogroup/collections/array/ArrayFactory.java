@@ -27,7 +27,8 @@ package de.alpharogroup.collections.array;
 import lombok.experimental.UtilityClass;
 
 /**
- * The factory class {@link ArrayFactory} provides factory methods for create new {@code Array} objects
+ * The factory class {@link ArrayFactory} provides factory methods for create new {@code Array}
+ * objects
  */
 @UtilityClass
 public final class ArrayFactory
@@ -73,5 +74,5 @@ public final class ArrayFactory
 		}
 		return array;
 	}
-	
+
 }

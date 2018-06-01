@@ -51,7 +51,7 @@ public class SetExtensions
 	 *            the elements to add in the new {@link HashSet}
 	 * @return the new {@link HashSet}
 	 * @deprecated use instead the same name method from the class {@link SetFactory} <br>
-	 * 			<br>
+	 *             <br>
 	 *             Note: This method will be removed in next minor release.
 	 */
 	@SafeVarargs
@@ -72,7 +72,7 @@ public class SetExtensions
 	 *            the elements to add in the new {@link HashSet}
 	 * @return the new {@link HashSet}
 	 * @deprecated use instead the same name method from the class {@link SetFactory} <br>
-	 * 			<br>
+	 *             <br>
 	 *             Note: This method will be removed in next minor release.
 	 */
 	@SafeVarargs
@@ -104,7 +104,7 @@ public class SetExtensions
 	 *            the elements to add in the new {@link TreeSet}
 	 * @return the new {@link TreeSet}
 	 * @deprecated use instead the same name method from the class {@link SetFactory} <br>
-	 * 			<br>
+	 *             <br>
 	 *             Note: This method will be removed in next minor release.
 	 */
 	@SafeVarargs
@@ -125,7 +125,7 @@ public class SetExtensions
 	 *            the elements to add in the new {@link TreeSet}
 	 * @return the new {@link TreeSet}
 	 * @deprecated use instead the same name method from the class {@link SetFactory} <br>
-	 * 			<br>
+	 *             <br>
 	 *             Note: This method will be removed in next minor release.
 	 */
 	@SafeVarargs
@@ -149,7 +149,7 @@ public class SetExtensions
 	 *            the elements to add in the new {@link TreeSet}
 	 * @return the new {@link TreeSet}
 	 * @deprecated use instead the same name method from the class {@link SetFactory} <br>
-	 * 			<br>
+	 *             <br>
 	 *             Note: This method will be removed in next minor release.
 	 */
 	@SafeVarargs
