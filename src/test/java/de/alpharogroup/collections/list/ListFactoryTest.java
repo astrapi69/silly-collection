@@ -3,9 +3,12 @@ package de.alpharogroup.collections.list;
 import static org.testng.Assert.assertNotNull;
 import static org.testng.AssertJUnit.assertTrue;
 
+import java.lang.reflect.InvocationTargetException;
 import java.util.ArrayList;
 import java.util.List;
 
+import org.meanbean.test.BeanTestException;
+import org.meanbean.test.BeanTester;
 import org.testng.annotations.Test;
 
 /**
@@ -74,6 +77,17 @@ public class ListFactoryTest
 			}
 		};
 		assertTrue(actual.equals(expected));
+	}
+
+	/**
+	 * Test method for {@link ListFactory} with {@link BeanTester}
+	 */
+	@Test(expectedExceptions = { BeanTestException.class, InvocationTargetException.class,
+			UnsupportedOperationException.class })
+	public void testWithBeanTester()
+	{
+		final BeanTester beanTester = new BeanTester();
+		beanTester.testBean(ListFactory.class);
 	}
 	
 }

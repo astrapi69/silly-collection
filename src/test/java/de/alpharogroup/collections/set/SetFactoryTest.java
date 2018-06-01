@@ -2,12 +2,15 @@ package de.alpharogroup.collections.set;
 
 import static org.testng.AssertJUnit.assertTrue;
 
+import java.lang.reflect.InvocationTargetException;
 import java.util.Collection;
 import java.util.Comparator;
 import java.util.List;
 import java.util.Set;
 import java.util.SortedSet;
 
+import org.meanbean.test.BeanTestException;
+import org.meanbean.test.BeanTester;
 import org.testng.annotations.Test;
 
 import de.alpharogroup.collections.list.ListFactory;
@@ -87,4 +90,16 @@ public class SetFactoryTest
 			"bar", "foo");
 		assertTrue(set.size() == 2);
 	}
+
+	/**
+	 * Test method for {@link SetFactory} with {@link BeanTester}
+	 */
+	@Test(expectedExceptions = { BeanTestException.class, InvocationTargetException.class,
+			UnsupportedOperationException.class })
+	public void testWithBeanTester()
+	{
+		final BeanTester beanTester = new BeanTester();
+		beanTester.testBean(SetFactory.class);
+	}
+	
 }
