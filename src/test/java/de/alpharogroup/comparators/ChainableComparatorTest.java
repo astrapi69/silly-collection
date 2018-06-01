@@ -33,7 +33,7 @@ import java.util.List;
 import org.apache.commons.beanutils.BeanComparator;
 import org.testng.annotations.Test;
 
-import de.alpharogroup.collections.list.ListExtensions;
+import de.alpharogroup.collections.list.ListFactory;
 import de.alpharogroup.test.objects.Employee;
 import de.alpharogroup.test.objects.Person;
 
@@ -66,7 +66,7 @@ public class ChainableComparatorTest
 		final Comparator<Employee> idComparator = new BeanComparator<>("id");
 		final Comparator<Employee> personComparator = new BeanComparator<>("person");
 
-		final List<Comparator<Employee>> comparators = ListExtensions.newArrayList(idComparator,
+		final List<Comparator<Employee>> comparators = ListFactory.newArrayList(idComparator,
 			personComparator);
 
 		final Person person1 = Person.builder().name("Alex").married(Boolean.FALSE).build();

@@ -242,7 +242,7 @@ public class ListExtensionsTest
 		boolean expected;
 		String name;
 		name = "Leonidas";
-		final List<String> search = ListExtensions.newArrayList();
+		final List<String> search = ListFactory.newArrayList();
 		search.add("Anton");
 		search.add("Berta");
 		search.add("Caesar");
@@ -257,7 +257,7 @@ public class ListExtensionsTest
 		expected = false;
 		assertEquals(expected, actual);
 
-		actual = ListExtensions.isLast(ListExtensions.newArrayList(), "Foo");
+		actual = ListExtensions.isLast(ListFactory.newArrayList(), "Foo");
 		expected = false;
 		assertEquals(expected, actual);
 	}
@@ -268,12 +268,12 @@ public class ListExtensionsTest
 	@Test
 	public void testNewArrayListCollectionObjects()
 	{
-		List<String> strings = ListExtensions.newArrayList(null, "foo");
+		List<String> strings = ListFactory.newArrayList(null, "foo");
 		assertNotNull(strings);
 		assertTrue(strings.size() == 1);
 		assertTrue(strings.get(0).equals("foo"));
 
-		strings = ListExtensions.newArrayList(strings, "foo");
+		strings = ListFactory.newArrayList(strings, "foo");
 		assertNotNull(strings);
 		assertTrue(strings.size() == 2);
 		assertTrue(strings.get(0).equals("foo"));
@@ -285,7 +285,7 @@ public class ListExtensionsTest
 	@Test
 	public void testNewArrayListInt()
 	{
-		final List<String> strings = ListExtensions.newArrayList(2);
+		final List<String> strings = ListFactory.newArrayList(2);
 		assertNotNull(strings);
 		assertTrue(strings.size() == 0);
 	}
@@ -296,7 +296,7 @@ public class ListExtensionsTest
 	@Test
 	public void testNewArrayListObjects()
 	{
-		final List<String> strings = ListExtensions.newArrayList("foo", "bar");
+		final List<String> strings = ListFactory.newArrayList("foo", "bar");
 		assertNotNull(strings);
 		assertTrue(strings.size() == 2);
 		assertTrue(strings.get(0).equals("foo"));
@@ -310,7 +310,7 @@ public class ListExtensionsTest
 	@Test
 	public void testNewRangeList()
 	{
-		final List<Integer> actual = ListExtensions.newRangeList(5, 9);
+		final List<Integer> actual = ListFactory.newRangeList(5, 9);
 		final List<Integer> expected = new ArrayList<Integer>()
 		{
 			{
@@ -330,7 +330,7 @@ public class ListExtensionsTest
 	@Test
 	public void testPrintCollection()
 	{
-		final List<String> strings = ListExtensions.newArrayList("2", "3");
+		final List<String> strings = ListFactory.newArrayList("2", "3");
 		assertNotNull(strings);
 		ListExtensions.printCollection(strings);
 	}
@@ -607,7 +607,7 @@ public class ListExtensionsTest
 	@Test
 	public void testToListEnumerationOfT()
 	{
-		final List<String> arrayList = ListExtensions.newArrayList("1", "2");
+		final List<String> arrayList = ListFactory.newArrayList("1", "2");
 		final Enumeration<String> elements = Collections.enumeration(arrayList);
 		final List<String> list = ListExtensions.toList(elements);
 		for (final String item : list)

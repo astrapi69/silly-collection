@@ -10,7 +10,7 @@ import java.util.SortedSet;
 
 import org.testng.annotations.Test;
 
-import de.alpharogroup.collections.list.ListExtensions;
+import de.alpharogroup.collections.list.ListFactory;
 import de.alpharogroup.comparators.SortOrder;
 import de.alpharogroup.comparators.StringLengthComparator;
 
@@ -30,10 +30,10 @@ public class SetFactoryTest
 		assertTrue(set.size() == 0);
 		set.add("foo");
 		assertTrue(set.size() == 1);
-		set = SetFactory.newHashSet(ListExtensions.newArrayList("foo", "fasel"), "foo", "bar",
+		set = SetFactory.newHashSet(ListFactory.newArrayList("foo", "fasel"), "foo", "bar",
 			"foo");
 		assertTrue(set.size() == 3);
-		set = SetFactory.newHashSet(ListExtensions.newArrayList(), "foo", "bar", "foo");
+		set = SetFactory.newHashSet(ListFactory.newArrayList(), "foo", "bar", "foo");
 		assertTrue(set.size() == 2);
 
 	}
@@ -60,10 +60,10 @@ public class SetFactoryTest
 		assertTrue(set.size() == 0);
 		set.add("foo");
 		assertTrue(set.size() == 1);
-		set = SetFactory.newTreeSet(ListExtensions.newArrayList("foo", "fasel"), "foo", "bar",
+		set = SetFactory.newTreeSet(ListFactory.newArrayList("foo", "fasel"), "foo", "bar",
 			"foo");
 		assertTrue(set.size() == 3);
-		set = SetFactory.newTreeSet(ListExtensions.newArrayList(), "foo", "bar", "foo");
+		set = SetFactory.newTreeSet(ListFactory.newArrayList(), "foo", "bar", "foo");
 		assertTrue(set.size() == 2);
 
 	}
@@ -80,10 +80,10 @@ public class SetFactoryTest
 		set.add("foo");
 		assertTrue(set.size() == 1);
 		final Comparator<String> comparator = StringLengthComparator.of(SortOrder.ASCENDING);
-		final List<String> list = ListExtensions.newArrayList("foo", "fasel");
+		final List<String> list = ListFactory.newArrayList("foo", "fasel");
 		set = SetFactory.newTreeSet(list, comparator, "food", "barista", "fao");
 		assertTrue(set.size() == 5);
-		set = SetFactory.newTreeSet(ListExtensions.<String> newArrayList(), comparator, "foo",
+		set = SetFactory.newTreeSet(ListFactory.<String> newArrayList(), comparator, "foo",
 			"bar", "foo");
 		assertTrue(set.size() == 2);
 	}

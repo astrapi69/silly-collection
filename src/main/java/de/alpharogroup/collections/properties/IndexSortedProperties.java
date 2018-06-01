@@ -32,7 +32,7 @@ import java.util.Properties;
 import java.util.Set;
 
 import de.alpharogroup.collections.CollectionExtensions;
-import de.alpharogroup.collections.list.ListExtensions;
+import de.alpharogroup.collections.list.ListFactory;
 import de.alpharogroup.comparators.NullCheckComparator;
 
 /**
@@ -300,7 +300,7 @@ public class IndexSortedProperties extends SortedProperties
 	 */
 	private void sortKeyList(final Set<Object> keySet)
 	{
-		keys = ListExtensions.newArrayList(keySet);
+		keys = ListFactory.newArrayList(keySet);
 		resortKeyList();
 	}
 

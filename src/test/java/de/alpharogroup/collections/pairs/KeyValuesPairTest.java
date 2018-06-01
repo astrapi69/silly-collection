@@ -32,7 +32,7 @@ import java.util.Set;
 
 import org.testng.annotations.Test;
 
-import de.alpharogroup.collections.list.ListExtensions;
+import de.alpharogroup.collections.list.ListFactory;
 import de.alpharogroup.collections.set.SetFactory;
 import de.alpharogroup.evaluate.object.EqualsHashCodeAndToStringEvaluator;
 import de.alpharogroup.test.objects.Customer;
@@ -88,7 +88,7 @@ public class KeyValuesPairTest
 	public void testKeyValuesPairWithList()
 	{
 		final Person person = Person.builder().name("John").married(Boolean.FALSE).build();
-		final List<Employee> employees = ListExtensions.newArrayList();
+		final List<Employee> employees = ListFactory.newArrayList();
 		employees.add(Employee.builder().id("10").build());
 		employees.add(Employee.builder().id("20").build());
 		final Employee employee = Employee.builder().id("20").build();
