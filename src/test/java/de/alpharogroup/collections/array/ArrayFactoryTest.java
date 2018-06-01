@@ -84,8 +84,7 @@ public class ArrayFactoryTest
 	}
 
 	/**
-	 * Test the method {@link ArrayFactory#newRangeArray(int, int)} where end is smaller then
-	 * start
+	 * Test the method {@link ArrayFactory#newRangeArray(int, int)} where end is smaller then start
 	 */
 	@Test(expectedExceptions = IllegalArgumentException.class)
 	public void testNewRangeArrayException()
@@ -103,5 +102,5 @@ public class ArrayFactoryTest
 		final BeanTester beanTester = new BeanTester();
 		beanTester.testBean(ArrayFactory.class);
 	}
-	
+
 }

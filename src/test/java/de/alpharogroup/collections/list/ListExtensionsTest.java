@@ -326,7 +326,7 @@ public class ListExtensionsTest
 		};
 		assertTrue(actual.equals(expected));
 	}
-	
+
 	/**
 	 * Test the method {@link ListExtensions#printCollection(java.util.Collection)}
 	 */
