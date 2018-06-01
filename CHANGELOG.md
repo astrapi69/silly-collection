@@ -4,6 +4,9 @@
 Version 4.30-SNAPSHOT
 -------------
 
+CHANGED:
+
+- removed deprecated factory methods from the extension classes
 
 
 Version 4.29
