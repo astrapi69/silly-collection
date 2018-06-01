@@ -33,7 +33,7 @@ import java.util.Set;
 import org.testng.annotations.Test;
 
 import de.alpharogroup.collections.list.ListExtensions;
-import de.alpharogroup.collections.set.SetExtensions;
+import de.alpharogroup.collections.set.SetFactory;
 import de.alpharogroup.evaluate.object.EqualsHashCodeAndToStringEvaluator;
 import de.alpharogroup.test.objects.Customer;
 import de.alpharogroup.test.objects.Employee;
@@ -55,14 +55,14 @@ public class KeyValuesPairTest
 		boolean expected;
 		boolean actual;
 		final Person person = Person.builder().name("John").married(Boolean.FALSE).build();
-		final Set<Employee> employees = SetExtensions.newHashSet();
+		final Set<Employee> employees = SetFactory.newHashSet();
 		employees.add(Employee.builder().id("10").build());
 		employees.add(Employee.builder().id("20").build());
 		final Employee employee = Employee.builder().id("20").build();
 		final KeyValuesPair<Person, Employee> first = KeyValuesPair.<Person, Employee> builder()
 			.key(person).values(employees).value(employee).build();
 
-		final Set<Customer> customers = SetExtensions.newHashSet();
+		final Set<Customer> customers = SetFactory.newHashSet();
 		final Customer customer = Customer.builder().name("jim").build();
 		final KeyValuesPair<Person, Customer> second = KeyValuesPair.<Person, Customer> builder()
 			.key(person).values(customers).value(customer).build();

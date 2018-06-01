@@ -45,7 +45,7 @@ import org.testng.annotations.BeforeMethod;
 import org.testng.annotations.Test;
 
 import de.alpharogroup.collections.modifications.ModifiedCollections;
-import de.alpharogroup.collections.set.SetExtensions;
+import de.alpharogroup.collections.set.SetFactory;
 import de.alpharogroup.test.objects.Person;
 import de.alpharogroup.test.objects.enums.Gender;
 import lombok.experimental.ExtensionMethod;
@@ -622,9 +622,9 @@ public class ListExtensionsTest
 	@Test
 	public void testToListSetOfT()
 	{
-		Set<String> set = SetExtensions.newHashSet();
+		Set<String> set = SetFactory.newHashSet();
 		assertTrue(set.size() == 0);
-		set = SetExtensions.newHashSet("foo", "bar", "foo");
+		set = SetFactory.newHashSet("foo", "bar", "foo");
 		assertTrue(set.size() == 2);
 		final List<String> list = ListExtensions.toList(set);
 		for (final String item : list)
