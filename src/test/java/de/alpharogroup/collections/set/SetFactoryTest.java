@@ -86,9 +86,9 @@ public class SetFactoryTest
 		assertTrue(set.size() == 0);
 		set.add("foo");
 		assertTrue(set.size() == 1);
-		set = SetFactory.newHashSet(ListFactory.newArrayList("foo", "fasel"), "foo", "bar", "foo");
+		set = SetFactory.newLinkedHashSet(ListFactory.newArrayList("foo", "fasel"), "foo", "bar", "foo");
 		assertTrue(set.size() == 3);
-		set = SetFactory.newHashSet(ListFactory.newArrayList(), "foo", "bar", "foo");
+		set = SetFactory.newLinkedHashSet(ListFactory.newArrayList(), "foo", "bar", "foo");
 		assertTrue(set.size() == 2);
 
 	}
@@ -115,9 +115,9 @@ public class SetFactoryTest
 		assertTrue(set.size() == 0);
 		set.add("foo");
 		assertTrue(set.size() == 1);
-		set = SetFactory.newHashSet(ListFactory.newArrayList("foo", "fasel"), "foo", "bar", "foo");
+		set = SetFactory.newInsertionOrderSet(ListFactory.newArrayList("foo", "fasel"), "foo", "bar", "foo");
 		assertTrue(set.size() == 3);
-		set = SetFactory.newHashSet(ListFactory.newArrayList(), "foo", "bar", "foo");
+		set = SetFactory.newInsertionOrderSet(ListFactory.newArrayList(), "foo", "bar", "foo");
 		assertTrue(set.size() == 2);
 
 	}
@@ -130,7 +130,7 @@ public class SetFactoryTest
 	{
 		Set<String> set = SetFactory.newInsertionOrderSet();
 		assertTrue(set.size() == 0);
-		set = SetFactory.newLinkedHashSet("foo", "bar", "foo");
+		set = SetFactory.newInsertionOrderSet("foo", "bar", "foo");
 		assertTrue(set.size() == 2);
 	}
 
