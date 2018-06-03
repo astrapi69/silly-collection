@@ -24,21 +24,20 @@
  */
 package de.alpharogroup.collections.set;
 
-import java.util.Arrays;
 import java.util.Collection;
 import java.util.LinkedHashSet;
 import java.util.Set;
 
 /**
- * This class overwrites the put-method from the <tt>LinkedHashSet</tt>. That inserts the value to
- * the right order it was inserted in the Map. Note that the difference in the LinkedHashMap is the
- * order does not change if we put the same key with a new value. In this class the order changes
- * when we put a new value with the same key.
+ * The class {@link InsertionOrderSet} overwrites the put-method from the <tt>LinkedHashSet</tt>.
+ * That inserts the value to the right order it was inserted in the Map. Note that the difference in
+ * the LinkedHashMap is the order does not change if we put the same key with a new value. In this
+ * class the order changes when we put a new value with the same key.
  *
  * @author Asterios Raptis
  * @version 1.0
  * @param <E>
- *            the type of elements maintained by this set
+ *            the generic type of elements maintained by this set
  * @see java.util.LinkedHashSet
  */
 public class InsertionOrderSet<E> extends LinkedHashSet<E>
@@ -50,18 +49,18 @@ public class InsertionOrderSet<E> extends LinkedHashSet<E>
 	private static final long serialVersionUID = -2010420135340052455L;
 
 	/**
-	 * Factory method for create an InsertionOrderSet with the given elements.
+	 * Factory method for create an {@link InsertionOrderSet} with the given elements.
 	 *
 	 * @param <E>
 	 *            the generic type of the elements
 	 * @param elements
 	 *            The given elements.
-	 * @return a new InsertionOrderSet that contains the given elements.
+	 * @return a new {@link InsertionOrderSet} that contains the given elements.
 	 */
 	@SuppressWarnings("unchecked")
 	public static <E> Set<E> setOf(final E... elements)
 	{
-		return new InsertionOrderSet<>(Arrays.asList(elements));
+		return SetFactory.newInsertionOrderSet(elements);
 	}
 
 	/**

@@ -28,17 +28,17 @@ import java.util.LinkedHashMap;
 import java.util.Map;
 
 /**
- * This class overwrites the put-method from the <tt>LinkedHashMap</tt>. That inserts the value to
- * the right order it was inserted in the Map. Note that the difference in the LinkedHashMap is the
- * order does not change if we put the same key with a new value. In this class the order changes
- * when we put a new value with the same key.
+ * The class {@link InsertionOrderMap} overwrites the put-method from the <tt>LinkedHashMap</tt>.
+ * That inserts the value to the right order it was inserted in the Map. Note that the difference in
+ * the LinkedHashMap is the order does not change if we put the same key with a new value. In this
+ * class the order changes when we put a new value with the same key.
  * 
  * @author Asterios Raptis
  * @version 1.0
  * @param <K>
- *            the type of keys maintained by this map
+ *            the generic type of keys maintained by this map
  * @param <V>
- *            the type of mapped values
+ *            the generic type of mapped values
  * @see java.util.LinkedHashMap
  */
 public class InsertionOrderMap<K, V> extends LinkedHashMap<K, V>
@@ -50,16 +50,15 @@ public class InsertionOrderMap<K, V> extends LinkedHashMap<K, V>
 	private static final long serialVersionUID = -3585706680928306464L;
 
 	/**
-	 * Constructs an empty insertion-ordered <tt>InsertionOrderMap</tt> instance with a default
+	 * Constructs an empty insertion-ordered {@link InsertionOrderMap} instance with a default
 	 * capacity (16) and load factor (0.75).
 	 */
 	public InsertionOrderMap()
 	{
-		super();
 	}
 
 	/**
-	 * Constructs an empty insertion-ordered <tt>InsertionOrderMap</tt> instance with the specified
+	 * Constructs an empty insertion-ordered {@link InsertionOrderMap} instance with the specified
 	 * initial capacity and a default load factor (0.75).
 	 * 
 	 * @param initialCapacity
@@ -73,7 +72,7 @@ public class InsertionOrderMap<K, V> extends LinkedHashMap<K, V>
 	}
 
 	/**
-	 * Constructs an empty insertion-ordered <tt>InsertionOrderMap</tt> instance with the specified
+	 * Constructs an empty insertion-ordered {@link InsertionOrderMap} instance with the specified
 	 * initial capacity and load factor.
 	 * 
 	 * @param initialCapacity
@@ -89,7 +88,7 @@ public class InsertionOrderMap<K, V> extends LinkedHashMap<K, V>
 	}
 
 	/**
-	 * Constructs an empty <tt>InsertionOrderMap</tt> instance with the specified initial capacity,
+	 * Constructs an empty {@link InsertionOrderMap} instance with the specified initial capacity,
 	 * load factor and ordering mode.
 	 * 
 	 * @param initialCapacity
@@ -109,7 +108,7 @@ public class InsertionOrderMap<K, V> extends LinkedHashMap<K, V>
 	}
 
 	/**
-	 * Constructs an insertion-ordered <tt>InsertionOrderMap</tt> instance with the same mappings as
+	 * Constructs an insertion-ordered {@link InsertionOrderMap} instance with the same mappings as
 	 * the specified map. The <tt>InsertionOrderMap</tt> instance is created with a a default load
 	 * factor (0.75) and an initial capacity sufficient to hold the mappings in the specified map.
 	 * 
