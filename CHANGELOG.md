@@ -4,6 +4,10 @@
 Version 4.30-SNAPSHOT
 -------------
 
+ADDED:
+ 
+- new factory methods for LinkedHashSet and InsertionOrderSet created
+
 CHANGED:
 
 - removed deprecated factory methods from the extension classes
