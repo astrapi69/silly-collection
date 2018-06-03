@@ -28,6 +28,7 @@ import java.util.Collection;
 import java.util.Collections;
 import java.util.Comparator;
 import java.util.HashSet;
+import java.util.LinkedHashSet;
 import java.util.Set;
 import java.util.SortedSet;
 import java.util.TreeSet;
@@ -79,6 +80,98 @@ public final class SetFactory
 		else
 		{
 			set = new HashSet<>();
+		}
+		if (0 < elements.length)
+		{
+			Collections.addAll(set, elements);
+		}
+		return set;
+	}
+
+	/**
+	 * Factory method for create new {@link HashSet} and will be returned as {@link Set}
+	 *
+	 * @param <T>
+	 *            the generic type of the elements
+	 * @param elements
+	 *            the elements to add in the new {@link HashSet}
+	 * @return the new {@link HashSet}
+	 */
+	@SafeVarargs
+	public static final <T> Set<T> newLinkedHashSet(final T... elements)
+	{
+		return newLinkedHashSet(null, elements);
+	}
+
+	/**
+	 * Factory method for create new {@link HashSet} and will be returned as {@link Set}
+	 *
+	 * @param <T>
+	 *            the generic type of the elements
+	 * @param collection
+	 *            the optional collection that will be added to the new list
+	 * @param elements
+	 *            the elements to add in the new {@link HashSet}
+	 * @return the new {@link HashSet}
+	 */
+	@SafeVarargs
+	public static final <T> Set<T> newLinkedHashSet(final Collection<T> collection,
+		final T... elements)
+	{
+		final Set<T> set;
+		if (CollectionExtensions.isNotEmpty(collection))
+		{
+			set = new LinkedHashSet<>(collection);
+		}
+		else
+		{
+			set = new LinkedHashSet<>();
+		}
+		if (0 < elements.length)
+		{
+			Collections.addAll(set, elements);
+		}
+		return set;
+	}
+
+	/**
+	 * Factory method for create new {@link HashSet} and will be returned as {@link Set}
+	 *
+	 * @param <T>
+	 *            the generic type of the elements
+	 * @param elements
+	 *            the elements to add in the new {@link HashSet}
+	 * @return the new {@link HashSet}
+	 */
+	@SafeVarargs
+	public static final <T> Set<T> newInsertionOrderSet(final T... elements)
+	{
+		return newInsertionOrderSet(null, elements);
+	}
+
+	/**
+	 * Factory method for create new {@link HashSet} and will be returned as {@link Set}
+	 *
+	 * @param <T>
+	 *            the generic type of the elements
+	 * @param collection
+	 *            the optional collection that will be added to the new list
+	 * @param elements
+	 *            the elements to add in the new {@link HashSet}
+	 * @return the new {@link HashSet}
+	 */
+	@SafeVarargs
+	public static final <T> Set<T> newInsertionOrderSet(final Collection<T> collection,
+		final T... elements)
+	{
+		final Set<T> set;
+		if (CollectionExtensions.isNotEmpty(collection))
+		{
+			set = new InsertionOrderSet<>(collection);
+		}
+		else
+		{
+			set = new InsertionOrderSet<>();
 		}
 		if (0 < elements.length)
 		{
