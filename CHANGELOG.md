@@ -11,7 +11,7 @@ ADDED:
 CHANGED:
 
 - removed deprecated factory methods from the extension classes
-- update of test-objects dependency version from 4.26 to 4.27
+- update of test-objects dependency version from 4.26 to 4.28
 
 
 Version 4.29
