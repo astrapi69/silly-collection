@@ -12,6 +12,7 @@ CHANGED:
 
 - removed deprecated factory methods from the extension classes
 - update of test-objects dependency version from 4.26 to 4.28
+- DateComparatorTest extends now from BaseComparatorTestCase
 
 
 Version 4.29
