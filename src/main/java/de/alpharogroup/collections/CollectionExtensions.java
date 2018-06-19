@@ -24,6 +24,7 @@
  */
 package de.alpharogroup.collections;
 
+import java.util.Arrays;
 import java.util.Collection;
 
 import lombok.experimental.UtilityClass;
@@ -105,6 +106,26 @@ public final class CollectionExtensions
 	public static <T> boolean isEmpty(final Collection<T> collection)
 	{
 		return collection == null || collection.isEmpty();
+	}
+
+	/**
+	 * Returns a hash code based on the contents of the collection that contains array objects.
+	 *
+	 * @param <T>
+	 *            the generic type of the array objects
+	 * @param arrayObjects
+	 *            the collection that contains array objects whose content-based hash code to
+	 *            compute
+	 * @return the content-based hash code for the given collection that contains array objects
+	 */
+	public static <T> int hashCode(Collection<T[]> arrayObjects)
+	{
+		int hashCode = 1;
+		for (T[] arrayObject : arrayObjects)
+		{
+			hashCode = 31 * hashCode * Arrays.hashCode(arrayObject);
+		}
+		return hashCode;
 	}
 
 }

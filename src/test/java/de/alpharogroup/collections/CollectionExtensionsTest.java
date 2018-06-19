@@ -32,11 +32,13 @@ import static org.testng.AssertJUnit.assertTrue;
 import java.lang.reflect.InvocationTargetException;
 import java.util.ArrayList;
 import java.util.Collection;
+import java.util.List;
 
 import org.meanbean.test.BeanTestException;
 import org.meanbean.test.BeanTester;
 import org.testng.annotations.Test;
 
+import de.alpharogroup.collections.array.ArrayFactory;
 import de.alpharogroup.collections.list.ListFactory;
 
 /**
@@ -64,6 +66,39 @@ public class CollectionExtensionsTest
 		{
 			assertTrue(expected.contains(number));
 		}
+	}
+
+	/**
+	 * Test method for {@link CollectionExtensions#hashCode(java.util.Collection)}.
+	 */
+	@Test
+	public void testHashCodeCollectionWithArrayObjects()
+	{
+		int actual;
+		int expected;
+		String[] lineOne;
+		String[] lineTwo;
+		String[] lineThree;
+		List<String[]> lines;
+		lineOne = ArrayFactory.newArray("1", "23", "3");
+		lineTwo = ArrayFactory.newArray("4", "25", "9");
+		lineThree = ArrayFactory.newArray("6", "21", "8");
+		lines = ListFactory.newArrayList(lineOne, lineTwo, lineThree);
+
+		actual = CollectionExtensions.hashCode(lines);
+		expected = -1269378556;
+		assertEquals(expected, actual);
+
+		lineOne = ArrayFactory.newArray("John", "23", "male");
+		lineTwo = ArrayFactory.newArray("Jim", "25", "male");
+		lineThree = ArrayFactory.newArray("Mary", "21", "female");
+		lines = ListFactory.newArrayList(lineOne, lineTwo, lineThree);
+
+
+		actual = CollectionExtensions.hashCode(lines);
+		expected = -1124541430;
+		assertEquals(expected, actual);
+
 	}
 
 	/**
