@@ -4,6 +4,9 @@
 Version 4.31-SNAPSHOT
 -------------
 
+ADDED:
+ 
+- new factory methods for create map objects with a given map
 
 Version 4.30
 -------------

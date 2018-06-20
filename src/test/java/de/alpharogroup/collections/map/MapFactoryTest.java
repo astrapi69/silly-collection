@@ -25,10 +25,12 @@
 package de.alpharogroup.collections.map;
 
 import static org.testng.Assert.assertNotNull;
+import static org.testng.Assert.assertTrue;
 import static org.testng.AssertJUnit.assertEquals;
 
 import java.lang.reflect.InvocationTargetException;
 import java.util.Comparator;
+import java.util.HashMap;
 import java.util.Map;
 import java.util.concurrent.ConcurrentHashMap;
 
@@ -217,6 +219,97 @@ public class MapFactoryTest
 	{
 		final BeanTester beanTester = new BeanTester();
 		beanTester.testBean(MapFactory.class);
+	}
+
+
+	/**
+	 * Test method for {@link MapFactory#newInsertionOrderMap(int)}.
+	 */
+	@Test
+	public void testNewInsertionOrderMapInt()
+	{
+		Map<String, String> insertionOrderMap = MapFactory.newInsertionOrderMap(4);
+		assertNotNull(insertionOrderMap);
+	}
+
+	/**
+	 * Test method for {@link MapFactory#newInsertionOrderMap(Map)}.
+	 */
+	@Test
+	public void testNewInsertionOrderMapMapOfKV()
+	{
+		final Map<String, String> map = new HashMap<>();
+		map.put("1", "novalue");
+		map.put("2", "somevalue");
+		map.put("3", "othervalue");
+		map.put("5", "value");
+		Map<String, String> insertionOrderMap = MapFactory.newInsertionOrderMap(map);
+		assertNotNull(insertionOrderMap);
+		assertTrue(insertionOrderMap.size()==4);
+	}
+
+	/**
+	 * Test method for {@link MapFactory#newConcurrentHashMap(Map)}.
+	 */
+	@Test
+	public void testNewConcurrentHashMapMapOfKV()
+	{
+		final Map<String, String> map = new HashMap<>();
+		map.put("1", "novalue");
+		map.put("2", "somevalue");
+		map.put("3", "othervalue");
+		map.put("5", "value");
+		Map<String, String> concurrentHashMap = MapFactory.newConcurrentHashMap(map);
+		assertNotNull(concurrentHashMap);
+		assertTrue(concurrentHashMap.size()==4);
+	}
+
+	/**
+	 * Test method for {@link MapFactory#newHashMap(Map)}.
+	 */
+	@Test
+	public void testNewHashMapMapOfKV()
+	{
+		final Map<String, String> map = new HashMap<>();
+		map.put("1", "novalue");
+		map.put("2", "somevalue");
+		map.put("3", "othervalue");
+		map.put("5", "value");
+		Map<String, String> concurrentHashMap = MapFactory.newHashMap(map);
+		assertNotNull(concurrentHashMap);
+		assertTrue(concurrentHashMap.size()==4);
+	}
+
+	/**
+	 * Test method for {@link MapFactory#newLinkedHashMap(Map)}.
+	 */
+	@Test
+	public void testNewLinkedHashMapMapOfKV()
+	{
+		final Map<String, String> map = new HashMap<>();
+		map.put("1", "novalue");
+		map.put("2", "somevalue");
+		map.put("3", "othervalue");
+		map.put("5", "value");
+		Map<String, String> concurrentHashMap = MapFactory.newLinkedHashMap(map);
+		assertNotNull(concurrentHashMap);
+		assertTrue(concurrentHashMap.size()==4);
+	}
+
+	/**
+	 * Test method for {@link MapFactory#newTreeMap(Map)}.
+	 */
+	@Test
+	public void testNewTreeMapMapOfKV()
+	{
+		final Map<String, String> map = new HashMap<>();
+		map.put("1", "novalue");
+		map.put("2", "somevalue");
+		map.put("3", "othervalue");
+		map.put("5", "value");
+		Map<String, String> concurrentHashMap = MapFactory.newTreeMap(map);
+		assertNotNull(concurrentHashMap);
+		assertTrue(concurrentHashMap.size()==4);
 	}
 
 }
