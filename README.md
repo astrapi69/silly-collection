@@ -26,9 +26,10 @@ Add the following maven dependency to your project `pom.xml` if you want to impo
 
 Than you can add the dependency to your dependencies:
 
+		...
 		<!-- SILLY-COLLECTIONS version -->
-		<silly-collections.version>4.29</silly-collections.version>
-
+		<silly-collections.version>4.30</silly-collections.version>
+		...
 		<dependencies>
 			...
 			<!-- SILLY-COLLECTIONS DEPENDENCY -->

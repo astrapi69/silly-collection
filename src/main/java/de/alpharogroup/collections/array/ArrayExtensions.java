@@ -61,13 +61,14 @@ public final class ArrayExtensions
 	 */
 	public static <T> T[] arraycopyWithSystem(T[] source, T[] destination)
 	{
-		if(source == null) {
+		if (source == null)
+		{
 			return null;
 		}
 		System.arraycopy(source, 0, destination, 0, source.length);
 		return destination;
 	}
-	
+
 	/**
 	 * Creates a new {@link List} from the given array. <br>
 	 * <br>

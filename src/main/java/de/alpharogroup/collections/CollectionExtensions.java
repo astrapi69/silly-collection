@@ -62,7 +62,7 @@ public final class CollectionExtensions
 		{
 			return false;
 		}
-		return CollectionUtils.retainAll( one, other ).isEmpty();
+		return CollectionUtils.retainAll(one, other).isEmpty();
 	}
 
 	/**
