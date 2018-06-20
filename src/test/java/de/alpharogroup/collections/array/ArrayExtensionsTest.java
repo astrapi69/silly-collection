@@ -24,9 +24,11 @@
  */
 package de.alpharogroup.collections.array;
 
+import static org.testng.Assert.assertNull;
 import static org.testng.AssertJUnit.assertEquals;
 
 import java.lang.reflect.InvocationTargetException;
+import java.util.Arrays;
 import java.util.List;
 
 import org.meanbean.test.BeanTestException;
@@ -45,6 +47,29 @@ import lombok.experimental.ExtensionMethod;
 // @Slf4j
 public class ArrayExtensionsTest
 {
+
+	/**
+	 * Test method for {@link ArrayExtensions#arraycopyWithSystem(T[], T[])}.
+	 */
+	@Test
+	public void testArraycopyWithSystem()
+	{
+		boolean actual;
+		boolean expected;
+		Integer[] source;
+		Integer[] destination;
+
+		source = ArrayFactory.newArray(1, 2, 3, 4, 5, 6, 7, 8, 9);
+		destination = new Integer[source.length];
+		destination = ArrayExtensions.arraycopyWithSystem(source, destination);
+		actual = Arrays.deepEquals(source, destination);
+		expected = true;
+		assertEquals(expected, actual);
+
+		source = null;
+		destination = ArrayExtensions.arraycopyWithSystem(source, destination);
+		assertNull(destination);
+	}
 
 	/**
 	 * Test for method {@link ArrayExtensions#asList(Object[])}

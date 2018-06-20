@@ -37,6 +37,38 @@ public final class ArrayExtensions
 {
 
 	/**
+	 * Copy the given source array to the given destination array.<br>
+	 * <br>
+	 * Note: the given destination array have to be already initialized with the size of the
+	 * source.<br>
+	 * <br>
+	 * Example: <br>
+	 * <br>
+	 * <code>
+	 * Integer[] source = {1,2,3,4,5,6,7,8,9};<br>
+	 * Integer[] destination = new Integer[source.length];<br>
+	 * destination = ArrayExtensions.arraycopyWithSystem(source, destination);<br>
+	 * </code>
+	 * 
+	 *
+	 * @param <T>
+	 *            the generic type of the objects in the array.
+	 * @param source
+	 *            the source
+	 * @param destination
+	 *            the destination
+	 * @return the t[]
+	 */
+	public static <T> T[] arraycopyWithSystem(T[] source, T[] destination)
+	{
+		if(source == null) {
+			return null;
+		}
+		System.arraycopy(source, 0, destination, 0, source.length);
+		return destination;
+	}
+	
+	/**
 	 * Creates a new {@link List} from the given array. <br>
 	 * <br>
 	 * Note: This wraps only the method asList from {@link Arrays#asList(Object...)}.

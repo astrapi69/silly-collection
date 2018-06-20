@@ -99,6 +99,61 @@ public class CollectionExtensionsTest
 		expected = -1124541430;
 		assertEquals(expected, actual);
 
+	}	
+
+	/**
+	 * Test method for {@link CollectionExtensions#equalCollections(Collection, Collection)}.
+	 */
+	@Test
+	public void testEqualCollections()
+	{
+		// TODO implement unit test cases...
+		boolean actual;
+		boolean expected;
+		String[] lineOne;
+		String[] lineTwo;
+		String[] lineThree;		
+		String[] lineFour;
+		String[] lineFive;
+		String[] lineSix;
+		List<String[]> one;
+		List<String[]> other;
+		lineOne = ArrayFactory.newArray("1", "23", "3");
+		lineTwo = ArrayFactory.newArray("4", "25", "9");
+		lineThree = ArrayFactory.newArray("6", "21", "8");
+		one = ListFactory.newArrayList(lineOne, lineTwo, lineThree);
+		lineFour = ArrayFactory.newArray("1", "23", "3");
+		lineFive = ArrayFactory.newArray("4", "25", "9");
+		lineSix = ArrayFactory.newArray("6", "21", "8");
+		other = ListFactory.newArrayList(lineFour, lineFive, lineSix);
+		actual = CollectionExtensions.isEqualCollection(one, other);
+		expected = true;
+		assertEquals(expected, actual);
+		// 
+		one = null;
+		other = null;
+		actual = CollectionExtensions.isEqualCollection(one, other);
+		expected = true;
+		assertEquals(expected, actual);
+		// 
+		one = null;
+		other = ListFactory.newArrayList(lineFour, lineFive, lineSix);
+		actual = CollectionExtensions.isEqualCollection(one, other);
+		expected = false;
+		assertEquals(expected, actual);
+		//
+		one = ListFactory.newArrayList(lineOne, lineTwo, lineThree);
+		other = null;
+		actual = CollectionExtensions.isEqualCollection(one, other);
+		expected = false;
+		assertEquals(expected, actual);
+		// 
+		one = ListFactory.newArrayList(lineOne, lineTwo);
+		other = ListFactory.newArrayList(lineFour, lineFive, lineSix);
+		actual = CollectionExtensions.isEqualCollection(one, other);
+		expected = false;
+		assertEquals(expected, actual);
+
 	}
 
 	/**

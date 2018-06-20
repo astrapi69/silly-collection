@@ -27,6 +27,8 @@ package de.alpharogroup.collections;
 import java.util.Arrays;
 import java.util.Collection;
 
+import org.apache.commons.collections4.CollectionUtils;
+
 import lombok.experimental.UtilityClass;
 
 /**
@@ -48,7 +50,7 @@ public final class CollectionExtensions
 	 *            the other
 	 * @return true, if the given two {@link Collection} objects are equal otherwise false
 	 */
-	public static <T> boolean equalCollections(Collection<T> one, Collection<T> other)
+	public static <T> boolean isEqualCollection(Collection<T> one, Collection<T> other)
 	{
 		if (one == null && other == null)
 		{
@@ -60,8 +62,7 @@ public final class CollectionExtensions
 		{
 			return false;
 		}
-		
-		return one.containsAll(other) && other.containsAll(one);
+		return CollectionUtils.retainAll( one, other ).isEmpty();
 	}
 
 	/**
