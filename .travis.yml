@@ -5,10 +5,15 @@ language: java
 jdk:
     - oraclejdk8
 
+addons:
+    apt:
+        update: true
+
 notifications:
     email:
         recipients:
             - asterios.raptis@web.de
-        on_failure: always        
+        on_failure: always 
+               
 after_success:
   - mvn clean cobertura:cobertura org.eluder.coveralls:coveralls-maven-plugin:report

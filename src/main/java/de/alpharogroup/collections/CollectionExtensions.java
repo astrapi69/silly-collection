@@ -24,7 +24,10 @@
  */
 package de.alpharogroup.collections;
 
+import java.util.Arrays;
 import java.util.Collection;
+
+import org.apache.commons.collections4.CollectionUtils;
 
 import lombok.experimental.UtilityClass;
 
@@ -35,6 +38,32 @@ import lombok.experimental.UtilityClass;
 @UtilityClass
 public final class CollectionExtensions
 {
+
+	/**
+	 * Compare the given two {@link Collection} objects in equality.
+	 *
+	 * @param <T>
+	 *            the generic type of the elements
+	 * @param one
+	 *            the one
+	 * @param other
+	 *            the other
+	 * @return true, if the given two {@link Collection} objects are equal otherwise false
+	 */
+	public static <T> boolean isEqualCollection(Collection<T> one, Collection<T> other)
+	{
+		if (one == null && other == null)
+		{
+			return true;
+		}
+
+		if ((one == null && other != null) || one != null && other == null
+			|| one.size() != other.size())
+		{
+			return false;
+		}
+		return CollectionUtils.retainAll(one, other).isEmpty();
+	}
 
 	/**
 	 * Difference.
@@ -105,6 +134,27 @@ public final class CollectionExtensions
 	public static <T> boolean isEmpty(final Collection<T> collection)
 	{
 		return collection == null || collection.isEmpty();
+	}
+
+
+	/**
+	 * Returns a hash code based on the contents of the collection that contains array objects.
+	 *
+	 * @param <T>
+	 *            the generic type of the array objects
+	 * @param arrayObjects
+	 *            the collection that contains array objects whose content-based hash code to
+	 *            compute
+	 * @return the content-based hash code for the given collection that contains array objects
+	 */
+	public static <T> int hashCode(Collection<T[]> arrayObjects)
+	{
+		int hashCode = 1;
+		for (T[] arrayObject : arrayObjects)
+		{
+			hashCode = 31 * hashCode * Arrays.hashCode(arrayObject);
+		}
+		return hashCode;
 	}
 
 }

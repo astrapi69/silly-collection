@@ -77,6 +77,66 @@ public class SetFactoryTest
 	}
 
 	/**
+	 * Test for method {@link SetFactory#newInsertionOrderSet(java.util.Collection, Object...)}
+	 */
+	@Test
+	public void testNewInsertionOrderSetCollectionObjects()
+	{
+		Set<String> set = SetFactory.newInsertionOrderSet();
+		assertTrue(set.size() == 0);
+		set.add("foo");
+		assertTrue(set.size() == 1);
+		set = SetFactory.newInsertionOrderSet(ListFactory.newArrayList("foo", "fasel"), "foo",
+			"bar", "foo");
+		assertTrue(set.size() == 3);
+		set = SetFactory.newInsertionOrderSet(ListFactory.newArrayList(), "foo", "bar", "foo");
+		assertTrue(set.size() == 2);
+
+	}
+
+	/**
+	 * Test for method {@link SetFactory#newInsertionOrderSet(Object...)}
+	 */
+	@Test
+	public void testNewInsertionOrderSetObjects()
+	{
+		Set<String> set = SetFactory.newInsertionOrderSet();
+		assertTrue(set.size() == 0);
+		set = SetFactory.newInsertionOrderSet("foo", "bar", "foo");
+		assertTrue(set.size() == 2);
+	}
+
+	/**
+	 * Test for method {@link SetFactory#newLinkedHashSet(java.util.Collection, Object...)}
+	 */
+	@Test
+	public void testNewLinkedHashSetCollectionObjects()
+	{
+		Set<String> set = SetFactory.newLinkedHashSet();
+		assertTrue(set.size() == 0);
+		set.add("foo");
+		assertTrue(set.size() == 1);
+		set = SetFactory.newLinkedHashSet(ListFactory.newArrayList("foo", "fasel"), "foo", "bar",
+			"foo");
+		assertTrue(set.size() == 3);
+		set = SetFactory.newLinkedHashSet(ListFactory.newArrayList(), "foo", "bar", "foo");
+		assertTrue(set.size() == 2);
+
+	}
+
+	/**
+	 * Test for method {@link SetFactory#newLinkedHashSet(Object...)}
+	 */
+	@Test
+	public void testNewLinkedHashSetObjects()
+	{
+		Set<String> set = SetFactory.newLinkedHashSet();
+		assertTrue(set.size() == 0);
+		set = SetFactory.newLinkedHashSet("foo", "bar", "foo");
+		assertTrue(set.size() == 2);
+	}
+
+	/**
 	 * Test for method {@link SetFactory#newTreeSet(Collection, Object...)}
 	 */
 	@Test

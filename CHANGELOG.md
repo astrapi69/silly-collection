@@ -1,6 +1,23 @@
 ## Change log
 ----------------------
 
+Version 4.30
+-------------
+
+ADDED:
+ 
+- new factory methods for LinkedHashSet and InsertionOrderSet created
+- new hashcode method for collections that contains array objects
+- new isEqualCollection method for collections created
+- new method for copy an array created
+
+CHANGED:
+
+- removed deprecated factory methods from the extension classes
+- update of test-objects dependency version from 4.26 to 4.28
+- DateComparatorTest extends now from BaseComparatorTestCase
+
+
 Version 4.29
 -------------
 

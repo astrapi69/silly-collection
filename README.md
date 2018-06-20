@@ -26,9 +26,10 @@ Add the following maven dependency to your project `pom.xml` if you want to impo
 
 Than you can add the dependency to your dependencies:
 
+		...
 		<!-- SILLY-COLLECTIONS version -->
-		<silly-collections.version>4.29</silly-collections.version>
-
+		<silly-collections.version>4.30</silly-collections.version>
+		...
 		<dependencies>
 			...
 			<!-- SILLY-COLLECTIONS DEPENDENCY -->
@@ -48,8 +49,7 @@ Release version numbers will be incremented in the following format:
 
 `<major>.<minor>.<patch>`
 
-For detailed information on versioning you can visit the [wiki page](https://github.com/lightblueseas/mvn-parent-projects/wiki/Semantic-Versioning).
-	
+For detailed information on versioning for this project you can visit this [wiki page](https://github.com/lightblueseas/mvn-parent-projects/wiki/Semantic-Versioning).
 
 ## Want to Help and improve it? ###
 

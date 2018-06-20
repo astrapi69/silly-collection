@@ -67,7 +67,6 @@ public class ImmutableBoxTest
 		boolean expected;
 		boolean actual;
 		final ImmutableBox<Integer> integerBox = ImmutableBox.<Integer> builder().value(2).build();
-		ImmutableBox<String> stringBox = ImmutableBox.<String> builder().value("Hello").build();
 		actual = HashcodeEvaluator.evaluateEquality(integerBox, new ImmutableBox<>(2));
 		expected = true;
 		assertEquals(expected, actual);
@@ -77,6 +76,7 @@ public class ImmutableBoxTest
 		assertEquals(expected, actual);
 
 		expected = true;
+		ImmutableBox<String> stringBox = ImmutableBox.<String> builder().value("Hello").build();
 		actual = HashcodeEvaluator.evaluateUnequality(integerBox, stringBox);
 		assertEquals(expected, actual);
 	}
