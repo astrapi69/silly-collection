@@ -38,6 +38,33 @@ public final class CollectionExtensions
 {
 
 	/**
+	 * Compare the given two {@link Collection} objects in equality.
+	 *
+	 * @param <T>
+	 *            the generic type of the elements
+	 * @param one
+	 *            the one
+	 * @param other
+	 *            the other
+	 * @return true, if the given two {@link Collection} objects are equal otherwise false
+	 */
+	public static <T> boolean equalCollections(Collection<T> one, Collection<T> other)
+	{
+		if (one == null && other == null)
+		{
+			return true;
+		}
+
+		if ((one == null && other != null) || one != null && other == null
+			|| one.size() != other.size())
+		{
+			return false;
+		}
+		
+		return one.containsAll(other) && other.containsAll(one);
+	}
+
+	/**
 	 * Difference.
 	 *
 	 * @param <T>
@@ -107,6 +134,7 @@ public final class CollectionExtensions
 	{
 		return collection == null || collection.isEmpty();
 	}
+
 
 	/**
 	 * Returns a hash code based on the contents of the collection that contains array objects.

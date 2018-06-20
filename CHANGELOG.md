@@ -8,6 +8,7 @@ ADDED:
  
 - new factory methods for LinkedHashSet and InsertionOrderSet created
 - new hashcode method for collections that contains array objects
+- new equalCollections method for collections created
 
 CHANGED:
 
