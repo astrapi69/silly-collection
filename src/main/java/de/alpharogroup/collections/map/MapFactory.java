@@ -342,7 +342,8 @@ public final class MapFactory
 	 *            the generic type of the key
 	 * @param <V>
 	 *            the generic type of the value
-	 *
+	 * @param map
+	 *            the map
 	 * @return The new {@link LazyMap}.
 	 */
 	@SuppressWarnings({ "unchecked", "rawtypes" })
