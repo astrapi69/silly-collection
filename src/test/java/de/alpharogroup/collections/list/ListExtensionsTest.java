@@ -274,7 +274,7 @@ public class ListExtensionsTest
 		expected = false;
 		assertEquals(expected, actual);
 	}
-	
+
 	/**
 	 * Test method for {@link ListExtensions#isFirst(List, Object)}
 	 */

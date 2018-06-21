@@ -279,10 +279,59 @@ public final class MapFactory
 	 *
 	 * @return The new {@link LazyMap}.
 	 */
-	@SuppressWarnings({ "unchecked", "rawtypes" })
 	public static <K, V> Map<K, V> newLazyMap()
 	{
-		return LazyMap.lazyMap(new HashMap<K, V>(), new InstantiateFactory(HashMap.class));
+		return newLazyHashMap();
+	}
+
+	/**
+	 * Factory method for create a new {@link LazyMap} from commons-collections4 that encapsulates a
+	 * {@link HashMap}.
+	 *
+	 * @param <K>
+	 *            the generic type of the key
+	 * @param <V>
+	 *            the generic type of the value
+	 *
+	 * @return The new {@link LazyMap}.
+	 */
+	public static <K, V> Map<K, V> newLazyHashMap()
+	{
+		return newLazyHashMap(new HashMap<K, V>());
+	}
+
+	/**
+	 * Factory method for create a new {@link LazyMap} from commons-collections4 that encapsulates a
+	 * {@link HashMap}.
+	 *
+	 * @param <K>
+	 *            the generic type of the key
+	 * @param <V>
+	 *            the generic type of the value
+	 * @param map
+	 *            the map to initialize with it
+	 * @return The new {@link LazyMap}.
+	 */
+	@SuppressWarnings({ "unchecked", "rawtypes" })
+	public static <K, V> Map<K, V> newLazyHashMap(HashMap<K, V> map)
+	{
+		return LazyMap.lazyMap(map, new InstantiateFactory(HashMap.class));
+	}
+
+	/**
+	 * Factory method for create a new {@link LazyMap} from commons-collections4 that encapsulates a
+	 * {@link TreeMap}.
+	 *
+	 * @param <K>
+	 *            the generic type of the key
+	 * @param <V>
+	 *            the generic type of the value
+	 *
+	 * @return The new {@link LazyMap}.
+	 */
+	public static <K, V> Map<K, V> newLazyTreeMap()
+	{
+		return newLazyTreeMap(new TreeMap<K, V>());
 	}
 
 	/**
@@ -297,9 +346,9 @@ public final class MapFactory
 	 * @return The new {@link LazyMap}.
 	 */
 	@SuppressWarnings({ "unchecked", "rawtypes" })
-	public static <K, V> Map<K, V> newLazyTreeMap()
+	public static <K, V> Map<K, V> newLazyTreeMap(TreeMap<K, V> map)
 	{
-		return LazyMap.lazyMap(new TreeMap<K, V>(), new InstantiateFactory(TreeMap.class));
+		return LazyMap.lazyMap(map, new InstantiateFactory(TreeMap.class));
 	}
 
 	/**

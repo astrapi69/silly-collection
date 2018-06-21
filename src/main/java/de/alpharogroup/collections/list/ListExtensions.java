@@ -163,7 +163,7 @@ public final class ListExtensions
 		}
 		return foundElements;
 	}
-	
+
 	/**
 	 * Compare the given two {@link Collection} objects in equality.
 	 *
@@ -187,9 +187,10 @@ public final class ListExtensions
 		{
 			return false;
 		}
-		for (int i = 0; i< one.size(); i++)
+		for (int i = 0; i < one.size(); i++)
 		{
-			if(!Arrays.deepEquals(one.get(i), other.get(i))){
+			if (!Arrays.deepEquals(one.get(i), other.get(i)))
+			{
 				return false;
 			}
 		}
