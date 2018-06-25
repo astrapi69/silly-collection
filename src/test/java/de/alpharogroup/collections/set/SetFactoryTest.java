@@ -24,6 +24,7 @@
  */
 package de.alpharogroup.collections.set;
 
+import static org.testng.Assert.assertNotNull;
 import static org.testng.AssertJUnit.assertTrue;
 
 import java.lang.reflect.InvocationTargetException;
@@ -53,7 +54,8 @@ public class SetFactoryTest
 	@Test
 	public void testNewHashSetCollectionObjects()
 	{
-		Set<String> set = SetFactory.newHashSet();
+		Set<String> set;
+		set = SetFactory.newHashSet();
 		assertTrue(set.size() == 0);
 		set.add("foo");
 		assertTrue(set.size() == 1);
@@ -62,6 +64,18 @@ public class SetFactoryTest
 		set = SetFactory.newHashSet(ListFactory.newArrayList(), "foo", "bar", "foo");
 		assertTrue(set.size() == 2);
 
+	}
+
+	/**
+	 * Test method for {@link SetFactory#newHashSet(int)}.
+	 */
+	@Test
+	public void testNewHashSetInt()
+	{
+		Set<String> set;
+		set = SetFactory.newHashSet(8);
+		assertNotNull(set);
+		assertTrue(set.size() == 0);
 	}
 
 	/**
@@ -95,6 +109,18 @@ public class SetFactoryTest
 	}
 
 	/**
+	 * Test method for {@link SetFactory#newInsertionOrderSet(int)}.
+	 */
+	@Test
+	public void testNewInsertionOrderSetInt()
+	{
+		Set<String> set;
+		set = SetFactory.newInsertionOrderSet(8);
+		assertNotNull(set);
+		assertTrue(set.size() == 0);
+	}
+
+	/**
 	 * Test for method {@link SetFactory#newInsertionOrderSet(Object...)}
 	 */
 	@Test
@@ -122,6 +148,18 @@ public class SetFactoryTest
 		set = SetFactory.newLinkedHashSet(ListFactory.newArrayList(), "foo", "bar", "foo");
 		assertTrue(set.size() == 2);
 
+	}
+
+	/**
+	 * Test method for {@link SetFactory#newLinkedHashSet(int)}.
+	 */
+	@Test
+	public void testNewLinkedHashSetInt()
+	{
+		Set<String> set;
+		set = SetFactory.newLinkedHashSet(8);
+		assertNotNull(set);
+		assertTrue(set.size() == 0);
 	}
 
 	/**

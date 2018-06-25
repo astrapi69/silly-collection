@@ -93,9 +93,23 @@ public final class SetFactory
 	 *
 	 * @param <T>
 	 *            the generic type of the elements
+	 * @param initialCapacity
+	 *            the initial capacity
+	 * @return the new {@link HashSet}
+	 */
+	public static final <T> Set<T> newHashSet(final int initialCapacity)
+	{
+		return new HashSet<>(initialCapacity);
+	}
+
+	/**
+	 * Factory method for create new {@link LinkedHashSet} and will be returned as {@link Set}
+	 *
+	 * @param <T>
+	 *            the generic type of the elements
 	 * @param elements
 	 *            the elements to add in the new {@link HashSet}
-	 * @return the new {@link HashSet}
+	 * @return the new {@link LinkedHashSet}
 	 */
 	@SafeVarargs
 	public static final <T> Set<T> newLinkedHashSet(final T... elements)
@@ -104,14 +118,28 @@ public final class SetFactory
 	}
 
 	/**
-	 * Factory method for create new {@link HashSet} and will be returned as {@link Set}
+	 * Factory method for create new {@link LinkedHashSet} and will be returned as {@link Set}
+	 *
+	 * @param <T>
+	 *            the generic type of the elements
+	 * @param initialCapacity
+	 *            the initial capacity
+	 * @return the new {@link LinkedHashSet}
+	 */
+	public static final <T> Set<T> newLinkedHashSet(final int initialCapacity)
+	{
+		return new LinkedHashSet<>(initialCapacity);
+	}
+
+	/**
+	 * Factory method for create new {@link LinkedHashSet} and will be returned as {@link Set}
 	 *
 	 * @param <T>
 	 *            the generic type of the elements
 	 * @param collection
 	 *            the optional collection that will be added to the new list
 	 * @param elements
-	 *            the elements to add in the new {@link HashSet}
+	 *            the elements to add in the new {@link LinkedHashSet}
 	 * @return the new {@link HashSet}
 	 */
 	@SafeVarargs
@@ -135,13 +163,13 @@ public final class SetFactory
 	}
 
 	/**
-	 * Factory method for create new {@link HashSet} and will be returned as {@link Set}
+	 * Factory method for create new {@link InsertionOrderSet} and will be returned as {@link Set}
 	 *
 	 * @param <T>
 	 *            the generic type of the elements
 	 * @param elements
-	 *            the elements to add in the new {@link HashSet}
-	 * @return the new {@link HashSet}
+	 *            the elements to add in the new {@link InsertionOrderSet}
+	 * @return the new {@link InsertionOrderSet}
 	 */
 	@SafeVarargs
 	public static final <T> Set<T> newInsertionOrderSet(final T... elements)
@@ -150,15 +178,29 @@ public final class SetFactory
 	}
 
 	/**
-	 * Factory method for create new {@link HashSet} and will be returned as {@link Set}
+	 * Factory method for create new {@link InsertionOrderSet} and will be returned as {@link Set}
+	 *
+	 * @param <T>
+	 *            the generic type of the elements
+	 * @param initialCapacity
+	 *            the initial capacity
+	 * @return the new {@link InsertionOrderSet}
+	 */
+	public static final <T> Set<T> newInsertionOrderSet(final int initialCapacity)
+	{
+		return new InsertionOrderSet<>(initialCapacity);
+	}
+
+	/**
+	 * Factory method for create new {@link InsertionOrderSet} and will be returned as {@link Set}
 	 *
 	 * @param <T>
 	 *            the generic type of the elements
 	 * @param collection
 	 *            the optional collection that will be added to the new list
 	 * @param elements
-	 *            the elements to add in the new {@link HashSet}
-	 * @return the new {@link HashSet}
+	 *            the elements to add in the new {@link InsertionOrderSet}
+	 * @return the new {@link InsertionOrderSet}
 	 */
 	@SafeVarargs
 	public static final <T> Set<T> newInsertionOrderSet(final Collection<T> collection,
@@ -187,7 +229,7 @@ public final class SetFactory
 	 *            the generic type of the elements
 	 * @param elements
 	 *            the elements to add in the new {@link TreeSet}
-	 * @return the new {@link TreeSet}
+	 * @return the new {@link SortedSet}
 	 */
 	@SafeVarargs
 	public static final <T> SortedSet<T> newTreeSet(final T... elements)
@@ -204,7 +246,7 @@ public final class SetFactory
 	 *            the optional collection that will be added to the new list
 	 * @param elements
 	 *            the elements to add in the new {@link TreeSet}
-	 * @return the new {@link TreeSet}
+	 * @return the new {@link SortedSet}
 	 */
 	@SafeVarargs
 	public static final <T> SortedSet<T> newTreeSet(final Collection<T> collection,

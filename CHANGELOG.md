@@ -1,6 +1,13 @@
 ## Change log
 ----------------------
 
+Version 4.31-SNAPSHOT
+-------------
+
+ADDED:
+ 
+- new factory methods with initial capacity for create set objects created
+
 Version 4.30.1
 -------------
 
