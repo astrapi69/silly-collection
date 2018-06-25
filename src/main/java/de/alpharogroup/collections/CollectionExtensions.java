@@ -62,24 +62,24 @@ public final class CollectionExtensions
 		{
 			return false;
 		}
-		return CollectionUtils.retainAll(one, other).isEmpty();
+		Collection<T> retainAll = CollectionUtils.retainAll(one, other);
+		return retainAll.isEmpty() || one.containsAll(other) && other.containsAll(one);
 	}
 
 	/**
-	 * Difference.
+	 * Removes all of the first given collection's elements that are also contained in the second
+	 * given collection.
 	 *
 	 * @param <T>
 	 *            the generic type
-	 * @param collection1
-	 *            the collection 1
-	 * @param collection2
-	 *            the collection 2
+	 * @param one
+	 *            the collection where the element will be removed if any containing elements exists
+	 * @param other
+	 *            collection containing elements to be removed from the first given collection
 	 */
-	public static <T> void difference(final Collection<T> collection1,
-		final Collection<T> collection2)
+	public static <T> void difference(final Collection<T> one, final Collection<T> other)
 	{
-		// collection1.stream().filter(e -> !collection1.contains(e)).collect(Collectors.toSet());
-		collection1.removeAll(collection2);
+		one.removeAll(other);
 	}
 
 	/**

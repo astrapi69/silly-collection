@@ -1,6 +1,18 @@
 ## Change log
 ----------------------
 
+Version 4.30.1
+-------------
+
+ADDED:
+ 
+- new factory methods for create map objects with a given map
+- new method isEqualListOfArrays in ListExtensions created
+
+CHANGED:
+
+- javadoc extended and improved
+
 Version 4.30
 -------------
 

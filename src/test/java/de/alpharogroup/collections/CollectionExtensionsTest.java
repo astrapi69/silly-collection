@@ -74,7 +74,6 @@ public class CollectionExtensionsTest
 	@Test
 	public void testEqualCollections()
 	{
-		// TODO implement unit test cases...
 		boolean actual;
 		boolean expected;
 		String[] lineOne;

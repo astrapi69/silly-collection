@@ -44,6 +44,7 @@ import org.testng.annotations.AfterMethod;
 import org.testng.annotations.BeforeMethod;
 import org.testng.annotations.Test;
 
+import de.alpharogroup.collections.array.ArrayFactory;
 import de.alpharogroup.collections.modifications.ModifiedCollections;
 import de.alpharogroup.collections.set.SetFactory;
 import de.alpharogroup.test.objects.Person;
@@ -211,6 +212,67 @@ public class ListExtensionsTest
 		}
 		final List<String> empty = ListExtensions.getSameElementsFromLists(toSearch, search);
 		assertNull("List should be empty.", empty);
+	}
+
+	/**
+	 * Test method for {@link ListExtensions#isEqualListOfArrays(List, List)}.
+	 */
+	@Test
+	public void testIsEqualListOfArrays()
+	{
+		boolean actual;
+		boolean expected;
+		String[] lineOne;
+		String[] lineTwo;
+		String[] lineThree;
+		String[] lineFour;
+		String[] lineFive;
+		String[] lineSix;
+		List<String[]> one;
+		List<String[]> other;
+		lineOne = ArrayFactory.newArray("1", "23", "3");
+		lineTwo = ArrayFactory.newArray("4", "25", "9");
+		lineThree = ArrayFactory.newArray("6", "21", "8");
+		lineFour = ArrayFactory.newArray("1", "23", "3");
+		lineFive = ArrayFactory.newArray("4", "25", "9");
+		lineSix = ArrayFactory.newArray("6", "21", "8");
+		//
+		one = ListFactory.newArrayList(lineOne, lineTwo, lineThree);
+		other = ListFactory.newArrayList(lineFour, lineFive, lineSix);
+		actual = ListExtensions.isEqualListOfArrays(one, other);
+		expected = true;
+		assertEquals(expected, actual);
+		//
+		one = null;
+		other = null;
+		actual = ListExtensions.isEqualListOfArrays(one, other);
+		expected = true;
+		assertEquals(expected, actual);
+		//
+		one = null;
+		other = ListFactory.newArrayList(lineFour, lineFive, lineSix);
+		actual = ListExtensions.isEqualListOfArrays(one, other);
+		expected = false;
+		assertEquals(expected, actual);
+		//
+		one = ListFactory.newArrayList(lineOne, lineTwo, lineThree);
+		other = null;
+		actual = ListExtensions.isEqualListOfArrays(one, other);
+		expected = false;
+		assertEquals(expected, actual);
+		//
+		one = ListFactory.newArrayList(lineOne, lineTwo);
+		other = ListFactory.newArrayList(lineFour, lineFive, lineSix);
+		actual = ListExtensions.isEqualListOfArrays(one, other);
+		expected = false;
+		assertEquals(expected, actual);
+		//
+		lineThree = ArrayFactory.newArray("6", "21", "777");
+		one = ListFactory.newArrayList(lineOne, lineTwo, lineThree);
+		other = ListFactory.newArrayList(lineFour, lineFive, lineSix);
+		actual = ListExtensions.isEqualListOfArrays(one, other);
+		expected = false;
+		assertEquals(expected, actual);
 	}
 
 	/**

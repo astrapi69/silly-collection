@@ -25,6 +25,7 @@
 package de.alpharogroup.collections.list;
 
 import java.util.ArrayList;
+import java.util.Arrays;
 import java.util.Collection;
 import java.util.Collections;
 import java.util.Comparator;
@@ -161,6 +162,39 @@ public final class ListExtensions
 			}
 		}
 		return foundElements;
+	}
+
+	/**
+	 * Compare the given two {@link Collection} objects in equality.
+	 *
+	 * @param <T>
+	 *            the generic type of the elements
+	 * @param one
+	 *            the one
+	 * @param other
+	 *            the other
+	 * @return true, if the given two {@link Collection} objects are equal otherwise false
+	 */
+	public static <T> boolean isEqualListOfArrays(List<T[]> one, List<T[]> other)
+	{
+		if (one == null && other == null)
+		{
+			return true;
+		}
+
+		if ((one == null && other != null) || one != null && other == null
+			|| one.size() != other.size())
+		{
+			return false;
+		}
+		for (int i = 0; i < one.size(); i++)
+		{
+			if (!Arrays.deepEquals(one.get(i), other.get(i)))
+			{
+				return false;
+			}
+		}
+		return true;
 	}
 
 	/**
