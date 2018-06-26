@@ -64,35 +64,6 @@ public class ArrayFactoryTest
 	}
 
 	/**
-	 * Test the method {@link ArrayFactory#newRangeArray(int, int)}
-	 */
-	@Test
-	public void testNewRangeArray()
-	{
-		Integer[] actual;
-		Integer[] expected;
-		actual = ArrayFactory.newRangeArray(5, 9);
-		expected = ArrayFactory.newArray(5, 6, 7, 8, 9);
-		assertTrue(Arrays.deepEquals(actual, expected));
-
-		actual = ArrayFactory.newRangeArray(1, 49);
-		expected = ArrayFactory.newArray(1, 2, 3, 4, 5, 6, 7, 8, 9, 10, 11, 12, 13, 14, 15, 16, 17,
-			18, 19, 20, 21, 22, 23, 24, 25, 26, 27, 28, 29, 30, 31, 32, 33, 34, 35, 36, 37, 38, 39,
-			40, 41, 42, 43, 44, 45, 46, 47, 48, 49);
-
-		assertTrue(Arrays.deepEquals(actual, expected));
-	}
-
-	/**
-	 * Test the method {@link ArrayFactory#newRangeArray(int, int)} where end is smaller then start
-	 */
-	@Test(expectedExceptions = IllegalArgumentException.class)
-	public void testNewRangeArrayException()
-	{
-		ArrayFactory.newRangeArray(9, 8);
-	}	
-
-	/**
 	 * Test method for {@link ArrayFactory#newBooleanArray(boolean[])}.
 	 */
 	@Test
@@ -116,9 +87,9 @@ public class ArrayFactoryTest
 	{
 		byte[] actual;
 		byte[] expected = { -84, -19, 0, 5, 116, 0, 7, 70, 111, 111, 32, 98, 97, 114 };
-		actual = ArrayFactory.newByteArray((byte)-84, (byte)-19, (byte)0, (byte)5,
-			(byte)116, (byte)0, (byte)7, (byte)70, (byte)111, (byte)111, (byte)32, (byte)98,
-			(byte)97, (byte)114);
+		actual = ArrayFactory.newByteArray((byte)-84, (byte)-19, (byte)0, (byte)5, (byte)116,
+			(byte)0, (byte)7, (byte)70, (byte)111, (byte)111, (byte)32, (byte)98, (byte)97,
+			(byte)114);
 		assertTrue(Arrays.equals(actual, expected));
 
 		expected = new byte[0];
@@ -139,6 +110,38 @@ public class ArrayFactoryTest
 
 		expected = new char[0];
 		actual = ArrayFactory.newCharArray();
+		assertTrue(Arrays.equals(actual, expected));
+	}
+
+	/**
+	 * Test method for {@link ArrayFactory#newDoubleArray(double[])}.
+	 */
+	@Test
+	public void testNewDoubleArray()
+	{
+		double[] actual;
+		double[] expected = { 1.1D, 2.1D, 3.1D };
+		actual = ArrayFactory.newDoubleArray(1.1D, 2.1D, 3.1D);
+		assertTrue(Arrays.equals(actual, expected));
+
+		expected = new double[0];
+		actual = ArrayFactory.newDoubleArray();
+		assertTrue(Arrays.equals(actual, expected));
+	}
+
+	/**
+	 * Test method for {@link ArrayFactory#newFloatArray(float[])}.
+	 */
+	@Test
+	public void testNewFloatArray()
+	{
+		float[] actual;
+		float[] expected = { 1.0F, 2.0F, 3.0F };
+		actual = ArrayFactory.newFloatArray(1.0F, 2.0F, 3.0F);
+		assertTrue(Arrays.equals(actual, expected));
+
+		expected = new float[0];
+		actual = ArrayFactory.newFloatArray();
 		assertTrue(Arrays.equals(actual, expected));
 	}
 
@@ -175,35 +178,32 @@ public class ArrayFactoryTest
 	}
 
 	/**
-	 * Test method for {@link ArrayFactory#newFloatArray(float[])}.
+	 * Test the method {@link ArrayFactory#newRangeArray(int, int)}
 	 */
 	@Test
-	public void testNewFloatArray()
+	public void testNewRangeArray()
 	{
-		float[] actual;
-		float[] expected = { 1.0F, 2.0F, 3.0F };
-		actual = ArrayFactory.newFloatArray(1.0F, 2.0F, 3.0F);
-		assertTrue(Arrays.equals(actual, expected));
+		Integer[] actual;
+		Integer[] expected;
+		actual = ArrayFactory.newRangeArray(5, 9);
+		expected = ArrayFactory.newArray(5, 6, 7, 8, 9);
+		assertTrue(Arrays.deepEquals(actual, expected));
 
-		expected = new float[0];
-		actual = ArrayFactory.newFloatArray();
-		assertTrue(Arrays.equals(actual, expected));
+		actual = ArrayFactory.newRangeArray(1, 49);
+		expected = ArrayFactory.newArray(1, 2, 3, 4, 5, 6, 7, 8, 9, 10, 11, 12, 13, 14, 15, 16, 17,
+			18, 19, 20, 21, 22, 23, 24, 25, 26, 27, 28, 29, 30, 31, 32, 33, 34, 35, 36, 37, 38, 39,
+			40, 41, 42, 43, 44, 45, 46, 47, 48, 49);
+
+		assertTrue(Arrays.deepEquals(actual, expected));
 	}
 
 	/**
-	 * Test method for {@link ArrayFactory#newDoubleArray(double[])}.
+	 * Test the method {@link ArrayFactory#newRangeArray(int, int)} where end is smaller then start
 	 */
-	@Test
-	public void testNewDoubleArray()
+	@Test(expectedExceptions = IllegalArgumentException.class)
+	public void testNewRangeArrayException()
 	{
-		double[] actual;
-		double[] expected = { 1.1D, 2.1D, 3.1D };
-		actual = ArrayFactory.newDoubleArray(1.1D, 2.1D, 3.1D);
-		assertTrue(Arrays.equals(actual, expected));
-
-		expected = new double[0];
-		actual = ArrayFactory.newDoubleArray();
-		assertTrue(Arrays.equals(actual, expected));
+		ArrayFactory.newRangeArray(9, 8);
 	}
 
 	/**

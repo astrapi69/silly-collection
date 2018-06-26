@@ -63,16 +63,16 @@ public class Quattro<TL, TR, BL, BR> implements Serializable
 	 */
 	private static final long serialVersionUID = 1L;
 
-	/** The top left value. */
-	TL topLeft;
-
-	/** The top right value. */
-	TR topRight;
-
 	/** The bottom left value. */
 	BL bottomLeft;
 
 	/** The bottom right value. */
 	BR bottomRight;
+
+	/** The top left value. */
+	TL topLeft;
+
+	/** The top right value. */
+	TR topRight;
 
 }

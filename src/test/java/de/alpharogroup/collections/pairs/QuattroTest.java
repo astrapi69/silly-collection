@@ -67,8 +67,8 @@ public class QuattroTest
 			.<String, Employee, Customer, Brands> builder().topLeft("left").topRight(employee)
 			.bottomLeft(customer).bottomRight(ferrari).build();
 		Integer topLeft = 1;
-		final Quattro<Integer, Employee, Customer, Brands> third = new Quattro<>(topLeft, employee,
-			customer, ferrari);
+		final Quattro<Integer, Employee, Customer, Brands> third = new Quattro<>(customer, ferrari,
+			topLeft, employee);
 		final Quattro<Integer, Employee, Customer, Brands> fourth = new Quattro<>();
 		fourth.setTopLeft(1);
 		fourth.setTopRight(employee);
