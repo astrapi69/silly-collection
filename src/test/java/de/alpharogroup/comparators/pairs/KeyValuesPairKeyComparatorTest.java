@@ -43,11 +43,11 @@ import de.alpharogroup.test.objects.Person;
 public class KeyValuesPairKeyComparatorTest
 {
 
-	/** For use of the expected result. */
-	boolean expected;
-
 	/** For use of the result of the comparator. */
 	int actual;
+
+	/** For use of the expected result. */
+	boolean expected;
 
 	/**
 	 * Test method for {@link KeyValuesPairKeyComparator#compare(Object, Object)}

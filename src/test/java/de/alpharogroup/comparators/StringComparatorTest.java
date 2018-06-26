@@ -43,14 +43,14 @@ import lombok.experimental.FieldDefaults;
 public class StringComparatorTest
 {
 
-	/** For use of the expected result. */
-	boolean expected;
-
 	/** For use of the result of the comparator. */
 	int actual;
 
 	/** The comparator. */
 	Comparator<String> comparator;
+
+	/** For use of the expected result. */
+	boolean expected;
 
 
 	/**

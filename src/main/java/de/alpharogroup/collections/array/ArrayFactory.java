@@ -75,4 +75,125 @@ public final class ArrayFactory
 		return array;
 	}
 
+	/**
+	 * Factory method for create new array of primitive boolean values from the given optional
+	 * elements.
+	 *
+	 * @param elements
+	 *            the optional primitive boolean values that will be in the returned array of
+	 *            primitive boolean values array.
+	 * @return the new array of primitive boolean values
+	 */
+	@SafeVarargs
+	public static boolean[] newBooleanArray(final boolean... elements)
+	{
+		return elements;
+	}
+
+	/**
+	 * Factory method for create new array of primitive byte values from the given optional
+	 * elements.
+	 *
+	 * @param elements
+	 *            the optional primitive byte values that will be in the returned array of primitive
+	 *            byte values array.
+	 * @return the new array of primitive byte values
+	 */
+	@SafeVarargs
+	public static byte[] newByteArray(final byte... elements)
+	{
+		return elements;
+	}
+
+	/**
+	 * Factory method for create new array of primitive character values from the given optional
+	 * elements.
+	 *
+	 * @param elements
+	 *            the optional primitive character values that will be in the returned array of
+	 *            primitive character values array.
+	 * @return the new array of primitive character values
+	 */
+	@SafeVarargs
+	public static char[] newCharArray(final char... elements)
+	{
+		return elements;
+	}
+
+	/**
+	 * Factory method for create new array of primitive integer values from the given optional
+	 * elements.
+	 *
+	 * @param elements
+	 *            the optional primitive integer values that will be in the returned array of
+	 *            primitive integer values array.
+	 * @return the new array of primitive integer values
+	 */
+	@SafeVarargs
+	public static int[] newIntArray(final int... elements)
+	{
+		return elements;
+	}
+
+	/**
+	 * Factory method for create new array of primitive long values from the given optional
+	 * elements.
+	 *
+	 * @param elements
+	 *            the optional primitive long values that will be in the returned array of primitive
+	 *            long values array.
+	 * @return the new array of primitive long values
+	 */
+	@SafeVarargs
+	public static long[] newLongArray(final long... elements)
+	{
+		return elements;
+	}
+
+	/**
+	 * Factory method for create new array of primitive float values from the given optional
+	 * elements.
+	 *
+	 * @param elements
+	 *            the optional primitive float values that will be in the returned array of
+	 *            primitive float values array.
+	 * @return the new array of primitive float values
+	 */
+	@SafeVarargs
+	public static float[] newFloatArray(final float... elements)
+	{
+		return elements;
+	}
+
+	/**
+	 * Factory method for create new array of primitive double values from the given optional
+	 * elements.
+	 *
+	 * @param elements
+	 *            the optional primitive double values that will be in the returned array of
+	 *            primitive double values array.
+	 * @return the new array of primitive double values
+	 */
+	@SafeVarargs
+	public static double[] newDoubleArray(final double... elements)
+	{
+		return elements;
+	}
+
+	/**
+	 * Factory method for create new array of primitive short values from the given optional
+	 * elements.
+	 *
+	 * @param elements
+	 *            the optional primitive short values that will be in the returned array of
+	 *            primitive short values array.
+	 * @return the new array of primitive short values
+	 */
+	@SafeVarargs
+	public static short[] newShortArray(final short... elements)
+	{
+		return elements;
+	}
+
+
 }

@@ -40,11 +40,11 @@ import de.alpharogroup.collections.pairs.KeyValuePair;
 public class KeyValuePairKeyComparatorTest
 {
 
-	/** For use of the expected result. */
-	boolean expected;
-
 	/** For use of the result of the comparator. */
 	int actual;
+
+	/** For use of the expected result. */
+	boolean expected;
 
 	/**
 	 * Test method for {@link KeyValuePairKeyComparator#compare(Object, Object)}
