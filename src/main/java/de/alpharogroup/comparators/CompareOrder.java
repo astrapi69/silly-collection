@@ -31,12 +31,12 @@ import lombok.Getter;
  */
 public enum CompareOrder
 {
+	/** The order to sort an object after. */
+	AFTER(1),
 	/** The order to sort an object before. */
 	BEFORE(-1),
 	/** The order to sort an object as equal. */
-	EQUAL(0),
-	/** The order to sort an object after. */
-	AFTER(1);
+	EQUAL(0);
 
 	/** The order. */
 	@Getter

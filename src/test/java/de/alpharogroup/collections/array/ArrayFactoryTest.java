@@ -90,6 +90,136 @@ public class ArrayFactoryTest
 	public void testNewRangeArrayException()
 	{
 		ArrayFactory.newRangeArray(9, 8);
+	}	
+
+	/**
+	 * Test method for {@link ArrayFactory#newBooleanArray(boolean[])}.
+	 */
+	@Test
+	public void testNewBooleanArray()
+	{
+		boolean[] actual;
+		boolean[] expected = { true, true, false };
+		actual = ArrayFactory.newBooleanArray(true, true, false);
+		assertTrue(Arrays.equals(actual, expected));
+
+		expected = new boolean[0];
+		actual = ArrayFactory.newBooleanArray();
+		assertTrue(Arrays.equals(actual, expected));
+	}
+
+	/**
+	 * Test method for {@link ArrayFactory#newByteArray(byte[])}.
+	 */
+	@Test
+	public void testNewByteArray()
+	{
+		byte[] actual;
+		byte[] expected = { -84, -19, 0, 5, 116, 0, 7, 70, 111, 111, 32, 98, 97, 114 };
+		actual = ArrayFactory.newByteArray((byte)-84, (byte)-19, (byte)0, (byte)5,
+			(byte)116, (byte)0, (byte)7, (byte)70, (byte)111, (byte)111, (byte)32, (byte)98,
+			(byte)97, (byte)114);
+		assertTrue(Arrays.equals(actual, expected));
+
+		expected = new byte[0];
+		actual = ArrayFactory.newByteArray();
+		assertTrue(Arrays.equals(actual, expected));
+	}
+
+	/**
+	 * Test method for {@link ArrayFactory#newCharArray(char[])}.
+	 */
+	@Test
+	public void testNewCharArray()
+	{
+		char[] actual;
+		char[] expected = { 'f', 'o', 'o' };
+		actual = ArrayFactory.newCharArray('f', 'o', 'o');
+		assertTrue(Arrays.equals(actual, expected));
+
+		expected = new char[0];
+		actual = ArrayFactory.newCharArray();
+		assertTrue(Arrays.equals(actual, expected));
+	}
+
+	/**
+	 * Test method for {@link ArrayFactory#newIntArray(int[])}.
+	 */
+	@Test
+	public void testNewIntArray()
+	{
+		int[] actual;
+		int[] expected = { 1, 2, 3 };
+		actual = ArrayFactory.newIntArray(1, 2, 3);
+		assertTrue(Arrays.equals(actual, expected));
+
+		expected = new int[0];
+		actual = ArrayFactory.newIntArray();
+		assertTrue(Arrays.equals(actual, expected));
+	}
+
+	/**
+	 * Test method for {@link ArrayFactory#newLongArray(long[])}.
+	 */
+	@Test
+	public void testNewLongArray()
+	{
+		long[] actual;
+		long[] expected = { 1L, 2L, 3L };
+		actual = ArrayFactory.newLongArray(1L, 2L, 3L);
+		assertTrue(Arrays.equals(actual, expected));
+
+		expected = new long[0];
+		actual = ArrayFactory.newLongArray();
+		assertTrue(Arrays.equals(actual, expected));
+	}
+
+	/**
+	 * Test method for {@link ArrayFactory#newFloatArray(float[])}.
+	 */
+	@Test
+	public void testNewFloatArray()
+	{
+		float[] actual;
+		float[] expected = { 1.0F, 2.0F, 3.0F };
+		actual = ArrayFactory.newFloatArray(1.0F, 2.0F, 3.0F);
+		assertTrue(Arrays.equals(actual, expected));
+
+		expected = new float[0];
+		actual = ArrayFactory.newFloatArray();
+		assertTrue(Arrays.equals(actual, expected));
+	}
+
+	/**
+	 * Test method for {@link ArrayFactory#newDoubleArray(double[])}.
+	 */
+	@Test
+	public void testNewDoubleArray()
+	{
+		double[] actual;
+		double[] expected = { 1.1D, 2.1D, 3.1D };
+		actual = ArrayFactory.newDoubleArray(1.1D, 2.1D, 3.1D);
+		assertTrue(Arrays.equals(actual, expected));
+
+		expected = new double[0];
+		actual = ArrayFactory.newDoubleArray();
+		assertTrue(Arrays.equals(actual, expected));
+	}
+
+	/**
+	 * Test method for {@link ArrayFactory#newShortArray(short[])}.
+	 */
+	@Test
+	public void testNewShortArray()
+	{
+		short[] actual;
+		short[] expected = { 1, 2, 3 };
+		actual = ArrayFactory.newShortArray((short)1, (short)2, (short)3);
+		assertTrue(Arrays.equals(actual, expected));
+
+		expected = new short[0];
+		actual = ArrayFactory.newShortArray();
+		assertTrue(Arrays.equals(actual, expected));
 	}
 
 	/**

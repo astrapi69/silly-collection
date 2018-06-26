@@ -43,11 +43,11 @@ import lombok.experimental.FieldDefaults;
 public class DateComparatorTest extends BaseComparatorTestCase<Date>
 {
 
-	final Date past = CreateDateExtensions.newDate(2009, 3, 26, 10, 37, 04);
+	final Date after = CreateDateExtensions.newDate(2010, 3, 27, 10, 37, 04);
 	final Date before = CreateDateExtensions.newDate(2010, 3, 26, 10, 37, 04);
 
-	final Date after = CreateDateExtensions.newDate(2010, 3, 27, 10, 37, 04);
 	final Date future = CreateDateExtensions.newDate(2011, 3, 27, 10, 37, 04);
+	final Date past = CreateDateExtensions.newDate(2009, 3, 26, 10, 37, 04);
 
 	/**
 	 * {@inheritDoc}

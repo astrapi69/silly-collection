@@ -41,14 +41,14 @@ import org.testng.annotations.Test;
 public class HashCodeComparatorTest
 {
 
-	/** For use of the expected result. */
-	boolean expected;
-
 	/** For use of the result of the comparator. */
 	int actual;
 
 	/** The comparator. */
 	Comparator<String> comparator;
+
+	/** For use of the expected result. */
+	boolean expected;
 
 	/**
 	 * Sets up method will be invoked before every unit test method

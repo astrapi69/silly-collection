@@ -7,6 +7,7 @@ Version 4.31-SNAPSHOT
 ADDED:
  
 - new factory methods with initial capacity for create set objects created
+- new factory methods for primitive array types created
 
 Version 4.30.1
 -------------

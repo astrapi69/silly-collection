@@ -44,14 +44,14 @@ import de.alpharogroup.date.CreateDateExtensions;
 public class DescendingDateComparatorTest
 {
 
-	/** For use of the expected result. */
-	boolean expected;
-
 	/** For use of the result of the comparator. */
 	int actual;
 
 	/** The comparator. */
 	Comparator<Date> comparator;
+
+	/** For use of the expected result. */
+	boolean expected;
 
 	/**
 	 * Sets up method will be invoked before every unit test method

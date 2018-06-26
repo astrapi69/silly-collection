@@ -53,6 +53,9 @@ public class EnumerationIteratorTest
 	private static final Logger logger = LoggerFactory
 		.getLogger(EnumerationIteratorTest.class.getName());
 
+	/** The EnumerationIterator. */
+	private EnumerationIterator<String> iterator;
+
 	/** The List for the test. */
 	private final List<String> list = new ArrayList<String>()
 	{
@@ -68,9 +71,6 @@ public class EnumerationIteratorTest
 			add("four");
 		}
 	};
-
-	/** The EnumerationIterator. */
-	private EnumerationIterator<String> iterator;
 
 	/**
 	 * Sets up method will be invoked before every unit test method in this class.
