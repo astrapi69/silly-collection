@@ -49,14 +49,12 @@ import de.alpharogroup.collections.modifications.ModifiedCollections;
 import de.alpharogroup.collections.set.SetFactory;
 import de.alpharogroup.test.objects.Person;
 import de.alpharogroup.test.objects.enums.Gender;
-import lombok.experimental.ExtensionMethod;
 
 /**
  * The unit test class for the class {@link ListExtensions}.
  *
  * @author Asterios Raptis
  */
-@ExtensionMethod(ListExtensions.class)
 public class ListExtensionsTest
 {
 
@@ -290,7 +288,7 @@ public class ListExtensionsTest
 		search.add("Dora");
 		search.add("Emil");
 		search.add("Anton");
-		final boolean actual = search.isFirst(expected);
+		final boolean actual = ListExtensions.isFirst(search, expected);
 		assertTrue("", actual);
 	}
 
@@ -311,7 +309,7 @@ public class ListExtensionsTest
 		search.add("Dora");
 		search.add("Emil");
 		search.add(name);
-		actual = search.isLast(name);
+		actual = ListExtensions.isLast(search, name);
 		expected = true;
 		assertEquals(expected, actual);
 
@@ -473,7 +471,7 @@ public class ListExtensionsTest
 		source.add("Franz");
 		// shuffle two elements to destination list with index 1 and 2.
 		final int[] selectedElements = { 1, 2 };
-		source.shuffle(destination, selectedElements);
+		ListExtensions.shuffle(source, destination, selectedElements);
 
 		final boolean actual = destination.size() == 2;
 		assertTrue(actual);
@@ -481,7 +479,7 @@ public class ListExtensionsTest
 		assertTrue(destination.contains(caesar));
 		// shuffle the elements back
 		final int[] newSelectedElements = { 0, 1 };
-		destination.shuffle(source, newSelectedElements);
+		ListExtensions.shuffle(source, destination, newSelectedElements);
 
 	}
 
