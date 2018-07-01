@@ -8,6 +8,7 @@ CHANGED:
 
 - update of parent version to 3.12
 - update of vintage-time version to 4.12
+- removed experimental lombok annotation ExtensionMethod from unit test classes
 
 Version 4.31
 -------------
