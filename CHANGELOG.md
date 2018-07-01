@@ -4,6 +4,11 @@
 Version 4.32-SNAPSHOT
 -------------
 
+CHANGED:
+
+- update of parent version to 3.12
+- update of vintage-time version to 4.12
+
 Version 4.31
 -------------
 
