@@ -185,7 +185,6 @@ public class PropertiesExtensionsTest
 	 * @throws IOException
 	 *             Signals that an I/O exception has occurred.
 	 */
-	@SuppressWarnings("serial")
 	@Test(enabled = true)
 	public void testFindRedundantValues() throws IOException
 	{

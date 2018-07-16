@@ -85,7 +85,6 @@ public class ListFactoryTest
 	/**
 	 * Test the method {@link ListFactory#newRangeList(int, int)}
 	 */
-	@SuppressWarnings("serial")
 	@Test
 	public void testNewRangeList()
 	{
