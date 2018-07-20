@@ -1,9 +1,9 @@
-# silly-collections
+# Overview
 
 <div align="center">
 
 [![Build Status](https://travis-ci.org/lightblueseas/silly-collections.svg?branch=master)](https://travis-ci.org/lightblueseas/silly-collections) 
-[![Coverage Status](https://coveralls.io/repos/github/lightblueseas/silly-collections/badge.svg?branch=develop)](https://coveralls.io/github/lightblueseas/silly-collections?branch=develop) 
+[![Coverage Status](https://coveralls.io/repos/github/lightblueseas/silly-collections/badge.svg?branch=master)](https://coveralls.io/github/lightblueseas/silly-collections?branch=master) 
 [![Open Issues](https://img.shields.io/github/issues/lightblueseas/silly-collections.svg?style=flat)](https://github.com/lightblueseas/silly-collections/issues) 
 [![Maven Central](https://maven-badges.herokuapp.com/maven-central/de.alpharogroup/silly-collections/badge.svg)](https://maven-badges.herokuapp.com/maven-central/de.alpharogroup/silly-collections)
 [![Javadocs](http://www.javadoc.io/badge/de.alpharogroup/silly-collections.svg)](http://www.javadoc.io/doc/de.alpharogroup/silly-collections)
@@ -28,7 +28,7 @@ Than you can add the dependency to your dependencies:
 
 		...
 		<!-- SILLY-COLLECTIONS version -->
-		<silly-collections.version>4.31</silly-collections.version>
+		<silly-collections.version>4.32</silly-collections.version>
 		...
 		<dependencies>
 			...

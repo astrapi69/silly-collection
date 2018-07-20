@@ -11,7 +11,7 @@
 	</parent>
 
 	<artifactId>silly-collections</artifactId>
-	<version>4.32-SNAPSHOT</version>
+	<version>4.32</version>
 
 	<name>${project.artifactId}</name>
 
