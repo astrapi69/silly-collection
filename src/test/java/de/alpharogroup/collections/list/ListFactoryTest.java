@@ -59,18 +59,6 @@ public class ListFactoryTest
 	}
 
 	/**
-	 * Test the method {@link ListFactory#newArrayList(int)}.
-	 */
-	@SuppressWarnings("deprecation")
-	@Test
-	public void testNewArrayListInt()
-	{
-		final List<String> strings = ListFactory.newArrayList(2);
-		assertNotNull(strings);
-		assertTrue(strings.size() == 0);
-	}
-
-	/**
 	 * Test the method {@link ListFactory#newArrayList(Object...)}.
 	 */
 	@Test

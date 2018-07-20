@@ -4,6 +4,10 @@
 Version 4.33-SNAPSHOT
 -------------
 
+CHANGED:
+
+- removed deprecated factory methods from the factory classes
+
 Version 4.32
 -------------
 
