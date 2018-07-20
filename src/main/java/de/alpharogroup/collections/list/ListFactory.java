@@ -75,24 +75,6 @@ public final class ListFactory
 	}
 
 	/**
-	 * Factory method for create new {@link ArrayList} and returns as {@link List}.
-	 *
-	 * @param <T>
-	 *            the generic type of the elements
-	 * @param initialCapacity
-	 *            the initial capacity
-	 * @return the new {@link ArrayList} as {@link List}
-	 * @deprecated use instead the same name method with elements <br>
-	 *             <br>
-	 *             Note: will be removed in next minor release
-	 */
-	@Deprecated
-	public static <T> List<T> newArrayList(final int initialCapacity)
-	{
-		return new ArrayList<>(initialCapacity);
-	}
-
-	/**
 	 * Factory method for create new {@link ArrayList} from the given optional elements.
 	 *
 	 * @param <T>

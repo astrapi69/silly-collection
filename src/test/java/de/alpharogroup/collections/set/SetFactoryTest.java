@@ -24,7 +24,6 @@
  */
 package de.alpharogroup.collections.set;
 
-import static org.testng.Assert.assertNotNull;
 import static org.testng.AssertJUnit.assertTrue;
 
 import java.lang.reflect.InvocationTargetException;
@@ -67,19 +66,6 @@ public class SetFactoryTest
 	}
 
 	/**
-	 * Test method for {@link SetFactory#newHashSet(int)}.
-	 */
-	@SuppressWarnings("deprecation")
-	@Test
-	public void testNewHashSetInt()
-	{
-		Set<String> set;
-		set = SetFactory.newHashSet(8);
-		assertNotNull(set);
-		assertTrue(set.size() == 0);
-	}
-
-	/**
 	 * Test for method {@link SetFactory#newHashSet(Object...)}
 	 */
 	@Test
@@ -110,19 +96,6 @@ public class SetFactoryTest
 	}
 
 	/**
-	 * Test method for {@link SetFactory#newInsertionOrderSet(int)}.
-	 */
-	@SuppressWarnings("deprecation")
-	@Test
-	public void testNewInsertionOrderSetInt()
-	{
-		Set<String> set;
-		set = SetFactory.newInsertionOrderSet(8);
-		assertNotNull(set);
-		assertTrue(set.size() == 0);
-	}
-
-	/**
 	 * Test for method {@link SetFactory#newInsertionOrderSet(Object...)}
 	 */
 	@Test
@@ -150,19 +123,6 @@ public class SetFactoryTest
 		set = SetFactory.newLinkedHashSet(ListFactory.newArrayList(), "foo", "bar", "foo");
 		assertTrue(set.size() == 2);
 
-	}
-
-	/**
-	 * Test method for {@link SetFactory#newLinkedHashSet(int)}.
-	 */
-	@SuppressWarnings("deprecation")
-	@Test
-	public void testNewLinkedHashSetInt()
-	{
-		Set<String> set;
-		set = SetFactory.newLinkedHashSet(8);
-		assertNotNull(set);
-		assertTrue(set.size() == 0);
 	}
 
 	/**

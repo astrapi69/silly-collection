@@ -1,6 +1,13 @@
 ## Change log
 ----------------------
 
+Version 4.33
+-------------
+
+CHANGED:
+
+- removed deprecated factory methods from the factory classes
+
 Version 4.32
 -------------
 
