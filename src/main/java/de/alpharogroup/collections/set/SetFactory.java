@@ -96,7 +96,11 @@ public final class SetFactory
 	 * @param initialCapacity
 	 *            the initial capacity
 	 * @return the new {@link HashSet}
+	 * @deprecated use instead the same name method with elements <br>
+	 *             <br>
+	 *             Note: will be removed in next minor release
 	 */
+	@Deprecated
 	public static final <T> Set<T> newHashSet(final int initialCapacity)
 	{
 		return new HashSet<>(initialCapacity);
@@ -125,7 +129,11 @@ public final class SetFactory
 	 * @param initialCapacity
 	 *            the initial capacity
 	 * @return the new {@link LinkedHashSet}
+	 * @deprecated use instead the same name method with elements <br>
+	 *             <br>
+	 *             Note: will be removed in next minor release
 	 */
+	@Deprecated
 	public static final <T> Set<T> newLinkedHashSet(final int initialCapacity)
 	{
 		return new LinkedHashSet<>(initialCapacity);
@@ -185,7 +193,11 @@ public final class SetFactory
 	 * @param initialCapacity
 	 *            the initial capacity
 	 * @return the new {@link InsertionOrderSet}
+	 * @deprecated use instead the same name method with elements <br>
+	 *             <br>
+	 *             Note: will be removed in next minor release
 	 */
+	@Deprecated
 	public static final <T> Set<T> newInsertionOrderSet(final int initialCapacity)
 	{
 		return new InsertionOrderSet<>(initialCapacity);
