@@ -1,6 +1,17 @@
 ## Change log
 ----------------------
 
+Version 4.32
+-------------
+
+CHANGED:
+
+- update of parent version to 4
+- update of vintage-time version to 4.12
+- update of jobject-extensions version to 1.12
+- update of commons-collections4 version to 4.2
+- removed experimental lombok annotation ExtensionMethod from unit test classes
+
 Version 4.31
 -------------
 
@@ -88,6 +99,7 @@ CHANGED:
 - update of test-objects dependency version from 4.23.0 to 4.24.0 
 - update of jobject-extensions dependency version from 1.8.0 to 1.10.0
 - moved method newRangeArray from ListExtensions to ArrayExtensions
+- tagged methods with int parameter for initialCapacity in ListFactory and SetFactory as deprecated
 
 Version 4.25.0
 -------------

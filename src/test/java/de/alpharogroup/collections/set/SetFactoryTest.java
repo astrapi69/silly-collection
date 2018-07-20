@@ -69,6 +69,7 @@ public class SetFactoryTest
 	/**
 	 * Test method for {@link SetFactory#newHashSet(int)}.
 	 */
+	@SuppressWarnings("deprecation")
 	@Test
 	public void testNewHashSetInt()
 	{
@@ -111,6 +112,7 @@ public class SetFactoryTest
 	/**
 	 * Test method for {@link SetFactory#newInsertionOrderSet(int)}.
 	 */
+	@SuppressWarnings("deprecation")
 	@Test
 	public void testNewInsertionOrderSetInt()
 	{
@@ -153,6 +155,7 @@ public class SetFactoryTest
 	/**
 	 * Test method for {@link SetFactory#newLinkedHashSet(int)}.
 	 */
+	@SuppressWarnings("deprecation")
 	@Test
 	public void testNewLinkedHashSetInt()
 	{

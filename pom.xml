@@ -6,12 +6,12 @@
 	<parent>
 		<groupId>de.alpharogroup</groupId>
 		<artifactId>mvn-java-parent</artifactId>
-		<version>3.11</version>
+		<version>4</version>
 		<relativePath></relativePath>
 	</parent>
 
 	<artifactId>silly-collections</artifactId>
-	<version>4.31</version>
+	<version>4.32</version>
 
 	<name>${project.artifactId}</name>
 
@@ -21,17 +21,17 @@
 
 	<properties>
 		<!-- JOBJECT-EXTENSIONS versions -->
-		<jobject-extensions.version>1.11</jobject-extensions.version>
+		<jobject-extensions.version>1.12</jobject-extensions.version>
 		<jobject-clone.version>${jobject-extensions.version}</jobject-clone.version>
 		<jobject-compare.version>${jobject-extensions.version}</jobject-compare.version>
 		<jobject-core.version>${jobject-extensions.version}</jobject-core.version>
 		<jobject-evaluate.version>${jobject-extensions.version}</jobject-evaluate.version>
 		<!-- VINTAGE-TIME version -->
-		<vintage-time.version>4.11.0</vintage-time.version>
+		<vintage-time.version>4.12</vintage-time.version>
 		<!-- TEST-OBJECTS version -->
 		<test-objects.version>4.28</test-objects.version>
 		<!-- EXTERNAL LIBRARIES versions -->
-		<commons-collections4.version>4.1</commons-collections4.version>
+		<commons-collections4.version>4.2</commons-collections4.version>
 	</properties>
 
 	<licenses>

@@ -35,16 +35,12 @@ import org.meanbean.test.BeanTestException;
 import org.meanbean.test.BeanTester;
 import org.testng.annotations.Test;
 
-import lombok.experimental.ExtensionMethod;
-
 /**
  * The unit test class for the class {@link ArrayExtensions}.
  *
  * @venrsion 1.0
  * @author Asterios Raptis
  */
-@ExtensionMethod(ArrayExtensions.class)
-// @Slf4j
 public class ArrayExtensionsTest
 {
 
@@ -103,9 +99,6 @@ public class ArrayExtensionsTest
 		// Old vanilla java with static method...
 		actual = ArrayExtensions.getFirst(numbers);
 		assertEquals(expected, actual);
-		// use lombok extensions method
-		actual = numbers.getFirst();
-		assertEquals(expected, actual);
 		final String empty[] = { };
 		expected = null;
 		actual = ArrayExtensions.getFirst(empty);
@@ -129,9 +122,6 @@ public class ArrayExtensionsTest
 		// Old vanilla java with static method...
 		actual = ArrayExtensions.getIndex(numbers, last);
 		assertEquals(expected, actual);
-		// use lombok extensions method
-		actual = numbers.getIndex(last);
-		assertEquals(expected, actual);
 		final String empty[] = { };
 		expected = -1;
 		actual = ArrayExtensions.getIndex(empty, last);
@@ -153,9 +143,6 @@ public class ArrayExtensionsTest
 		final String numbers[] = { "1", "2", "3", "4", "5", "6", expected };
 		// Old vanilla java with static method...
 		actual = ArrayExtensions.getLast(numbers);
-		assertEquals(expected, actual);
-		// use lombok extensions method
-		actual = numbers.getLast();
 		assertEquals(expected, actual);
 		final String empty[] = { };
 		expected = null;
@@ -182,15 +169,9 @@ public class ArrayExtensionsTest
 		// Old vanilla java with static method...
 		actual = ArrayExtensions.getNextIndex(numbers, last);
 		assertEquals(expected, actual);
-		// use lombok extensions method
-		actual = numbers.getNextIndex(last);
-		assertEquals(expected, actual);
 		// use case with first...
 		expected = 1;
 		actual = ArrayExtensions.getNextIndex(numbers, first);
-		assertEquals(expected, actual);
-		// use lombok extensions method
-		actual = numbers.getNextIndex(first);
 		assertEquals(expected, actual);
 		// scenarios of empty or null value...
 		final String empty[] = { };
@@ -217,18 +198,10 @@ public class ArrayExtensionsTest
 		int[] actual = ArrayExtensions.getNextIndexes(numbers, last, 2);
 		assertEquals(expected[0], actual[0]);
 		assertEquals(expected[1], actual[1]);
-		// use lombok extensions method
-		actual = numbers.getNextIndexes(last, 2);
-		assertEquals(expected[0], actual[0]);
-		assertEquals(expected[1], actual[1]);
 		// use case with first...
 		expected[0] = 1;
 		expected[1] = 2;
 		actual = ArrayExtensions.getNextIndexes(numbers, first, 2);
-		assertEquals(expected[0], actual[0]);
-		assertEquals(expected[1], actual[1]);
-		// use lombok extensions method
-		actual = numbers.getNextIndexes(first, 2);
 		assertEquals(expected[0], actual[0]);
 		assertEquals(expected[1], actual[1]);
 		// scenarios of empty or null value...
@@ -257,15 +230,9 @@ public class ArrayExtensionsTest
 		// Old vanilla java with static method...
 		actual = ArrayExtensions.getPreviousIndex(numbers, last);
 		assertEquals(expected, actual);
-		// use lombok extensions method
-		actual = numbers.getPreviousIndex(last);
-		assertEquals(expected, actual);
 		// use case with first...
 		expected = 6;
 		actual = ArrayExtensions.getPreviousIndex(numbers, first);
-		assertEquals(expected, actual);
-		// use lombok extensions method
-		actual = numbers.getPreviousIndex(first);
 		assertEquals(expected, actual);
 		// scenarios of empty or null value...
 		final String empty[] = { };
@@ -292,18 +259,10 @@ public class ArrayExtensionsTest
 		int[] actual = ArrayExtensions.getPreviousIndexes(numbers, last, 2);
 		assertEquals(expected[0], actual[0]);
 		assertEquals(expected[1], actual[1]);
-		// use lombok extensions method
-		actual = numbers.getPreviousIndexes(last, 2);
-		assertEquals(expected[0], actual[0]);
-		assertEquals(expected[1], actual[1]);
 		// use case with first...
 		expected[0] = 6;
 		expected[1] = 5;
 		actual = ArrayExtensions.getPreviousIndexes(numbers, first, 2);
-		assertEquals(expected[0], actual[0]);
-		assertEquals(expected[1], actual[1]);
-		// use lombok extensions method
-		actual = numbers.getPreviousIndexes(first, 2);
 		assertEquals(expected[0], actual[0]);
 		assertEquals(expected[1], actual[1]);
 		// scenarios of empty or null value...
@@ -312,7 +271,7 @@ public class ArrayExtensionsTest
 		actual = ArrayExtensions.getPreviousIndexes(empty, last, 2);
 		assertEquals(expected, actual);
 
-		actual = empty.getPreviousIndexes(null, 2);
+		actual = ArrayExtensions.getPreviousIndexes(empty, null, 2);
 		assertEquals(expected, actual);
 	}
 
@@ -329,9 +288,6 @@ public class ArrayExtensionsTest
 		final String numbers[] = { "1", "2", "3", "4", "5", "6", last };
 		// Old vanilla java with static method...
 		actual = ArrayExtensions.indexOf(numbers, last);
-		assertEquals(expected, actual);
-		// use lombok extensions method
-		actual = numbers.indexOf(last);
 		assertEquals(expected, actual);
 		final String empty[] = { };
 		expected = -1;
@@ -353,13 +309,12 @@ public class ArrayExtensionsTest
 		boolean actual;
 		final String numbers[] = { "1", "2", "3", "4", "5", "6", "7" };
 
-		actual = numbers.isFirst("1");
-
+		actual = ArrayExtensions.isFirst(numbers, "1");
 		expected = true;
 		assertEquals(expected, actual);
 
+		actual = ArrayExtensions.isFirst(numbers, null);
 		expected = false;
-		actual = numbers.isFirst(null);
 		assertEquals(expected, actual);
 	}
 
@@ -375,12 +330,12 @@ public class ArrayExtensionsTest
 
 		final String numbers[] = { "1", "2", "3", "4", "5", "6", "7" };
 
+		actual = ArrayExtensions.isLast(numbers, "7");
 		expected = true;
-		actual = numbers.isLast("7");
 		assertEquals(expected, actual);
 
+		actual = ArrayExtensions.isLast(numbers, null);
 		expected = false;
-		actual = numbers.isLast(null);
 		assertEquals(expected, actual);
 	}
 
@@ -416,7 +371,7 @@ public class ArrayExtensionsTest
 		String actual;
 		String expected;
 		final String numbers[] = { "1", "2", "3", "4", "5", "6", "7" };
-		final List<String> numberList = numbers.toList();// lombok magic extension method
+		final List<String> numberList = ArrayExtensions.toList(numbers);
 		for (int i = 0; i < numbers.length; i++)
 		{
 			expected = numbers[i];
