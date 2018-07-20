@@ -37,9 +37,9 @@ import java.util.Properties;
 
 import org.testng.annotations.Test;
 
-import de.alpharogroup.evaluate.object.EqualsEvaluator;
-import de.alpharogroup.evaluate.object.HashcodeEvaluator;
-import de.alpharogroup.evaluate.object.ToStringEvaluator;
+import de.alpharogroup.evaluate.object.evaluators.EqualsEvaluator;
+import de.alpharogroup.evaluate.object.evaluators.HashcodeEvaluator;
+import de.alpharogroup.evaluate.object.evaluators.ToStringEvaluator;
 
 /**
  * The unit test class for the class {@link KeyValuePair}

@@ -8,6 +8,8 @@ CHANGED:
 
 - update of parent version to 4
 - update of vintage-time version to 4.12
+- update of jobject-extensions version to 1.12
+- update of commons-collections4 version to 4.2
 - removed experimental lombok annotation ExtensionMethod from unit test classes
 
 Version 4.31

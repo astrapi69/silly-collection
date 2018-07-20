@@ -61,6 +61,7 @@ public class ListFactoryTest
 	/**
 	 * Test the method {@link ListFactory#newArrayList(int)}.
 	 */
+	@SuppressWarnings("deprecation")
 	@Test
 	public void testNewArrayListInt()
 	{
