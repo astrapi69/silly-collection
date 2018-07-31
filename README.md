@@ -90,6 +90,14 @@ or over flattr:
 <img src="http://api.flattr.com/button/flattr-badge-large.png" alt="Flattr this" title="Flattr this" border="0" />
 </a>
 
+## Similar projects
+
+Here is a list of awesome similar projects:
+
+Open Source:
+
+ * [streamex](https://github.com/amaembo/streamex) Enhancing Java 8 Streams
+
 ## Credits
 
 |Travis CI|
