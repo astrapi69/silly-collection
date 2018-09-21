@@ -4,6 +4,9 @@
 Version 4.34-SNAPSHOT
 -------------
 
+ADDED:
+ 
+- new factory methods for LinkedList objects created
 
 Version 4.33
 -------------
