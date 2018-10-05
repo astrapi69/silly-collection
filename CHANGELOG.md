@@ -7,6 +7,7 @@ Version 4.34-SNAPSHOT
 ADDED:
  
 - new factory methods for LinkedList objects created
+- new IndexableSet class created that can get the index of an element in the set
 
 Version 4.33
 -------------
