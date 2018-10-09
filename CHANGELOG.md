@@ -9,6 +9,10 @@ ADDED:
 - new factory methods for LinkedList objects created
 - new IndexableSet class created that can get the index of an element in the set
 
+CHANGED:
+
+- update of parent version to 4.1
+
 Version 4.33
 -------------
 
