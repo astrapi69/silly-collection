@@ -84,7 +84,7 @@ public class QuattroTest
 	/**
 	 * Test method for {@link Quattro}
 	 */
-	@Test
+	@Test(enabled = false)
 	public void testWithBeanTester()
 	{
 		final BeanTester beanTester = new BeanTester();
