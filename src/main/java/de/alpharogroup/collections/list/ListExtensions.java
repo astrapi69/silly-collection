@@ -277,7 +277,7 @@ public final class ListExtensions
 	 * Rearrange the order from the given {@link List} to the given rearranged index
 	 *
 	 * @param <T>
-	 *            the generic type
+	 *            the generic type of the elements
 	 * @param listToResort
 	 *            the list to resort
 	 * @param element
