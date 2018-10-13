@@ -8,6 +8,7 @@ ADDED:
  
 - new factory methods for LinkedList objects created
 - new IndexableSet class created that can get the index of an element in the set
+- new method for rearrange an element of a List to a specified index created
 
 CHANGED:
 
