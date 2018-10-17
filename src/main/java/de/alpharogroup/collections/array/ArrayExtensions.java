@@ -27,7 +27,6 @@ package de.alpharogroup.collections.array;
 import java.util.Arrays;
 import java.util.List;
 import java.util.Set;
-import java.util.concurrent.atomic.AtomicInteger;
 import java.util.stream.Collectors;
 import java.util.stream.Stream;
 
@@ -53,7 +52,7 @@ public final class ArrayExtensions
 	 * Integer[] destination = new Integer[source.length];<br>
 	 * destination = ArrayExtensions.arraycopyWithSystem(source, destination);<br>
 	 * </code>
-	 * 
+	 *
 	 *
 	 * @param <T>
 	 *            the generic type of the objects in the array.
@@ -72,20 +71,22 @@ public final class ArrayExtensions
 		System.arraycopy(source, 0, destination, 0, source.length);
 		return destination;
 	}
-	
-    /**
-     * Creates a new {@link Set} from the given array. <br>
-     * <br>
-     *
-     * @param <T>
-     *            the generic type of the objects in the array.
-     * @param array
-     *            the array
-     * @return the new {@link Set} created from the given array.
-     */
-    public static <T> Set<T> asSet(T... array) {
-        return Stream.of(array).collect(Collectors.toSet());
-    }
+
+	/**
+	 * Creates a new {@link Set} from the given array. <br>
+	 * <br>
+	 *
+	 * @param <T>
+	 *            the generic type of the objects in the array.
+	 * @param array
+	 *            the array
+	 * @return the new {@link Set} created from the given array.
+	 */
+	@SafeVarargs
+	public static <T> Set<T> asSet(T... array)
+	{
+		return Stream.of(array).collect(Collectors.toSet());
+	}
 
 	/**
 	 * Creates a new {@link List} from the given array. <br>

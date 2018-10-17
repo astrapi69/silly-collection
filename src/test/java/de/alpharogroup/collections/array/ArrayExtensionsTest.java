@@ -29,7 +29,9 @@ import static org.testng.AssertJUnit.assertEquals;
 
 import java.lang.reflect.InvocationTargetException;
 import java.util.Arrays;
+import java.util.Iterator;
 import java.util.List;
+import java.util.Set;
 
 import org.meanbean.test.BeanTestException;
 import org.meanbean.test.BeanTester;
@@ -76,13 +78,34 @@ public class ArrayExtensionsTest
 		String actual;
 		String expected;
 		final String numbers[] = { "1", "2", "3", "4", "5", "6", "7" };
-		final List<String> numberList = ArrayExtensions.asList(numbers);// lombok magic extension
-																		// method
+		final List<String> numberList = ArrayExtensions.asList(numbers);
 		for (int i = 0; i < numbers.length; i++)
 		{
 			expected = numbers[i];
 			actual = numberList.get(i);
 			assertEquals(expected, actual);
+		}
+	}
+
+	/**
+	 * Test for method {@link ArrayExtensions#asSet(Object[])}
+	 */
+	@Test
+	public void testAsSet()
+	{
+		String actual;
+		String expected;
+		final String numbers[] = { "1", "2", "3", "4", "5", "6", "7" };
+		final Set<String> numberSet = ArrayExtensions.asSet("1", "2", "3", "4", "5", "6", "7");
+
+		Iterator<String> iterator = numberSet.iterator();
+		int i = 0;
+		while (iterator.hasNext())
+		{
+			actual = iterator.next();
+			expected = numbers[i];
+			assertEquals(expected, actual);
+			i++;
 		}
 	}
 

@@ -63,8 +63,7 @@ public class TripleTest
 		final Triple<String, Employee, Customer> second = Triple
 			.<String, Employee, Customer> builder().left("left").middle(employee).right(customer)
 			.build();
-		final Triple<Integer, Employee, Customer> third = new Triple<>(1,
-			employee, customer);
+		final Triple<Integer, Employee, Customer> third = new Triple<>(1, employee, customer);
 		final Triple<Integer, Employee, Customer> fourth = new Triple<>();
 		fourth.setLeft(1);
 		fourth.setMiddle(employee);
