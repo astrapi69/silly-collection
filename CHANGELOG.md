@@ -4,6 +4,10 @@
 Version 4.35-SNAPSHOT
 -------------
 
+CHANGED:
+
+- tagged classes as deprecated that use still pair classes
+
 Version 4.34
 -------------
 

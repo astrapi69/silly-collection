@@ -36,7 +36,10 @@ import de.alpharogroup.collections.pairs.KeyValuesPair;
  *            The generic type of the key
  * @param <V>
  *            The generic type of the value
+ * @deprecated use instead java 8 comparators <br>
+ *             Note: will be removed on next minor release.
  */
+@Deprecated
 public class KeyValuesPairKeyComparator<K extends Comparable<K>, V>
 	implements
 		Comparator<KeyValuesPair<K, V>>

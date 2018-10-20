@@ -225,7 +225,10 @@ public final class PropertiesExtensions
 	 * @param properties
 	 *            the properties
 	 * @return the new list with the {@link KeyValuePair}'s.
+	 * @deprecated use instead the utility method from KeyValuePair <br>
+	 *             Note: will be removed on next minor release.
 	 */
+	@Deprecated
 	public static List<KeyValuePair<String, String>> toKeyValuePairs(final Properties properties)
 	{
 		return KeyValuePair.toKeyValuePairs(properties);
