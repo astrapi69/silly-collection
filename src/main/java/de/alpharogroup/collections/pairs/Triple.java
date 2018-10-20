@@ -45,7 +45,10 @@ import lombok.experimental.FieldDefaults;
  *            The generic type of the middle content of this Triple.
  * @param <R>
  *            The generic type of the right content of this Triple.
+ * @deprecated use instead the same named class from project model-core <br>
+ * Note: will be removed on next minor release.
  */
+@Deprecated
 @Getter
 @Setter
 @EqualsAndHashCode

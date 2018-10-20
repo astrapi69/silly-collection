@@ -47,7 +47,10 @@ import lombok.experimental.FieldDefaults;
  *            the generic type of the bottom left content.
  * @param <BR>
  *            the generic type of the bottom right content.
+ * @deprecated use instead the same named class from project model-core <br>
+ * Note: will be removed on next minor release.
  */
+@Deprecated
 @Getter
 @Setter
 @EqualsAndHashCode
