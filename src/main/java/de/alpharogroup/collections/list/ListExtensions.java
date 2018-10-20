@@ -100,6 +100,24 @@ public final class ListExtensions
 	}
 
 	/**
+	 * Gets the first object from the given List.
+	 *
+	 * @param <T>
+	 *            the generic type
+	 * @param list
+	 *            the List.
+	 * @return Returns the first object from the given List or null if the List is empty or null.
+	 */
+	public static <T> Optional<T> getOptionalFirst(final List<T> list)
+	{
+		if (CollectionExtensions.isNotEmpty(list))
+		{
+			return Optional.of(list.get(0));
+		}
+		return Optional.empty();
+	}
+
+	/**
 	 * Gets the last object from the given List.
 	 *
 	 * @param <T>
@@ -154,33 +172,20 @@ public final class ListExtensions
 	}
 
 	/**
-	 * The Method looks at both List and if they have same objects they are added to one List and
-	 * will returns the result.
+	 * This method decorates the retainAll method and returns the result in a new list
 	 *
 	 * @param <T>
 	 *            the generic type
 	 * @param toSearch
-	 *            The List to search.
+	 *            The list to search
 	 * @param search
-	 *            The List to inspect.
-	 * @return The List with the same objects.
+	 *            the list to inspect
+	 * @return the new list with the intersection of the objects
 	 */
 	public static <T> List<T> getSameElementsFromLists(final List<T> toSearch, final List<T> search)
 	{
-		List<T> foundElements = null;
-		final int size = toSearch.size();
-		for (int i = 0; i < size; i++)
-		{
-			final T element = toSearch.get(i);
-			if (search.contains(element))
-			{
-				if (foundElements == null)
-				{
-					foundElements = new ArrayList<>();
-				}
-				foundElements.add(element);
-			}
-		}
+		toSearch.retainAll(search);
+		List<T> foundElements = ListFactory.newArrayList(toSearch);
 		return foundElements;
 	}
 
@@ -327,14 +332,33 @@ public final class ListExtensions
 	 *            the generic type
 	 * @param list
 	 *            the List.
-	 * @return Removes and returns the first object from the given List or null if the List is empty
-	 *         or null.
+	 * @return Removes and returns the first object from the given List or an empty {@link Optional}
+	 *         if the List is empty or null.
 	 */
 	public static <T> Optional<T> removeOptionalFirst(final List<T> list)
 	{
 		if (!CollectionExtensions.isEmpty(list) && 0 < list.size())
 		{
 			return Optional.of(list.remove(0));
+		}
+		return Optional.empty();
+	}
+
+	/**
+	 * Removes the last object from the given List.
+	 *
+	 * @param <T>
+	 *            the generic type
+	 * @param list
+	 *            the List.
+	 * @return Removes and returns the last object from the given List or an empty {@link Optional}
+	 *         if the List is empty or null.
+	 */
+	public static <T> Optional<T> removeOptionalLast(final List<T> list)
+	{
+		if (!CollectionExtensions.isEmpty(list) && 0 < list.size())
+		{
+			return Optional.of(list.remove(list.size() - 1));
 		}
 		return Optional.empty();
 	}

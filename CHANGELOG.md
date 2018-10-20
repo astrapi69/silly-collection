@@ -4,6 +4,10 @@
 Version 4.35-SNAPSHOT
 -------------
 
+ADDED:
+ 
+- new methods created that returns an Optional instead of null values
+
 CHANGED:
 
 - removed all classes that still used pair classes
