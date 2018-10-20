@@ -1,6 +1,13 @@
 ## Change log
 ----------------------
 
+Version 4.35-SNAPSHOT
+-------------
+
+CHANGED:
+
+- removed all classes that still used pair classes
+
 Version 4.34.1
 -------------
 
