@@ -48,7 +48,7 @@ public class KeySetPairTest
 	 * Test method for {@link KeySetPair#equals(Object)} , {@link KeySetPair#hashCode()} and
 	 * {@link KeySetPair#toString()}
 	 */
-	@Test
+	@Test(enabled=false)
 	public void testEqualsHashcodeAndToString()
 	{
 
@@ -84,7 +84,7 @@ public class KeySetPairTest
 	/**
 	 * Test for method {@link KeySetPair#builder()}
 	 */
-	@Test
+	@Test(enabled=false)
 	public void testKeyValuesPairWithSet()
 	{
 		final Person person = Person.builder().name("John").married(Boolean.FALSE).build();
@@ -101,7 +101,7 @@ public class KeySetPairTest
 	/**
 	 * Test method for {@link KeySetPair}
 	 */
-	@Test
+	@Test(enabled=false)
 	public void testWithBeanTester()
 	{
 		final BeanTester beanTester = new BeanTester();

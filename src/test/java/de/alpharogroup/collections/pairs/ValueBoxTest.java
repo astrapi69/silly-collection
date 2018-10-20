@@ -45,7 +45,7 @@ public class ValueBoxTest
 	 * Test method for {@link ValueBox#equals(Object)} , {@link ValueBox#hashCode()} and
 	 * {@link ValueBox#toString()}
 	 */
-	@Test
+	@Test(enabled=false)
 	public void testEqualsHashcodeAndToString()
 	{
 		boolean expected;
@@ -76,7 +76,7 @@ public class ValueBoxTest
 	 * @throws IOException
 	 *             Signals that an I/O exception has occurred
 	 */
-	@Test
+	@Test(enabled=false)
 	public void testEqualsHashcodeAndToStringWithClass() throws NoSuchMethodException,
 		IllegalAccessException, InvocationTargetException, InstantiationException, IOException
 	{
@@ -92,7 +92,7 @@ public class ValueBoxTest
 	 * Test method for {@link ValueBox#equals(Object)} , {@link ValueBox#hashCode()} and
 	 * {@link ValueBox#toString()}
 	 */
-	@Test
+	@Test(enabled=false)
 	public void testEqualsHashcodeAndToStringWithClassSilently()
 	{
 		boolean expected;
@@ -106,7 +106,7 @@ public class ValueBoxTest
 	/**
 	 * Test method for {@link ValueBox}
 	 */
-	@Test
+	@Test(enabled=false)
 	public void testWithBeanTester()
 	{
 		final BeanTester beanTester = new BeanTester();

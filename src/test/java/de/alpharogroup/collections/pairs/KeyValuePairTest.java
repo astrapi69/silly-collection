@@ -50,7 +50,7 @@ public class KeyValuePairTest
 	/**
 	 * Test method for {@link KeyValuePair#equals(Object)}
 	 */
-	@Test
+	@Test(enabled=false)
 	public void testEqualsObject()
 	{
 
@@ -73,7 +73,7 @@ public class KeyValuePairTest
 	/**
 	 * Test method for {@link KeyValuePair#hashCode()}
 	 */
-	@Test
+	@Test(enabled=false)
 	public void testHashcode()
 	{
 		boolean expected;
@@ -99,7 +99,7 @@ public class KeyValuePairTest
 	/**
 	 * Test method for {@link KeyValuePair#toKeyValuePairs(Map)}.
 	 */
-	@Test
+	@Test(enabled=false)
 	public void testToKeyValuePairsMap()
 	{
 		final Map<String, String> map = new HashMap<>();
@@ -117,7 +117,7 @@ public class KeyValuePairTest
 	/**
 	 * Test method for {@link KeyValuePair#toKeyValuePairs(Properties)}.
 	 */
-	@Test
+	@Test(enabled=false)
 	public void testToKeyValuePairsProperties()
 	{
 		String key;
@@ -141,7 +141,7 @@ public class KeyValuePairTest
 	/**
 	 * Test method for {@link KeyValuePair#toMap(java.util.Collection)}.
 	 */
-	@Test
+	@Test(enabled=false)
 	public void testToMap()
 	{
 		List<KeyValuePair<String, String>> list = new ArrayList<>();
@@ -159,7 +159,7 @@ public class KeyValuePairTest
 	/**
 	 * Test method for {@link KeyValuePair#toString()}
 	 */
-	@Test
+	@Test(enabled=false)
 	public void testToString()
 	{
 		boolean expected;
