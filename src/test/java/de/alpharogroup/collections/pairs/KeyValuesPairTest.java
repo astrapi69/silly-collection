@@ -49,7 +49,7 @@ public class KeyValuesPairTest
 	 * Test method for {@link KeyValuesPair#equals(Object)} , {@link KeyValuesPair#hashCode()} and
 	 * {@link KeyValuesPair#toString()}
 	 */
-	@Test
+	@Test(enabled = false)
 	public void testEqualsHashcodeAndToString()
 	{
 		boolean expected;
@@ -84,7 +84,7 @@ public class KeyValuesPairTest
 	/**
 	 * Test for method {@link KeyValuesPair#builder()} with List as collection
 	 */
-	@Test
+	@Test(enabled = false)
 	public void testKeyValuesPairWithList()
 	{
 		final Person person = Person.builder().name("John").married(Boolean.FALSE).build();

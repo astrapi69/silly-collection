@@ -28,6 +28,7 @@ import java.util.ArrayList;
 import java.util.Arrays;
 import java.util.Collection;
 import java.util.Collections;
+import java.util.LinkedList;
 import java.util.List;
 import java.util.Map;
 
@@ -103,6 +104,50 @@ public final class ListFactory
 	public static List<Integer> newRangeList(final int start, final int end)
 	{
 		return Arrays.asList(ArrayFactory.newRangeArray(start, end));
+	}
+
+	/**
+	 * Factory method for create new {@link LinkedList} from the given optional collection and the
+	 * given optional elements.
+	 *
+	 * @param <T>
+	 *            the generic type of the elements
+	 * @param collection
+	 *            the optional collection that will be added to the new list
+	 * @param elements
+	 *            the optional elements to be added in the new {@link LinkedList}.
+	 * @return the new {@link LinkedList} as {@link List}.
+	 */
+	@SafeVarargs
+	public static <T> List<T> newLinkedList(final Collection<T> collection, final T... elements)
+	{
+		final List<T> list;
+		if (CollectionExtensions.isNotEmpty(collection))
+		{
+			list = new LinkedList<>(collection);
+			Collections.addAll(list, elements);
+		}
+		else
+		{
+			list = new LinkedList<>();
+			Collections.addAll(list, elements);
+		}
+		return list;
+	}
+
+	/**
+	 * Factory method for create new {@link LinkedList} from the given optional elements.
+	 *
+	 * @param <T>
+	 *            the generic type of the elements
+	 * @param elements
+	 *            the elements to add in the new {@link LinkedList}.
+	 * @return the new {@link LinkedList} as {@link List}.
+	 */
+	@SafeVarargs
+	public static <T> List<T> newLinkedList(final T... elements)
+	{
+		return newLinkedList(null, elements);
 	}
 
 }

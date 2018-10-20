@@ -47,7 +47,10 @@ import lombok.experimental.FieldDefaults;
  *            the generic type of the map key.
  * @param <MV>
  *            the generic type of the map value.
+ * @deprecated use instead the same named class from project model-core <br>
+ *             Note: will be removed on next minor release.
  */
+@Deprecated
 @Getter
 @Setter
 @EqualsAndHashCode

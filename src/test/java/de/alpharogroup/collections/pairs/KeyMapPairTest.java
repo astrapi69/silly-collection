@@ -47,7 +47,7 @@ public class KeyMapPairTest
 	 * Test method for {@link KeyMapPair#equals(Object)} , {@link KeyMapPair#hashCode()} and
 	 * {@link KeyMapPair#toString()}
 	 */
-	@Test
+	@Test(enabled = false)
 	public void testEqualsHashcodeAndToString()
 	{
 
@@ -84,7 +84,7 @@ public class KeyMapPairTest
 	/**
 	 * Test method for {@link KeyMapPair}
 	 */
-	@Test
+	@Test(enabled = false)
 	public void testWithBeanTester()
 	{
 		final BeanTester beanTester = new BeanTester();

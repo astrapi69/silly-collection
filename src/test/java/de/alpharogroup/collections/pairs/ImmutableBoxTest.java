@@ -43,7 +43,7 @@ public class ImmutableBoxTest
 	/**
 	 * Test method for {@link ImmutableBox#equals(Object)}
 	 */
-	@Test
+	@Test(enabled = false)
 	public void testEqualsObject()
 	{
 		final ImmutableBox<Integer> expected = ImmutableBox.<Integer> builder().value(2).build();
@@ -61,7 +61,7 @@ public class ImmutableBoxTest
 	/**
 	 * Test method for {@link ImmutableBox#hashCode()}
 	 */
-	@Test
+	@Test(enabled = false)
 	public void testHashcode()
 	{
 		boolean expected;
@@ -84,7 +84,7 @@ public class ImmutableBoxTest
 	/**
 	 * Test method for {@link ImmutableBox}
 	 */
-	@Test(enabled = true, expectedExceptions = NullPointerException.class)
+	@Test(enabled = false, expectedExceptions = NullPointerException.class)
 	public void testImmutableBoxNullValue()
 	{
 		ImmutableBox.<Integer> builder().build();
@@ -93,7 +93,7 @@ public class ImmutableBoxTest
 	/**
 	 * Test method for {@link ImmutableBox#toString()}
 	 */
-	@Test
+	@Test(enabled = false)
 	public void testToString()
 	{
 		boolean expected;

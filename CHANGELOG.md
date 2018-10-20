@@ -1,6 +1,21 @@
 ## Change log
 ----------------------
 
+Version 4.34
+-------------
+
+ADDED:
+ 
+- new factory methods for LinkedList objects created
+- new IndexableSet class created that can get the index of an element in the set
+- new method for rearrange an element of a List to a specified index created
+- new method that converts an array to a Set
+
+CHANGED:
+
+- update of parent version to 4.1
+- moved pair bean classes to new model-core project and tagged as deprecated
+
 Version 4.33
 -------------
 

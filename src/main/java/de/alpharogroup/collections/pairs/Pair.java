@@ -44,7 +44,10 @@ import lombok.experimental.FieldDefaults;
  *            The generic type of the left content of this Pair.
  * @param <V>
  *            The generic type of the right content of this Pair.
+ * @deprecated use instead the same named class from project model-core <br>
+ *             Note: will be removed on next minor release.
  */
+@Deprecated
 @Getter
 @Setter
 @EqualsAndHashCode

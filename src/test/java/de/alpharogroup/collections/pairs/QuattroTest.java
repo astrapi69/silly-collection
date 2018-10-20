@@ -45,7 +45,7 @@ public class QuattroTest
 	 * Test method for {@link Quattro#equals(Object)} , {@link Quattro#hashCode()} and
 	 * {@link Quattro#toString()}
 	 */
-	@Test
+	@Test(enabled = false)
 	public void testEqualsHashcodeAndToString()
 	{
 
@@ -84,7 +84,7 @@ public class QuattroTest
 	/**
 	 * Test method for {@link Quattro}
 	 */
-	@Test
+	@Test(enabled = false)
 	public void testWithBeanTester()
 	{
 		final BeanTester beanTester = new BeanTester();

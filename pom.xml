@@ -6,12 +6,12 @@
 	<parent>
 		<groupId>de.alpharogroup</groupId>
 		<artifactId>mvn-java-parent</artifactId>
-		<version>4</version>
+		<version>4.1</version>
 		<relativePath></relativePath>
 	</parent>
 
 	<artifactId>silly-collections</artifactId>
-	<version>4.33</version>
+	<version>4.34</version>
 
 	<name>${project.artifactId}</name>
 

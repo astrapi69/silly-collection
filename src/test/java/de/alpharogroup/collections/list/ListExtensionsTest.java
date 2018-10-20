@@ -334,6 +334,41 @@ public class ListExtensionsTest
 	}
 
 	/**
+	 * Test method for {@link ListExtensions#rearrange(List, Object, int)}
+	 */
+	@Test
+	public void testRearrange()
+	{
+		List<String> search;
+		List<String> rearrangedList;
+		int index;
+
+		search = new ArrayList<>();
+		search.add("Leonidas");
+		search.add("Berta");
+		search.add("Caesar");
+		search.add("Dora");
+		search.add("Emil");
+		search.add("Anton");
+
+		rearrangedList = ListExtensions.rearrange("Anton", search, 0);
+		index = rearrangedList.indexOf("Anton");
+		assertEquals(index, 0);
+
+		rearrangedList = ListExtensions.rearrange("Anton", search, 2);
+		index = rearrangedList.indexOf("Anton");
+		assertEquals(index, 2);
+
+		rearrangedList = ListExtensions.rearrange("Anton", search, 5);
+		index = rearrangedList.indexOf("Anton");
+		assertEquals(index, 5);
+
+		rearrangedList = ListExtensions.rearrange("Anton", search, 6);
+		index = rearrangedList.indexOf("Anton");
+		assertEquals(index, 5);
+	}
+
+	/**
 	 * Test method for {@link ListExtensions#removeFirst(java.util.List)}
 	 */
 	@Test

@@ -72,6 +72,36 @@ public class ListFactoryTest
 	}
 
 	/**
+	 * Test the method {@link ListFactory#newLinkedList(java.util.Collection, Object...)}.
+	 */
+	@Test
+	public void testNewLinkedListCollectionObjects()
+	{
+		List<String> strings = ListFactory.newLinkedList(null, "foo");
+		assertNotNull(strings);
+		assertTrue(strings.size() == 1);
+		assertTrue(strings.get(0).equals("foo"));
+
+		strings = ListFactory.newLinkedList(strings, "foo");
+		assertNotNull(strings);
+		assertTrue(strings.size() == 2);
+		assertTrue(strings.get(0).equals("foo"));
+	}
+
+	/**
+	 * Test the method {@link ListFactory#newLinkedList(Object...)}.
+	 */
+	@Test
+	public void testNewLinkedListObjects()
+	{
+		final List<String> strings = ListFactory.newLinkedList("foo", "bar");
+		assertNotNull(strings);
+		assertTrue(strings.size() == 2);
+		assertTrue(strings.get(0).equals("foo"));
+		assertTrue(strings.get(1).equals("bar"));
+	}
+
+	/**
 	 * Test the method {@link ListFactory#newRangeList(int, int)}
 	 */
 	@Test

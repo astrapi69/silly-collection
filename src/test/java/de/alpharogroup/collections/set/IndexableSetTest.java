@@ -22,45 +22,45 @@
  * OF CONTRACT, TORT OR OTHERWISE, ARISING FROM, OUT OF OR IN CONNECTION
  * WITH THE SOFTWARE OR THE USE OR OTHER DEALINGS IN THE SOFTWARE.
  */
-package de.alpharogroup.collections.pairs;
+package de.alpharogroup.collections.set;
 
-import java.io.Serializable;
+import static org.testng.Assert.assertEquals;
 
-import lombok.AccessLevel;
-import lombok.AllArgsConstructor;
-import lombok.Builder;
-import lombok.EqualsAndHashCode;
-import lombok.Getter;
-import lombok.NonNull;
-import lombok.ToString;
-import lombok.experimental.FieldDefaults;
+import org.testng.annotations.Test;
 
 /**
- * The class {@link ImmutableBox} represents one value with a generic parameter for an immutable
- * value.
+ * The unit test class for the class {@link IndexableSet}
  *
- * @param <T>
- *            The type of the value.
- * @deprecated use instead the same named class from project model-core <br>
- *             Note: will be removed on next minor release.
+ * @author Asterios Raptis
  */
-@Deprecated
-@Getter
-@EqualsAndHashCode
-@ToString
-@AllArgsConstructor
-@Builder(toBuilder = true)
-@FieldDefaults(makeFinal = true, level = AccessLevel.PRIVATE)
-public class ImmutableBox<T> implements Serializable
+public class IndexableSetTest
 {
 
 	/**
-	 * The serialVersionUID.
+	 * Test method for {@link IndexableSet#getIndex(Object)}
 	 */
-	private static final long serialVersionUID = 1L;
+	@Test
+	public void testGetIndex()
+	{
+		int index;
+		IndexableSet<String> set;
+		set = new IndexableSet<>();
+		set.add("value1");
+		set.add("value2");
+		set.add("value3");
+		set.add("value4");
 
-	/** The value. */
-	@NonNull
-	T value;
+		index = set.getIndex("value2");
+		assertEquals(index, 1);
+
+		set.add("value2");
+		index = set.getIndex("value2");
+		assertEquals(index, 3);
+
+
+		index = set.getIndex("value5");
+		assertEquals(index, -1);
+
+	}
 
 }

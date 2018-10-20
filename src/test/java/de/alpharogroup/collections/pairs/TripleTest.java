@@ -44,7 +44,7 @@ public class TripleTest
 	 * Test method for {@link Triple#equals(Object)} , {@link Triple#hashCode()} and
 	 * {@link Triple#toString()}
 	 */
-	@Test
+	@Test(enabled = false)
 	public void testEqualsHashcodeAndToString()
 	{
 
@@ -63,8 +63,7 @@ public class TripleTest
 		final Triple<String, Employee, Customer> second = Triple
 			.<String, Employee, Customer> builder().left("left").middle(employee).right(customer)
 			.build();
-		final Triple<Integer, Employee, Customer> third = new Triple<Integer, Employee, Customer>(1,
-			employee, customer);
+		final Triple<Integer, Employee, Customer> third = new Triple<>(1, employee, customer);
 		final Triple<Integer, Employee, Customer> fourth = new Triple<>();
 		fourth.setLeft(1);
 		fourth.setMiddle(employee);
@@ -79,7 +78,7 @@ public class TripleTest
 	/**
 	 * Test method for {@link Triple}
 	 */
-	@Test
+	@Test(enabled = false)
 	public void testWithBeanTester()
 	{
 		final BeanTester beanTester = new BeanTester();

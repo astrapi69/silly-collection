@@ -22,45 +22,36 @@
  * OF CONTRACT, TORT OR OTHERWISE, ARISING FROM, OUT OF OR IN CONNECTION
  * WITH THE SOFTWARE OR THE USE OR OTHER DEALINGS IN THE SOFTWARE.
  */
-package de.alpharogroup.collections.pairs;
-
-import java.io.Serializable;
-
-import lombok.AccessLevel;
-import lombok.AllArgsConstructor;
-import lombok.Builder;
-import lombok.EqualsAndHashCode;
-import lombok.Getter;
-import lombok.NonNull;
-import lombok.ToString;
-import lombok.experimental.FieldDefaults;
+package de.alpharogroup.collections.set;
 
 /**
- * The class {@link ImmutableBox} represents one value with a generic parameter for an immutable
- * value.
+ * The class {@link IndexableSet}
  *
- * @param <T>
- *            The type of the value.
- * @deprecated use instead the same named class from project model-core <br>
- *             Note: will be removed on next minor release.
+ * @param <E>
+ *            the element type
  */
-@Deprecated
-@Getter
-@EqualsAndHashCode
-@ToString
-@AllArgsConstructor
-@Builder(toBuilder = true)
-@FieldDefaults(makeFinal = true, level = AccessLevel.PRIVATE)
-public class ImmutableBox<T> implements Serializable
+public class IndexableSet<E> extends InsertionOrderSet<E>
 {
 
 	/**
-	 * The serialVersionUID.
+	 * Gets the index of the given element
+	 *
+	 * @param element
+	 *            the element
+	 * @return the index of the element or -1 if its not exists
 	 */
-	private static final long serialVersionUID = 1L;
-
-	/** The value. */
-	@NonNull
-	T value;
+	public int getIndex(E element)
+	{
+		int index = 0;
+		for (E entry : this)
+		{
+			if (entry.equals(element))
+			{
+				return index;
+			}
+			index++;
+		}
+		return -1;
+	}
 
 }

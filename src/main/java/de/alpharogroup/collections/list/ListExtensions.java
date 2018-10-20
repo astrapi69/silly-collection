@@ -32,6 +32,7 @@ import java.util.Comparator;
 import java.util.Enumeration;
 import java.util.Iterator;
 import java.util.List;
+import java.util.Optional;
 import java.util.Set;
 
 import org.apache.commons.beanutils.BeanComparator;
@@ -41,6 +42,7 @@ import de.alpharogroup.collections.CollectionExtensions;
 import de.alpharogroup.collections.array.ArrayFactory;
 import de.alpharogroup.collections.modifications.ModifiedCollections;
 import de.alpharogroup.comparators.SortOrderComparator;
+import lombok.NonNull;
 import lombok.experimental.UtilityClass;
 
 /**
@@ -113,6 +115,24 @@ public final class ListExtensions
 			return list.get(list.size() - 1);
 		}
 		return null;
+	}
+
+	/**
+	 * Gets the last object from the given List.
+	 *
+	 * @param <T>
+	 *            the generic type
+	 * @param list
+	 *            the List.
+	 * @return Returns the last object from the given List or null if the List is empty or null.
+	 */
+	public static <T> Optional<T> getOptionalLast(final List<T> list)
+	{
+		if (CollectionExtensions.isNotEmpty(list))
+		{
+			return Optional.of(list.get(list.size() - 1));
+		}
+		return Optional.empty();
 	}
 
 	/**
@@ -227,10 +247,10 @@ public final class ListExtensions
 	 */
 	public static <T> boolean isLast(final List<T> list, final T element)
 	{
-		final T last = getLast(list);
-		if (last != null)
+		Optional<T> optionalLast = getOptionalLast(list);
+		if (optionalLast.isPresent())
 		{
-			return last.equals(element);
+			return optionalLast.get().equals(element);
 		}
 		return false;
 	}
@@ -254,6 +274,34 @@ public final class ListExtensions
 	}
 
 	/**
+	 * Rearrange the order from the given {@link List} to the given rearranged index
+	 *
+	 * @param <T>
+	 *            the generic type of the elements
+	 * @param listToResort
+	 *            the list to resort
+	 * @param element
+	 *            the element to rearrange
+	 * @param rearrangeToIndex
+	 *            the rearrange to index
+	 * @return the rearranged {@link List}
+	 */
+	public static <T> List<T> rearrange(@NonNull T element, @NonNull List<T> listToResort,
+		int rearrangeToIndex)
+	{
+		int index = listToResort.indexOf(element);
+		if (index < 0 || index == rearrangeToIndex || listToResort.size() == rearrangeToIndex)
+		{
+			return listToResort;
+		}
+		List<T> resortedList;
+		resortedList = new ArrayList<>(listToResort);
+		resortedList.remove(index);
+		resortedList.add(rearrangeToIndex, element);
+		return resortedList;
+	}
+
+	/**
 	 * Removes the first object from the given List.
 	 *
 	 * @param <T>
@@ -270,6 +318,25 @@ public final class ListExtensions
 			return list.remove(0);
 		}
 		return null;
+	}
+
+	/**
+	 * Removes the first object from the given List.
+	 *
+	 * @param <T>
+	 *            the generic type
+	 * @param list
+	 *            the List.
+	 * @return Removes and returns the first object from the given List or null if the List is empty
+	 *         or null.
+	 */
+	public static <T> Optional<T> removeOptionalFirst(final List<T> list)
+	{
+		if (!CollectionExtensions.isEmpty(list) && 0 < list.size())
+		{
+			return Optional.of(list.remove(0));
+		}
+		return Optional.empty();
 	}
 
 	/**

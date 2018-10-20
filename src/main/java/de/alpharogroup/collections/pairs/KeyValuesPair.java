@@ -47,7 +47,10 @@ import lombok.experimental.FieldDefaults;
  *            The type of the key.
  * @param <V>
  *            The type of the values in the collection.
+ * @deprecated use instead the same named class from project model-core <br>
+ *             Note: will be removed on next minor release.
  */
+@Deprecated
 @Getter
 @Setter
 @EqualsAndHashCode
