@@ -38,7 +38,10 @@ import de.alpharogroup.collections.pairs.KeyMapPair;
  *            the generic type of the map key.
  * @param <MV>
  *            the generic type of the map value.
+ * @deprecated use instead java 8 comparators <br>
+ *             Note: will be removed on next minor release.
  */
+@Deprecated
 public class KeyMapPairKeyComparator<K extends Comparable<K>, MK, MV>
 	implements
 		Comparator<KeyMapPair<K, MK, MV>>

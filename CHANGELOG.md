@@ -1,6 +1,13 @@
 ## Change log
 ----------------------
 
+Version 4.34.1
+-------------
+
+CHANGED:
+
+- tagged classes as deprecated that use still pair classes
+
 Version 4.34
 -------------
 
