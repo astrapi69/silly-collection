@@ -1,7 +1,7 @@
 ## Change log
 ----------------------
 
-Version 4.34-SNAPSHOT
+Version 4.34
 -------------
 
 ADDED:
@@ -14,6 +14,7 @@ ADDED:
 CHANGED:
 
 - update of parent version to 4.1
+- moved pair bean classes to new model-core project and tagged as deprecated
 
 Version 4.33
 -------------

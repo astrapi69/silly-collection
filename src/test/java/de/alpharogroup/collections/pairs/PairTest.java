@@ -41,7 +41,7 @@ public class PairTest
 	 * Test method for {@link Pair#equals(Object)} , {@link Pair#hashCode()} and
 	 * {@link Pair#toString()}
 	 */
-	@Test(enabled=false)
+	@Test(enabled = false)
 	public void testEqualsHashcodeAndToString()
 	{
 
@@ -69,7 +69,7 @@ public class PairTest
 	/**
 	 * Test method for {@link Pair}
 	 */
-	@Test(enabled=false)
+	@Test(enabled = false)
 	public void testWithBeanTester()
 	{
 		final BeanTester beanTester = new BeanTester();

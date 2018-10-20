@@ -45,7 +45,7 @@ public class QuattroTest
 	 * Test method for {@link Quattro#equals(Object)} , {@link Quattro#hashCode()} and
 	 * {@link Quattro#toString()}
 	 */
-	@Test(enabled=false)
+	@Test(enabled = false)
 	public void testEqualsHashcodeAndToString()
 	{
 

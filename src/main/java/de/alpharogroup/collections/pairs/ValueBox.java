@@ -42,7 +42,7 @@ import lombok.experimental.FieldDefaults;
  * @param <T>
  *            The type of the value.
  * @deprecated use instead the same named class from project model-core. <br>
- * Note: will be removed on next minor release.
+ *             Note: will be removed on next minor release.
  */
 @Deprecated
 @Getter

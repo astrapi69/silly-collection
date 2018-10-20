@@ -44,7 +44,7 @@ public class TripleTest
 	 * Test method for {@link Triple#equals(Object)} , {@link Triple#hashCode()} and
 	 * {@link Triple#toString()}
 	 */
-	@Test(enabled=false)
+	@Test(enabled = false)
 	public void testEqualsHashcodeAndToString()
 	{
 
