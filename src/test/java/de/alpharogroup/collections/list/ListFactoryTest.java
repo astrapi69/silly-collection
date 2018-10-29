@@ -30,6 +30,7 @@ import static org.testng.AssertJUnit.assertTrue;
 import java.lang.reflect.InvocationTargetException;
 import java.util.ArrayList;
 import java.util.List;
+import java.util.Iterator;
 import java.util.Collection;
 
 import org.meanbean.test.BeanTestException;
@@ -42,6 +43,23 @@ import org.testng.annotations.Test;
 public class ListFactoryTest
 {
 
+    /**
+     * Test the method {@link ListFactory#newArrayList(java.util.Iterator, Object...)}.
+     */
+    @Test
+    public void testNewArrayListIteratorObjects()
+    {
+        List<String> strings = ListFactory.newArrayList((Iterator)null, "foo");
+        assertNotNull(strings);
+        assertTrue(strings.size() == 1);
+        assertTrue(strings.get(0).equals("foo"));
+        Iterator<String> iterator = strings.iterator();
+        strings = ListFactory.newArrayList(iterator, "bar");
+        assertNotNull(strings);
+        assertTrue(strings.size() == 2);
+        assertTrue(strings.get(0).equals("foo"));
+    }
+	
     /**
      * Test the method {@link ListFactory#newArrayList(Iterable, Object...)}.
      */
