@@ -30,6 +30,7 @@ import static org.testng.AssertJUnit.assertTrue;
 import java.lang.reflect.InvocationTargetException;
 import java.util.ArrayList;
 import java.util.List;
+import java.util.Collection;
 
 import org.meanbean.test.BeanTestException;
 import org.meanbean.test.BeanTester;
@@ -41,13 +42,30 @@ import org.testng.annotations.Test;
 public class ListFactoryTest
 {
 
+    /**
+     * Test the method {@link ListFactory#newArrayList(Iterable, Object...)}.
+     */
+    @Test
+    public void testNewArrayListIterableObjects()
+    {
+        List<String> strings = ListFactory.newArrayList((Iterable)null, "foo");
+        assertNotNull(strings);
+        assertTrue(strings.size() == 1);
+        assertTrue(strings.get(0).equals("foo"));
+        Iterable<String> iterable = strings;
+        strings = ListFactory.newArrayList(iterable, "foo");
+        assertNotNull(strings);
+        assertTrue(strings.size() == 2);
+        assertTrue(strings.get(0).equals("foo"));
+    }
+	
 	/**
 	 * Test the method {@link ListFactory#newArrayList(java.util.Collection, Object...)}.
 	 */
 	@Test
 	public void testNewArrayListCollectionObjects()
 	{
-		List<String> strings = ListFactory.newArrayList(null, "foo");
+		List<String> strings = ListFactory.newArrayList((Collection)null, "foo");
 		assertNotNull(strings);
 		assertTrue(strings.size() == 1);
 		assertTrue(strings.get(0).equals("foo"));
@@ -77,7 +95,7 @@ public class ListFactoryTest
 	@Test
 	public void testNewLinkedListCollectionObjects()
 	{
-		List<String> strings = ListFactory.newLinkedList(null, "foo");
+		List<String> strings = ListFactory.newLinkedList((Collection)null, "foo");
 		assertNotNull(strings);
 		assertTrue(strings.size() == 1);
 		assertTrue(strings.get(0).equals("foo"));
