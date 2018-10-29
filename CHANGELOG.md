@@ -7,6 +7,7 @@ Version 4.35-SNAPSHOT
 ADDED:
  
 - new methods created that returns an Optional instead of null values
+- new factory methods created for iterables and iterators
 
 CHANGED:
 
