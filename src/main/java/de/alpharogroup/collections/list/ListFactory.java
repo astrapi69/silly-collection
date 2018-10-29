@@ -46,6 +46,33 @@ import lombok.experimental.UtilityClass;
 public final class ListFactory
 {
 
+	
+    /**
+     * Factory method for create new {@link ArrayList} from the given optional iterable and the
+     * given optional elements.
+     *
+     * @param <T>
+     *            the generic type of the elements
+     * @param iterable
+     *            the optional collection that will be added to the new list
+     * @param elements
+     *            the optional elements to be added in the new {@link ArrayList}.
+     * @return the new {@link ArrayList} as {@link List}.
+     */
+    @SafeVarargs
+    public static <T> List<T> newArrayList(final Iterable<T> iterable, final T... elements)
+    {
+        final List<T> list = new ArrayList<>();
+        if (iterable != null)
+        {
+            for (T t : iterable){
+                list.add(t);
+            }
+        }
+        Collections.addAll(list, elements);
+        return list;
+    }
+	
 	/**
 	 * Factory method for create new {@link ArrayList} from the given optional collection and the
 	 * given optional elements.
