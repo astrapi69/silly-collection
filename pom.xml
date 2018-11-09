@@ -6,18 +6,18 @@
 	<parent>
 		<groupId>de.alpharogroup</groupId>
 		<artifactId>mvn-java-parent</artifactId>
-		<version>4.1</version>
+		<version>4.2</version>
 		<relativePath></relativePath>
 	</parent>
 
 	<artifactId>silly-collections</artifactId>
-	<version>4.35-SNAPSHOT</version>
+	<version>4.35</version>
 
 	<name>${project.artifactId}</name>
 
 	<description>Utility library for collections, comparators and iterator classes</description>
 
-	<url>https://github.com/lightblueseas/silly-collections</url>
+	<url>https://github.com/lightblueseas/${project.artifactId}</url>
 
 	<properties>
 		<!-- JOBJECT-EXTENSIONS versions -->
@@ -43,19 +43,19 @@
 	</licenses>
 
 	<scm>
-		<connection>scm:git:git:@github.com:lightblueseas/silly-collections.git</connection>
-		<developerConnection>scm:git:git@github.com:lightblueseas/silly-collections.git</developerConnection>
-		<url>git:@github.com:lightblueseas/silly-collections.git</url>
+		<connection>scm:git:git:@github.com:lightblueseas/${project.artifactId}.git</connection>
+		<developerConnection>scm:git:git@github.com:lightblueseas/${project.artifactId}.git</developerConnection>
+		<url>git:@github.com:lightblueseas/${project.artifactId}.git</url>
 	</scm>
 
 	<issueManagement>
 		<system>github</system>
-		<url>https://github.com/lightblueseas/silly-collections/issues</url>
+		<url>https://github.com/lightblueseas/${project.artifactId}/issues</url>
 	</issueManagement>
 
 	<ciManagement>
 		<system>travis-ci</system>
-		<url>https://travis-ci.org/lightblueseas/silly-collections</url>
+		<url>https://travis-ci.org/lightblueseas/${project.artifactId}</url>
 	</ciManagement>
 
 	<dependencyManagement>
