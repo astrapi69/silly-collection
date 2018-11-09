@@ -29,7 +29,7 @@ Than you can add the dependency to your dependencies:
 	<properties>
 			...
 		<!-- SILLY-COLLECTIONS version -->
-		<silly-collections.version>4.34.1</silly-collections.version>
+		<silly-collections.version>4.35</silly-collections.version>
 			...
 	</properties>
 			...
@@ -46,13 +46,13 @@ Than you can add the dependency to your dependencies:
 
 ## Semantic Versioning
 
-The versions of silly-collections are maintained with the Semantic Versioning guidelines.
+The versions of silly-collections are maintained with the Simplified Semantic Versioning guidelines.
 
 Release version numbers will be incremented in the following format:
 
 `<major>.<minor>.<patch>`
 
-For detailed information on versioning for this project you can visit this [wiki page](https://github.com/lightblueseas/mvn-parent-projects/wiki/Semantic-Versioning).
+For detailed information on versioning for this project you can visit this [wiki page](https://github.com/lightblueseas/mvn-parent-projects/wiki/Simplified-Semantic-Versioning).
 
 ## Want to Help and improve it? ###
 

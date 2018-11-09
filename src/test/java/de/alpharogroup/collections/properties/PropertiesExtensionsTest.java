@@ -47,8 +47,6 @@ import org.meanbean.test.BeanTester;
 import org.testng.AssertJUnit;
 import org.testng.annotations.Test;
 
-import de.alpharogroup.collections.pairs.KeyValuePair;
-
 /**
  * The unit test class for the class {@link PropertiesExtensions}.
  *
@@ -332,32 +330,6 @@ public class PropertiesExtensionsTest
 	public void testLoadPropertiesNotFound() throws IOException
 	{
 		PropertiesExtensions.loadProperties(new File("foo.properties"));
-	}
-
-	/**
-	 * Test for method {@link PropertiesExtensions#toKeyValuePairs(Properties)}.
-	 */
-	@Test(enabled = true)
-	public void testToKeyValuePairs()
-	{
-		String key;
-		String value;
-		final Properties properties = new Properties();
-
-		key = "foo";
-		value = "bar";
-		properties.setProperty(key, value);
-
-		key = "bla";
-		value = "fasel";
-		properties.setProperty(key, value);
-
-		final List<KeyValuePair<String, String>> list = PropertiesExtensions
-			.toKeyValuePairs(properties);
-
-		assertNotNull(list);
-		assertTrue(list.size() == 2);
-
 	}
 
 	/**

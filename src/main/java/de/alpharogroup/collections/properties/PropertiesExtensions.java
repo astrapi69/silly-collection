@@ -41,7 +41,6 @@ import java.util.Properties;
 import java.util.regex.Matcher;
 import java.util.regex.Pattern;
 
-import de.alpharogroup.collections.pairs.KeyValuePair;
 import lombok.experimental.UtilityClass;
 import lombok.extern.slf4j.Slf4j;
 
@@ -217,21 +216,6 @@ public final class PropertiesExtensions
 			throw new FileNotFoundException(propertiesFile.getName() + " not found.");
 		}
 		return properties;
-	}
-
-	/**
-	 * Transforms the given {@link Properties} to a list of {@link KeyValuePair}'s.
-	 *
-	 * @param properties
-	 *            the properties
-	 * @return the new list with the {@link KeyValuePair}'s.
-	 * @deprecated use instead the utility method from KeyValuePair <br>
-	 *             Note: will be removed on next minor release.
-	 */
-	@Deprecated
-	public static List<KeyValuePair<String, String>> toKeyValuePairs(final Properties properties)
-	{
-		return KeyValuePair.toKeyValuePairs(properties);
 	}
 
 	/**

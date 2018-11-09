@@ -1,6 +1,19 @@
 ## Change log
 ----------------------
 
+Version 4.35
+-------------
+
+ADDED:
+ 
+- new methods created that returns an Optional instead of null values
+- new factory methods created for iterables and iterators
+
+CHANGED:
+
+- update of parent version to 4.2
+- removed all classes that still used pair classes
+
 Version 4.34.1
 -------------
 
