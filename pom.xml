@@ -6,7 +6,7 @@
 	<parent>
 		<groupId>de.alpharogroup</groupId>
 		<artifactId>mvn-java-parent</artifactId>
-		<version>4.2</version>
+		<version>4.4</version>
 		<relativePath></relativePath>
 	</parent>
 
@@ -21,7 +21,7 @@
 
 	<properties>
 		<!-- JOBJECT-EXTENSIONS versions -->
-		<jobject-extensions.version>1.12</jobject-extensions.version>
+		<jobject-extensions.version>2.3.2</jobject-extensions.version>
 		<jobject-clone.version>${jobject-extensions.version}</jobject-clone.version>
 		<jobject-compare.version>${jobject-extensions.version}</jobject-compare.version>
 		<jobject-core.version>${jobject-extensions.version}</jobject-core.version>
@@ -29,7 +29,7 @@
 		<!-- VINTAGE-TIME version -->
 		<vintage-time.version>4.12</vintage-time.version>
 		<!-- TEST-OBJECTS version -->
-		<test-objects.version>4.28</test-objects.version>
+		<test-objects.version>4.29.1</test-objects.version>
 		<!-- EXTERNAL LIBRARIES versions -->
 		<commons-collections4.version>4.2</commons-collections4.version>
 	</properties>

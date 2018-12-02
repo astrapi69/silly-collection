@@ -4,6 +4,11 @@
 Version 4.36-SNAPSHOT
 -------------
 
+CHANGED:
+
+- update of parent version to 4.4
+- update of jobject-extensions version to 2.3.2
+
 Version 4.35
 -------------
 
