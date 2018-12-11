@@ -8,6 +8,7 @@ CHANGED:
 
 - update of parent version to 4.4
 - update of jobject-extensions version to 2.3.2
+- update of vintage-time version to 5
 
 Version 4.35
 -------------
