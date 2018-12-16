@@ -42,7 +42,6 @@ import java.util.regex.Matcher;
 import java.util.regex.Pattern;
 
 import lombok.experimental.UtilityClass;
-import lombok.extern.slf4j.Slf4j;
 
 /**
  * The Class {@link PropertiesExtensions} provides methods loading properties and other related
@@ -50,7 +49,6 @@ import lombok.extern.slf4j.Slf4j;
  * bundle.
  */
 @UtilityClass
-@Slf4j
 public final class PropertiesExtensions
 {
 
@@ -440,24 +438,18 @@ public final class PropertiesExtensions
 	 * @param propertiesKey
 	 *            the properties key
 	 * @return the port number or an empty {@linkplain Optional}
+	 * @throws NumberFormatException
+	 *             is thrown if the value cannot be parsed as an integer
 	 */
 	public static Optional<Integer> getInteger(final Properties properties,
-		final String propertiesKey)
+		final String propertiesKey) throws NumberFormatException
 	{
 		if (properties != null && properties.containsKey(propertiesKey))
 		{
 			final String portAsString = properties.getProperty(propertiesKey);
-			try
-			{
-				final Integer port = Integer.valueOf(portAsString);
-				return Optional.of(port);
-			}
-			catch (final NumberFormatException e)
-			{
-				log.error("Value of given properties key:" + propertiesKey + " is not a number.",
-					e);
-				return Optional.empty();
-			}
+			final Integer port = Integer.valueOf(portAsString);
+			return Optional.of(port);
+
 		}
 		return Optional.empty();
 	}
