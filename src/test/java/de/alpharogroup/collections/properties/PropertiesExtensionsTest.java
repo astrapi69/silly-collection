@@ -248,26 +248,14 @@ public class PropertiesExtensionsTest
 	 * Test for method {@link PropertiesExtensions#getInteger(Properties, String)} where value is
 	 * not a number.
 	 */
-	@Test
+	@Test(expectedExceptions = NumberFormatException.class)
 	public void testGetIntegerWithNoNumberValue()
 	{
-		boolean expected;
-		boolean actual;
-		Optional<Integer> number;
-		Properties properties;
-		properties = new Properties();
+		Properties properties = new Properties();
 
 		properties.put("com", "foo");
 
-		number = PropertiesExtensions.getInteger(properties, "com");
-		actual = number.isPresent();
-		expected = false;
-		assertEquals(actual, expected);
-
-		number = PropertiesExtensions.getInteger(null, "com");
-		actual = number.isPresent();
-		expected = false;
-		assertEquals(actual, expected);
+		PropertiesExtensions.getInteger(properties, "com");
 
 	}
 
