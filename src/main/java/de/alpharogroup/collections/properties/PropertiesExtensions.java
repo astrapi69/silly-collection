@@ -118,7 +118,7 @@ public final class PropertiesExtensions
 		{
 			final String key = (String)e.nextElement();
 			final int lastIndex = key.lastIndexOf(".");
-			String subKey;
+			String subKey = null;
 			if (0 < lastIndex)
 			{
 				subKey = key.substring(0, lastIndex);
@@ -192,7 +192,7 @@ public final class PropertiesExtensions
 		throws IOException
 	{
 		Properties properties = null;
-		InputStream inputStream;
+		InputStream inputStream = null;
 		if (propertiesFile.exists())
 		{
 			inputStream = propertiesFile.toURI().toURL().openStream();
@@ -445,7 +445,6 @@ public final class PropertiesExtensions
 		if (properties != null && properties.containsKey(propertiesKey))
 		{
 			final String portAsString = properties.getProperty(propertiesKey);
-
 			final Integer port = Integer.valueOf(portAsString);
 			return Optional.of(port);
 		}
