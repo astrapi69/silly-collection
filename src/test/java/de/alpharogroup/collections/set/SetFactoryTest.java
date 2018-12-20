@@ -177,7 +177,7 @@ public class SetFactoryTest
 	/**
 	 * Test method for {@link SetFactory} with {@link BeanTester}
 	 */
-	@Test(expectedExceptions = { BeanTestException.class, InvocationTargetException.class,
+	@Test(enabled = false, expectedExceptions = { BeanTestException.class, InvocationTargetException.class,
 			UnsupportedOperationException.class })
 	public void testWithBeanTester()
 	{
