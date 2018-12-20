@@ -42,7 +42,6 @@ import java.util.regex.Matcher;
 import java.util.regex.Pattern;
 
 import lombok.experimental.UtilityClass;
-import lombok.extern.slf4j.Slf4j;
 
 /**
  * The Class {@link PropertiesExtensions} provides methods loading properties and other related
@@ -50,7 +49,6 @@ import lombok.extern.slf4j.Slf4j;
  * bundle.
  */
 @UtilityClass
-@Slf4j
 public final class PropertiesExtensions
 {
 
@@ -120,7 +118,7 @@ public final class PropertiesExtensions
 		{
 			final String key = (String)e.nextElement();
 			final int lastIndex = key.lastIndexOf(".");
-			String subKey = null;
+			String subKey;
 			if (0 < lastIndex)
 			{
 				subKey = key.substring(0, lastIndex);
@@ -194,7 +192,7 @@ public final class PropertiesExtensions
 		throws IOException
 	{
 		Properties properties = null;
-		InputStream inputStream = null;
+		InputStream inputStream;
 		if (propertiesFile.exists())
 		{
 			inputStream = propertiesFile.toURI().toURL().openStream();
@@ -447,17 +445,9 @@ public final class PropertiesExtensions
 		if (properties != null && properties.containsKey(propertiesKey))
 		{
 			final String portAsString = properties.getProperty(propertiesKey);
-			try
-			{
-				final Integer port = Integer.valueOf(portAsString);
-				return Optional.of(port);
-			}
-			catch (final NumberFormatException e)
-			{
-				log.error("Value of given properties key:" + propertiesKey + " is not a number.",
-					e);
-				return Optional.empty();
-			}
+
+			final Integer port = Integer.valueOf(portAsString);
+			return Optional.of(port);
 		}
 		return Optional.empty();
 	}

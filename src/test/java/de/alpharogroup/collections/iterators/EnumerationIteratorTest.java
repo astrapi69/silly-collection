@@ -33,8 +33,6 @@ import java.util.Collections;
 import java.util.Enumeration;
 import java.util.List;
 
-import org.slf4j.Logger;
-import org.slf4j.LoggerFactory;
 import org.testng.annotations.AfterMethod;
 import org.testng.annotations.BeforeMethod;
 import org.testng.annotations.Test;
@@ -48,10 +46,6 @@ import de.alpharogroup.collections.list.ListFactory;
  */
 public class EnumerationIteratorTest
 {
-
-	/** The LOGGER. */
-	private static final Logger logger = LoggerFactory
-		.getLogger(EnumerationIteratorTest.class.getName());
 
 	/** The EnumerationIterator. */
 	private EnumerationIterator<String> iterator;
@@ -97,7 +91,7 @@ public class EnumerationIteratorTest
 	}
 
 	/**
-	 * Test method for {@link EnumerationIterator#EnumerationIterator(java.util.Enumeration)} .
+	 * Test method for {@link EnumerationIterator#EnumerationIterator(java.util.Enumeration)}
 	 */
 	@Test
 	public void testEnumerationIterator()
@@ -105,8 +99,6 @@ public class EnumerationIteratorTest
 		int iteratorLength = 0;
 		while (this.iterator.hasNext())
 		{
-			final String stringNumber = this.iterator.next();
-			logger.debug(iteratorLength + ".)Object:" + stringNumber);
 			iteratorLength++;
 		}
 		assertTrue("The length from the array should be equal with "

@@ -4,6 +4,12 @@
 Version 5-SNAPSHOT
 -------------
 
+CHANGED:
+
+- update of jobject-extensions version to 2.5
+- update of vintage-time version to 5.1
+- update of test-objects dependency version to 5
+
 Version 4.35.1
 -------------
 
