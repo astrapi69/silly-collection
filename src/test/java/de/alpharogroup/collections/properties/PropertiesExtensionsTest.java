@@ -25,8 +25,7 @@
 package de.alpharogroup.collections.properties;
 
 import static org.testng.Assert.assertEquals;
-import static org.testng.AssertJUnit.assertNotNull;
-import static org.testng.AssertJUnit.assertTrue;
+import static org.testng.AssertJUnit.*;
 
 import java.io.File;
 import java.io.FileNotFoundException;
@@ -241,7 +240,9 @@ public class PropertiesExtensionsTest
 		expected = 8;
 		assertEquals(actual, expected);
 
-		properties = new Properties();
+		number = PropertiesExtensions.getInteger(properties, "bar");
+		assertFalse(number.isPresent());
+
 	}
 
 	/**
