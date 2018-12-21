@@ -248,7 +248,7 @@ public class PropertiesExtensionsTest
 	 * Test for method {@link PropertiesExtensions#getInteger(Properties, String)} where value is
 	 * not a number.
 	 */
-	@Test
+	@Test(expectedExceptions = NumberFormatException.class)
 	public void testGetIntegerWithNoNumberValue()
 	{
 		Properties properties = new Properties();

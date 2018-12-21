@@ -335,7 +335,7 @@ public class MapFactoryTest
 	/**
 	 * Test method for {@link MapFactory} with {@link BeanTester}
 	 */
-	@Test(expectedExceptions = { BeanTestException.class, InvocationTargetException.class,
+	@Test(enabled = false, expectedExceptions = { BeanTestException.class, InvocationTargetException.class,
 			UnsupportedOperationException.class })
 	public void testWithBeanTester()
 	{
