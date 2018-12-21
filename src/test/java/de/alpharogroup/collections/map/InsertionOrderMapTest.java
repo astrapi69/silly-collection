@@ -71,6 +71,8 @@ public class InsertionOrderMapTest
 			assertTrue(expectedValue.equals(value.toString()));
 			count++;
 		}
+		map.forEach((key, value) -> System.out
+			.println("[" + key.toString() + "=" + value.toString() + "]"));
 
 		map.clear();
 	}
@@ -205,7 +207,7 @@ public class InsertionOrderMapTest
 	/**
 	 * Test the LinkedHashMap to show the difference.
 	 */
-	@Test(enabled = false)
+	@Test
 	public void testLinkedHashMap()
 	{
 		/* Shows that the elements are ordered in insertion-order from the Map. */

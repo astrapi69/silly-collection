@@ -82,7 +82,7 @@ public class SetExtensionsTest
 	/**
 	 * Test method for {@link SetExtensions} with {@link BeanTester}
 	 */
-	@Test(enabled = false, expectedExceptions = { BeanTestException.class, InvocationTargetException.class,
+	@Test(expectedExceptions = { BeanTestException.class, InvocationTargetException.class,
 			UnsupportedOperationException.class })
 	public void testWithBeanTester()
 	{
