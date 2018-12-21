@@ -251,23 +251,11 @@ public class PropertiesExtensionsTest
 	@Test
 	public void testGetIntegerWithNoNumberValue()
 	{
-		boolean expected;
-		boolean actual;
-		Optional<Integer> number;
-		Properties properties;
-		properties = new Properties();
+		Properties properties = new Properties();
 
 		properties.put("com", "foo");
 
-		number = PropertiesExtensions.getInteger(properties, "com");
-		actual = number.isPresent();
-		expected = false;
-		assertEquals(actual, expected);
-
-		number = PropertiesExtensions.getInteger(null, "com");
-		actual = number.isPresent();
-		expected = false;
-		assertEquals(actual, expected);
+		PropertiesExtensions.getInteger(properties, "com");
 
 	}
 

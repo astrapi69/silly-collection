@@ -47,6 +47,7 @@ import de.alpharogroup.collections.list.ListFactory;
 public class EnumerationIteratorTest
 {
 
+
 	/** The EnumerationIterator. */
 	private EnumerationIterator<String> iterator;
 
@@ -91,7 +92,7 @@ public class EnumerationIteratorTest
 	}
 
 	/**
-	 * Test method for {@link EnumerationIterator#EnumerationIterator(java.util.Enumeration)}
+	 * Test method for {@link EnumerationIterator#EnumerationIterator(java.util.Enumeration)} .
 	 */
 	@Test
 	public void testEnumerationIterator()
@@ -99,6 +100,7 @@ public class EnumerationIteratorTest
 		int iteratorLength = 0;
 		while (this.iterator.hasNext())
 		{
+			final String stringNumber = this.iterator.next();
 			iteratorLength++;
 		}
 		assertTrue("The length from the array should be equal with "
