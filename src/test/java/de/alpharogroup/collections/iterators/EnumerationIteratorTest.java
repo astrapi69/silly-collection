@@ -101,6 +101,7 @@ public class EnumerationIteratorTest
 		while (this.iterator.hasNext())
 		{
 			final String stringNumber = this.iterator.next();
+			System.out.println(stringNumber);
 			iteratorLength++;
 		}
 		assertTrue("The length from the array should be equal with "

@@ -23,7 +23,6 @@
 		<jobject-extensions.version>2.5</jobject-extensions.version>
 		<jobject-clone.version>${jobject-extensions.version}</jobject-clone.version>
 		<jobject-compare.version>${jobject-extensions.version}</jobject-compare.version>
-		<jobject-core.version>${jobject-extensions.version}</jobject-core.version>
 		<jobject-evaluate.version>${jobject-extensions.version}</jobject-evaluate.version>
 		<!-- VINTAGE-TIME version -->
 		<vintage-time.version>5.1</vintage-time.version>
@@ -90,12 +89,6 @@
 				<artifactId>jobject-compare</artifactId>
 				<version>${jobject-compare.version}</version>
 			</dependency>
-			<!-- JOBJECT-CORE DEPENDENCY -->
-			<dependency>
-				<groupId>de.alpharogroup</groupId>
-				<artifactId>jobject-core</artifactId>
-				<version>${jobject-core.version}</version>
-			</dependency>
 			<!-- JOBJECT-EVALUATE DEPENDENCY -->
 			<dependency>
 				<groupId>de.alpharogroup</groupId>
@@ -118,11 +111,6 @@
 		<dependency>
 			<groupId>de.alpharogroup</groupId>
 			<artifactId>jobject-compare</artifactId>
-		</dependency>
-		<!-- JOBJECT-CORE DEPENDENCY -->
-		<dependency>
-			<groupId>de.alpharogroup</groupId>
-			<artifactId>jobject-core</artifactId>
 		</dependency>
 		<!-- JOBJECT-EVALUATE DEPENDENCY -->
 		<dependency>
