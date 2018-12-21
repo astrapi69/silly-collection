@@ -137,6 +137,7 @@ public class DateComparatorTest extends BaseComparatorTestCase<Date>
 	/**
 	 * {@inheritDoc}
 	 */
+	@Override
 	@Test
 	public void testCompare()
 	{
@@ -146,6 +147,7 @@ public class DateComparatorTest extends BaseComparatorTestCase<Date>
 	/**
 	 * {@inheritDoc}
 	 */
+	@Override
 	@Test
 	public void testEqual()
 	{
@@ -155,6 +157,7 @@ public class DateComparatorTest extends BaseComparatorTestCase<Date>
 	/**
 	 * {@inheritDoc}
 	 */
+	@Override
 	@Test
 	public void testGreaterThan()
 	{
@@ -164,6 +167,7 @@ public class DateComparatorTest extends BaseComparatorTestCase<Date>
 	/**
 	 * {@inheritDoc}
 	 */
+	@Override
 	@Test
 	public void testLessThan()
 	{
