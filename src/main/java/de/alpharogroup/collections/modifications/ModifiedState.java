@@ -26,6 +26,8 @@ package de.alpharogroup.collections.modifications;
 
 import java.util.Collection;
 
+import lombok.NonNull;
+
 /**
  * The Enum ModifiedState represents states if a collection have been modified. Checks the same( or
  * different) collection in different states. If a reference of a collection in the past is same or
@@ -74,18 +76,9 @@ public enum ModifiedState
 	 *            the next collection.
 	 * @return the modified
 	 */
-	public static <T> ModifiedState isModified(final Collection<T> previous,
-		final Collection<T> next)
+	public static <T> ModifiedState isModified(final @NonNull Collection<T> previous,
+		final @NonNull Collection<T> next)
 	{
-		if (previous == null)
-		{
-			throw new IllegalArgumentException("First argument must not be null.");
-		}
-		if (next == null)
-		{
-			throw new IllegalArgumentException("Second argument must not be null.");
-		}
-
 		final boolean collectionsEqual = previous.containsAll(next) && next.containsAll(previous);
 
 		if (collectionsEqual)
