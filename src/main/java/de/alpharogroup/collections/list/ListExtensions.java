@@ -488,7 +488,9 @@ public final class ListExtensions
 	 * @param times
 	 *            How to split.
 	 * @return a List with the splited Parts
+	 * @deprecated use instead the same name mehtod in the CollectionExtensions
 	 */
+	@Deprecated
 	public static <T> List<List<T>> splitToParts(final Collection<T> collection, final int times)
 	{
 		final List<List<T>> returnList = new ArrayList<>();

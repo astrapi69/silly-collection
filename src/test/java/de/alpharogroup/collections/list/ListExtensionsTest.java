@@ -712,6 +712,7 @@ public class ListExtensionsTest
 		{
 			list.add(i);
 		}
+		@SuppressWarnings("deprecation")
 		final List al = ListExtensions.splitToParts(list, 50);
 		assertTrue(al.size() == 20);
 		for (int i = 0; i < al.size(); i++)

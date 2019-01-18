@@ -24,8 +24,11 @@
  */
 package de.alpharogroup.collections;
 
+import java.util.ArrayList;
 import java.util.Arrays;
 import java.util.Collection;
+import java.util.Iterator;
+import java.util.List;
 
 import org.apache.commons.collections4.CollectionUtils;
 
@@ -155,6 +158,46 @@ public final class CollectionExtensions
 			hashCode = 31 * hashCode * Arrays.hashCode(arrayObject);
 		}
 		return hashCode;
+	}
+
+
+	/**
+	 * Splits the given {@link Collection} to parts to the specified times.
+	 *
+	 * @param <T>
+	 *            the generic type
+	 * @param collection
+	 *            The collection to split
+	 * @param times
+	 *            How to split.
+	 * @return a List with the splited Parts
+	 */
+	public static <T> List<List<T>> splitToParts(final Collection<T> collection, final int times)
+	{
+		final List<List<T>> returnList = new ArrayList<>();
+		ArrayList<T> tmp = new ArrayList<>();
+		final Iterator<T> it = collection.iterator();
+		int count = 0;
+		while (it.hasNext())
+		{
+			if (count == times)
+			{
+				returnList.add(tmp);
+				tmp = new ArrayList<>();
+				tmp.add(it.next());
+				count = 1;
+			}
+			else
+			{
+				tmp.add(it.next());
+				count++;
+			}
+		}
+		if (!tmp.isEmpty())
+		{
+			returnList.add(tmp);
+		}
+		return returnList;
 	}
 
 }
