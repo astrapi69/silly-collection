@@ -39,6 +39,20 @@ import lombok.experimental.UtilityClass;
 public final class ArrayExtensions
 {
 
+    /**
+     * Removes the first element of the array
+     *
+     * @param array
+     *            the origin array
+     * @return the new created array with out the first element
+     */
+    public static String[] removeFirst(@NonNull final String[] array)
+    {
+        int newLength =array.length-1;
+        String[] newArray=new String[newLength];
+        System.arraycopy(array,1,newArray,0, newLength);
+        return newArray;
+    }
 	/**
 	 * Copy the given source array to the given destination array.<br>
 	 * <br>
