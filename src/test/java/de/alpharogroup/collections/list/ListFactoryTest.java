@@ -144,16 +144,12 @@ public class ListFactoryTest
 	public void testNewRangeList()
 	{
 		final List<Integer> actual = ListFactory.newRangeList(5, 9);
-		final List<Integer> expected = new ArrayList<Integer>()
-		{
-			{
-				add(5);
-				add(6);
-				add(7);
-				add(8);
-				add(9);
-			}
-		};
+		final List<Integer> expected = new ArrayList<Integer>();
+		expected.add(5);
+		expected.add(6);
+		expected.add(7);
+		expected.add(8);
+		expected.add(9);
 		assertTrue(actual.equals(expected));
 	}
 

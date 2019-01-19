@@ -154,6 +154,60 @@ public final class ListExtensions
 	}
 
 	/**
+	 * Gets all possible combinations from the given list
+	 *
+	 * @param <T>
+	 *            the generic type of the elements in the list
+	 * @param numberOf
+	 *            the number of elements to generate the combinations
+	 * @param values
+	 *            the list with the element values
+	 * @return all possible combinations from the given list
+	 */
+	public static <T> List<List<T>> getCombinations(int numberOf, List<T> values)
+	{
+		List<List<T>> combinations = new ArrayList<>();
+		if (numberOf == 0)
+		{
+			combinations.add(new ArrayList<T>());
+			return combinations;
+		}
+		for (int i = 0; i < values.size(); i++)
+		{
+			T element = values.get(i);
+			List<T> rest = getPartialList(values, i + 1);
+			for (List<T> previous : getCombinations(numberOf - 1, rest))
+			{
+				previous.add(element);
+				combinations.add(previous);
+			}
+		}
+		return combinations;
+	}
+
+	/**
+	 * Gets the partial list
+	 *
+	 * @param <T>
+	 *            the generic type of the elements in the list
+	 * @param list
+	 *            the list
+	 * @param i
+	 *            the i
+	 * @return the partial list
+	 */
+	public static <T> List<T> getPartialList(List<T> list, int i)
+	{
+		List<T> partialList = ListFactory.newArrayList();
+		for (int j = i; j < list.size(); j++)
+		{
+			partialList.add(list.get(j));
+		}
+		return partialList;
+	}
+
+
+	/**
 	 * Gets the modified lists. finding from an old list which elements have been removed and which
 	 * have been added.
 	 *

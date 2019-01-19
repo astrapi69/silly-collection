@@ -37,7 +37,6 @@ import java.io.InputStream;
 import java.io.OutputStream;
 import java.lang.reflect.InvocationTargetException;
 import java.net.URL;
-import java.util.ArrayList;
 import java.util.List;
 import java.util.Map;
 import java.util.Optional;
@@ -45,8 +44,9 @@ import java.util.Properties;
 
 import org.meanbean.test.BeanTestException;
 import org.meanbean.test.BeanTester;
-import org.testng.AssertJUnit;
 import org.testng.annotations.Test;
+
+import de.alpharogroup.collections.list.ListFactory;
 
 /**
  * The unit test class for the class {@link PropertiesExtensions}.
@@ -198,20 +198,10 @@ public class PropertiesExtensionsTest
 
 		final Map<String, List<String>> redundantValues = PropertiesExtensions
 			.findRedundantValues(properties);
-		AssertJUnit.assertEquals(redundantValues.get("Hello, {0} {1} {2}!"), new ArrayList<String>()
-		{
-			{
-				add("com");
-				add("foo.redundant.value");
-			}
-		});
-		AssertJUnit.assertEquals(redundantValues.get("OK"), new ArrayList<String>()
-		{
-			{
-				add("com.example.gui.window.buttons.ok");
-				add("foo.bar");
-			}
-		});
+		assertEquals(redundantValues.get("Hello, {0} {1} {2}!"),
+			ListFactory.newArrayList("com", "foo.redundant.value"));
+		assertEquals(redundantValues.get("OK"),
+			ListFactory.newArrayList("com.example.gui.window.buttons.ok", "foo.bar"));
 	}
 
 	/**

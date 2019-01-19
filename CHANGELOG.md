@@ -4,6 +4,11 @@
 Version 5.1-SNAPSHOT
 -------------
 
+CHANGED:
+
+- update of parent version to 4.5
+- update of test-objects dependency version to 5.0.1
+
 Version 5
 -------------
 
