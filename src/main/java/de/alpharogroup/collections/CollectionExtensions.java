@@ -24,11 +24,11 @@
  */
 package de.alpharogroup.collections;
 
-import java.util.ArrayList;
 import java.util.Arrays;
 import java.util.Collection;
-import java.util.Iterator;
 import java.util.List;
+import java.util.concurrent.atomic.AtomicInteger;
+import java.util.stream.Collectors;
 
 import org.apache.commons.collections4.CollectionUtils;
 
@@ -160,44 +160,23 @@ public final class CollectionExtensions
 		return hashCode;
 	}
 
-
 	/**
-	 * Splits the given {@link Collection} to parts to the specified times.
+	 * Groups the given {@link Collection} to parts from the specified size.
 	 *
 	 * @param <T>
 	 *            the generic type
 	 * @param collection
-	 *            The collection to split
-	 * @param times
-	 *            How to split.
-	 * @return a List with the splited Parts
+	 *            the collection
+	 * @param size
+	 *            the size
+	 * @return the collection
 	 */
-	public static <T> List<List<T>> splitToParts(final Collection<T> collection, final int times)
+	public static <T> Collection<List<T>> partition(Collection<T> collection, int size)
 	{
-		final List<List<T>> returnList = new ArrayList<>();
-		ArrayList<T> tmp = new ArrayList<>();
-		final Iterator<T> it = collection.iterator();
-		int count = 0;
-		while (it.hasNext())
-		{
-			if (count == times)
-			{
-				returnList.add(tmp);
-				tmp = new ArrayList<>();
-				tmp.add(it.next());
-				count = 1;
-			}
-			else
-			{
-				tmp.add(it.next());
-				count++;
-			}
-		}
-		if (!tmp.isEmpty())
-		{
-			returnList.add(tmp);
-		}
-		return returnList;
+		final AtomicInteger counter = new AtomicInteger(0);
+
+		return collection.stream()
+			.collect(Collectors.groupingBy(it -> counter.getAndIncrement() / size)).values();
 	}
 
 }

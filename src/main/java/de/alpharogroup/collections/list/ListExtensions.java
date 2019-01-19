@@ -479,19 +479,18 @@ public final class ListExtensions
 	}
 
 	/**
-	 * Splits the given {@link Collection} to parts to the specified times.
+	 * Splits the given {@link Collection} to parts to the specified size and returns a list with
+	 * the parts.
 	 *
 	 * @param <T>
 	 *            the generic type
 	 * @param collection
 	 *            The collection to split
-	 * @param times
+	 * @param size
 	 *            How to split.
 	 * @return a List with the splited Parts
-	 * @deprecated use instead the same name mehtod in the CollectionExtensions
 	 */
-	@Deprecated
-	public static <T> List<List<T>> splitToParts(final Collection<T> collection, final int times)
+	public static <T> List<List<T>> splitToParts(final Collection<T> collection, final int size)
 	{
 		final List<List<T>> returnList = new ArrayList<>();
 		ArrayList<T> tmp = new ArrayList<>();
@@ -499,7 +498,7 @@ public final class ListExtensions
 		int count = 0;
 		while (it.hasNext())
 		{
-			if (count == times)
+			if (count == size)
 			{
 				returnList.add(tmp);
 				tmp = new ArrayList<>();
