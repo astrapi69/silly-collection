@@ -34,6 +34,11 @@ public class IndexableSet<E> extends InsertionOrderSet<E>
 {
 
 	/**
+	 * The serialVersionUID.
+	 */
+	private static final long serialVersionUID = 1L;
+
+	/**
 	 * Gets the index of the given element
 	 *
 	 * @param element

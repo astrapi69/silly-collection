@@ -222,12 +222,12 @@ public final class ArrayExtensions
 	 */
 	public static <T> int getNextIndex(final T[] array, final T element)
 	{
-		final int lastIndex = array.length - 1;
 		final int indexOfElement = ArrayExtensions.indexOf(array, element);
 		if (indexOfElement == -1)
 		{
 			return indexOfElement;
 		}
+		final int lastIndex = array.length - 1;
 		if (indexOfElement == lastIndex)
 		{
 			return 0;
