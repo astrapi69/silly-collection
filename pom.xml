@@ -1,16 +1,17 @@
 <?xml version="1.0" encoding="UTF-8"?>
-<project xmlns="http://maven.apache.org/POM/4.0.0" xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
+<project xmlns="http://maven.apache.org/POM/4.0.0"
+	xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
 	xsi:schemaLocation="http://maven.apache.org/POM/4.0.0 http://maven.apache.org/xsd/maven-4.0.0.xsd">
 	<modelVersion>4.0.0</modelVersion>
 
 	<parent>
 		<groupId>de.alpharogroup</groupId>
 		<artifactId>mvn-java-parent</artifactId>
-		<version>4.4</version>
+		<version>4.5</version>
 	</parent>
 
 	<artifactId>silly-collections</artifactId>
-	<version>5</version>
+	<version>5.1</version>
 
 	<name>${project.artifactId}</name>
 
@@ -27,7 +28,7 @@
 		<!-- VINTAGE-TIME version -->
 		<vintage-time.version>5.1</vintage-time.version>
 		<!-- TEST-OBJECTS version -->
-		<test-objects.version>5</test-objects.version>
+		<test-objects.version>5.0.1</test-objects.version>
 		<!-- EXTERNAL LIBRARIES versions -->
 		<commons-collections4.version>4.2</commons-collections4.version>
 	</properties>

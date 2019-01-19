@@ -46,6 +46,7 @@ import org.testng.annotations.AfterMethod;
 import org.testng.annotations.BeforeMethod;
 import org.testng.annotations.Test;
 
+import de.alpharogroup.collections.CollectionExtensions;
 import de.alpharogroup.collections.array.ArrayFactory;
 import de.alpharogroup.collections.modifications.ModifiedCollections;
 import de.alpharogroup.collections.set.SetFactory;
@@ -105,6 +106,29 @@ public class ListExtensionsTest
 		assertTrue(isTrue);
 		isTrue = ListExtensions.containAtleastOneObject(search, atLeastOneSameObject);
 		assertTrue(isTrue);
+	}
+
+
+	/**
+	 * Test the method {@link ListExtensions#getCombinations(int, List)}
+	 */
+	@Test
+	public void testGetCombinations()
+	{
+		List<String> values;
+		List<List<String>> actual;
+		List<List<String>> expected;
+		expected = ListFactory.newArrayList();
+		values = ListFactory.newArrayList("1", "2", "3", "4", "5", "6", "7");
+		actual = ListExtensions.getCombinations(6, values);
+		expected.add(ListFactory.newArrayList("1", "2", "3", "4", "5", "6"));
+		expected.add(ListFactory.newArrayList("1", "2", "3", "4", "5", "7"));
+		expected.add(ListFactory.newArrayList("1", "2", "3", "4", "6", "7"));
+		expected.add(ListFactory.newArrayList("1", "2", "3", "5", "6", "7"));
+		expected.add(ListFactory.newArrayList("1", "2", "4", "5", "6", "7"));
+		expected.add(ListFactory.newArrayList("1", "3", "4", "5", "6", "7"));
+		expected.add(ListFactory.newArrayList("2", "3", "4", "5", "6", "7"));
+		assertTrue(CollectionExtensions.isEqualCollection(actual, expected));
 	}
 
 	/**

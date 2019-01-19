@@ -26,6 +26,7 @@ package de.alpharogroup.collections.array;
 
 import static org.testng.Assert.assertNull;
 import static org.testng.AssertJUnit.assertEquals;
+import static org.testng.AssertJUnit.assertTrue;
 
 import java.lang.reflect.InvocationTargetException;
 import java.util.Arrays;
@@ -47,7 +48,7 @@ public class ArrayExtensionsTest
 {
 
 	/**
-	 * Test method for {@link ArrayExtensions#arraycopyWithSystem(T[], T[])}.
+	 * Test method for {@link ArrayExtensions#arraycopyWithSystem(Object[], Object[])}.
 	 */
 	@Test
 	public void testArraycopyWithSystem()
@@ -360,6 +361,39 @@ public class ArrayExtensionsTest
 		actual = ArrayExtensions.isLast(numbers, null);
 		expected = false;
 		assertEquals(expected, actual);
+	}
+
+	/**
+	 * Test method for {@link ArrayExtensions#remove(Object[], int)}
+	 */
+	@Test(enabled = true)
+	public void testRemove()
+	{
+
+		String[] actual;
+		String[] expected;
+		String[] source;
+
+		source = ArrayFactory.newArray("1", "2", "3", "4");
+		actual = ArrayExtensions.remove(source, 2);
+		expected = ArrayFactory.newArray("1", "2", "4");
+		assertTrue(Arrays.equals(actual, expected));
+	}
+
+	/**
+	 * Test method for {@link ArrayExtensions#removeFirst(Object[])}
+	 */
+	@Test
+	public void testRemoveFirst()
+	{
+		String[] actual;
+		String[] expected;
+		String[] source;
+
+		source = ArrayFactory.newArray("1", "2", "3", "4");
+		actual = ArrayExtensions.removeFirst(source);
+		expected = ArrayFactory.newArray("2", "3", "4");
+		assertTrue(Arrays.equals(actual, expected));
 	}
 
 	/**

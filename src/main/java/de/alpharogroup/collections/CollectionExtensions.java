@@ -26,6 +26,9 @@ package de.alpharogroup.collections;
 
 import java.util.Arrays;
 import java.util.Collection;
+import java.util.List;
+import java.util.concurrent.atomic.AtomicInteger;
+import java.util.stream.Collectors;
 
 import org.apache.commons.collections4.CollectionUtils;
 
@@ -155,6 +158,25 @@ public final class CollectionExtensions
 			hashCode = 31 * hashCode * Arrays.hashCode(arrayObject);
 		}
 		return hashCode;
+	}
+
+	/**
+	 * Groups the given {@link Collection} to parts from the specified size.
+	 *
+	 * @param <T>
+	 *            the generic type
+	 * @param collection
+	 *            the collection
+	 * @param size
+	 *            the size
+	 * @return the collection
+	 */
+	public static <T> Collection<List<T>> partition(Collection<T> collection, int size)
+	{
+		final AtomicInteger counter = new AtomicInteger(0);
+
+		return collection.stream()
+			.collect(Collectors.groupingBy(it -> counter.getAndIncrement() / size)).values();
 	}
 
 }

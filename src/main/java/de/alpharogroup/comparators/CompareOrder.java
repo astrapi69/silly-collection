@@ -24,11 +24,16 @@
  */
 package de.alpharogroup.comparators;
 
+import lombok.AccessLevel;
 import lombok.Getter;
+import lombok.RequiredArgsConstructor;
+import lombok.experimental.FieldDefaults;
 
 /**
  * The enum {@link CompareOrder}.
  */
+@RequiredArgsConstructor
+@FieldDefaults(level = AccessLevel.PRIVATE, makeFinal = true)
 public enum CompareOrder
 {
 	/** The order to sort an object after. */
@@ -40,16 +45,5 @@ public enum CompareOrder
 
 	/** The order. */
 	@Getter
-	private final int order;
-
-	/**
-	 * Instantiates a new {@link CompareOrder}.
-	 *
-	 * @param order
-	 *            the order
-	 */
-	CompareOrder(final int order)
-	{
-		this.order = order;
-	}
+	int order;
 }

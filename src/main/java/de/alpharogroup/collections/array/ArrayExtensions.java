@@ -30,6 +30,8 @@ import java.util.Set;
 import java.util.stream.Collectors;
 import java.util.stream.Stream;
 
+import de.alpharogroup.collections.list.ListFactory;
+import lombok.NonNull;
 import lombok.experimental.UtilityClass;
 
 /**
@@ -38,6 +40,56 @@ import lombok.experimental.UtilityClass;
 @UtilityClass
 public final class ArrayExtensions
 {
+
+	/**
+	 * Creates a new array cloned from the given array with the difference that the first element is
+	 * removed
+	 *
+	 * @param <T>
+	 *            the generic type of the objects in the array
+	 * @param original
+	 *            the origin array
+	 * @return the new created array with out the first element
+	 */
+	public static <T> T[] removeFirst(@NonNull final T[] original)
+	{
+		int newLength = original.length - 1;
+		T[] newArray = Arrays.copyOf(original, newLength);
+		System.arraycopy(original, 1, newArray, 0, newLength);
+		return newArray;
+	}
+
+	/**
+	 * Removes the first element of the array.
+	 *
+	 * @param <T>
+	 *            the generic type of the objects in the array
+	 * @param array
+	 *            the origin array
+	 * @param index
+	 *            the index to remove
+	 * @return the new created array with out the first element
+	 */
+	public static <T> T[] remove(@NonNull final T[] array, int index)
+	{
+		List<T> list = ListFactory.newArrayList(array);
+		list.remove(index);
+		return list.toArray(removeLast(array));
+	}
+
+	/**
+	 * Removes the first element of the array
+	 *
+	 * @param <T>
+	 *            the generic type of the objects in the array
+	 * @param original
+	 *            the origin array
+	 * @return the new created array with out the first element
+	 */
+	public static <T> T[] removeLast(@NonNull final T[] original)
+	{
+		return Arrays.copyOf(original, original.length - 1);
+	}
 
 	/**
 	 * Copy the given source array to the given destination array.<br>
@@ -55,7 +107,7 @@ public final class ArrayExtensions
 	 *
 	 *
 	 * @param <T>
-	 *            the generic type of the objects in the array.
+	 *            the generic type of the objects in the array
 	 * @param source
 	 *            the source
 	 * @param destination
@@ -170,12 +222,12 @@ public final class ArrayExtensions
 	 */
 	public static <T> int getNextIndex(final T[] array, final T element)
 	{
-		final int lastIndex = array.length - 1;
 		final int indexOfElement = ArrayExtensions.indexOf(array, element);
 		if (indexOfElement == -1)
 		{
 			return indexOfElement;
 		}
+		final int lastIndex = array.length - 1;
 		if (indexOfElement == lastIndex)
 		{
 			return 0;

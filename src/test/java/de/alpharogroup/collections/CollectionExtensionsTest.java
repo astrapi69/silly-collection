@@ -293,6 +293,22 @@ public class CollectionExtensionsTest
 	}
 
 	/**
+	 * Test the method {@link CollectionExtensions#partition(Collection, int)}
+	 */
+	@Test
+	public void testPartition()
+	{
+		final List<Integer> list = new ArrayList<>();
+		for (int i = 0; i < 999; i++)
+		{
+			list.add(i);
+		}
+		Collection<List<Integer>> all = CollectionExtensions.partition(list, 50);
+		assertTrue(all.size() == 20);
+		all.stream().forEach(l -> assertTrue(l.size() == 50 || l.size() == 49));
+	}
+
+	/**
 	 * Test method for {@link CollectionExtensions} with {@link BeanTester}
 	 */
 	@Test(expectedExceptions = { BeanTestException.class, InvocationTargetException.class,
