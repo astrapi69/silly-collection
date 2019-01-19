@@ -4,6 +4,14 @@
 Version 5.1-SNAPSHOT
 -------------
 
+ADDED:
+ 
+- new method created for get all combinations of a given list of values 
+- new method created partition created in java 8 style
+- new method created for remove the first element in a given array
+- new method created for remove the last element in a given array
+- new method created for remove an element over an index in a given array
+
 CHANGED:
 
 - update of parent version to 4.5
