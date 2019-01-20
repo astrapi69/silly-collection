@@ -101,25 +101,28 @@ Open Source:
 ## Credits
 
 |**Travis CI**|
-|:-:|
+|     :---:      |
 |![Travis CI](https://travis-ci.com/images/logos/TravisCI-Full-Color.png) <img width=500/>|
 |Many thanks to [Travis CI](https://travis-ci.org) for providing a free continuous integration service for open source projects|
+|     <img width=1000/>     |
 
 |**Nexus Sonatype repositories**|
 |     :---:      |
 |![sonatype repository](https://avatars1.githubusercontent.com/u/33330803?s=200&v=4)|
 |Many thanks to [sonatype repository](https://www.sonatype.com) for providing a free maven repository service for open source projects|
-|     <img width=1000 height=0/>     |
+|     <img width=1000/>     |
 
 |**coveralls.io**|
-|:-:|
+|     :---:      |
 |<img width=300/> ![Coverage Status](https://coveralls.io/repos/github/astrapi69/mystic-crypt/badge.svg) <img width=500/>|
 |Many thanks to [coveralls.io](https://coveralls.io) for providing a free code coverage for open source projects|
+|     <img width=1000/>     |
 
 |**javadoc.io**|
-|:-:|
+|     :---:      |
 |<img width=300/>[![Javadocs](http://www.javadoc.io/badge/de.alpharogroup/silly-collections.svg)](http://www.javadoc.io/doc/de.alpharogroup/silly-collections)  <img width=500/>|
 |Many thanks to [javadoc.io](http://www.javadoc.io) for providing a free javadoc documentation for open source projects|
+|     <img width=1000/>     |
 
 
 
