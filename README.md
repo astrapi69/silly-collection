@@ -114,13 +114,13 @@ Open Source:
 
 |**coveralls.io**|
 |     :---:      |
-|<img width=300/> ![Coverage Status](https://coveralls.io/repos/github/astrapi69/mystic-crypt/badge.svg) <img width=500/>|
+|![Coverage Status](https://coveralls.io/repos/github/astrapi69/mystic-crypt/badge.svg) <img width=500/>|
 |Many thanks to [coveralls.io](https://coveralls.io) for providing a free code coverage for open source projects|
 |     <img width=1000/>     |
 
 |**javadoc.io**|
 |     :---:      |
-|<img width=300/>[![Javadocs](http://www.javadoc.io/badge/de.alpharogroup/silly-collections.svg)](http://www.javadoc.io/doc/de.alpharogroup/silly-collections)  <img width=500/>|
+|[![Javadocs](http://www.javadoc.io/badge/de.alpharogroup/silly-collections.svg)](http://www.javadoc.io/doc/de.alpharogroup/silly-collections)  <img width=500/>|
 |Many thanks to [javadoc.io](http://www.javadoc.io) for providing a free javadoc documentation for open source projects|
 |     <img width=1000/>     |
 
