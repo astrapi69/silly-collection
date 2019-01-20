@@ -107,17 +107,17 @@ Open Source:
 
 |**Nexus Sonatype repositories**|
 |:-:|
-|<img width=200/> ![sonatype repository](https://avatars1.githubusercontent.com/u/33330803?s=200&v=4) <img width=500/>|
+|<img width=200/> ![sonatype repository](https://avatars1.githubusercontent.com/u/33330803?s=200&v=4) <img width=600/>|
 |Many thanks to [sonatype repository](https://www.sonatype.com) for providing a free maven repository service for open source projects|
 
 |**coveralls.io**|
 |:-:|
-|<img width=200/> ![Coverage Status](https://coveralls.io/repos/github/astrapi69/mystic-crypt/badge.svg) <img width=500/>|
+|<img width=300/> ![Coverage Status](https://coveralls.io/repos/github/astrapi69/mystic-crypt/badge.svg) <img width=500/>|
 |Many thanks to [coveralls.io](https://coveralls.io) for providing a free code coverage for open source projects|
 
 |**javadoc.io**|
 |:-:|
-|<img width=200/>[![Javadocs](http://www.javadoc.io/badge/de.alpharogroup/silly-collections.svg)](http://www.javadoc.io/doc/de.alpharogroup/silly-collections)  <img width=500/>|
+|<img width=300/>[![Javadocs](http://www.javadoc.io/badge/de.alpharogroup/silly-collections.svg)](http://www.javadoc.io/doc/de.alpharogroup/silly-collections)  <img width=500/>|
 |Many thanks to [javadoc.io](http://www.javadoc.io) for providing a free javadoc documentation for open source projects|
 
 
