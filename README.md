@@ -106,8 +106,8 @@ Open Source:
 |Many thanks to [Travis CI](https://travis-ci.org) for providing a free continuous integration service for open source projects|
 
 |**Nexus Sonatype repositories**|
-|:-:|
-|<img width=300> ![sonatype repository](https://avatars1.githubusercontent.com/u/33330803?s=200&v=4)</img>|
+|     :---:      |
+|<img width=400> ![sonatype repository](https://avatars1.githubusercontent.com/u/33330803?s=200&v=4)</img>|
 |Many thanks to [sonatype repository](https://www.sonatype.com) for providing a free maven repository service for open source projects|
 
 |**coveralls.io**|
