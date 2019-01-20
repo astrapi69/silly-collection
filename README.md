@@ -112,7 +112,7 @@ Open Source:
 
 |**coveralls.io** &nbsp; &nbsp; &nbsp; &nbsp; &nbsp; &nbsp; &nbsp; &nbsp; &nbsp; &nbsp; &nbsp; &nbsp; &nbsp; &nbsp; &nbsp;&nbsp; &nbsp; &nbsp; &nbsp; &nbsp; &nbsp;|
 |:-:|
-|![Coverage Status](https://coveralls.io/repos/github/astrapi69/mystic-crypt/badge.svg) <img width=500/>|
+|<img width=500/> ![Coverage Status](https://coveralls.io/repos/github/astrapi69/mystic-crypt/badge.svg) <img width=500/>|
 |Many thanks to [coveralls.io](https://coveralls.io) for providing a free code coverage for open source projects|
 
 |**javadoc.io** &nbsp; &nbsp; &nbsp; &nbsp; &nbsp; &nbsp; &nbsp; &nbsp; &nbsp; &nbsp; &nbsp; &nbsp; &nbsp; &nbsp; &nbsp;&nbsp; &nbsp; &nbsp; &nbsp; &nbsp; &nbsp; |
