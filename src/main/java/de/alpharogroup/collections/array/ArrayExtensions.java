@@ -41,6 +41,26 @@ import lombok.experimental.UtilityClass;
 public final class ArrayExtensions
 {
 
+
+    /**
+     * Removes the first element of the array.
+     *
+     * @param <T>
+     *            the generic type of the objects in the array
+     * @param array
+     *            the origin array
+     * @param indexes
+     *            the indexes to remove
+     * @return the new created array with the elements from the given indexes
+     */
+    public static <T> T[] remove(@NonNull final T[] array, int... indexes)
+    {
+        List<T> list = ListFactory.newArrayList(array);
+        for(int index = 0; index < indexes.length; index++){
+            list.remove(index);
+        }        
+        return list.toArray(Arrays.copyOf(array, list.size()));
+    }
 	/**
 	 * Creates a new array cloned from the given array with the difference that the first element is
 	 * removed
