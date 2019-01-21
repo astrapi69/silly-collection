@@ -381,6 +381,23 @@ public class ArrayExtensionsTest
 	}
 
 	/**
+	 * Test method for {@link ArrayExtensions#remove(Object[], int... )}
+	 */
+	@Test(enabled = true)
+	public void testRemoveVarArgs()
+	{
+
+		String[] actual;
+		String[] expected;
+		String[] source;
+
+		source = ArrayFactory.newArray("1", "2", "3", "4");
+		actual = ArrayExtensions.remove(source, 2, 3);
+		expected = ArrayFactory.newArray("1", "2");
+		assertTrue(Arrays.equals(actual, expected));
+	}
+
+	/**
 	 * Test method for {@link ArrayExtensions#removeFirst(Object[])}
 	 */
 	@Test

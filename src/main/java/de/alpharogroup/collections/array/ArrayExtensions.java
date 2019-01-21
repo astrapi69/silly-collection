@@ -56,9 +56,12 @@ public final class ArrayExtensions
     public static <T> T[] remove(@NonNull final T[] array, int... indexes)
     {
         List<T> list = ListFactory.newArrayList(array);
-        for(int index = 0; index < indexes.length; index++){
-            list.remove(index);
-        }        
+        final int lastIndex = indexes.length -1;
+        for (int i = lastIndex; -1 < i; i--)
+		{
+        	int index = indexes[i];
+        	list.remove(index);
+		}
         return list.toArray(Arrays.copyOf(array, list.size()));
     }
 	/**

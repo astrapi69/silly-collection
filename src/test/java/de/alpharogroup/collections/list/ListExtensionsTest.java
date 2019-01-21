@@ -379,17 +379,6 @@ public class ListExtensionsTest
 	}
 
 	/**
-	 * Test the method {@link ListExtensions#printCollection(Collection)}
-	 */
-	@Test
-	public void testPrintCollection()
-	{
-		final List<String> strings = ListFactory.newArrayList("2", "3");
-		assertNotNull(strings);
-		ListExtensions.printCollection(strings);
-	}
-
-	/**
 	 * Test method for {@link ListExtensions#rearrange(List, Object, int)}
 	 */
 	@Test

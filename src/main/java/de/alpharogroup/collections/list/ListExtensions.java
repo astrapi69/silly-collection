@@ -315,24 +315,6 @@ public final class ListExtensions
 	}
 
 	/**
-	 * Helper-Method for printing a Collection in the console.
-	 *
-	 * @param <T>
-	 *            the generic type
-	 * @param collection
-	 *            The Collection to print.
-	 */
-	public static <T> void printCollection(final Collection<T> collection)
-	{
-		int count = 1;
-		for (final T element : collection)
-		{
-			System.err.println(count + ".)element:" + element);
-			count++;
-		}
-	}
-
-	/**
 	 * Rearrange the order from the given {@link List} to the given rearranged index
 	 *
 	 * @param <T>
