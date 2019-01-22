@@ -56,6 +56,7 @@ public final class ArrayExtensions
 	{
 		List<T> list = ListFactory.newArrayList(array);
 		final int lastIndex = indexes.length - 1;
+		Arrays.sort(indexes);
 		for (int i = lastIndex; -1 < i; i--)
 		{
 			int index = indexes[i];
