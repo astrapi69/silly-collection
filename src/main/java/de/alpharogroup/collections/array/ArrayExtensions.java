@@ -41,6 +41,23 @@ import lombok.experimental.UtilityClass;
 public final class ArrayExtensions
 {
 
+
+    /**
+     * Returns <tt>true</tt> if and only if the given element is in the given array
+     *
+     * @param <T>
+     *            the generic type
+     * @param array
+     *            the array
+     * @param element
+     *            the element
+     * @return <tt>true</tt> if and only if the given element is in the given array otherwise <tt>false</tt>
+     */
+    public static <T> boolean contains(final T[] array, final T element)
+    {
+        return indexOf(array, element) >= 0;
+    }
+	
 	/**
 	 * Removes the first element of the array.
 	 *
