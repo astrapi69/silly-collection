@@ -363,6 +363,36 @@ public class ArrayExtensionsTest
 		assertEquals(expected, actual);
 	}
 
+
+	/**
+	 * Test method for
+	 * {@link de.alpharogroup.collections.array.ArrayExtensions#contains(Object[], Object)} .
+	 */
+	@Test
+	public void testContains()
+	{
+		boolean expected;
+		boolean actual;
+
+		final String last = "7";
+		final String numbers[] = { "1", "2", "3", "4", "5", "6", last };
+		// Old vanilla java with static method...
+		actual = ArrayExtensions.contains(numbers, last);
+		expected = true;
+		assertEquals(expected, actual);
+		final String empty[] = { };
+		expected = false;
+		actual = ArrayExtensions.contains(empty, last);
+		assertEquals(expected, actual);
+
+		actual = ArrayExtensions.contains(empty, null);
+		assertEquals(expected, actual);
+
+		actual = ArrayExtensions.contains(empty, 8);
+		assertEquals(expected, actual);
+
+	}
+
 	/**
 	 * Test method for {@link ArrayExtensions#remove(Object[], int... )}
 	 */
