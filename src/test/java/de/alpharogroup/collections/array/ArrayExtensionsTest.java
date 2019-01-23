@@ -403,10 +403,20 @@ public class ArrayExtensionsTest
 		String[] actual;
 		String[] expected;
 		String[] source;
-
+		// new scenario...
 		source = ArrayFactory.newArray("1", "2", "3", "4");
 		actual = ArrayExtensions.remove(source, 2, 3);
 		expected = ArrayFactory.newArray("1", "2");
+		assertTrue(Arrays.equals(actual, expected));
+		// new scenario unsorted
+		source = ArrayFactory.newArray("1", "2", "3", "4", "5", "6");
+		actual = ArrayExtensions.remove(source, 5, 3, 1);
+		expected = ArrayFactory.newArray("1", "3", "5");
+		assertTrue(Arrays.equals(actual, expected));
+		// new scenario unsorted
+		source = ArrayFactory.newArray("1", "2", "3", "4", "5", "6");
+		actual = ArrayExtensions.remove(source, 3, 5, 1);
+		expected = ArrayFactory.newArray("1", "3", "5");
 		assertTrue(Arrays.equals(actual, expected));
 	}
 
