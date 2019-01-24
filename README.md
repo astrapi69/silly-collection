@@ -114,7 +114,7 @@ Open Source:
 
 |**coveralls.io**|
 |     :---:      |
-|![Coverage Status](https://coveralls.io/repos/github/astrapi69/mystic-crypt/badge.svg)|
+|![Coverage Status](https://coveralls.io/repos/github/lightblueseas/silly-collections/badge.svg)|
 |Special thanks to [coveralls.io](https://coveralls.io) for providing a free code coverage for open source projects|
 |     <img width=1000/>     |
 
