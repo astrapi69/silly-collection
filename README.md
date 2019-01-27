@@ -102,19 +102,19 @@ Open Source:
 
 |**Travis CI**|
 |     :---:      |
-|![Travis CI](https://travis-ci.com/images/logos/TravisCI-Full-Color.png) <img width=500/>|
+|[![Travis CI](https://travis-ci.com/images/logos/TravisCI-Full-Color.png)](https://coveralls.io/github/lightblueseas/silly-collections?branch=master)|
 |Special thanks to [Travis CI](https://travis-ci.org) for providing a free continuous integration service for open source projects|
 |     <img width=1000/>     |
 
 |**Nexus Sonatype repositories**|
 |     :---:      |
-|![sonatype repository](https://avatars1.githubusercontent.com/u/33330803?s=200&v=4)|
+|[![sonatype repository](https://img.shields.io/nexus/r/https/oss.sonatype.org/de.alpharogroup/silly-collections.svg?style=for-the-badge)](https://oss.sonatype.org/index.html#nexus-search;gav~de.alpharogroup~silly-collections~~~)|
 |Special thanks to [sonatype repository](https://www.sonatype.com) for providing a free maven repository service for open source projects|
 |     <img width=1000/>     |
 
 |**coveralls.io**|
 |     :---:      |
-|![Coverage Status](https://coveralls.io/repos/github/lightblueseas/silly-collections/badge.svg)|
+|[![Coverage Status](https://coveralls.io/repos/github/lightblueseas/silly-collections/badge.svg?branch=develop)](https://coveralls.io/github/lightblueseas/silly-collections?branch=master)|
 |Special thanks to [coveralls.io](https://coveralls.io) for providing a free code coverage for open source projects|
 |     <img width=1000/>     |
 
