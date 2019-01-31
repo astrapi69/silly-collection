@@ -111,6 +111,35 @@ public class ArrayExtensionsTest
 	}
 
 	/**
+	 * Test method for
+	 * {@link de.alpharogroup.collections.array.ArrayExtensions#contains(Object[], Object)} .
+	 */
+	@Test
+	public void testContains()
+	{
+		boolean expected;
+		boolean actual;
+
+		final String last = "7";
+		final String numbers[] = { "1", "2", "3", "4", "5", "6", last };
+		// Old vanilla java with static method...
+		actual = ArrayExtensions.contains(numbers, last);
+		expected = true;
+		assertEquals(expected, actual);
+		final String empty[] = { };
+		expected = false;
+		actual = ArrayExtensions.contains(empty, last);
+		assertEquals(expected, actual);
+
+		actual = ArrayExtensions.contains(empty, null);
+		assertEquals(expected, actual);
+
+		actual = ArrayExtensions.contains(empty, 8);
+		assertEquals(expected, actual);
+
+	}
+
+	/**
 	 * Test for method {@link ArrayExtensions#getFirst(Object[])}
 	 */
 	@Test
@@ -342,6 +371,7 @@ public class ArrayExtensionsTest
 		assertEquals(expected, actual);
 	}
 
+
 	/**
 	 * Test method for
 	 * {@link de.alpharogroup.collections.array.ArrayExtensions#isLast(Object[], Object)} .
@@ -363,34 +393,20 @@ public class ArrayExtensionsTest
 		assertEquals(expected, actual);
 	}
 
-
 	/**
-	 * Test method for
-	 * {@link de.alpharogroup.collections.array.ArrayExtensions#contains(Object[], Object)} .
+	 * Test method for {@link ArrayExtensions#removeFirst(Object[])}
 	 */
 	@Test
-	public void testContains()
+	public void testRemoveFirst()
 	{
-		boolean expected;
-		boolean actual;
+		String[] actual;
+		String[] expected;
+		String[] source;
 
-		final String last = "7";
-		final String numbers[] = { "1", "2", "3", "4", "5", "6", last };
-		// Old vanilla java with static method...
-		actual = ArrayExtensions.contains(numbers, last);
-		expected = true;
-		assertEquals(expected, actual);
-		final String empty[] = { };
-		expected = false;
-		actual = ArrayExtensions.contains(empty, last);
-		assertEquals(expected, actual);
-
-		actual = ArrayExtensions.contains(empty, null);
-		assertEquals(expected, actual);
-
-		actual = ArrayExtensions.contains(empty, 8);
-		assertEquals(expected, actual);
-
+		source = ArrayFactory.newArray("1", "2", "3", "4");
+		actual = ArrayExtensions.removeFirst(source);
+		expected = ArrayFactory.newArray("2", "3", "4");
+		assertTrue(Arrays.equals(actual, expected));
 	}
 
 	/**
@@ -417,22 +433,6 @@ public class ArrayExtensionsTest
 		source = ArrayFactory.newArray("1", "2", "3", "4", "5", "6");
 		actual = ArrayExtensions.remove(source, 3, 5, 1);
 		expected = ArrayFactory.newArray("1", "3", "5");
-		assertTrue(Arrays.equals(actual, expected));
-	}
-
-	/**
-	 * Test method for {@link ArrayExtensions#removeFirst(Object[])}
-	 */
-	@Test
-	public void testRemoveFirst()
-	{
-		String[] actual;
-		String[] expected;
-		String[] source;
-
-		source = ArrayFactory.newArray("1", "2", "3", "4");
-		actual = ArrayExtensions.removeFirst(source);
-		expected = ArrayFactory.newArray("2", "3", "4");
 		assertTrue(Arrays.equals(actual, expected));
 	}
 

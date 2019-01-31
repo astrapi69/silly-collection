@@ -154,60 +154,6 @@ public final class ListExtensions
 	}
 
 	/**
-	 * Gets all possible combinations from the given list
-	 *
-	 * @param <T>
-	 *            the generic type of the elements in the list
-	 * @param numberOf
-	 *            the number of elements to generate the combinations
-	 * @param values
-	 *            the list with the element values
-	 * @return all possible combinations from the given list
-	 */
-	public static <T> List<List<T>> getCombinations(int numberOf, List<T> values)
-	{
-		List<List<T>> combinations = new ArrayList<>();
-		if (numberOf == 0)
-		{
-			combinations.add(new ArrayList<T>());
-			return combinations;
-		}
-		for (int i = 0; i < values.size(); i++)
-		{
-			T element = values.get(i);
-			List<T> rest = getPartialList(values, i + 1);
-			for (List<T> previous : getCombinations(numberOf - 1, rest))
-			{
-				previous.add(element);
-				combinations.add(previous);
-			}
-		}
-		return combinations;
-	}
-
-	/**
-	 * Gets the partial list
-	 *
-	 * @param <T>
-	 *            the generic type of the elements in the list
-	 * @param list
-	 *            the list
-	 * @param i
-	 *            the i
-	 * @return the partial list
-	 */
-	public static <T> List<T> getPartialList(List<T> list, int i)
-	{
-		List<T> partialList = ListFactory.newArrayList();
-		for (int j = i; j < list.size(); j++)
-		{
-			partialList.add(list.get(j));
-		}
-		return partialList;
-	}
-
-
-	/**
 	 * Gets the modified lists. finding from an old list which elements have been removed and which
 	 * have been added.
 	 *
@@ -620,6 +566,120 @@ public final class ListExtensions
 		final Object[] decorator = new Object[elements.length];
 		System.arraycopy(elements, 0, decorator, 0, elements.length);
 		return decorator;
+	}
+
+	/**
+	 * Gets all possible combinations from the given list of {@link Integer} objects
+	 *
+	 * @param possibleNumbers
+	 *            the possible numbers
+	 * @param combinationSize
+	 *            the size of the combination to generate
+	 * @return all possible combinations from the given list of {@link Integer} objects
+	 */
+	public static List<List<Integer>> getAllCombinations(
+		@NonNull final List<Integer> possibleNumbers, int combinationSize)
+	{
+		Integer currentCombination[] = new Integer[combinationSize];
+		List<List<Integer>> allCombinations = ListFactory.newArrayList();
+		int currentEnd = possibleNumbers.size() - 1;
+		int currentStart = 0;
+		int currentCombinationIndex = 0;
+		computeAllCombinations(allCombinations, possibleNumbers, currentCombination, currentStart,
+			currentEnd, currentCombinationIndex, combinationSize);
+		return allCombinations;
+	}
+
+	/**
+	 * Compute in recursive manner all combinations of the given arguments
+	 *
+	 * @param allCombinations
+	 *            the all combinations
+	 * @param possibleNumbers
+	 *            the possible numbers
+	 * @param currentCombination
+	 *            the current combination
+	 * @param currentStart
+	 *            the current start
+	 * @param currentEnd
+	 *            the current end
+	 * @param currentCombinationIndex
+	 *            the current combination index
+	 * @param combinationSize
+	 *            the combination size
+	 */
+	private static void computeAllCombinations(List<List<Integer>> allCombinations,
+		List<Integer> possibleNumbers, Integer currentCombination[], int currentStart,
+		int currentEnd, int currentCombinationIndex, int combinationSize)
+	{
+		if (currentCombinationIndex == combinationSize)
+		{
+			allCombinations.add(ListFactory.newArrayList(currentCombination));
+			return;
+		}
+
+		for (int i = currentStart; i <= currentEnd
+			&& currentEnd - i + 1 >= combinationSize - currentCombinationIndex; i++)
+		{
+			currentCombination[currentCombinationIndex] = possibleNumbers.get(i);
+			computeAllCombinations(allCombinations, possibleNumbers, currentCombination, i + 1,
+				currentEnd, currentCombinationIndex + 1, combinationSize);
+		}
+	}
+
+
+	/**
+	 * Gets all possible combinations from the given list
+	 *
+	 * @param <T>
+	 *            the generic type of the elements in the list
+	 * @param combinationSize
+	 *            the size of the elements of the combinations to generate
+	 * @param possibleValues
+	 *            the list with the element values
+	 * @return all possible combinations from the given list
+	 */
+	public static <T> List<List<T>> getCombinations(@NonNull final List<T> possibleValues,
+		final int combinationSize)
+	{
+		List<List<T>> combinations = new ArrayList<>();
+		if (combinationSize == 0)
+		{
+			combinations.add(ListFactory.newArrayList());
+			return combinations;
+		}
+		for (int i = 0; i < possibleValues.size(); i++)
+		{
+			T element = possibleValues.get(i);
+			List<T> rest = getPartialList(possibleValues, i + 1);
+			for (List<T> previous : getCombinations(rest, combinationSize - 1))
+			{
+				previous.add(element);
+				combinations.add(previous);
+			}
+		}
+		return combinations;
+	}
+
+	/**
+	 * Gets the partial list
+	 *
+	 * @param <T>
+	 *            the generic type of the elements in the list
+	 * @param list
+	 *            the list
+	 * @param i
+	 *            the i
+	 * @return the partial list
+	 */
+	private static <T> List<T> getPartialList(List<T> list, int i)
+	{
+		List<T> partialList = ListFactory.newArrayList();
+		for (int j = i; j < list.size(); j++)
+		{
+			partialList.add(list.get(j));
+		}
+		return partialList;
 	}
 
 }

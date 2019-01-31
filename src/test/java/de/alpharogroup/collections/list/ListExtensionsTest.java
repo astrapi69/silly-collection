@@ -54,7 +54,7 @@ import de.alpharogroup.test.objects.Person;
 import de.alpharogroup.test.objects.enums.Gender;
 
 /**
- * The unit test class for the class {@link ListExtensions}.
+ * The unit test class for the class {@link ListExtensions}
  *
  * @author Asterios Raptis
  */
@@ -84,6 +84,34 @@ public class ListExtensionsTest
 	}
 
 	/**
+	 * Test method for the combination methods
+	 */
+	@Test(enabled = false)
+	public void testBenchmarkCombinations()
+	{
+
+		long start;
+		long end;
+		List<Integer> possibleNumbers;
+		int combinationSize;
+
+		possibleNumbers = ListFactory.newRangeList(1, 49);
+		combinationSize = 6;
+		start = System.currentTimeMillis();
+		// List<List<Integer>> result =
+
+		start = System.currentTimeMillis();
+		ListExtensions.getCombinations(possibleNumbers, combinationSize);
+		end = System.currentTimeMillis();
+		System.err.println("getCombinations time:" + (end - start));
+
+		ListExtensions.getAllCombinations(possibleNumbers, combinationSize);
+		end = System.currentTimeMillis();
+		System.err.println("getAllCombinations time:" + (end - start));
+	}
+
+
+	/**
 	 * Test the method {@link ListExtensions#containAtleastOneObject(List, List)}
 	 */
 	@Test
@@ -108,9 +136,30 @@ public class ListExtensionsTest
 		assertTrue(isTrue);
 	}
 
+	/**
+	 * Test the method {@link ListExtensions#getAllCombinations(List, int)}
+	 */
+	@Test
+	public void testGetAllCombinations()
+	{
+		List<Integer> values;
+		List<List<Integer>> actual;
+		List<List<Integer>> expected;
+		expected = ListFactory.newArrayList();
+		values = ListFactory.newArrayList(1, 2, 3, 4, 5, 6, 7);
+		actual = ListExtensions.getAllCombinations(values, 6);
+		expected.add(ListFactory.newArrayList(1, 2, 3, 4, 5, 6));
+		expected.add(ListFactory.newArrayList(1, 2, 3, 4, 5, 7));
+		expected.add(ListFactory.newArrayList(1, 2, 3, 4, 6, 7));
+		expected.add(ListFactory.newArrayList(1, 2, 3, 5, 6, 7));
+		expected.add(ListFactory.newArrayList(1, 2, 4, 5, 6, 7));
+		expected.add(ListFactory.newArrayList(1, 3, 4, 5, 6, 7));
+		expected.add(ListFactory.newArrayList(2, 3, 4, 5, 6, 7));
+		assertTrue(CollectionExtensions.isEqualCollection(actual, expected));
+	}
 
 	/**
-	 * Test the method {@link ListExtensions#getCombinations(int, List)}
+	 * Test the method {@link ListExtensions#getCombinations(List, int)}
 	 */
 	@Test
 	public void testGetCombinations()
@@ -120,7 +169,7 @@ public class ListExtensionsTest
 		List<List<String>> expected;
 		expected = ListFactory.newArrayList();
 		values = ListFactory.newArrayList("1", "2", "3", "4", "5", "6", "7");
-		actual = ListExtensions.getCombinations(6, values);
+		actual = ListExtensions.getCombinations(values, 6);
 		expected.add(ListFactory.newArrayList("1", "2", "3", "4", "5", "6"));
 		expected.add(ListFactory.newArrayList("1", "2", "3", "4", "5", "7"));
 		expected.add(ListFactory.newArrayList("1", "2", "3", "4", "6", "7"));
