@@ -37,30 +37,126 @@ public class IndexableSetTest
 {
 
 	/**
-	 * Test method for {@link IndexableSet#getIndex(Object)}
+	 * Test method for {@link IndexableSet#get(int)}
 	 */
 	@Test
-	public void testGetIndex()
+	public void testGet()
 	{
-		int index;
+		String actual;
+		String expected;
+
 		IndexableSet<String> set;
+		// init test data
 		set = new IndexableSet<>();
 		set.add("value1");
 		set.add("value2");
 		set.add("value3");
 		set.add("value4");
-
-		index = set.getIndex("value2");
-		assertEquals(index, 1);
-
+		// test
+		// new scenario..
+		actual = set.get(1);
+		expected = "value2";
+		assertEquals(actual, expected);
+		// new scenario..
 		set.add("value2");
-		index = set.getIndex("value2");
-		assertEquals(index, 3);
+		actual = set.get(3);
+		expected = "value2";
+		assertEquals(actual, expected);
+		// new scenario..
+		actual = set.get(0);
+		expected = "value1";
+		assertEquals(actual, expected);
+		// new scenario..
+		actual = set.get(1);
+		expected = "value3";
+		assertEquals(actual, expected);
+		// new scenario..
+		actual = set.get(2);
+		expected = "value4";
+		assertEquals(actual, expected);
+	}
+
+	/**
+	 * Test method for {@link IndexableSet#getIndex(Object)}
+	 */
+	@Test
+	public void testGetIndex()
+	{
+		int actual;
+		int expected;
+		IndexableSet<String> set;
+		// init test data
+		set = new IndexableSet<>();
+		set.add("value1");
+		set.add("value2");
+		set.add("value3");
+		set.add("value4");
+		// test
+		// new scenario..
+		actual = set.getIndex("value2");
+		expected = 1;
+		assertEquals(actual, expected);
+		// new scenario..
+		set.add("value2");
+		actual = set.getIndex("value2");
+		expected = 3;
+		assertEquals(actual, expected);
+		// new scenario..
+		actual = set.getIndex("value5");
+		expected = -1;
+		assertEquals(actual, expected);
+
+	}
 
 
-		index = set.getIndex("value5");
-		assertEquals(index, -1);
+	/**
+	 * Test method for {@link IndexableSet#get(int)} with index over the maximum
+	 */
+	@Test(expectedExceptions = IndexOutOfBoundsException.class)
+	public void testGetThrowIndexOutOfBoundsExceptionOverMaximun()
+	{
+		IndexableSet<String> set;
+		// init test data
+		set = new IndexableSet<>();
+		set.add("value1");
+		set.add("value2");
+		set.add("value3");
+		set.add("value4");
+		// test
+		// new scenario..
+		set.get(5);
+	}
 
+	/**
+	 * Test method for {@link IndexableSet#get(int)} with index over the minimum
+	 */
+	@Test(expectedExceptions = IndexOutOfBoundsException.class)
+	public void testGetThrowIndexOutOfBoundsExceptionOverMinimum()
+	{
+		IndexableSet<String> set;
+		// init test data
+		set = new IndexableSet<>();
+		set.add("value1");
+		set.add("value2");
+		set.add("value3");
+		set.add("value4");
+		// test
+		// new scenario..
+		set.get(-1);
+	}
+
+	/**
+	 * Test method for {@link IndexableSet#get(int)} with index over the minimum
+	 */
+	@Test(expectedExceptions = IndexOutOfBoundsException.class)
+	public void testGetThrowIndexOutOfBoundsExceptionWithEmptySet()
+	{
+		IndexableSet<String> set;
+		// init test data
+		set = new IndexableSet<>();
+		// test
+		// new scenario..
+		set.get(0);
 	}
 
 }

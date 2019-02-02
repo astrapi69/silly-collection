@@ -642,7 +642,7 @@ public final class ListExtensions
 	public static <T> List<List<T>> getCombinations(@NonNull final List<T> possibleValues,
 		final int combinationSize)
 	{
-		List<List<T>> combinations = new ArrayList<>();
+		List<List<T>> combinations = ListFactory.newArrayList();
 		if (combinationSize == 0)
 		{
 			combinations.add(ListFactory.newArrayList());

@@ -39,6 +39,36 @@ public class IndexableSet<E> extends InsertionOrderSet<E>
 	private static final long serialVersionUID = 1L;
 
 	/**
+	 * Gets the element of the given index <br>
+	 * <br>
+	 * Note: use with caution
+	 *
+	 * @param index
+	 *            the index
+	 * @return the element of the given index or throws an <code>IndexOutOfBoundsException</code>
+	 * @throws IndexOutOfBoundsException
+	 *             if the index is out of range (<tt>index &lt; 0 || index &gt;= size()</tt>)
+	 */
+	public E get(int index)
+	{
+		int size = this.size();
+		int count = 0;
+		for (E entry : this)
+		{
+			if (index >= size || index < 0)
+			{
+				break;
+			}
+			if (index == count)
+			{
+				return entry;
+			}
+			count++;
+		}
+		throw new IndexOutOfBoundsException("Index: " + index + ", Size: " + size);
+	}
+
+	/**
 	 * Gets the index of the given element
 	 *
 	 * @param element
