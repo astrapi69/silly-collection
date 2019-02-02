@@ -31,7 +31,6 @@ import java.io.FileOutputStream;
 import java.io.IOException;
 import java.io.InputStream;
 import java.io.OutputStream;
-import java.util.ArrayList;
 import java.util.Enumeration;
 import java.util.LinkedHashMap;
 import java.util.List;
@@ -41,6 +40,7 @@ import java.util.Properties;
 import java.util.regex.Matcher;
 import java.util.regex.Pattern;
 
+import de.alpharogroup.collections.list.ListFactory;
 import lombok.experimental.UtilityClass;
 
 /**
@@ -78,7 +78,7 @@ public final class PropertiesExtensions
 			final String value = (String)entry.getValue();
 			if (!reverseEntries.containsKey(value))
 			{
-				final List<String> keys = new ArrayList<>();
+				final List<String> keys = ListFactory.newArrayList();
 				keys.add(key);
 				reverseEntries.put(value, keys);
 			}
@@ -134,7 +134,7 @@ public final class PropertiesExtensions
 			}
 			else
 			{
-				final List<String> fullKeys = new ArrayList<>();
+				final List<String> fullKeys = ListFactory.newArrayList();
 				fullKeys.add(key);
 				matchedPrefixes.put(subKey, fullKeys);
 			}
@@ -151,7 +151,7 @@ public final class PropertiesExtensions
 	 */
 	public static List<String> getPropertyParameters(final String propertyValue)
 	{
-		final List<String> parameterList = new ArrayList<>();
+		final List<String> parameterList = ListFactory.newArrayList();
 		final Pattern pattern = Pattern.compile("\\{.*?\\}");
 		final Matcher matcher = pattern.matcher(propertyValue);
 		while (matcher.find())

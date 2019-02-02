@@ -24,7 +24,6 @@
  */
 package de.alpharogroup.collections.list;
 
-import java.util.ArrayList;
 import java.util.Arrays;
 import java.util.Collection;
 import java.util.Collections;
@@ -282,7 +281,7 @@ public final class ListExtensions
 			return listToResort;
 		}
 		List<T> resortedList;
-		resortedList = new ArrayList<>(listToResort);
+		resortedList = ListFactory.newArrayList(listToResort);
 		resortedList.remove(index);
 		resortedList.add(rearrangeToIndex, element);
 		return resortedList;
@@ -398,7 +397,7 @@ public final class ListExtensions
 	 */
 	public static <T> List<T> revertOrder(final List<T> listToRevert)
 	{
-		final List<T> revertedList = new ArrayList<>();
+		final List<T> revertedList = ListFactory.newArrayList();
 
 		int size = listToRevert.size();
 
@@ -474,8 +473,8 @@ public final class ListExtensions
 	 */
 	public static <T> List<List<T>> splitToParts(final Collection<T> collection, final int size)
 	{
-		final List<List<T>> returnList = new ArrayList<>();
-		ArrayList<T> tmp = new ArrayList<>();
+		final List<List<T>> returnList = ListFactory.newArrayList();
+		List<T> tmp = ListFactory.newArrayList();
 		final Iterator<T> it = collection.iterator();
 		int count = 0;
 		while (it.hasNext())
@@ -483,7 +482,7 @@ public final class ListExtensions
 			if (count == size)
 			{
 				returnList.add(tmp);
-				tmp = new ArrayList<>();
+				tmp = ListFactory.newArrayList();
 				tmp.add(it.next());
 				count = 1;
 			}
@@ -528,7 +527,7 @@ public final class ListExtensions
 	 */
 	public static <T> List<T> toList(final Enumeration<T> enumaration)
 	{
-		final List<T> list = new ArrayList<>();
+		final List<T> list = ListFactory.newArrayList();
 		while (enumaration.hasMoreElements())
 		{
 			list.add(enumaration.nextElement());
@@ -547,7 +546,7 @@ public final class ListExtensions
 	 */
 	public static <T> List<T> toList(final Set<T> set)
 	{
-		return new ArrayList<>(set);
+		return ListFactory.newArrayList(set);
 	}
 
 	/**

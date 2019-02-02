@@ -27,12 +27,13 @@ package de.alpharogroup.collections.modifications;
 import static org.testng.AssertJUnit.assertTrue;
 
 import java.lang.reflect.InvocationTargetException;
-import java.util.ArrayList;
 import java.util.List;
 
 import org.meanbean.test.BeanTestException;
 import org.meanbean.test.BeanTester;
 import org.testng.annotations.Test;
+
+import de.alpharogroup.collections.list.ListFactory;
 
 /**
  * The unit test class for the class {@link ModifiedState}.
@@ -47,8 +48,8 @@ public class ModifiedStateTest
 	public void testIsModified()
 	{
 		// Create two lists...
-		final List<String> previous = new ArrayList<>();
-		final List<String> next = new ArrayList<>();
+		final List<String> previous = ListFactory.newArrayList();
+		final List<String> next = ListFactory.newArrayList();
 		// Get the current modified state...
 		ModifiedState state = ModifiedState.isModified(previous, next);
 		assertTrue(
@@ -120,7 +121,7 @@ public class ModifiedStateTest
 	@Test(expectedExceptions = NullPointerException.class)
 	public void testIsModifiedNextNull()
 	{
-		ModifiedState.isModified(new ArrayList<>(), null);
+		ModifiedState.isModified(ListFactory.newArrayList(), null);
 	}
 
 	/**
@@ -130,7 +131,7 @@ public class ModifiedStateTest
 	@Test(expectedExceptions = NullPointerException.class)
 	public void testIsModifiedPreviousNull()
 	{
-		ModifiedState.isModified(null, new ArrayList<>());
+		ModifiedState.isModified(null, ListFactory.newArrayList());
 	}
 
 	/**

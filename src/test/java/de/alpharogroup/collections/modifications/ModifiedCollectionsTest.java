@@ -26,7 +26,6 @@ package de.alpharogroup.collections.modifications;
 
 import static org.testng.AssertJUnit.assertTrue;
 
-import java.util.ArrayList;
 import java.util.Arrays;
 import java.util.List;
 
@@ -34,6 +33,7 @@ import org.testng.annotations.Test;
 
 import de.alpharogroup.collections.CollectionExtensions;
 import de.alpharogroup.collections.array.ArrayFactory;
+import de.alpharogroup.collections.list.ListFactory;
 
 /**
  * The unit test class for the class {@link ModifiedCollections}
@@ -69,8 +69,8 @@ public class ModifiedCollectionsTest
 		expectedremovedList = Arrays.asList(expectedremoved);
 
 		// new scenario...
-		previousList = new ArrayList<>(Arrays.asList(previous));
-		nextList = new ArrayList<>(Arrays.asList(next));
+		previousList = ListFactory.newArrayList(Arrays.asList(previous));
+		nextList = ListFactory.newArrayList(Arrays.asList(next));
 
 		result = new ModifiedCollections<>();
 		result = result.getModifiedLists(previousList, nextList);
@@ -79,15 +79,15 @@ public class ModifiedCollectionsTest
 		assertTrue(result.getAddedElements().equals(expectedaddedList));
 
 		// new scenario...
-		previousList = new ArrayList<>(Arrays.asList(previous));
-		nextList = new ArrayList<>(Arrays.asList(next));
+		previousList = ListFactory.newArrayList(Arrays.asList(previous));
+		nextList = ListFactory.newArrayList(Arrays.asList(next));
 
 		nextList.removeAll(previousList);
 
 		assertTrue(CollectionExtensions.isEqualCollection(nextList, expectedaddedList));
 
 		// new scenario...
-		previousList = new ArrayList<>(Arrays.asList(previous));
+		previousList = ListFactory.newArrayList(Arrays.asList(previous));
 		nextList = Arrays.asList(next);
 
 		previousList.removeAll(nextList);

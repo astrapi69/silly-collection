@@ -24,9 +24,9 @@
  */
 package de.alpharogroup.collections.modifications;
 
-import java.util.ArrayList;
 import java.util.Collection;
 
+import de.alpharogroup.collections.list.ListFactory;
 import lombok.AccessLevel;
 import lombok.Getter;
 import lombok.NoArgsConstructor;
@@ -46,10 +46,10 @@ public class ModifiedCollections<T>
 {
 
 	/** The added elements. */
-	Collection<T> addedElements = new ArrayList<>();
+	Collection<T> addedElements = ListFactory.newArrayList();
 
 	/** The removed elements. */
-	Collection<T> removedElements = new ArrayList<>();
+	Collection<T> removedElements = ListFactory.newArrayList();
 
 	/**
 	 * Gets the modified lists.

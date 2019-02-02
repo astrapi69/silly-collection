@@ -117,9 +117,9 @@ public class ListExtensionsTest
 	@Test
 	public void testContainAtleastOneObject()
 	{
-		final List<String> toSearch = new ArrayList<>();
-		final List<String> search = new ArrayList<>();
-		final List<String> atLeastOneSameObject = new ArrayList<>();
+		final List<String> toSearch = ListFactory.newArrayList();
+		final List<String> search = ListFactory.newArrayList();
+		final List<String> atLeastOneSameObject = ListFactory.newArrayList();
 		toSearch.add("Anton");
 		toSearch.add("Berta");
 		toSearch.add("Caesar");
@@ -191,7 +191,7 @@ public class ListExtensionsTest
 		List<String> search;
 
 		expected = "Leonidas";
-		search = new ArrayList<>();
+		search = ListFactory.newArrayList();
 		search.add(expected);
 		search.add("Berta");
 		search.add("Caesar");
@@ -202,7 +202,7 @@ public class ListExtensionsTest
 		actual = ListExtensions.getFirst(search);
 		assertEquals(expected, actual);
 
-		search = new ArrayList<>();
+		search = ListFactory.newArrayList();
 		actual = ListExtensions.getFirst(search);
 		expected = null;
 		assertEquals(expected, actual);
@@ -215,7 +215,7 @@ public class ListExtensionsTest
 	public void testGetLast()
 	{
 		final String expected = "Leonidas";
-		final List<String> search = new ArrayList<>();
+		final List<String> search = ListFactory.newArrayList();
 		String compare = ListExtensions.getLast(search);
 		assertNull(compare);
 		search.add("Anton");
@@ -241,7 +241,7 @@ public class ListExtensionsTest
 		final String expectedadded[] = { "8", "9" };
 		final String expectedremoved[] = { "1", "3", "4" };
 
-		final List<String> previousList = new ArrayList<>(Arrays.asList(previous));
+		final List<String> previousList = ListFactory.newArrayList(Arrays.asList(previous));
 		final List<String> nextList = Arrays.asList(next);
 
 		final List<String> expectedaddedList = Arrays.asList(expectedadded);
@@ -266,7 +266,7 @@ public class ListExtensionsTest
 		List<String> search;
 
 		expected = Optional.<String> of("Leonidas");
-		search = new ArrayList<>();
+		search = ListFactory.newArrayList();
 		search.add(expected.get());
 		search.add("Berta");
 		search.add("Caesar");
@@ -277,7 +277,7 @@ public class ListExtensionsTest
 		actual = ListExtensions.getOptionalFirst(search);
 		assertEquals(expected, actual);
 
-		search = new ArrayList<>();
+		search = ListFactory.newArrayList();
 		actual = ListExtensions.getOptionalFirst(search);
 		expected = Optional.empty();
 		assertEquals(expected, actual);
@@ -289,9 +289,9 @@ public class ListExtensionsTest
 	@Test
 	public void testGetSameElementsFromLists()
 	{
-		final List<String> toSearch = new ArrayList<>();
-		final List<String> search = new ArrayList<>();
-		final List<String> atLeastOneSameObject = new ArrayList<>();
+		final List<String> toSearch = ListFactory.newArrayList();
+		final List<String> search = ListFactory.newArrayList();
+		final List<String> atLeastOneSameObject = ListFactory.newArrayList();
 		toSearch.add("Anton");
 		toSearch.add("Berta");
 		toSearch.add("Caesar");
@@ -301,7 +301,7 @@ public class ListExtensionsTest
 		atLeastOneSameObject.add("Anton");
 		atLeastOneSameObject.add("Dora");
 		atLeastOneSameObject.add("Emil");
-		final List<String> expectedElements = new ArrayList<>();
+		final List<String> expectedElements = ListFactory.newArrayList();
 		expectedElements.add("Dora");
 		expectedElements.add("Emil");
 		final List<String> foundElements = ListExtensions.getSameElementsFromLists(search,
@@ -386,7 +386,7 @@ public class ListExtensionsTest
 	{
 		String expected;
 		expected = "Leonidas";
-		final List<String> search = new ArrayList<>();
+		final List<String> search = ListFactory.newArrayList();
 		search.add(expected);
 		search.add("Berta");
 		search.add("Caesar");
@@ -437,7 +437,7 @@ public class ListExtensionsTest
 		List<String> rearrangedList;
 		int index;
 
-		search = new ArrayList<>();
+		search = ListFactory.newArrayList();
 		search.add("Leonidas");
 		search.add("Berta");
 		search.add("Caesar");
@@ -474,7 +474,7 @@ public class ListExtensionsTest
 		List<String> search;
 		expected = "Leonidas";
 		removed = "Berta";
-		search = new ArrayList<>();
+		search = ListFactory.newArrayList();
 		search.add(removed);
 		search.add(expected);
 		search.add("Caesar");
@@ -506,7 +506,7 @@ public class ListExtensionsTest
 		List<String> search;
 		expected = "Leonidas";
 		removed = "Berta";
-		search = new ArrayList<>();
+		search = ListFactory.newArrayList();
 
 		search.add("Anton");
 		search.add("Caesar");
@@ -540,7 +540,7 @@ public class ListExtensionsTest
 
 		expected = "Leonidas";
 		removed = "Berta";
-		search = new ArrayList<>();
+		search = ListFactory.newArrayList();
 
 		search.add("Anton");
 		search.add("Caesar");
@@ -562,7 +562,7 @@ public class ListExtensionsTest
 	{
 		final String expected = "Leonidas";
 		final String removed = "Berta";
-		final List<String> search = new ArrayList<>();
+		final List<String> search = ListFactory.newArrayList();
 		search.add("Anton");
 		search.add("Caesar");
 		search.add("Dora");
@@ -585,7 +585,7 @@ public class ListExtensionsTest
 		List<String> search;
 		expected = Optional.<String> of("Leonidas");
 		removed = "Berta";
-		search = new ArrayList<>();
+		search = ListFactory.newArrayList();
 		search.add(removed);
 		search.add(expected.get());
 		search.add("Caesar");
@@ -618,7 +618,7 @@ public class ListExtensionsTest
 		List<String> search;
 		expected = Optional.<String> of("Leonidas");
 		removed = "Berta";
-		search = new ArrayList<>();
+		search = ListFactory.newArrayList();
 
 		search.add("Anton");
 		search.add("Caesar");
@@ -645,7 +645,7 @@ public class ListExtensionsTest
 	@Test
 	public void testRevertOrder()
 	{
-		final List<String> search = new ArrayList<>();
+		final List<String> search = ListFactory.newArrayList();
 		search.add("Anton");
 		search.add("Caesar");
 		search.add("Dora");
@@ -669,8 +669,8 @@ public class ListExtensionsTest
 	@Test
 	public void testShuffle()
 	{
-		final List<String> source = new ArrayList<>();
-		final List<String> destination = new ArrayList<>();
+		final List<String> source = ListFactory.newArrayList();
+		final List<String> destination = ListFactory.newArrayList();
 		final String berta = "Berta";
 		final String caesar = "Caesar";
 		source.add("Anton");
@@ -699,7 +699,7 @@ public class ListExtensionsTest
 	@Test
 	public void testSortByProperty()
 	{
-		final List<Person> persons = new ArrayList<>();
+		final List<Person> persons = ListFactory.newArrayList();
 		final Person obelix = new Person();
 		obelix.setGender(Gender.MALE);
 		obelix.setName("obelix");
@@ -769,7 +769,7 @@ public class ListExtensionsTest
 	@SuppressWarnings({ "rawtypes" })
 	public void testsplitToPartsInList()
 	{
-		final List<Integer> list = new ArrayList<>();
+		final List<Integer> list = ListFactory.newArrayList();
 		for (int i = 0; i < 999; i++)
 		{
 			list.add(i);
