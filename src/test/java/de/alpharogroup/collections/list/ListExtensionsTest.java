@@ -148,7 +148,7 @@ public class ListExtensionsTest
 		// new scenario...
 		expected = ListFactory.newArrayList();
 		values = ListFactory.newArrayList(1, 2, 3, 4);
-		actual = ListExtensions.getAllCombinations(values, 6);
+		actual = ListExtensions.getAllCombinations(values, 3);
 		expected.add(ListFactory.newArrayList(1, 2, 3));
 		expected.add(ListFactory.newArrayList(1, 3, 4));
 		expected.add(ListFactory.newArrayList(1, 3, 4));
