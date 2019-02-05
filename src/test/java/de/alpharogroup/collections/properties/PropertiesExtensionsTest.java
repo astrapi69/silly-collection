@@ -37,6 +37,7 @@ import java.io.InputStream;
 import java.io.OutputStream;
 import java.lang.reflect.InvocationTargetException;
 import java.net.URL;
+import java.util.Collections;
 import java.util.List;
 import java.util.Map;
 import java.util.Optional;
@@ -198,6 +199,9 @@ public class PropertiesExtensionsTest
 
 		final Map<String, List<String>> redundantValues = PropertiesExtensions
 			.findRedundantValues(properties);
+
+		Collections.sort(redundantValues.get("OK"));
+
 		assertEquals(redundantValues.get("Hello, {0} {1} {2}!"),
 			ListFactory.newArrayList("com", "foo.redundant.value"));
 		assertEquals(redundantValues.get("OK"),
