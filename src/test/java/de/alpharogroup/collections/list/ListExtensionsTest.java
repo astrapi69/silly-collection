@@ -145,6 +145,16 @@ public class ListExtensionsTest
 		List<Integer> values;
 		List<List<Integer>> actual;
 		List<List<Integer>> expected;
+		// new scenario...
+		expected = ListFactory.newArrayList();
+		values = ListFactory.newArrayList(1, 2, 3, 4);
+		actual = ListExtensions.getAllCombinations(values, 6);
+		expected.add(ListFactory.newArrayList(1, 2, 3));
+		expected.add(ListFactory.newArrayList(1, 3, 4));
+		expected.add(ListFactory.newArrayList(1, 3, 4));
+		expected.add(ListFactory.newArrayList(2, 3, 4));
+		assertTrue(CollectionExtensions.isEqualCollection(actual, expected));
+		// new scenario...
 		expected = ListFactory.newArrayList();
 		values = ListFactory.newArrayList(1, 2, 3, 4, 5, 6, 7);
 		actual = ListExtensions.getAllCombinations(values, 6);
@@ -167,6 +177,16 @@ public class ListExtensionsTest
 		List<String> values;
 		List<List<String>> actual;
 		List<List<String>> expected;
+		// new scenario...
+		expected = ListFactory.newArrayList();
+		values = ListFactory.newArrayList("1", "2", "3", "4");
+		actual = ListExtensions.getCombinations(values, 3);
+		expected.add(ListFactory.newArrayList("1", "2", "3"));
+		expected.add(ListFactory.newArrayList("1", "2", "4"));
+		expected.add(ListFactory.newArrayList("1", "3", "4"));
+		expected.add(ListFactory.newArrayList("2", "3", "4"));
+		assertTrue(CollectionExtensions.isEqualCollection(actual, expected));
+		// new scenario...
 		expected = ListFactory.newArrayList();
 		values = ListFactory.newArrayList("1", "2", "3", "4", "5", "6", "7");
 		actual = ListExtensions.getCombinations(values, 6);
