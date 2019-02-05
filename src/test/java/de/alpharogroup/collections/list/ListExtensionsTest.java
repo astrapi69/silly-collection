@@ -150,7 +150,7 @@ public class ListExtensionsTest
 		values = ListFactory.newArrayList(1, 2, 3, 4);
 		actual = ListExtensions.getAllCombinations(values, 3);
 		expected.add(ListFactory.newArrayList(1, 2, 3));
-		expected.add(ListFactory.newArrayList(1, 3, 4));
+		expected.add(ListFactory.newArrayList(1, 2, 4));
 		expected.add(ListFactory.newArrayList(1, 3, 4));
 		expected.add(ListFactory.newArrayList(2, 3, 4));
 		assertTrue(CollectionExtensions.isEqualCollection(actual, expected));
