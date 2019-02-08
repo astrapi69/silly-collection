@@ -278,6 +278,7 @@ public class ListExtensionsTest
 	/**
 	 * Test method for {@link ListExtensions#getOptionalFirst(List)}
 	 */
+	@SuppressWarnings("deprecation")
 	@Test
 	public void testGetOptionalFirst()
 	{
@@ -596,6 +597,7 @@ public class ListExtensionsTest
 	/**
 	 * Test method for {@link ListExtensions#removeOptionalFirst(List)}
 	 */
+	@SuppressWarnings("deprecation")
 	@Test
 	public void testRemoveOptionalFirst()
 	{
@@ -629,6 +631,7 @@ public class ListExtensionsTest
 	/**
 	 * Test method for {@link ListExtensions#removeOptionalLast(List)}
 	 */
+	@SuppressWarnings("deprecation")
 	@Test
 	public void testRemoveOptionalLast()
 	{

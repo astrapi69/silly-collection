@@ -7,6 +7,7 @@ Version 5.2-SNAPSHOT
 ADDED:
  
 - new method created for get element from index in the class IndexableSet
+- new class OptionalListExtensions created
 
 Version 5.1
 -------------
