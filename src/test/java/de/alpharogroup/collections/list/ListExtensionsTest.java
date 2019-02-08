@@ -24,9 +24,9 @@
  */
 package de.alpharogroup.collections.list;
 
-import static org.testng.Assert.assertNotNull;
 import static org.testng.AssertJUnit.assertEquals;
 import static org.testng.AssertJUnit.assertFalse;
+import static org.testng.AssertJUnit.assertNotNull;
 import static org.testng.AssertJUnit.assertNull;
 import static org.testng.AssertJUnit.assertTrue;
 
@@ -625,6 +625,36 @@ public class ListExtensionsTest
 
 		actual = ListExtensions.removeOptionalFirst(search);
 		expected = Optional.empty();
+		assertEquals(expected, actual);
+	}
+
+	/**
+	 * Test method for {@link ListExtensions#hasNext(List, Object)}
+	 */
+	@Test(enabled = true)
+	public void testHasNext()
+	{
+		boolean expected;
+		boolean actual;
+		List<String> search;
+		String emil = "Emil";
+		String anton = "Anton";
+		search = ListFactory.newArrayList();
+		search.add("Caesar");
+		search.add("Dora");
+		search.add(emil);
+		search.add(anton);
+
+		expected = false;
+		actual = ListExtensions.hasNext(search, null);
+		assertEquals(expected, actual);
+
+		expected = true;
+		actual = ListExtensions.hasNext(search, emil);
+		assertEquals(expected, actual);
+
+		expected = false;
+		actual = ListExtensions.hasNext(search, anton);
 		assertEquals(expected, actual);
 	}
 

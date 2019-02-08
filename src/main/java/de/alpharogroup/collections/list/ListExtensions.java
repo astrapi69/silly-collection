@@ -270,6 +270,31 @@ public final class ListExtensions
 	}
 
 	/**
+	 * Checks if the given {@link List} has a next element from the given element.
+	 *
+	 * @param <T>
+	 *            the generic type
+	 * @param list
+	 *            the list
+	 * @param element
+	 *            the element
+	 * @return true, if successful
+	 */
+	public static <T> boolean hasNext(final @NonNull List<T> list, final T element)
+	{
+		final int indexOfElement = list.indexOf(element);
+		if (indexOfElement == - 1)
+		{
+			return false;
+		}
+		if (indexOfElement < list.size() - 1)
+		{
+			return true;
+		}
+		return false;
+	}
+
+	/**
 	 * Rearrange the order from the given {@link List} to the given rearranged index
 	 *
 	 * @param <T>

@@ -8,6 +8,7 @@ ADDED:
  
 - new method created for get element from index in the class IndexableSet
 - new class OptionalListExtensions created
+- new method hasNext in class ListExtensions created
 
 Version 5.1
 -------------
