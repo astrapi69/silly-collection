@@ -270,7 +270,7 @@ public final class ListExtensions
 	}
 
 	/**
-	 * Checks if the given {@link List} has a next element from the given element.
+	 * Checks if the given {@link List} has a next element from the given element
 	 *
 	 * @param <T>
 	 *            the generic type
@@ -292,6 +292,27 @@ public final class ListExtensions
 			return true;
 		}
 		return false;
+	}
+
+	/**
+	 * Checks if the given {@link List} has a next element from the given element
+	 *
+	 * @param <T>
+	 *            the generic type
+	 * @param list
+	 *            the list
+	 * @param element
+	 *            the element
+	 * @return true, if successful
+	 */
+	public static <T> boolean hasPrevious(final @NonNull List<T> list, final T element)
+	{
+		final int indexOfElement = list.indexOf(element);
+		if (indexOfElement == - 1 || indexOfElement == 0)
+		{
+			return false;
+		}
+		return true;
 	}
 
 	/**

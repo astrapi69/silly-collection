@@ -9,6 +9,10 @@ ADDED:
 - new method created for get element from index in the class IndexableSet
 - new class OptionalListExtensions created
 - new method hasNext in class ListExtensions created
+- new benchmark jmh-core and jmh-generator-annprocess dependencies in version 1.21 added 
+- new BenchmarkRunner created that starts the benchmarking process
+- new benchmark class for IndexableSet created
+- new methods for getNext and getPrevious created in class OptionalListExtensions
 
 Version 5.1
 -------------

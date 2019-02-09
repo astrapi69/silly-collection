@@ -659,6 +659,51 @@ public class ListExtensionsTest
 	}
 
 	/**
+	 * Test method for {@link ListExtensions#hasPrevious(List, Object)}
+	 */
+	@Test(enabled = true)
+	public void testHasPrevious()
+	{
+		boolean expected;
+		boolean actual;
+		List<String> search;
+
+		String caeser = "Caesar";
+		String dora = "Dora";
+		String emil = "Emil";
+		String anton = "Anton";
+		search = ListFactory.newArrayList();
+		search.add(caeser);
+		search.add(dora);
+		search.add(emil);
+		search.add(anton);
+
+		expected = false;
+		actual = ListExtensions.hasPrevious(search, null);
+		assertEquals(expected, actual);
+
+		expected = false;
+		actual = ListExtensions.hasPrevious(search, "foo");
+		assertEquals(expected, actual);
+
+		expected = false;
+		actual = ListExtensions.hasPrevious(search, caeser);
+		assertEquals(expected, actual);
+
+		expected = true;
+		actual = ListExtensions.hasPrevious(search, dora);
+		assertEquals(expected, actual);
+
+		expected = true;
+		actual = ListExtensions.hasPrevious(search, emil);
+		assertEquals(expected, actual);
+
+		expected = true;
+		actual = ListExtensions.hasPrevious(search, anton);
+		assertEquals(expected, actual);
+	}
+
+	/**
 	 * Test method for {@link ListExtensions#removeOptionalLast(List)}
 	 */
 	@SuppressWarnings("deprecation")

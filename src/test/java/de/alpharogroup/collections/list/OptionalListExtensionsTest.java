@@ -157,6 +157,96 @@ public class OptionalListExtensionsTest
 	}
 
 	/**
+	 * Test method for {@link OptionalListExtensions#getNext(List, Object)}
+	 */
+	@Test
+	public final void testGetNext()
+	{
+		Optional<String> expected;
+		Optional<String> actual;
+		List<String> search;
+
+		String caeser = "Caesar";
+		String dora = "Dora";
+		String emil = "Emil";
+		String anton = "Anton";
+		search = ListFactory.newArrayList();
+		search.add(caeser);
+		search.add(dora);
+		search.add(emil);
+		search.add(anton);
+
+		actual = OptionalListExtensions.getNext(search, "foo");
+		expected = Optional.empty();
+		assertEquals(expected, actual);
+
+		actual = OptionalListExtensions.getNext(search, null);
+		expected = Optional.empty();
+		assertEquals(expected, actual);
+
+		actual = OptionalListExtensions.getNext(search, anton);
+		expected = Optional.empty();
+		assertEquals(expected, actual);
+
+		actual = OptionalListExtensions.getNext(search, emil);
+		expected = Optional.of(anton);
+		assertEquals(expected, actual);
+
+		actual = OptionalListExtensions.getNext(search, dora);
+		expected = Optional.of(emil);
+		assertEquals(expected, actual);
+
+		actual = OptionalListExtensions.getNext(search, caeser);
+		expected = Optional.of(dora);
+		assertEquals(expected, actual);
+	}
+
+	/**
+	 * Test method for {@link OptionalListExtensions#getPrevious(List, Object)}
+	 */
+	@Test
+	public final void testGetPrevious()
+	{
+		Optional<String> expected;
+		Optional<String> actual;
+		List<String> search;
+
+		String caeser = "Caesar";
+		String dora = "Dora";
+		String emil = "Emil";
+		String anton = "Anton";
+		search = ListFactory.newArrayList();
+		search.add(caeser);
+		search.add(dora);
+		search.add(emil);
+		search.add(anton);
+
+		actual = OptionalListExtensions.getPrevious(search, "foo");
+		expected = Optional.empty();
+		assertEquals(expected, actual);
+
+		actual = OptionalListExtensions.getPrevious(search, null);
+		expected = Optional.empty();
+		assertEquals(expected, actual);
+
+		actual = OptionalListExtensions.getPrevious(search, caeser);
+		expected = Optional.empty();
+		assertEquals(expected, actual);
+
+		actual = OptionalListExtensions.getPrevious(search, dora);
+		expected = Optional.of(caeser);
+		assertEquals(expected, actual);
+
+		actual = OptionalListExtensions.getPrevious(search, emil);
+		expected = Optional.of(dora);
+		assertEquals(expected, actual);
+
+		actual = OptionalListExtensions.getPrevious(search, anton);
+		expected = Optional.of(emil);
+		assertEquals(expected, actual);
+	}
+
+	/**
 	 * Test method for {@link OptionalListExtensions} with {@link BeanTester}
 	 */
 	@Test(expectedExceptions = { BeanTestException.class, InvocationTargetException.class,
