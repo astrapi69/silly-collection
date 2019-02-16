@@ -8,6 +8,10 @@ ADDED:
  
 - new method created for get element from index in the class IndexableSet
 
+CHANGED:
+
+- update of parent version to 4.6
+
 Version 5.1
 -------------
 
