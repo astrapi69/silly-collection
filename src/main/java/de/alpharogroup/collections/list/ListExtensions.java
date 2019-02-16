@@ -106,7 +106,12 @@ public final class ListExtensions
 	 * @param list
 	 *            the List.
 	 * @return Returns the first object from the given List or null if the List is empty or null.
+	 * @deprecated use instead the same method from the new class
+	 *             <code>OptionalListExtensions</code>. <br>
+	 *             <br>
+	 *             Note: will be removed in the next minor release
 	 */
+	@Deprecated
 	public static <T> Optional<T> getOptionalFirst(final List<T> list)
 	{
 		if (CollectionExtensions.isNotEmpty(list))
@@ -142,7 +147,12 @@ public final class ListExtensions
 	 * @param list
 	 *            the List.
 	 * @return Returns the last object from the given List or null if the List is empty or null.
+	 * @deprecated use instead the same method from the new class
+	 *             <code>OptionalListExtensions</code>. <br>
+	 *             <br>
+	 *             Note: will be removed in the next minor release
 	 */
+	@Deprecated
 	public static <T> Optional<T> getOptionalLast(final List<T> list)
 	{
 		if (CollectionExtensions.isNotEmpty(list))
@@ -251,12 +261,58 @@ public final class ListExtensions
 	 */
 	public static <T> boolean isLast(final List<T> list, final T element)
 	{
-		Optional<T> optionalLast = getOptionalLast(list);
+		Optional<T> optionalLast = OptionalListExtensions.getLast(list);
 		if (optionalLast.isPresent())
 		{
 			return optionalLast.get().equals(element);
 		}
 		return false;
+	}
+
+	/**
+	 * Checks if the given {@link List} has a next element from the given element
+	 *
+	 * @param <T>
+	 *            the generic type
+	 * @param list
+	 *            the list
+	 * @param element
+	 *            the element
+	 * @return true, if successful
+	 */
+	public static <T> boolean hasNext(final @NonNull List<T> list, final T element)
+	{
+		final int indexOfElement = list.indexOf(element);
+		if (indexOfElement == - 1)
+		{
+			return false;
+		}
+		if (indexOfElement < list.size() - 1)
+		{
+			return true;
+		}
+		return false;
+	}
+
+	/**
+	 * Checks if the given {@link List} has a next element from the given element
+	 *
+	 * @param <T>
+	 *            the generic type
+	 * @param list
+	 *            the list
+	 * @param element
+	 *            the element
+	 * @return true, if successful
+	 */
+	public static <T> boolean hasPrevious(final @NonNull List<T> list, final T element)
+	{
+		final int indexOfElement = list.indexOf(element);
+		if (indexOfElement == - 1 || indexOfElement == 0)
+		{
+			return false;
+		}
+		return true;
 	}
 
 	/**
@@ -315,7 +371,12 @@ public final class ListExtensions
 	 *            the List.
 	 * @return Removes and returns the first object from the given List or an empty {@link Optional}
 	 *         if the List is empty or null.
+	 * @deprecated use instead the same method from the new class
+	 *             <code>OptionalListExtensions</code>. <br>
+	 *             <br>
+	 *             Note: will be removed in the next minor release
 	 */
+	@Deprecated
 	public static <T> Optional<T> removeOptionalFirst(final List<T> list)
 	{
 		if (!CollectionExtensions.isEmpty(list) && 0 < list.size())
@@ -334,7 +395,12 @@ public final class ListExtensions
 	 *            the List.
 	 * @return Removes and returns the last object from the given List or an empty {@link Optional}
 	 *         if the List is empty or null.
+	 * @deprecated use instead the same method from the new class
+	 *             <code>OptionalListExtensions</code>. <br>
+	 *             <br>
+	 *             Note: will be removed in the next minor release
 	 */
+	@Deprecated
 	public static <T> Optional<T> removeOptionalLast(final List<T> list)
 	{
 		if (!CollectionExtensions.isEmpty(list) && 0 < list.size())

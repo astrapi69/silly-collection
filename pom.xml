@@ -31,6 +31,7 @@
 		<test-objects.version>5.0.1</test-objects.version>
 		<!-- EXTERNAL LIBRARIES versions -->
 		<commons-collections4.version>4.2</commons-collections4.version>
+		<jmh.version>1.21</jmh.version>
 	</properties>
 
 	<licenses>
@@ -96,6 +97,17 @@
 				<artifactId>jobject-evaluate</artifactId>
 				<version>${jobject-evaluate.version}</version>
 			</dependency>
+			<!-- JMH DEPENDENCIES for benchmarking -->
+			<dependency>
+				<groupId>org.openjdk.jmh</groupId>
+				<artifactId>jmh-core</artifactId>
+				<version>${jmh.version}</version>
+			</dependency>
+			<dependency>
+				<groupId>org.openjdk.jmh</groupId>
+				<artifactId>jmh-generator-annprocess</artifactId>
+				<version>${jmh.version}</version>
+			</dependency>
 
 		</dependencies>
 
@@ -148,6 +160,17 @@
 		<dependency>
 			<groupId>de.alpharogroup</groupId>
 			<artifactId>jobject-clone</artifactId>
+			<scope>test</scope>
+		</dependency>
+		<!-- JMH DEPENDENCIES for benchmarking -->
+		<dependency>
+			<groupId>org.openjdk.jmh</groupId>
+			<artifactId>jmh-core</artifactId>
+			<scope>test</scope>
+		</dependency>
+		<dependency>
+			<groupId>org.openjdk.jmh</groupId>
+			<artifactId>jmh-generator-annprocess</artifactId>
 			<scope>test</scope>
 		</dependency>
 

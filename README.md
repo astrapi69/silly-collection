@@ -97,6 +97,7 @@ Here is a list of awesome similar projects:
 Open Source:
 
  * [streamex](https://github.com/amaembo/streamex) Enhancing Java 8 Streams
+ * [glazedlists](https://github.com/glazedlists/glazedlists) Open Source List Transformations for Java
 
 ## Credits
 
