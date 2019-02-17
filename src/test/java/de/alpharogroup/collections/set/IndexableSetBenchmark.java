@@ -57,33 +57,36 @@ public class IndexableSetBenchmark
 	}
 
 	/**
-	 * Benchmark get method.
+	 * Benchmark get index method.
 	 */
 	@Benchmark
-    @Warmup(iterations = 3)
-    @Measurement(iterations = 10)
-    @Fork(3)
-	public void benchmarkGetMethod()
+	@Warmup(iterations = 3)
+	@Measurement(iterations = 10)
+	@Fork(3)
+	public void benchmarkGetIndexMethod()
 	{
+
 		int count = 0;
-		while(count == 1000) {
-			set.get(count);
+		while (count == 1000)
+		{
+			set.getIndex(count);
 			count++;
 		}
 	}
 
 	/**
-	 * Benchmark get index method.
+	 * Benchmark get method.
 	 */
 	@Benchmark
-    @Warmup(iterations = 3)
-    @Measurement(iterations = 10)
-    @Fork(3)
-	public void benchmarkGetIndexMethod() {
-
+	@Warmup(iterations = 3)
+	@Measurement(iterations = 10)
+	@Fork(3)
+	public void benchmarkGetMethod()
+	{
 		int count = 0;
-		while(count == 1000) {
-			set.getIndex(count);
+		while (count == 1000)
+		{
+			set.get(count);
 			count++;
 		}
 	}
