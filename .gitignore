@@ -6,7 +6,9 @@
 ##################
 # intellij files #
 ##################
+*.iws
 *.iml
+*.ipr
 !.idea/runConfigurations
 .idea/inspectionProfiles
 .idea/libraries
@@ -21,10 +23,29 @@
 /.settings
 /.tern-project
 
+###########
+### STS ###
+###########
+.apt_generated
+.factorypath
+.springBeans
+.sts4-cache
+
+
+################
+### NetBeans ###
+################
+/nbproject/private/
+/nbbuild/
+/nbdist/
+/.nb-gradle/
+/build/
+
 #########################
 # maven generated files #
 #########################
 /target
+/.mvn/
 
 #############
 # Zip files #
