@@ -283,7 +283,7 @@ public final class ListExtensions
 	public static <T> boolean hasNext(final @NonNull List<T> list, final T element)
 	{
 		final int indexOfElement = list.indexOf(element);
-		if (indexOfElement == - 1)
+		if (indexOfElement == -1)
 		{
 			return false;
 		}
@@ -308,7 +308,7 @@ public final class ListExtensions
 	public static <T> boolean hasPrevious(final @NonNull List<T> list, final T element)
 	{
 		final int indexOfElement = list.indexOf(element);
-		if (indexOfElement == - 1 || indexOfElement == 0)
+		if (indexOfElement == -1 || indexOfElement == 0)
 		{
 			return false;
 		}

@@ -91,72 +91,6 @@ public class OptionalListExtensionsTest
 	}
 
 	/**
-	 * Test method for {@link OptionalListExtensions#removeFirst(List)}
-	 */
-	@Test
-	public final void testRemoveFirst()
-	{
-		Optional<String> expected;
-		Optional<String> actual;
-		String removed;
-		List<String> search;
-		expected = Optional.<String> of("Leonidas");
-		removed = "Berta";
-		search = ListFactory.newArrayList();
-		search.add(removed);
-		search.add(expected.get());
-		search.add("Caesar");
-		search.add("Dora");
-		search.add("Emil");
-		search.add("Anton");
-
-		actual = OptionalListExtensions.removeFirst(search);
-		assertTrue(removed.equals(actual.get()));
-
-		actual = OptionalListExtensions.getFirst(search);
-		assertEquals(expected, actual);
-
-		search.clear();
-
-		actual = OptionalListExtensions.removeFirst(search);
-		expected = Optional.empty();
-		assertEquals(expected, actual);
-	}
-
-	/**
-	 * Test method for {@link OptionalListExtensions#removeLast(List)}
-	 */
-	@Test
-	public final void testRemoveLast()
-	{
-		Optional<String> expected;
-		Optional<String> actual;
-		String removed;
-		List<String> search;
-		expected = Optional.<String> of("Leonidas");
-		removed = "Berta";
-		search = ListFactory.newArrayList();
-
-		search.add("Anton");
-		search.add("Caesar");
-		search.add("Dora");
-		search.add("Emil");
-		search.add(expected.get());
-		search.add(removed);
-		actual = OptionalListExtensions.removeLast(search);
-		assertTrue("", removed.equals(actual.get()));
-
-		actual = OptionalListExtensions.getLast(search);
-		assertEquals(expected, actual);
-
-		search.clear();
-
-		actual = OptionalListExtensions.removeLast(search);
-		expected = Optional.empty();
-		assertEquals(expected, actual);
-	}
-
-	/**
 	 * Test method for {@link OptionalListExtensions#getNext(List, Object)}
 	 */
 	@Test
@@ -243,6 +177,72 @@ public class OptionalListExtensionsTest
 
 		actual = OptionalListExtensions.getPrevious(search, anton);
 		expected = Optional.of(emil);
+		assertEquals(expected, actual);
+	}
+
+	/**
+	 * Test method for {@link OptionalListExtensions#removeFirst(List)}
+	 */
+	@Test
+	public final void testRemoveFirst()
+	{
+		Optional<String> expected;
+		Optional<String> actual;
+		String removed;
+		List<String> search;
+		expected = Optional.<String> of("Leonidas");
+		removed = "Berta";
+		search = ListFactory.newArrayList();
+		search.add(removed);
+		search.add(expected.get());
+		search.add("Caesar");
+		search.add("Dora");
+		search.add("Emil");
+		search.add("Anton");
+
+		actual = OptionalListExtensions.removeFirst(search);
+		assertTrue(removed.equals(actual.get()));
+
+		actual = OptionalListExtensions.getFirst(search);
+		assertEquals(expected, actual);
+
+		search.clear();
+
+		actual = OptionalListExtensions.removeFirst(search);
+		expected = Optional.empty();
+		assertEquals(expected, actual);
+	}
+
+	/**
+	 * Test method for {@link OptionalListExtensions#removeLast(List)}
+	 */
+	@Test
+	public final void testRemoveLast()
+	{
+		Optional<String> expected;
+		Optional<String> actual;
+		String removed;
+		List<String> search;
+		expected = Optional.<String> of("Leonidas");
+		removed = "Berta";
+		search = ListFactory.newArrayList();
+
+		search.add("Anton");
+		search.add("Caesar");
+		search.add("Dora");
+		search.add("Emil");
+		search.add(expected.get());
+		search.add(removed);
+		actual = OptionalListExtensions.removeLast(search);
+		assertTrue("", removed.equals(actual.get()));
+
+		actual = OptionalListExtensions.getLast(search);
+		assertEquals(expected, actual);
+
+		search.clear();
+
+		actual = OptionalListExtensions.removeLast(search);
+		expected = Optional.empty();
 		assertEquals(expected, actual);
 	}
 

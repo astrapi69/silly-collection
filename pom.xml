@@ -7,7 +7,7 @@
 	<parent>
 		<groupId>de.alpharogroup</groupId>
 		<artifactId>mvn-java-parent</artifactId>
-		<version>4.5</version>
+		<version>4.6</version>
 	</parent>
 
 	<artifactId>silly-collections</artifactId>

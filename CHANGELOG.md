@@ -14,6 +14,10 @@ ADDED:
 - new benchmark class for IndexableSet created
 - new methods for getNext and getPrevious created in class OptionalListExtensions
 
+CHANGED:
+
+- update of parent version to 4.6
+
 Version 5.1
 -------------
 
