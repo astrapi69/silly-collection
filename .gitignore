@@ -46,17 +46,21 @@
 #########################
 /target
 /.mvn/
+*.versionsBackup
 
 #############
 # Zip files #
 #############
 *.tar
+*.tar.gz
 *.zip
 *.7z
 *.dmg
 *.gz
 *.iso
 *.jar
+*.war
+*.ear
 *.rar
 
 ##############
