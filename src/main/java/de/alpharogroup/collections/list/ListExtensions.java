@@ -194,8 +194,7 @@ public final class ListExtensions
 	public static <T> List<T> getSameElementsFromLists(final List<T> toSearch, final List<T> search)
 	{
 		toSearch.retainAll(search);
-		List<T> foundElements = ListFactory.newArrayList(toSearch);
-		return foundElements;
+		return ListFactory.newArrayList(toSearch);
 	}
 
 	/**
@@ -211,16 +210,8 @@ public final class ListExtensions
 	 */
 	public static <T> boolean isEqualListOfArrays(List<T[]> one, List<T[]> other)
 	{
-		if (one == null && other == null)
-		{
-			return true;
-		}
-
-		if ((one == null && other != null) || one != null && other == null
-			|| one.size() != other.size())
-		{
-			return false;
-		}
+		Optional<Boolean> optionalEvaluation = CollectionExtensions.preconditionOfEqualCollection(one, other);
+		if (optionalEvaluation.isPresent()) return optionalEvaluation.get();
 		for (int i = 0; i < one.size(); i++)
 		{
 			if (!Arrays.deepEquals(one.get(i), other.get(i)))
@@ -444,8 +435,7 @@ public final class ListExtensions
 	{
 		if (remove < v.size())
 		{
-			final List<T> l = v.subList(remove, v.size());
-			return l;
+			return v.subList(remove, v.size());
 		}
 		throw new IllegalArgumentException("You cannot remove "
 			+ "more element than in the ArrayList exists. \nSize from ArrayList:" + v.size() + "\n"
@@ -522,7 +512,7 @@ public final class ListExtensions
 		{
 			comparator = ComparatorUtils.reversedComparator(comparator);
 		}
-		Collections.sort(list, comparator);
+        list.sort(comparator);
 	}
 
 	/**
@@ -577,8 +567,7 @@ public final class ListExtensions
 	@SafeVarargs
 	public static <T> T[] toArray(final T... elements)
 	{
-		final T[] decorator = ArrayFactory.newArray(elements);
-		return decorator;
+		return ArrayFactory.newArray(elements);
 	}
 
 	/**
@@ -645,7 +634,7 @@ public final class ListExtensions
 	public static List<List<Integer>> getAllCombinations(
 		@NonNull final List<Integer> possibleNumbers, int combinationSize)
 	{
-		Integer currentCombination[] = new Integer[combinationSize];
+		Integer[] currentCombination = new Integer[combinationSize];
 		List<List<Integer>> allCombinations = ListFactory.newArrayList();
 		int currentEnd = possibleNumbers.size() - 1;
 		int currentStart = 0;
@@ -674,7 +663,7 @@ public final class ListExtensions
 	 *            the combination size
 	 */
 	private static void computeAllCombinations(List<List<Integer>> allCombinations,
-		List<Integer> possibleNumbers, Integer currentCombination[], int currentStart,
+		List<Integer> possibleNumbers, Integer[] currentCombination, int currentStart,
 		int currentEnd, int currentCombinationIndex, int combinationSize)
 	{
 		if (currentCombinationIndex == combinationSize)
