@@ -156,6 +156,26 @@ public class ListExtensionsTest
 		assertTrue(CollectionExtensions.isEqualCollection(actual, expected));
 		// new scenario...
 		expected = ListFactory.newArrayList();
+		values = ListFactory.newArrayList(1, 2, 3, 4, 5);
+		actual = ListExtensions.getAllCombinations(values, 3);
+		expected.add(ListFactory.newArrayList(1, 2, 3));
+		expected.add(ListFactory.newArrayList(1, 2, 4));
+		expected.add(ListFactory.newArrayList(1, 2, 5));
+		expected.add(ListFactory.newArrayList(1, 3, 4));
+		expected.add(ListFactory.newArrayList(1, 3, 5));
+		expected.add(ListFactory.newArrayList(1, 4, 5));
+		expected.add(ListFactory.newArrayList(2, 3, 4));
+		expected.add(ListFactory.newArrayList(2, 3, 5));
+		expected.add(ListFactory.newArrayList(2, 4, 5));
+		expected.add(ListFactory.newArrayList(3, 4, 5));
+		assertTrue(CollectionExtensions.isEqualCollection(actual, expected));
+
+		expected = ListFactory.newArrayList();
+		values = ListFactory.newRangeList(1, 11);
+		actual = ListExtensions.getAllCombinations(values, 3);
+		System.err.println(actual.size());
+		// new scenario...
+		expected = ListFactory.newArrayList();
 		values = ListFactory.newArrayList(1, 2, 3, 4, 5, 6, 7);
 		actual = ListExtensions.getAllCombinations(values, 6);
 		expected.add(ListFactory.newArrayList(1, 2, 3, 4, 5, 6));
