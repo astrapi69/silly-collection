@@ -48,6 +48,23 @@ public class ArrayExtensionsTest
 {
 
 	/**
+	 * Test method for {@link ArrayExtensions#removeAll(Object[], Object[])}
+	 */
+	@Test
+	public void testRemoveAll(){
+		String[] actual;
+		String[] expected;
+		String[] source;
+		String[] arrayToRemove;
+
+		source = ArrayFactory.newArray("1", "2", "3", "4");
+		arrayToRemove  = ArrayFactory.newArray("2", "3", "4");
+		actual = ArrayExtensions.removeAll(source, arrayToRemove);
+		expected = ArrayFactory.newArray("1");
+		assertTrue(Arrays.equals(actual, expected));
+	}
+	
+	/**
 	 * Test method for {@link ArrayExtensions#arraycopyWithSystem(Object[], Object[])}.
 	 */
 	@Test
