@@ -41,6 +41,24 @@ import lombok.experimental.UtilityClass;
 public final class ArrayExtensions
 {
 
+	/**
+	 * Removes the first element of the array.
+	 *
+	 * @param <T>
+	 *            the generic type of the objects in the array
+	 * @param array
+	 *            the origin array
+	 * @param arrayToRemove
+	 *            the array to remove
+	 * @return the new created array with the elements
+	 */
+	public static <T> T[] removeAll(@NonNull final T[] array, @NonNull final T[] arrayToRemove)
+	{
+		List<T> list = ListFactory.newArrayList(array);
+		List<T> listToRemove = ListFactory.newArrayList(arrayToRemove);
+		list.removeAll(listToRemove);
+		return list.toArray(Arrays.copyOf(array, list.size()));
+	}
 
 	/**
 	 * Returns <tt>true</tt> if and only if the given element is in the given array
