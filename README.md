@@ -11,7 +11,9 @@
 
 </div>
 
-Utility library for collections, comparators and iterator classes
+Utility library for collections, comparators and iterator classes.
+
+If you like this project put a ⭐
 
 # Donations
 
