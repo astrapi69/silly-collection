@@ -13,7 +13,7 @@
 
 Utility library for collections, comparators and iterator classes.
 
-If you like this project put a ⭐
+If you like this project put a ⭐ and donate
 
 # Donations
 
