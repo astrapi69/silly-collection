@@ -7,7 +7,7 @@
 	<parent>
 		<groupId>de.alpharogroup</groupId>
 		<artifactId>mvn-java-parent</artifactId>
-		<version>4.6</version>
+		<version>4.8</version>
 	</parent>
 
 	<artifactId>silly-collections</artifactId>
@@ -21,10 +21,11 @@
 
 	<properties>
 		<!-- JOBJECT-EXTENSIONS versions -->
-		<jobject-extensions.version>2.5</jobject-extensions.version>
+		<jobject-extensions.version>2.6.3</jobject-extensions.version>
 		<jobject-clone.version>${jobject-extensions.version}</jobject-clone.version>
-		<jobject-compare.version>${jobject-extensions.version}</jobject-compare.version>
 		<jobject-evaluate.version>${jobject-extensions.version}</jobject-evaluate.version>
+		<!-- JOBJ-COMPARE version -->
+		<jobj-compare.version>3</jobj-compare.version>
 		<!-- VINTAGE-TIME version -->
 		<vintage-time.version>5.1</vintage-time.version>
 		<!-- TEST-OBJECTS version -->
@@ -85,11 +86,11 @@
 				<artifactId>jobject-clone</artifactId>
 				<version>${jobject-clone.version}</version>
 			</dependency>
-			<!-- JOBJECT-COMPARE DEPENDENCY -->
+			<!-- JOBJ-COMPARE DEPENDENCY -->
 			<dependency>
 				<groupId>de.alpharogroup</groupId>
-				<artifactId>jobject-compare</artifactId>
-				<version>${jobject-compare.version}</version>
+				<artifactId>jobj-compare</artifactId>
+				<version>${jobj-compare.version}</version>
 			</dependency>
 			<!-- JOBJECT-EVALUATE DEPENDENCY -->
 			<dependency>
@@ -119,12 +120,11 @@
 			<groupId>org.apache.commons</groupId>
 			<artifactId>commons-collections4</artifactId>
 		</dependency>
-
-		<!-- JOBJECT-COMPARE DEPENDENCY -->
-		<dependency>
-			<groupId>de.alpharogroup</groupId>
-			<artifactId>jobject-compare</artifactId>
-		</dependency>
+        <!-- JOBJ-COMPARE DEPENDENCY -->
+        <dependency>
+            <groupId>de.alpharogroup</groupId>
+            <artifactId>jobj-compare</artifactId>
+        </dependency>
 		<!-- JOBJECT-EVALUATE DEPENDENCY -->
 		<dependency>
 			<groupId>de.alpharogroup</groupId>

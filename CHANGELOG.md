@@ -13,10 +13,11 @@ ADDED:
 - new BenchmarkRunner created that starts the benchmarking process
 - new benchmark class for IndexableSet created
 - new methods for getNext and getPrevious created in class OptionalListExtensions
+- new method for an array to remove all element from a given array
 
 CHANGED:
 
-- update of parent version to 4.6
+- update of parent version to 4.8
 
 Version 5.1
 -------------
