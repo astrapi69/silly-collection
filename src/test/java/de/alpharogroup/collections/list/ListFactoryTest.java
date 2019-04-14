@@ -29,6 +29,8 @@ import static org.testng.AssertJUnit.assertTrue;
 
 import java.lang.reflect.InvocationTargetException;
 import java.util.ArrayList;
+import java.util.Collection;
+import java.util.Iterator;
 import java.util.List;
 
 import org.meanbean.test.BeanTestException;
@@ -47,12 +49,46 @@ public class ListFactoryTest
 	@Test
 	public void testNewArrayListCollectionObjects()
 	{
-		List<String> strings = ListFactory.newArrayList(null, "foo");
+		List<String> strings = ListFactory.newArrayList((Collection<String>)null, "foo");
 		assertNotNull(strings);
 		assertTrue(strings.size() == 1);
 		assertTrue(strings.get(0).equals("foo"));
 
 		strings = ListFactory.newArrayList(strings, "foo");
+		assertNotNull(strings);
+		assertTrue(strings.size() == 2);
+		assertTrue(strings.get(0).equals("foo"));
+	}
+
+	/**
+	 * Test the method {@link ListFactory#newArrayList(Iterable, Object...)}.
+	 */
+	@Test
+	public void testNewArrayListIterableObjects()
+	{
+		List<String> strings = ListFactory.newArrayList((Iterable<String>)null, "foo");
+		assertNotNull(strings);
+		assertTrue(strings.size() == 1);
+		assertTrue(strings.get(0).equals("foo"));
+		Iterable<String> iterable = strings;
+		strings = ListFactory.newArrayList(iterable, "foo");
+		assertNotNull(strings);
+		assertTrue(strings.size() == 2);
+		assertTrue(strings.get(0).equals("foo"));
+	}
+
+	/**
+	 * Test the method {@link ListFactory#newArrayList(java.util.Iterator, Object...)}.
+	 */
+	@Test
+	public void testNewArrayListIteratorObjects()
+	{
+		List<String> strings = ListFactory.newArrayList((Iterator<String>)null, "foo");
+		assertNotNull(strings);
+		assertTrue(strings.size() == 1);
+		assertTrue(strings.get(0).equals("foo"));
+		Iterator<String> iterator = strings.iterator();
+		strings = ListFactory.newArrayList(iterator, "bar");
 		assertNotNull(strings);
 		assertTrue(strings.size() == 2);
 		assertTrue(strings.get(0).equals("foo"));
@@ -72,22 +108,48 @@ public class ListFactoryTest
 	}
 
 	/**
+	 * Test the method {@link ListFactory#newLinkedList(java.util.Collection, Object...)}.
+	 */
+	@Test
+	public void testNewLinkedListCollectionObjects()
+	{
+		List<String> strings = ListFactory.newLinkedList((Collection<String>)null, "foo");
+		assertNotNull(strings);
+		assertTrue(strings.size() == 1);
+		assertTrue(strings.get(0).equals("foo"));
+
+		strings = ListFactory.newLinkedList(strings, "foo");
+		assertNotNull(strings);
+		assertTrue(strings.size() == 2);
+		assertTrue(strings.get(0).equals("foo"));
+	}
+
+	/**
+	 * Test the method {@link ListFactory#newLinkedList(Object...)}.
+	 */
+	@Test
+	public void testNewLinkedListObjects()
+	{
+		final List<String> strings = ListFactory.newLinkedList("foo", "bar");
+		assertNotNull(strings);
+		assertTrue(strings.size() == 2);
+		assertTrue(strings.get(0).equals("foo"));
+		assertTrue(strings.get(1).equals("bar"));
+	}
+
+	/**
 	 * Test the method {@link ListFactory#newRangeList(int, int)}
 	 */
 	@Test
 	public void testNewRangeList()
 	{
 		final List<Integer> actual = ListFactory.newRangeList(5, 9);
-		final List<Integer> expected = new ArrayList<Integer>()
-		{
-			{
-				add(5);
-				add(6);
-				add(7);
-				add(8);
-				add(9);
-			}
-		};
+		final List<Integer> expected = new ArrayList<Integer>();
+		expected.add(5);
+		expected.add(6);
+		expected.add(7);
+		expected.add(8);
+		expected.add(9);
 		assertTrue(actual.equals(expected));
 	}
 

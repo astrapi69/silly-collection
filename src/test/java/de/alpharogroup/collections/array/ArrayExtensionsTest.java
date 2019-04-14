@@ -26,10 +26,13 @@ package de.alpharogroup.collections.array;
 
 import static org.testng.Assert.assertNull;
 import static org.testng.AssertJUnit.assertEquals;
+import static org.testng.AssertJUnit.assertTrue;
 
 import java.lang.reflect.InvocationTargetException;
 import java.util.Arrays;
+import java.util.Iterator;
 import java.util.List;
+import java.util.Set;
 
 import org.meanbean.test.BeanTestException;
 import org.meanbean.test.BeanTester;
@@ -45,7 +48,24 @@ public class ArrayExtensionsTest
 {
 
 	/**
-	 * Test method for {@link ArrayExtensions#arraycopyWithSystem(T[], T[])}.
+	 * Test method for {@link ArrayExtensions#removeAll(Object[], Object[])}
+	 */
+	@Test
+	public void testRemoveAll(){
+		String[] actual;
+		String[] expected;
+		String[] source;
+		String[] arrayToRemove;
+
+		source = ArrayFactory.newArray("1", "2", "3", "4");
+		arrayToRemove  = ArrayFactory.newArray("2", "3", "4");
+		actual = ArrayExtensions.removeAll(source, arrayToRemove);
+		expected = ArrayFactory.newArray("1");
+		assertTrue(Arrays.equals(actual, expected));
+	}
+	
+	/**
+	 * Test method for {@link ArrayExtensions#arraycopyWithSystem(Object[], Object[])}.
 	 */
 	@Test
 	public void testArraycopyWithSystem()
@@ -76,14 +96,64 @@ public class ArrayExtensionsTest
 		String actual;
 		String expected;
 		final String numbers[] = { "1", "2", "3", "4", "5", "6", "7" };
-		final List<String> numberList = ArrayExtensions.asList(numbers);// lombok magic extension
-																		// method
+		final List<String> numberList = ArrayExtensions.asList(numbers);
 		for (int i = 0; i < numbers.length; i++)
 		{
 			expected = numbers[i];
 			actual = numberList.get(i);
 			assertEquals(expected, actual);
 		}
+	}
+
+	/**
+	 * Test for method {@link ArrayExtensions#asSet(Object[])}
+	 */
+	@Test
+	public void testAsSet()
+	{
+		String actual;
+		String expected;
+		final String numbers[] = { "1", "2", "3", "4", "5", "6", "7" };
+		final Set<String> numberSet = ArrayExtensions.asSet("1", "2", "3", "4", "5", "6", "7");
+
+		Iterator<String> iterator = numberSet.iterator();
+		int i = 0;
+		while (iterator.hasNext())
+		{
+			actual = iterator.next();
+			expected = numbers[i];
+			assertEquals(expected, actual);
+			i++;
+		}
+	}
+
+	/**
+	 * Test method for
+	 * {@link de.alpharogroup.collections.array.ArrayExtensions#contains(Object[], Object)} .
+	 */
+	@Test
+	public void testContains()
+	{
+		boolean expected;
+		boolean actual;
+
+		final String last = "7";
+		final String numbers[] = { "1", "2", "3", "4", "5", "6", last };
+		// Old vanilla java with static method...
+		actual = ArrayExtensions.contains(numbers, last);
+		expected = true;
+		assertEquals(expected, actual);
+		final String empty[] = { };
+		expected = false;
+		actual = ArrayExtensions.contains(empty, last);
+		assertEquals(expected, actual);
+
+		actual = ArrayExtensions.contains(empty, null);
+		assertEquals(expected, actual);
+
+		actual = ArrayExtensions.contains(empty, 8);
+		assertEquals(expected, actual);
+
 	}
 
 	/**
@@ -318,6 +388,7 @@ public class ArrayExtensionsTest
 		assertEquals(expected, actual);
 	}
 
+
 	/**
 	 * Test method for
 	 * {@link de.alpharogroup.collections.array.ArrayExtensions#isLast(Object[], Object)} .
@@ -337,6 +408,65 @@ public class ArrayExtensionsTest
 		actual = ArrayExtensions.isLast(numbers, null);
 		expected = false;
 		assertEquals(expected, actual);
+	}
+
+	/**
+	 * Test method for {@link ArrayExtensions#removeFirst(Object[])}
+	 */
+	@Test
+	public void testRemoveFirst()
+	{
+		String[] actual;
+		String[] expected;
+		String[] source;
+
+		source = ArrayFactory.newArray("1", "2", "3", "4");
+		actual = ArrayExtensions.removeFirst(source);
+		expected = ArrayFactory.newArray("2", "3", "4");
+		assertTrue(Arrays.equals(actual, expected));
+	}
+
+	/**
+	 * Test method for {@link ArrayExtensions#removeLast(Object[])}
+	 */
+	@Test
+	public void testRemoveLast()
+	{
+		String[] actual;
+		String[] expected;
+		String[] source;
+
+		source = ArrayFactory.newArray("1", "2", "3", "4");
+		actual = ArrayExtensions.removeLast(source);
+		expected = ArrayFactory.newArray("1", "2", "3");
+		assertTrue(Arrays.equals(actual, expected));
+	}
+
+	/**
+	 * Test method for {@link ArrayExtensions#remove(Object[], int... )}
+	 */
+	@Test(enabled = true)
+	public void testRemoveVarArgs()
+	{
+
+		String[] actual;
+		String[] expected;
+		String[] source;
+		// new scenario...
+		source = ArrayFactory.newArray("1", "2", "3", "4");
+		actual = ArrayExtensions.remove(source, 2, 3);
+		expected = ArrayFactory.newArray("1", "2");
+		assertTrue(Arrays.equals(actual, expected));
+		// new scenario unsorted
+		source = ArrayFactory.newArray("1", "2", "3", "4", "5", "6");
+		actual = ArrayExtensions.remove(source, 5, 3, 1);
+		expected = ArrayFactory.newArray("1", "3", "5");
+		assertTrue(Arrays.equals(actual, expected));
+		// new scenario unsorted
+		source = ArrayFactory.newArray("1", "2", "3", "4", "5", "6");
+		actual = ArrayExtensions.remove(source, 3, 5, 1);
+		expected = ArrayFactory.newArray("1", "3", "5");
+		assertTrue(Arrays.equals(actual, expected));
 	}
 
 	/**

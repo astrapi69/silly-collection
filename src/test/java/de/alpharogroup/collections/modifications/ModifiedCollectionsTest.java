@@ -26,11 +26,14 @@ package de.alpharogroup.collections.modifications;
 
 import static org.testng.AssertJUnit.assertTrue;
 
-import java.util.ArrayList;
 import java.util.Arrays;
 import java.util.List;
 
 import org.testng.annotations.Test;
+
+import de.alpharogroup.collections.CollectionExtensions;
+import de.alpharogroup.collections.array.ArrayFactory;
+import de.alpharogroup.collections.list.ListFactory;
 
 /**
  * The unit test class for the class {@link ModifiedCollections}
@@ -45,23 +48,51 @@ public class ModifiedCollectionsTest
 	@Test
 	public void testGetModifiedLists()
 	{
-		final String previous[] = { "1", "2", "3", "4", "5", "6", "7" };
-		final String next[] = { "2", "5", "6", "7", "8", "9" };
+		String previous[];
+		String next[];
+		String expectedadded[];
+		String expectedremoved[];
+		List<String> previousList;
+		List<String> nextList;
+		List<String> expectedaddedList;
+		List<String> expectedremovedList;
+		ModifiedCollections<String> result;
 
-		final String expectedadded[] = { "8", "9" };
-		final String expectedremoved[] = { "1", "3", "4" };
+		// initialize test data
+		previous = ArrayFactory.newArray("1", "2", "3", "4", "5", "6", "7");
+		next = ArrayFactory.newArray("2", "5", "6", "7", "8", "9");
 
-		final List<String> previousList = new ArrayList<>(Arrays.asList(previous));
-		final List<String> nextList = Arrays.asList(next);
+		expectedadded = ArrayFactory.newArray("8", "9");
+		expectedremoved = ArrayFactory.newArray("1", "3", "4");
 
-		final List<String> expectedaddedList = Arrays.asList(expectedadded);
-		final List<String> expectedremovedList = Arrays.asList(expectedremoved);
+		expectedaddedList = Arrays.asList(expectedadded);
+		expectedremovedList = Arrays.asList(expectedremoved);
 
-		ModifiedCollections<String> result = new ModifiedCollections<>();
+		// new scenario...
+		previousList = ListFactory.newArrayList(Arrays.asList(previous));
+		nextList = ListFactory.newArrayList(Arrays.asList(next));
+
+		result = new ModifiedCollections<>();
 		result = result.getModifiedLists(previousList, nextList);
 
 		assertTrue(result.getRemovedElements().equals(expectedremovedList));
 		assertTrue(result.getAddedElements().equals(expectedaddedList));
+
+		// new scenario...
+		previousList = ListFactory.newArrayList(Arrays.asList(previous));
+		nextList = ListFactory.newArrayList(Arrays.asList(next));
+
+		nextList.removeAll(previousList);
+
+		assertTrue(CollectionExtensions.isEqualCollection(nextList, expectedaddedList));
+
+		// new scenario...
+		previousList = ListFactory.newArrayList(Arrays.asList(previous));
+		nextList = Arrays.asList(next);
+
+		previousList.removeAll(nextList);
+
+		assertTrue(CollectionExtensions.isEqualCollection(previousList, expectedremovedList));
 
 	}
 

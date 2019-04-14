@@ -27,13 +27,14 @@ package de.alpharogroup.collections.set;
 import static org.testng.Assert.assertNotNull;
 
 import java.lang.reflect.InvocationTargetException;
-import java.util.ArrayList;
 import java.util.Collection;
 import java.util.Set;
 
 import org.meanbean.test.BeanTestException;
 import org.meanbean.test.BeanTester;
 import org.testng.annotations.Test;
+
+import de.alpharogroup.collections.list.ListFactory;
 
 /**
  * The unit test class for the class {@link SetExtensionsTest}.
@@ -47,7 +48,7 @@ public class SetExtensionsTest
 	@Test
 	public void testToSet()
 	{
-		final Collection<String> nameList = new ArrayList<>();
+		final Collection<String> nameList = ListFactory.newArrayList();
 
 		nameList.add("Anton");
 		nameList.add("Alex");
@@ -66,7 +67,7 @@ public class SetExtensionsTest
 	@Test
 	public void testToSortedSet()
 	{
-		final Collection<String> nameList = new ArrayList<>();
+		final Collection<String> nameList = ListFactory.newArrayList();
 
 		nameList.add("Anton");
 		nameList.add("Alex");

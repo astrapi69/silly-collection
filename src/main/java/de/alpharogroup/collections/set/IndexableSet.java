@@ -22,57 +22,71 @@
  * OF CONTRACT, TORT OR OTHERWISE, ARISING FROM, OUT OF OR IN CONNECTION
  * WITH THE SOFTWARE OR THE USE OR OTHER DEALINGS IN THE SOFTWARE.
  */
-package de.alpharogroup.collections.pairs;
-
-import java.io.Serializable;
-
-import lombok.AccessLevel;
-import lombok.AllArgsConstructor;
-import lombok.Builder;
-import lombok.EqualsAndHashCode;
-import lombok.Getter;
-import lombok.NoArgsConstructor;
-import lombok.Setter;
-import lombok.ToString;
-import lombok.experimental.FieldDefaults;
+package de.alpharogroup.collections.set;
 
 /**
- * The class {@link Quattro} represents four generic values.
+ * The class {@link IndexableSet}
  *
- * @param <TL>
- *            the generic type of the top left content.
- * @param <TR>
- *            the generic type of the top right content.
- * @param <BL>
- *            the generic type of the bottom left content.
- * @param <BR>
- *            the generic type of the bottom right content.
+ * @param <E>
+ *            the element type
  */
-@Getter
-@Setter
-@EqualsAndHashCode
-@ToString
-@NoArgsConstructor
-@AllArgsConstructor
-@Builder(toBuilder = true)
-@FieldDefaults(level = AccessLevel.PRIVATE)
-public class Quattro<TL, TR, BL, BR> implements Serializable
+public class IndexableSet<E> extends InsertionOrderSet<E>
 {
+
 	/**
 	 * The serialVersionUID.
 	 */
 	private static final long serialVersionUID = 1L;
 
-	/** The bottom left value. */
-	BL bottomLeft;
+	/**
+	 * Gets the element of the given index <br>
+	 * <br>
+	 * Note: use with caution
+	 *
+	 * @param index
+	 *            the index
+	 * @return the element of the given index or throws an <code>IndexOutOfBoundsException</code>
+	 * @throws IndexOutOfBoundsException
+	 *             if the index is out of range (<tt>index &lt; 0 || index &gt;= size()</tt>)
+	 */
+	public E get(int index)
+	{
+		int size = this.size();
+		int count = 0;
+		for (E entry : this)
+		{
+			if (index >= size || index < 0)
+			{
+				break;
+			}
+			if (index == count)
+			{
+				return entry;
+			}
+			count++;
+		}
+		throw new IndexOutOfBoundsException("Index: " + index + ", Size: " + size);
+	}
 
-	/** The bottom right value. */
-	BR bottomRight;
-
-	/** The top left value. */
-	TL topLeft;
-
-	/** The top right value. */
-	TR topRight;
+	/**
+	 * Gets the index of the given element
+	 *
+	 * @param element
+	 *            the element
+	 * @return the index of the element or -1 if its not exists
+	 */
+	public int getIndex(E element)
+	{
+		int index = 0;
+		for (E entry : this)
+		{
+			if (entry.equals(element))
+			{
+				return index;
+			}
+			index++;
+		}
+		return -1;
+	}
 
 }

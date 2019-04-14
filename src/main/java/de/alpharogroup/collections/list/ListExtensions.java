@@ -24,7 +24,6 @@
  */
 package de.alpharogroup.collections.list;
 
-import java.util.ArrayList;
 import java.util.Arrays;
 import java.util.Collection;
 import java.util.Collections;
@@ -32,6 +31,7 @@ import java.util.Comparator;
 import java.util.Enumeration;
 import java.util.Iterator;
 import java.util.List;
+import java.util.Optional;
 import java.util.Set;
 
 import org.apache.commons.beanutils.BeanComparator;
@@ -41,6 +41,7 @@ import de.alpharogroup.collections.CollectionExtensions;
 import de.alpharogroup.collections.array.ArrayFactory;
 import de.alpharogroup.collections.modifications.ModifiedCollections;
 import de.alpharogroup.comparators.SortOrderComparator;
+import lombok.NonNull;
 import lombok.experimental.UtilityClass;
 
 /**
@@ -98,6 +99,29 @@ public final class ListExtensions
 	}
 
 	/**
+	 * Gets the first object from the given List.
+	 *
+	 * @param <T>
+	 *            the generic type
+	 * @param list
+	 *            the List.
+	 * @return Returns the first object from the given List or null if the List is empty or null.
+	 * @deprecated use instead the same method from the new class
+	 *             <code>OptionalListExtensions</code>. <br>
+	 *             <br>
+	 *             Note: will be removed in the next minor release
+	 */
+	@Deprecated
+	public static <T> Optional<T> getOptionalFirst(final List<T> list)
+	{
+		if (CollectionExtensions.isNotEmpty(list))
+		{
+			return Optional.of(list.get(0));
+		}
+		return Optional.empty();
+	}
+
+	/**
 	 * Gets the last object from the given List.
 	 *
 	 * @param <T>
@@ -113,6 +137,29 @@ public final class ListExtensions
 			return list.get(list.size() - 1);
 		}
 		return null;
+	}
+
+	/**
+	 * Gets the last object from the given List.
+	 *
+	 * @param <T>
+	 *            the generic type
+	 * @param list
+	 *            the List.
+	 * @return Returns the last object from the given List or null if the List is empty or null.
+	 * @deprecated use instead the same method from the new class
+	 *             <code>OptionalListExtensions</code>. <br>
+	 *             <br>
+	 *             Note: will be removed in the next minor release
+	 */
+	@Deprecated
+	public static <T> Optional<T> getOptionalLast(final List<T> list)
+	{
+		if (CollectionExtensions.isNotEmpty(list))
+		{
+			return Optional.of(list.get(list.size() - 1));
+		}
+		return Optional.empty();
 	}
 
 	/**
@@ -134,34 +181,20 @@ public final class ListExtensions
 	}
 
 	/**
-	 * The Method looks at both List and if they have same objects they are added to one List and
-	 * will returns the result.
+	 * This method decorates the retainAll method and returns the result in a new list
 	 *
 	 * @param <T>
 	 *            the generic type
 	 * @param toSearch
-	 *            The List to search.
+	 *            The list to search
 	 * @param search
-	 *            The List to inspect.
-	 * @return The List with the same objects.
+	 *            the list to inspect
+	 * @return the new list with the intersection of the objects
 	 */
 	public static <T> List<T> getSameElementsFromLists(final List<T> toSearch, final List<T> search)
 	{
-		List<T> foundElements = null;
-		final int size = toSearch.size();
-		for (int i = 0; i < size; i++)
-		{
-			final T element = toSearch.get(i);
-			if (search.contains(element))
-			{
-				if (foundElements == null)
-				{
-					foundElements = new ArrayList<>();
-				}
-				foundElements.add(element);
-			}
-		}
-		return foundElements;
+		toSearch.retainAll(search);
+		return ListFactory.newArrayList(toSearch);
 	}
 
 	/**
@@ -177,16 +210,8 @@ public final class ListExtensions
 	 */
 	public static <T> boolean isEqualListOfArrays(List<T[]> one, List<T[]> other)
 	{
-		if (one == null && other == null)
-		{
-			return true;
-		}
-
-		if ((one == null && other != null) || one != null && other == null
-			|| one.size() != other.size())
-		{
-			return false;
-		}
+		Optional<Boolean> optionalEvaluation = CollectionExtensions.preconditionOfEqualCollection(one, other);
+		if (optionalEvaluation.isPresent()) return optionalEvaluation.get();
 		for (int i = 0; i < one.size(); i++)
 		{
 			if (!Arrays.deepEquals(one.get(i), other.get(i)))
@@ -227,30 +252,86 @@ public final class ListExtensions
 	 */
 	public static <T> boolean isLast(final List<T> list, final T element)
 	{
-		final T last = getLast(list);
-		if (last != null)
+		Optional<T> optionalLast = OptionalListExtensions.getLast(list);
+		if (optionalLast.isPresent())
 		{
-			return last.equals(element);
+			return optionalLast.get().equals(element);
 		}
 		return false;
 	}
 
 	/**
-	 * Helper-Method for printing a Collection in the console.
+	 * Checks if the given {@link List} has a next element from the given element
 	 *
 	 * @param <T>
 	 *            the generic type
-	 * @param collection
-	 *            The Collection to print.
+	 * @param list
+	 *            the list
+	 * @param element
+	 *            the element
+	 * @return true, if successful
 	 */
-	public static <T> void printCollection(final Collection<T> collection)
+	public static <T> boolean hasNext(final @NonNull List<T> list, final T element)
 	{
-		int count = 1;
-		for (final T element : collection)
+		final int indexOfElement = list.indexOf(element);
+		if (indexOfElement == -1)
 		{
-			System.err.println(count + ".)element:" + element);
-			count++;
+			return false;
 		}
+		if (indexOfElement < list.size() - 1)
+		{
+			return true;
+		}
+		return false;
+	}
+
+	/**
+	 * Checks if the given {@link List} has a next element from the given element
+	 *
+	 * @param <T>
+	 *            the generic type
+	 * @param list
+	 *            the list
+	 * @param element
+	 *            the element
+	 * @return true, if successful
+	 */
+	public static <T> boolean hasPrevious(final @NonNull List<T> list, final T element)
+	{
+		final int indexOfElement = list.indexOf(element);
+		if (indexOfElement == -1 || indexOfElement == 0)
+		{
+			return false;
+		}
+		return true;
+	}
+
+	/**
+	 * Rearrange the order from the given {@link List} to the given rearranged index
+	 *
+	 * @param <T>
+	 *            the generic type of the elements
+	 * @param listToResort
+	 *            the list to resort
+	 * @param element
+	 *            the element to rearrange
+	 * @param rearrangeToIndex
+	 *            the rearrange to index
+	 * @return the rearranged {@link List}
+	 */
+	public static <T> List<T> rearrange(@NonNull T element, @NonNull List<T> listToResort,
+		int rearrangeToIndex)
+	{
+		int index = listToResort.indexOf(element);
+		if (index < 0 || index == rearrangeToIndex || listToResort.size() == rearrangeToIndex)
+		{
+			return listToResort;
+		}
+		List<T> resortedList;
+		resortedList = ListFactory.newArrayList(listToResort);
+		resortedList.remove(index);
+		resortedList.add(rearrangeToIndex, element);
+		return resortedList;
 	}
 
 	/**
@@ -270,6 +351,54 @@ public final class ListExtensions
 			return list.remove(0);
 		}
 		return null;
+	}
+
+	/**
+	 * Removes the first object from the given List.
+	 *
+	 * @param <T>
+	 *            the generic type
+	 * @param list
+	 *            the List.
+	 * @return Removes and returns the first object from the given List or an empty {@link Optional}
+	 *         if the List is empty or null.
+	 * @deprecated use instead the same method from the new class
+	 *             <code>OptionalListExtensions</code>. <br>
+	 *             <br>
+	 *             Note: will be removed in the next minor release
+	 */
+	@Deprecated
+	public static <T> Optional<T> removeOptionalFirst(final List<T> list)
+	{
+		if (!CollectionExtensions.isEmpty(list) && 0 < list.size())
+		{
+			return Optional.of(list.remove(0));
+		}
+		return Optional.empty();
+	}
+
+	/**
+	 * Removes the last object from the given List.
+	 *
+	 * @param <T>
+	 *            the generic type
+	 * @param list
+	 *            the List.
+	 * @return Removes and returns the last object from the given List or an empty {@link Optional}
+	 *         if the List is empty or null.
+	 * @deprecated use instead the same method from the new class
+	 *             <code>OptionalListExtensions</code>. <br>
+	 *             <br>
+	 *             Note: will be removed in the next minor release
+	 */
+	@Deprecated
+	public static <T> Optional<T> removeOptionalLast(final List<T> list)
+	{
+		if (!CollectionExtensions.isEmpty(list) && 0 < list.size())
+		{
+			return Optional.of(list.remove(list.size() - 1));
+		}
+		return Optional.empty();
 	}
 
 	/**
@@ -306,8 +435,7 @@ public final class ListExtensions
 	{
 		if (remove < v.size())
 		{
-			final List<T> l = v.subList(remove, v.size());
-			return l;
+			return v.subList(remove, v.size());
 		}
 		throw new IllegalArgumentException("You cannot remove "
 			+ "more element than in the ArrayList exists. \nSize from ArrayList:" + v.size() + "\n"
@@ -325,7 +453,7 @@ public final class ListExtensions
 	 */
 	public static <T> List<T> revertOrder(final List<T> listToRevert)
 	{
-		final List<T> revertedList = new ArrayList<>();
+		final List<T> revertedList = ListFactory.newArrayList();
 
 		int size = listToRevert.size();
 
@@ -384,32 +512,33 @@ public final class ListExtensions
 		{
 			comparator = ComparatorUtils.reversedComparator(comparator);
 		}
-		Collections.sort(list, comparator);
+        list.sort(comparator);
 	}
 
 	/**
-	 * Splits the given {@link Collection} to parts to the specified times.
+	 * Splits the given {@link Collection} to parts to the specified size and returns a list with
+	 * the parts.
 	 *
 	 * @param <T>
 	 *            the generic type
 	 * @param collection
 	 *            The collection to split
-	 * @param times
+	 * @param size
 	 *            How to split.
 	 * @return a List with the splited Parts
 	 */
-	public static <T> List<List<T>> splitToParts(final Collection<T> collection, final int times)
+	public static <T> List<List<T>> splitToParts(final Collection<T> collection, final int size)
 	{
-		final List<List<T>> returnList = new ArrayList<>();
-		ArrayList<T> tmp = new ArrayList<>();
+		final List<List<T>> returnList = ListFactory.newArrayList();
+		List<T> tmp = ListFactory.newArrayList();
 		final Iterator<T> it = collection.iterator();
 		int count = 0;
 		while (it.hasNext())
 		{
-			if (count == times)
+			if (count == size)
 			{
 				returnList.add(tmp);
-				tmp = new ArrayList<>();
+				tmp = ListFactory.newArrayList();
 				tmp.add(it.next());
 				count = 1;
 			}
@@ -438,8 +567,7 @@ public final class ListExtensions
 	@SafeVarargs
 	public static <T> T[] toArray(final T... elements)
 	{
-		final T[] decorator = ArrayFactory.newArray(elements);
-		return decorator;
+		return ArrayFactory.newArray(elements);
 	}
 
 	/**
@@ -454,7 +582,7 @@ public final class ListExtensions
 	 */
 	public static <T> List<T> toList(final Enumeration<T> enumaration)
 	{
-		final List<T> list = new ArrayList<>();
+		final List<T> list = ListFactory.newArrayList();
 		while (enumaration.hasMoreElements())
 		{
 			list.add(enumaration.nextElement());
@@ -473,7 +601,7 @@ public final class ListExtensions
 	 */
 	public static <T> List<T> toList(final Set<T> set)
 	{
-		return new ArrayList<>(set);
+		return ListFactory.newArrayList(set);
 	}
 
 	/**
@@ -492,6 +620,120 @@ public final class ListExtensions
 		final Object[] decorator = new Object[elements.length];
 		System.arraycopy(elements, 0, decorator, 0, elements.length);
 		return decorator;
+	}
+
+	/**
+	 * Gets all possible combinations from the given list of {@link Integer} objects
+	 *
+	 * @param possibleNumbers
+	 *            the possible numbers
+	 * @param combinationSize
+	 *            the size of the combination to generate
+	 * @return all possible combinations from the given list of {@link Integer} objects
+	 */
+	public static List<List<Integer>> getAllCombinations(
+		@NonNull final List<Integer> possibleNumbers, int combinationSize)
+	{
+		Integer[] currentCombination = new Integer[combinationSize];
+		List<List<Integer>> allCombinations = ListFactory.newArrayList();
+		int currentEnd = possibleNumbers.size() - 1;
+		int currentStart = 0;
+		int currentCombinationIndex = 0;
+		computeAllCombinations(allCombinations, possibleNumbers, currentCombination, currentStart,
+			currentEnd, currentCombinationIndex, combinationSize);
+		return allCombinations;
+	}
+
+	/**
+	 * Compute in recursive manner all combinations of the given arguments
+	 *
+	 * @param allCombinations
+	 *            the all combinations
+	 * @param possibleNumbers
+	 *            the possible numbers
+	 * @param currentCombination
+	 *            the current combination
+	 * @param currentStart
+	 *            the current start
+	 * @param currentEnd
+	 *            the current end
+	 * @param currentCombinationIndex
+	 *            the current combination index
+	 * @param combinationSize
+	 *            the combination size
+	 */
+	private static void computeAllCombinations(List<List<Integer>> allCombinations,
+		List<Integer> possibleNumbers, Integer[] currentCombination, int currentStart,
+		int currentEnd, int currentCombinationIndex, int combinationSize)
+	{
+		if (currentCombinationIndex == combinationSize)
+		{
+			allCombinations.add(ListFactory.newArrayList(currentCombination));
+			return;
+		}
+
+		for (int i = currentStart; i <= currentEnd
+			&& currentEnd - i + 1 >= combinationSize - currentCombinationIndex; i++)
+		{
+			currentCombination[currentCombinationIndex] = possibleNumbers.get(i);
+			computeAllCombinations(allCombinations, possibleNumbers, currentCombination, i + 1,
+				currentEnd, currentCombinationIndex + 1, combinationSize);
+		}
+	}
+
+
+	/**
+	 * Gets all possible combinations from the given list
+	 *
+	 * @param <T>
+	 *            the generic type of the elements in the list
+	 * @param combinationSize
+	 *            the size of the elements of the combinations to generate
+	 * @param possibleValues
+	 *            the list with the element values
+	 * @return all possible combinations from the given list
+	 */
+	public static <T> List<List<T>> getCombinations(@NonNull final List<T> possibleValues,
+		final int combinationSize)
+	{
+		List<List<T>> combinations = ListFactory.newArrayList();
+		if (combinationSize == 0)
+		{
+			combinations.add(ListFactory.newArrayList());
+			return combinations;
+		}
+		for (int i = 0; i < possibleValues.size(); i++)
+		{
+			T element = possibleValues.get(i);
+			List<T> rest = getPartialList(possibleValues, i + 1);
+			for (List<T> previous : getCombinations(rest, combinationSize - 1))
+			{
+				previous.add(element);
+				combinations.add(previous);
+			}
+		}
+		return combinations;
+	}
+
+	/**
+	 * Gets the partial list
+	 *
+	 * @param <T>
+	 *            the generic type of the elements in the list
+	 * @param list
+	 *            the list
+	 * @param i
+	 *            the i
+	 * @return the partial list
+	 */
+	private static <T> List<T> getPartialList(List<T> list, int i)
+	{
+		List<T> partialList = ListFactory.newArrayList();
+		for (int j = i; j < list.size(); j++)
+		{
+			partialList.add(list.get(j));
+		}
+		return partialList;
 	}
 
 }

@@ -26,7 +26,12 @@ package de.alpharogroup.collections.array;
 
 import java.util.Arrays;
 import java.util.List;
+import java.util.Set;
+import java.util.stream.Collectors;
+import java.util.stream.Stream;
 
+import de.alpharogroup.collections.list.ListFactory;
+import lombok.NonNull;
 import lombok.experimental.UtilityClass;
 
 /**
@@ -35,6 +40,95 @@ import lombok.experimental.UtilityClass;
 @UtilityClass
 public final class ArrayExtensions
 {
+
+	/**
+	 * Removes the first element of the array.
+	 *
+	 * @param <T>
+	 *            the generic type of the objects in the array
+	 * @param array
+	 *            the origin array
+	 * @param arrayToRemove
+	 *            the array to remove
+	 * @return the new created array with the elements
+	 */
+	public static <T> T[] removeAll(@NonNull final T[] array, @NonNull final T[] arrayToRemove)
+	{
+		List<T> list = ListFactory.newArrayList(array);
+		List<T> listToRemove = ListFactory.newArrayList(arrayToRemove);
+		list.removeAll(listToRemove);
+		return list.toArray(Arrays.copyOf(array, list.size()));
+	}
+
+	/**
+	 * Returns <tt>true</tt> if and only if the given element is in the given array
+	 *
+	 * @param <T>
+	 *            the generic type
+	 * @param array
+	 *            the array
+	 * @param element
+	 *            the element
+	 * @return <tt>true</tt> if and only if the given element is in the given array otherwise
+	 *         <tt>false</tt>
+	 */
+	public static <T> boolean contains(final T[] array, final T element)
+	{
+		return indexOf(array, element) >= 0;
+	}
+
+	/**
+	 * Removes the first element of the array.
+	 *
+	 * @param <T>
+	 *            the generic type of the objects in the array
+	 * @param array
+	 *            the origin array
+	 * @param indexes
+	 *            the indexes to remove
+	 * @return the new created array with the elements from the given indexes
+	 */
+	public static <T> T[] remove(@NonNull final T[] array, int... indexes)
+	{
+		List<T> list = ListFactory.newArrayList(array);
+		final int lastIndex = indexes.length - 1;
+		Arrays.sort(indexes);
+		for (int i = lastIndex; -1 < i; i--)
+		{
+			int index = indexes[i];
+			list.remove(index);
+		}
+		return list.toArray(Arrays.copyOf(array, list.size()));
+	}
+
+	/**
+	 * Creates a new array cloned from the given array with the difference that the first element is
+	 * removed
+	 *
+	 * @param <T>
+	 *            the generic type of the objects in the array
+	 * @param original
+	 *            the origin array
+	 * @return the new created array with out the first element
+	 */
+	public static <T> T[] removeFirst(@NonNull final T[] original)
+	{
+		return remove(original, 0);
+	}
+
+	/**
+	 * Removes the first element of the array
+	 *
+	 * @param <T>
+	 *            the generic type of the objects in the array
+	 * @param original
+	 *            the origin array
+	 * @return the new created array with out the first element
+	 */
+	public static <T> T[] removeLast(@NonNull final T[] original)
+	{
+		return Arrays.copyOf(original, original.length - 1);
+	}
 
 	/**
 	 * Copy the given source array to the given destination array.<br>
@@ -49,10 +143,10 @@ public final class ArrayExtensions
 	 * Integer[] destination = new Integer[source.length];<br>
 	 * destination = ArrayExtensions.arraycopyWithSystem(source, destination);<br>
 	 * </code>
-	 * 
+	 *
 	 *
 	 * @param <T>
-	 *            the generic type of the objects in the array.
+	 *            the generic type of the objects in the array
 	 * @param source
 	 *            the source
 	 * @param destination
@@ -67,6 +161,22 @@ public final class ArrayExtensions
 		}
 		System.arraycopy(source, 0, destination, 0, source.length);
 		return destination;
+	}
+
+	/**
+	 * Creates a new {@link Set} from the given array. <br>
+	 * <br>
+	 *
+	 * @param <T>
+	 *            the generic type of the objects in the array.
+	 * @param array
+	 *            the array
+	 * @return the new {@link Set} created from the given array.
+	 */
+	@SafeVarargs
+	public static <T> Set<T> asSet(T... array)
+	{
+		return Stream.of(array).collect(Collectors.toSet());
 	}
 
 	/**
@@ -151,12 +261,12 @@ public final class ArrayExtensions
 	 */
 	public static <T> int getNextIndex(final T[] array, final T element)
 	{
-		final int lastIndex = array.length - 1;
 		final int indexOfElement = ArrayExtensions.indexOf(array, element);
 		if (indexOfElement == -1)
 		{
 			return indexOfElement;
 		}
+		final int lastIndex = array.length - 1;
 		if (indexOfElement == lastIndex)
 		{
 			return 0;

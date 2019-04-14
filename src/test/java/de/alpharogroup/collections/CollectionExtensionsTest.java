@@ -30,7 +30,6 @@ import static org.testng.AssertJUnit.assertNull;
 import static org.testng.AssertJUnit.assertTrue;
 
 import java.lang.reflect.InvocationTargetException;
-import java.util.ArrayList;
 import java.util.Collection;
 import java.util.List;
 
@@ -163,7 +162,7 @@ public class CollectionExtensionsTest
 	{
 		Collection<String> expected;
 		Collection<String> actual;
-		final Collection<String> nameList = new ArrayList<>();
+		final Collection<String> nameList = ListFactory.newArrayList();
 
 		nameList.add("Anton");
 		nameList.add("Alex");
@@ -172,7 +171,7 @@ public class CollectionExtensionsTest
 		nameList.add("Caesar");
 		nameList.add("Leonardo");
 
-		final Collection<String> otherNames = new ArrayList<>();
+		final Collection<String> otherNames = ListFactory.newArrayList();
 
 		otherNames.add("Alex");
 		otherNames.add("Berta");
@@ -180,14 +179,14 @@ public class CollectionExtensionsTest
 		otherNames.add("Caesar");
 		otherNames.add("Leonardo");
 
-		final Collection<String> vipNames = new ArrayList<>();
+		final Collection<String> vipNames = ListFactory.newArrayList();
 		vipNames.add("Alex");
 		vipNames.add("Brad");
 		vipNames.add("Caesar");
 		vipNames.add("Leonardo");
 		vipNames.add("Jesus");
 
-		expected = new ArrayList<>();
+		expected = ListFactory.newArrayList();
 		expected.add("Alex");
 		expected.add("Brad");
 		expected.add("Caesar");
@@ -251,7 +250,7 @@ public class CollectionExtensionsTest
 		expected = true;
 		assertEquals(expected, actual);
 
-		nullCollection = new ArrayList<>();
+		nullCollection = ListFactory.newArrayList();
 
 		actual = CollectionExtensions.isEmpty(nullCollection);
 		expected = true;
@@ -279,7 +278,7 @@ public class CollectionExtensionsTest
 		expected = false;
 		assertEquals(expected, actual);
 
-		nullCollection = new ArrayList<>();
+		nullCollection = ListFactory.newArrayList();
 
 		actual = CollectionExtensions.isNotEmpty(nullCollection);
 		expected = false;
@@ -290,6 +289,22 @@ public class CollectionExtensionsTest
 		actual = CollectionExtensions.isNotEmpty(nullCollection);
 		expected = true;
 		assertEquals(expected, actual);
+	}
+
+	/**
+	 * Test the method {@link CollectionExtensions#partition(Collection, int)}
+	 */
+	@Test
+	public void testPartition()
+	{
+		final List<Integer> list = ListFactory.newArrayList();
+		for (int i = 0; i < 999; i++)
+		{
+			list.add(i);
+		}
+		Collection<List<Integer>> all = CollectionExtensions.partition(list, 50);
+		assertTrue(all.size() == 20);
+		all.stream().forEach(l -> assertTrue(l.size() == 50 || l.size() == 49));
 	}
 
 	/**

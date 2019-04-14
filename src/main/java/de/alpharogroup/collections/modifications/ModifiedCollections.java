@@ -24,11 +24,13 @@
  */
 package de.alpharogroup.collections.modifications;
 
-import java.util.ArrayList;
 import java.util.Collection;
 
+import de.alpharogroup.collections.list.ListFactory;
+import lombok.AccessLevel;
 import lombok.Getter;
 import lombok.NoArgsConstructor;
+import lombok.experimental.FieldDefaults;
 
 /**
  * The class ModifiedLists holds two collections. It is used as return type for finding from an old
@@ -39,14 +41,15 @@ import lombok.NoArgsConstructor;
  */
 @NoArgsConstructor
 @Getter
+@FieldDefaults(level = AccessLevel.PRIVATE, makeFinal = true)
 public class ModifiedCollections<T>
 {
 
 	/** The added elements. */
-	private final Collection<T> addedElements = new ArrayList<>();
+	Collection<T> addedElements = ListFactory.newArrayList();
 
 	/** The removed elements. */
-	private final Collection<T> removedElements = new ArrayList<>();
+	Collection<T> removedElements = ListFactory.newArrayList();
 
 	/**
 	 * Gets the modified lists.

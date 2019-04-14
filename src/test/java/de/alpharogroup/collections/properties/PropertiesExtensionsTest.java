@@ -25,6 +25,7 @@
 package de.alpharogroup.collections.properties;
 
 import static org.testng.Assert.assertEquals;
+import static org.testng.AssertJUnit.assertFalse;
 import static org.testng.AssertJUnit.assertNotNull;
 import static org.testng.AssertJUnit.assertTrue;
 
@@ -36,7 +37,7 @@ import java.io.InputStream;
 import java.io.OutputStream;
 import java.lang.reflect.InvocationTargetException;
 import java.net.URL;
-import java.util.ArrayList;
+import java.util.Collections;
 import java.util.List;
 import java.util.Map;
 import java.util.Optional;
@@ -44,10 +45,9 @@ import java.util.Properties;
 
 import org.meanbean.test.BeanTestException;
 import org.meanbean.test.BeanTester;
-import org.testng.AssertJUnit;
 import org.testng.annotations.Test;
 
-import de.alpharogroup.collections.pairs.KeyValuePair;
+import de.alpharogroup.collections.list.ListFactory;
 
 /**
  * The unit test class for the class {@link PropertiesExtensions}.
@@ -199,20 +199,13 @@ public class PropertiesExtensionsTest
 
 		final Map<String, List<String>> redundantValues = PropertiesExtensions
 			.findRedundantValues(properties);
-		AssertJUnit.assertEquals(redundantValues.get("Hello, {0} {1} {2}!"), new ArrayList<String>()
-		{
-			{
-				add("com");
-				add("foo.redundant.value");
-			}
-		});
-		AssertJUnit.assertEquals(redundantValues.get("OK"), new ArrayList<String>()
-		{
-			{
-				add("com.example.gui.window.buttons.ok");
-				add("foo.bar");
-			}
-		});
+
+		Collections.sort(redundantValues.get("OK"));
+
+		assertEquals(redundantValues.get("Hello, {0} {1} {2}!"),
+			ListFactory.newArrayList("com", "foo.redundant.value"));
+		assertEquals(redundantValues.get("OK"),
+			ListFactory.newArrayList("com.example.gui.window.buttons.ok", "foo.bar"));
 	}
 
 	/**
@@ -243,33 +236,23 @@ public class PropertiesExtensionsTest
 		expected = 8;
 		assertEquals(actual, expected);
 
-		properties = new Properties();
+		number = PropertiesExtensions.getInteger(properties, "bar");
+		assertFalse(number.isPresent());
+
 	}
 
 	/**
 	 * Test for method {@link PropertiesExtensions#getInteger(Properties, String)} where value is
 	 * not a number.
 	 */
-	@Test
+	@Test(expectedExceptions = NumberFormatException.class)
 	public void testGetIntegerWithNoNumberValue()
 	{
-		boolean expected;
-		boolean actual;
-		Optional<Integer> number;
-		Properties properties;
-		properties = new Properties();
+		Properties properties = new Properties();
 
 		properties.put("com", "foo");
 
-		number = PropertiesExtensions.getInteger(properties, "com");
-		actual = number.isPresent();
-		expected = false;
-		assertEquals(actual, expected);
-
-		number = PropertiesExtensions.getInteger(null, "com");
-		actual = number.isPresent();
-		expected = false;
-		assertEquals(actual, expected);
+		PropertiesExtensions.getInteger(properties, "com");
 
 	}
 
@@ -332,32 +315,6 @@ public class PropertiesExtensionsTest
 	public void testLoadPropertiesNotFound() throws IOException
 	{
 		PropertiesExtensions.loadProperties(new File("foo.properties"));
-	}
-
-	/**
-	 * Test for method {@link PropertiesExtensions#toKeyValuePairs(Properties)}.
-	 */
-	@Test(enabled = true)
-	public void testToKeyValuePairs()
-	{
-		String key;
-		String value;
-		final Properties properties = new Properties();
-
-		key = "foo";
-		value = "bar";
-		properties.setProperty(key, value);
-
-		key = "bla";
-		value = "fasel";
-		properties.setProperty(key, value);
-
-		final List<KeyValuePair<String, String>> list = PropertiesExtensions
-			.toKeyValuePairs(properties);
-
-		assertNotNull(list);
-		assertTrue(list.size() == 2);
-
 	}
 
 	/**

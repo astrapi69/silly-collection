@@ -26,12 +26,13 @@ package de.alpharogroup.comparators;
 
 import static org.testng.Assert.assertTrue;
 
-import java.util.ArrayList;
 import java.util.Collections;
 import java.util.Comparator;
 import java.util.List;
 
 import org.testng.annotations.Test;
+
+import de.alpharogroup.collections.list.ListFactory;
 
 /**
  * The unit test class for the class {@link StringLengthComparator}.
@@ -75,7 +76,7 @@ public class StringLengthComparatorTest
 		expected = 0 < actual;
 		assertTrue(expected);
 		// Now lets see a demo on a list...
-		final List<String> list = new ArrayList<>();
+		final List<String> list = ListFactory.newArrayList();
 		list.add(leo);
 		list.add(alex);
 		list.add(billy);

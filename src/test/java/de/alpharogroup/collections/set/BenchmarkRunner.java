@@ -22,32 +22,26 @@
  * OF CONTRACT, TORT OR OTHERWISE, ARISING FROM, OUT OF OR IN CONNECTION
  * WITH THE SOFTWARE OR THE USE OR OTHER DEALINGS IN THE SOFTWARE.
  */
-package de.alpharogroup.comparators.pairs;
+package de.alpharogroup.collections.set;
 
-import java.util.Comparator;
-
-import de.alpharogroup.collections.pairs.KeyValuePair;
+import org.openjdk.jmh.Main;
 
 /**
- * The class {@link KeyValuePairKeyComparator} compares {@linkplain KeyValuePair} objects over the
- * key where the key have to implements the {@linkplain Comparable} interface.
- *
- * @param <K>
- *            The generic type of the key
- * @param <V>
- *            The generic type of the value
+ * The class {@link BenchmarkRunner} have the main method that starts the benchmarking process
  */
-public class KeyValuePairKeyComparator<K extends Comparable<K>, V>
-	implements
-		Comparator<KeyValuePair<K, V>>
+public class BenchmarkRunner
 {
 
 	/**
-	 * {@inheritDoc}
+	 * The main method starts the benchmarking process
+	 *
+	 * @param args
+	 *            the arguments
+	 * @throws Exception
+	 *             the exception
 	 */
-	@Override
-	public int compare(final KeyValuePair<K, V> o1, final KeyValuePair<K, V> o2)
+	public static void main(String[] args) throws Exception
 	{
-		return o1.getKey().compareTo(o2.getKey());
+		Main.main(args);
 	}
 }

@@ -31,7 +31,6 @@ import java.io.FileOutputStream;
 import java.io.IOException;
 import java.io.InputStream;
 import java.io.OutputStream;
-import java.util.ArrayList;
 import java.util.Enumeration;
 import java.util.LinkedHashMap;
 import java.util.List;
@@ -41,9 +40,8 @@ import java.util.Properties;
 import java.util.regex.Matcher;
 import java.util.regex.Pattern;
 
-import de.alpharogroup.collections.pairs.KeyValuePair;
+import de.alpharogroup.collections.list.ListFactory;
 import lombok.experimental.UtilityClass;
-import lombok.extern.slf4j.Slf4j;
 
 /**
  * The Class {@link PropertiesExtensions} provides methods loading properties and other related
@@ -51,7 +49,6 @@ import lombok.extern.slf4j.Slf4j;
  * bundle.
  */
 @UtilityClass
-@Slf4j
 public final class PropertiesExtensions
 {
 
@@ -81,7 +78,7 @@ public final class PropertiesExtensions
 			final String value = (String)entry.getValue();
 			if (!reverseEntries.containsKey(value))
 			{
-				final List<String> keys = new ArrayList<>();
+				final List<String> keys = ListFactory.newArrayList();
 				keys.add(key);
 				reverseEntries.put(value, keys);
 			}
@@ -137,7 +134,7 @@ public final class PropertiesExtensions
 			}
 			else
 			{
-				final List<String> fullKeys = new ArrayList<>();
+				final List<String> fullKeys = ListFactory.newArrayList();
 				fullKeys.add(key);
 				matchedPrefixes.put(subKey, fullKeys);
 			}
@@ -154,7 +151,7 @@ public final class PropertiesExtensions
 	 */
 	public static List<String> getPropertyParameters(final String propertyValue)
 	{
-		final List<String> parameterList = new ArrayList<>();
+		final List<String> parameterList = ListFactory.newArrayList();
 		final Pattern pattern = Pattern.compile("\\{.*?\\}");
 		final Matcher matcher = pattern.matcher(propertyValue);
 		while (matcher.find())
@@ -217,18 +214,6 @@ public final class PropertiesExtensions
 			throw new FileNotFoundException(propertiesFile.getName() + " not found.");
 		}
 		return properties;
-	}
-
-	/**
-	 * Transforms the given {@link Properties} to a list of {@link KeyValuePair}'s.
-	 *
-	 * @param properties
-	 *            the properties
-	 * @return the new list with the {@link KeyValuePair}'s.
-	 */
-	public static List<KeyValuePair<String, String>> toKeyValuePairs(final Properties properties)
-	{
-		return KeyValuePair.toKeyValuePairs(properties);
 	}
 
 	/**
@@ -460,17 +445,8 @@ public final class PropertiesExtensions
 		if (properties != null && properties.containsKey(propertiesKey))
 		{
 			final String portAsString = properties.getProperty(propertiesKey);
-			try
-			{
-				final Integer port = Integer.valueOf(portAsString);
-				return Optional.of(port);
-			}
-			catch (final NumberFormatException e)
-			{
-				log.error("Value of given properties key:" + propertiesKey + " is not a number.",
-					e);
-				return Optional.empty();
-			}
+			final Integer port = Integer.valueOf(portAsString);
+			return Optional.of(port);
 		}
 		return Optional.empty();
 	}

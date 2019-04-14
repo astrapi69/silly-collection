@@ -27,7 +27,6 @@ package de.alpharogroup.collections.map;
 import static org.testng.AssertJUnit.assertTrue;
 
 import java.lang.reflect.InvocationTargetException;
-import java.util.ArrayList;
 import java.util.Collection;
 import java.util.HashMap;
 import java.util.List;
@@ -39,6 +38,8 @@ import org.meanbean.test.BeanTester;
 import org.testng.annotations.AfterMethod;
 import org.testng.annotations.BeforeMethod;
 import org.testng.annotations.Test;
+
+import de.alpharogroup.collections.list.ListFactory;
 
 /**
  * The unit test class for the class {@link MapExtensions}.
@@ -108,7 +109,7 @@ public class MapExtensionsTest
 	public void testGetKeysFromValue()
 	{
 		final String value = "value";
-		final List<String> expected = new ArrayList<>();
+		final List<String> expected = ListFactory.newArrayList();
 		expected.add("4");
 		expected.add("5");
 		final Map<String, String> map = new HashMap<>();

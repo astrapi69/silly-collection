@@ -26,7 +26,6 @@ package de.alpharogroup.comparators;
 
 import static org.testng.AssertJUnit.assertTrue;
 
-import java.util.ArrayList;
 import java.util.Collections;
 import java.util.Comparator;
 import java.util.Date;
@@ -36,6 +35,7 @@ import org.testng.annotations.AfterMethod;
 import org.testng.annotations.BeforeMethod;
 import org.testng.annotations.Test;
 
+import de.alpharogroup.collections.list.ListFactory;
 import de.alpharogroup.date.CreateDateExtensions;
 
 /**
@@ -89,7 +89,7 @@ public class DescendingDateComparatorTest
 		final Date after = CreateDateExtensions.newDate(2010, 3, 27, 10, 37, 04);
 		final Date future = CreateDateExtensions.newDate(2011, 3, 27, 10, 37, 04);
 
-		final List<Date> dates = new ArrayList<>();
+		final List<Date> dates = ListFactory.newArrayList();
 
 		dates.add(before);
 		dates.add(future);

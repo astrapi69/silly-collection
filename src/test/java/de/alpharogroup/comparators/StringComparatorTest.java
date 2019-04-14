@@ -26,13 +26,13 @@ package de.alpharogroup.comparators;
 
 import static org.testng.Assert.assertTrue;
 
-import java.util.ArrayList;
 import java.util.Collections;
 import java.util.Comparator;
 import java.util.List;
 
 import org.testng.annotations.Test;
 
+import de.alpharogroup.collections.list.ListFactory;
 import lombok.AccessLevel;
 import lombok.experimental.FieldDefaults;
 
@@ -86,7 +86,7 @@ public class StringComparatorTest
 		assertTrue(expected);
 
 		// Now lets see a demo on a list...
-		List<String> list = new ArrayList<>();
+		List<String> list = ListFactory.newArrayList();
 		list.add(leo);
 		list.add(alex);
 		list.add(bill);
@@ -207,7 +207,7 @@ public class StringComparatorTest
 		assertTrue(expected);
 
 		// Now lets see a demo on a list...
-		List<String> list = new ArrayList<>();
+		List<String> list = ListFactory.newArrayList();
 		list.add(leo);
 		list.add(alex);
 		list.add(bill);

@@ -300,7 +300,8 @@ public class ArrayIteratorTest
 	/**
 	 * Test method for {@link ArrayIterator}
 	 */
-	@Test(expectedExceptions = { BeanTestException.class })
+	@Test(enabled = true, expectedExceptions = { NoSuchMethodException.class,
+			BeanTestException.class })
 	public void testWithBeanTester()
 	{
 		final BeanTester beanTester = new BeanTester();

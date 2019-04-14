@@ -28,6 +28,8 @@ import java.util.ArrayList;
 import java.util.Arrays;
 import java.util.Collection;
 import java.util.Collections;
+import java.util.Iterator;
+import java.util.LinkedList;
 import java.util.List;
 import java.util.Map;
 
@@ -44,6 +46,61 @@ import lombok.experimental.UtilityClass;
 @UtilityClass
 public final class ListFactory
 {
+
+	/**
+	 * Factory method for create new {@link ArrayList} from the given optional iterator and the
+	 * given optional elements.
+	 *
+	 * @param <T>
+	 *            the generic type of the elements
+	 * @param iterator
+	 *            the optional iterator that will be added to the new list
+	 * @param elements
+	 *            the optional elements to be added in the new {@link ArrayList}.
+	 * @return the new {@link ArrayList} as {@link List}.
+	 */
+	@SafeVarargs
+	public static <T> List<T> newArrayList(final Iterator<T> iterator, final T... elements)
+	{
+		final List<T> list = new ArrayList<>();
+		if (iterator != null)
+		{
+			while (iterator.hasNext())
+			{
+				list.add(iterator.next());
+			}
+		}
+		Collections.addAll(list, elements);
+		return list;
+	}
+
+
+	/**
+	 * Factory method for create new {@link ArrayList} from the given optional iterable and the
+	 * given optional elements.
+	 *
+	 * @param <T>
+	 *            the generic type of the elements
+	 * @param iterable
+	 *            the optional iterable that will be added to the new list
+	 * @param elements
+	 *            the optional elements to be added in the new {@link ArrayList}.
+	 * @return the new {@link ArrayList} as {@link List}.
+	 */
+	@SafeVarargs
+	public static <T> List<T> newArrayList(final Iterable<T> iterable, final T... elements)
+	{
+		final List<T> list = new ArrayList<>();
+		if (iterable != null)
+		{
+			for (T t : iterable)
+			{
+				list.add(t);
+			}
+		}
+		Collections.addAll(list, elements);
+		return list;
+	}
 
 	/**
 	 * Factory method for create new {@link ArrayList} from the given optional collection and the
@@ -86,7 +143,7 @@ public final class ListFactory
 	@SafeVarargs
 	public static <T> List<T> newArrayList(final T... elements)
 	{
-		return newArrayList(null, elements);
+		return newArrayList((Collection<T>)null, elements);
 	}
 
 	/**
@@ -103,6 +160,50 @@ public final class ListFactory
 	public static List<Integer> newRangeList(final int start, final int end)
 	{
 		return Arrays.asList(ArrayFactory.newRangeArray(start, end));
+	}
+
+	/**
+	 * Factory method for create new {@link LinkedList} from the given optional collection and the
+	 * given optional elements.
+	 *
+	 * @param <T>
+	 *            the generic type of the elements
+	 * @param collection
+	 *            the optional collection that will be added to the new list
+	 * @param elements
+	 *            the optional elements to be added in the new {@link LinkedList}.
+	 * @return the new {@link LinkedList} as {@link List}.
+	 */
+	@SafeVarargs
+	public static <T> List<T> newLinkedList(final Collection<T> collection, final T... elements)
+	{
+		final List<T> list;
+		if (CollectionExtensions.isNotEmpty(collection))
+		{
+			list = new LinkedList<>(collection);
+			Collections.addAll(list, elements);
+		}
+		else
+		{
+			list = new LinkedList<>();
+			Collections.addAll(list, elements);
+		}
+		return list;
+	}
+
+	/**
+	 * Factory method for create new {@link LinkedList} from the given optional elements.
+	 *
+	 * @param <T>
+	 *            the generic type of the elements
+	 * @param elements
+	 *            the elements to add in the new {@link LinkedList}.
+	 * @return the new {@link LinkedList} as {@link List}.
+	 */
+	@SafeVarargs
+	public static <T> List<T> newLinkedList(final T... elements)
+	{
+		return newLinkedList(null, elements);
 	}
 
 }

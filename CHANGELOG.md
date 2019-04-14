@@ -1,6 +1,86 @@
 ## Change log
 ----------------------
 
+Version 5.2
+-------------
+
+ADDED:
+ 
+- new method created for get element from index in the class IndexableSet
+- new class OptionalListExtensions created
+- new method hasNext in class ListExtensions created
+- new benchmark jmh-core and jmh-generator-annprocess dependencies in version 1.21 added 
+- new BenchmarkRunner created that starts the benchmarking process
+- new benchmark class for IndexableSet created
+- new methods for getNext and getPrevious created in class OptionalListExtensions
+- new method for an array to remove all element from a given array
+
+CHANGED:
+
+- update of parent version to 4.8
+
+Version 5.1
+-------------
+
+ADDED:
+ 
+- new method created for get all combinations of a given list of values 
+- new method created partition created in java 8 style
+- new method created for remove the first element in a given array
+- new method created for remove the last element in a given array
+- new method created for remove an element over an index in a given array
+
+CHANGED:
+
+- update of parent version to 4.5
+- update of test-objects dependency version to 5.0.1
+
+Version 5
+-------------
+
+CHANGED:
+
+- update of parent version to 4.4
+- update of jobject-extensions version to 2.5
+- update of vintage-time version to 5.1
+- update of test-objects dependency version to 5
+- removed unneeded dependency jobject-core
+
+Version 4.35
+-------------
+
+ADDED:
+ 
+- new methods created that returns an Optional instead of null values
+- new factory methods created for iterables and iterators
+
+CHANGED:
+
+- update of parent version to 4.2
+- removed all classes that still used pair classes
+
+Version 4.34.1
+-------------
+
+CHANGED:
+
+- tagged classes as deprecated that use still pair classes
+
+Version 4.34
+-------------
+
+ADDED:
+ 
+- new factory methods for LinkedList objects created
+- new IndexableSet class created that can get the index of an element in the set
+- new method for rearrange an element of a List to a specified index created
+- new method that converts an array to a Set
+
+CHANGED:
+
+- update of parent version to 4.1
+- moved pair bean classes to new model-core project and tagged as deprecated
+
 Version 4.33
 -------------
 

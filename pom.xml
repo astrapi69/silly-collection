@@ -1,37 +1,38 @@
 <?xml version="1.0" encoding="UTF-8"?>
-<project xmlns="http://maven.apache.org/POM/4.0.0" xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
+<project xmlns="http://maven.apache.org/POM/4.0.0"
+	xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
 	xsi:schemaLocation="http://maven.apache.org/POM/4.0.0 http://maven.apache.org/xsd/maven-4.0.0.xsd">
 	<modelVersion>4.0.0</modelVersion>
 
 	<parent>
 		<groupId>de.alpharogroup</groupId>
 		<artifactId>mvn-java-parent</artifactId>
-		<version>4</version>
-		<relativePath></relativePath>
+		<version>4.8</version>
 	</parent>
 
 	<artifactId>silly-collections</artifactId>
-	<version>4.33</version>
+	<version>5.2</version>
 
 	<name>${project.artifactId}</name>
 
 	<description>Utility library for collections, comparators and iterator classes</description>
 
-	<url>https://github.com/lightblueseas/silly-collections</url>
+	<url>https://github.com/lightblueseas/${project.artifactId}</url>
 
 	<properties>
 		<!-- JOBJECT-EXTENSIONS versions -->
-		<jobject-extensions.version>1.12</jobject-extensions.version>
+		<jobject-extensions.version>2.6.3</jobject-extensions.version>
 		<jobject-clone.version>${jobject-extensions.version}</jobject-clone.version>
-		<jobject-compare.version>${jobject-extensions.version}</jobject-compare.version>
-		<jobject-core.version>${jobject-extensions.version}</jobject-core.version>
 		<jobject-evaluate.version>${jobject-extensions.version}</jobject-evaluate.version>
+		<!-- JOBJ-COMPARE version -->
+		<jobj-compare.version>3</jobj-compare.version>
 		<!-- VINTAGE-TIME version -->
-		<vintage-time.version>4.12</vintage-time.version>
+		<vintage-time.version>5.1</vintage-time.version>
 		<!-- TEST-OBJECTS version -->
-		<test-objects.version>4.28</test-objects.version>
+		<test-objects.version>5.0.1</test-objects.version>
 		<!-- EXTERNAL LIBRARIES versions -->
 		<commons-collections4.version>4.2</commons-collections4.version>
+		<jmh.version>1.21</jmh.version>
 	</properties>
 
 	<licenses>
@@ -43,19 +44,19 @@
 	</licenses>
 
 	<scm>
-		<connection>scm:git:git:@github.com:lightblueseas/silly-collections.git</connection>
-		<developerConnection>scm:git:git@github.com:lightblueseas/silly-collections.git</developerConnection>
-		<url>git:@github.com:lightblueseas/silly-collections.git</url>
+		<connection>scm:git:git:@github.com:lightblueseas/${project.artifactId}.git</connection>
+		<developerConnection>scm:git:git@github.com:lightblueseas/${project.artifactId}.git</developerConnection>
+		<url>git:@github.com:lightblueseas/${project.artifactId}.git</url>
 	</scm>
 
 	<issueManagement>
 		<system>github</system>
-		<url>https://github.com/lightblueseas/silly-collections/issues</url>
+		<url>https://github.com/lightblueseas/${project.artifactId}/issues</url>
 	</issueManagement>
 
 	<ciManagement>
 		<system>travis-ci</system>
-		<url>https://travis-ci.org/lightblueseas/silly-collections</url>
+		<url>https://travis-ci.org/lightblueseas/${project.artifactId}</url>
 	</ciManagement>
 
 	<dependencyManagement>
@@ -85,23 +86,28 @@
 				<artifactId>jobject-clone</artifactId>
 				<version>${jobject-clone.version}</version>
 			</dependency>
-			<!-- JOBJECT-COMPARE DEPENDENCY -->
+			<!-- JOBJ-COMPARE DEPENDENCY -->
 			<dependency>
 				<groupId>de.alpharogroup</groupId>
-				<artifactId>jobject-compare</artifactId>
-				<version>${jobject-compare.version}</version>
-			</dependency>
-			<!-- JOBJECT-CORE DEPENDENCY -->
-			<dependency>
-				<groupId>de.alpharogroup</groupId>
-				<artifactId>jobject-core</artifactId>
-				<version>${jobject-core.version}</version>
+				<artifactId>jobj-compare</artifactId>
+				<version>${jobj-compare.version}</version>
 			</dependency>
 			<!-- JOBJECT-EVALUATE DEPENDENCY -->
 			<dependency>
 				<groupId>de.alpharogroup</groupId>
 				<artifactId>jobject-evaluate</artifactId>
 				<version>${jobject-evaluate.version}</version>
+			</dependency>
+			<!-- JMH DEPENDENCIES for benchmarking -->
+			<dependency>
+				<groupId>org.openjdk.jmh</groupId>
+				<artifactId>jmh-core</artifactId>
+				<version>${jmh.version}</version>
+			</dependency>
+			<dependency>
+				<groupId>org.openjdk.jmh</groupId>
+				<artifactId>jmh-generator-annprocess</artifactId>
+				<version>${jmh.version}</version>
 			</dependency>
 
 		</dependencies>
@@ -114,17 +120,11 @@
 			<groupId>org.apache.commons</groupId>
 			<artifactId>commons-collections4</artifactId>
 		</dependency>
-
-		<!-- JOBJECT-COMPARE DEPENDENCY -->
-		<dependency>
-			<groupId>de.alpharogroup</groupId>
-			<artifactId>jobject-compare</artifactId>
-		</dependency>
-		<!-- JOBJECT-CORE DEPENDENCY -->
-		<dependency>
-			<groupId>de.alpharogroup</groupId>
-			<artifactId>jobject-core</artifactId>
-		</dependency>
+        <!-- JOBJ-COMPARE DEPENDENCY -->
+        <dependency>
+            <groupId>de.alpharogroup</groupId>
+            <artifactId>jobj-compare</artifactId>
+        </dependency>
 		<!-- JOBJECT-EVALUATE DEPENDENCY -->
 		<dependency>
 			<groupId>de.alpharogroup</groupId>
@@ -160,6 +160,17 @@
 		<dependency>
 			<groupId>de.alpharogroup</groupId>
 			<artifactId>jobject-clone</artifactId>
+			<scope>test</scope>
+		</dependency>
+		<!-- JMH DEPENDENCIES for benchmarking -->
+		<dependency>
+			<groupId>org.openjdk.jmh</groupId>
+			<artifactId>jmh-core</artifactId>
+			<scope>test</scope>
+		</dependency>
+		<dependency>
+			<groupId>org.openjdk.jmh</groupId>
+			<artifactId>jmh-generator-annprocess</artifactId>
 			<scope>test</scope>
 		</dependency>
 

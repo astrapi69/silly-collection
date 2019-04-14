@@ -24,12 +24,12 @@
  */
 package de.alpharogroup.collections.map;
 
-import java.util.ArrayList;
 import java.util.Collection;
 import java.util.LinkedHashMap;
 import java.util.Map;
 import java.util.Map.Entry;
 
+import de.alpharogroup.collections.list.ListFactory;
 import lombok.experimental.UtilityClass;
 
 /**
@@ -84,7 +84,7 @@ public final class MapExtensions
 	 */
 	public static <K, V> Collection<K> getKeysFromValue(final Map<K, V> map, final V value)
 	{
-		final Collection<K> keys = new ArrayList<>();
+		final Collection<K> keys = ListFactory.newArrayList();
 		for (final Entry<K, V> entry : map.entrySet())
 		{
 			final V val = entry.getValue();

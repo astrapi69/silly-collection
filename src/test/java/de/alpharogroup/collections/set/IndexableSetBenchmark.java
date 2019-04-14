@@ -22,53 +22,73 @@
  * OF CONTRACT, TORT OR OTHERWISE, ARISING FROM, OUT OF OR IN CONNECTION
  * WITH THE SOFTWARE OR THE USE OR OTHER DEALINGS IN THE SOFTWARE.
  */
-package de.alpharogroup.collections.pairs;
+package de.alpharogroup.collections.set;
 
-import java.io.Serializable;
-import java.util.Collection;
+import org.openjdk.jmh.annotations.Benchmark;
+import org.openjdk.jmh.annotations.Fork;
+import org.openjdk.jmh.annotations.Measurement;
+import org.openjdk.jmh.annotations.Scope;
+import org.openjdk.jmh.annotations.State;
+import org.openjdk.jmh.annotations.Warmup;
 
 import lombok.AccessLevel;
-import lombok.AllArgsConstructor;
-import lombok.Builder;
-import lombok.EqualsAndHashCode;
-import lombok.Getter;
-import lombok.NoArgsConstructor;
-import lombok.Setter;
-import lombok.Singular;
-import lombok.ToString;
 import lombok.experimental.FieldDefaults;
 
 /**
- * The class {@link KeyValuesPair} represents a key value pair where the value is a collection with
- * generic parameters for the key and value type.
- *
- *
- * @param <K>
- *            The type of the key.
- * @param <V>
- *            The type of the values in the collection.
+ * The benchmark class for the class {@link IndexableSet}
  */
-@Getter
-@Setter
-@EqualsAndHashCode
-@ToString
-@NoArgsConstructor
-@AllArgsConstructor
-@Builder(toBuilder = true)
-@FieldDefaults(level = AccessLevel.PRIVATE)
-public final class KeyValuesPair<K, V> implements Serializable
+@State(Scope.Benchmark)
+@FieldDefaults(level = AccessLevel.PRIVATE, makeFinal = true)
+public class IndexableSetBenchmark
 {
 
+	/** The set for benchmark. */
+	IndexableSet<Integer> set = new IndexableSet<>();
+
 	/**
-	 * The Constant serialVersionUID.
+	 * Instantiates a new {@link IndexableSetBenchmark} object
 	 */
-	private static final long serialVersionUID = 1L;
+	public IndexableSetBenchmark()
+	{
+		while (this.set.size() < 1000)
+		{
+			this.set.add(this.set.size());
+		}
+	}
 
-	/** The key. */
-	K key;
+	/**
+	 * Benchmark get index method.
+	 */
+	@Benchmark
+	@Warmup(iterations = 3)
+	@Measurement(iterations = 10)
+	@Fork(3)
+	public void benchmarkGetIndexMethod()
+	{
 
-	/** The collection with the values. */
-	@Singular
-	Collection<V> values;
+		int count = 0;
+		while (count == 1000)
+		{
+			set.getIndex(count);
+			count++;
+		}
+	}
+
+	/**
+	 * Benchmark get method.
+	 */
+	@Benchmark
+	@Warmup(iterations = 3)
+	@Measurement(iterations = 10)
+	@Fork(3)
+	public void benchmarkGetMethod()
+	{
+		int count = 0;
+		while (count == 1000)
+		{
+			set.get(count);
+			count++;
+		}
+	}
 
 }

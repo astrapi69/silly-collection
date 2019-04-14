@@ -26,6 +26,10 @@ package de.alpharogroup.collections;
 
 import java.util.Arrays;
 import java.util.Collection;
+import java.util.List;
+import java.util.Optional;
+import java.util.concurrent.atomic.AtomicInteger;
+import java.util.stream.Collectors;
 
 import org.apache.commons.collections4.CollectionUtils;
 
@@ -52,18 +56,39 @@ public final class CollectionExtensions
 	 */
 	public static <T> boolean isEqualCollection(Collection<T> one, Collection<T> other)
 	{
-		if (one == null && other == null)
-		{
-			return true;
-		}
-
-		if ((one == null && other != null) || one != null && other == null
-			|| one.size() != other.size())
-		{
-			return false;
-		}
+		Optional<Boolean> optionalEvaluation = preconditionOfEqualCollection(one, other);
+		if (optionalEvaluation.isPresent()) return optionalEvaluation.get();
 		Collection<T> retainAll = CollectionUtils.retainAll(one, other);
 		return retainAll.isEmpty() || one.containsAll(other) && other.containsAll(one);
+	}
+
+	/**
+	 * Checks the given two {@link Collection} objects if there are null and return the appropriate
+     * {@link Optional} boolean value
+	 *
+	 * @param <T>
+	 *            the generic type of the elements
+	 * @param one
+	 *            the one
+	 * @param other
+	 *            the other
+	 * @return the {@link Optional} boolean if value is true both are null, if value is false given two
+     * {@link Collection} objects are not equal otherwise the {@link Optional} is empty
+	 */
+	public static <T> Optional<Boolean> preconditionOfEqualCollection(Collection<T> one, Collection<T> other) {
+		if (one == null && other == null)
+		{
+			return Optional.of(true);
+		}
+
+		if (one == null
+         ||
+                        other == null
+			|| one.size() != other.size())
+		{
+			return Optional.of(false);
+		}
+		return Optional.empty();
 	}
 
 	/**
@@ -155,6 +180,25 @@ public final class CollectionExtensions
 			hashCode = 31 * hashCode * Arrays.hashCode(arrayObject);
 		}
 		return hashCode;
+	}
+
+	/**
+	 * Groups the given {@link Collection} to parts from the specified size.
+	 *
+	 * @param <T>
+	 *            the generic type
+	 * @param collection
+	 *            the collection
+	 * @param size
+	 *            the size
+	 * @return the collection
+	 */
+	public static <T> Collection<List<T>> partition(Collection<T> collection, int size)
+	{
+		final AtomicInteger counter = new AtomicInteger(0);
+
+		return collection.stream()
+			.collect(Collectors.groupingBy(it -> counter.getAndIncrement() / size)).values();
 	}
 
 }
