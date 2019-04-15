@@ -4,6 +4,11 @@
 Version 5.3-SNAPSHOT
 -------------
 
+CHANGED:
+
+- update of jobject-extensions version to 2.6.4
+- tagged enum CompareOrder as deprecated and moved to the appropriate project
+
 Version 5.2
 -------------
 

@@ -26,7 +26,6 @@ package de.alpharogroup.collections.list;
 
 import java.util.Arrays;
 import java.util.Collection;
-import java.util.Collections;
 import java.util.Comparator;
 import java.util.Enumeration;
 import java.util.Iterator;
@@ -211,7 +210,10 @@ public final class ListExtensions
 	public static <T> boolean isEqualListOfArrays(List<T[]> one, List<T[]> other)
 	{
 		Optional<Boolean> optionalEvaluation = CollectionExtensions.preconditionOfEqualCollection(one, other);
-		if (optionalEvaluation.isPresent()) return optionalEvaluation.get();
+		if (optionalEvaluation.isPresent())
+		{
+			return optionalEvaluation.get();
+		}
 		for (int i = 0; i < one.size(); i++)
 		{
 			if (!Arrays.deepEquals(one.get(i), other.get(i)))
