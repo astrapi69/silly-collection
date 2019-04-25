@@ -163,7 +163,8 @@ public final class ListExtensions
 	 */
 	public static <T> boolean isEqualListOfArrays(List<T[]> one, List<T[]> other)
 	{
-		Optional<Boolean> optionalEvaluation = CollectionExtensions.preconditionOfEqualCollection(one, other);
+		Optional<Boolean> optionalEvaluation = CollectionExtensions
+			.preconditionOfEqualCollection(one, other);
 		if (optionalEvaluation.isPresent())
 		{
 			return optionalEvaluation.get();
@@ -420,7 +421,7 @@ public final class ListExtensions
 		{
 			comparator = ComparatorUtils.reversedComparator(comparator);
 		}
-        list.sort(comparator);
+		list.sort(comparator);
 	}
 
 	/**

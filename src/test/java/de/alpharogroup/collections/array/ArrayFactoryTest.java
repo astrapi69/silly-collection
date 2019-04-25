@@ -223,6 +223,21 @@ public class ArrayFactoryTest
 	}
 
 	/**
+	 * Test method for {@link ArrayFactory#newSubArray(Object[], int, int)}
+	 */
+	@Test
+	public void testnewSubArray()
+	{
+		Integer[] actual;
+		Integer[] expected;
+		Integer[] data;
+		data = ArrayFactory.newArray(1, 2, 3, 4, 5, 6, 7);
+		actual = ArrayFactory.newSubArray(data, 2, 5);
+		expected = ArrayFactory.newArray(3, 4, 5);
+		assertTrue(Arrays.deepEquals(actual, expected));
+	}
+
+	/**
 	 * Test method for {@link ArrayFactory} with {@link BeanTester}
 	 */
 	@Test(expectedExceptions = { BeanTestException.class, InvocationTargetException.class,
