@@ -1,7 +1,7 @@
 ## Change log
 ----------------------
 
-Version 5.3-SNAPSHOT
+Version 5.2.1
 -------------
 
 ADDED:
@@ -9,10 +9,11 @@ ADDED:
 - new method created for make an intersection of arrays
 - new factory method for create a sub array from a given array
 - new jobj-contract-verifier dependency in test scope added for unit test of beans
+- new maven launch script created for execution of clean package 
 
 CHANGED:
 
-- update of jobject-clone version to 3
+- update of jobject-clone version to 3.1.1
 - tagged enum CompareOrder as deprecated and moved to the appropriate project
 - update of jobj-compare dependency version to 3.1
 

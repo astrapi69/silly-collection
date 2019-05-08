@@ -11,7 +11,7 @@
 	</parent>
 
 	<artifactId>silly-collections</artifactId>
-	<version>5.3-SNAPSHOT</version>
+	<version>5.2.1</version>
 
 	<name>${project.artifactId}</name>
 
@@ -21,9 +21,9 @@
 
 	<properties>
 		<!-- JOBJECT-CLONE versions -->
-		<jobject-clone.version>3</jobject-clone.version>
+		<jobject-clone.version>3.1.1</jobject-clone.version>
 		<!-- JOBJ-CONTRACT-VERIFIER version -->
-		<jobj-contract-verifier.version>3</jobj-contract-verifier.version>
+		<jobj-contract-verifier.version>3.1</jobj-contract-verifier.version>
 		<!-- JOBJ-COMPARE version -->
 		<jobj-compare.version>3.1</jobj-compare.version>
 		<!-- VINTAGE-TIME version -->
