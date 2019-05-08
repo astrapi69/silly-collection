@@ -30,7 +30,10 @@ import lombok.RequiredArgsConstructor;
 import lombok.experimental.FieldDefaults;
 
 /**
- * The enum {@link CompareOrder}.
+ * The enum {@link CompareOrder}
+ *
+ * @deprecated use instead the same name enum in project jobj-compare. Will be removed in next minor
+ *             version
  */
 @RequiredArgsConstructor
 @FieldDefaults(level = AccessLevel.PRIVATE, makeFinal = true)

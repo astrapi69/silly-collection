@@ -24,6 +24,7 @@
  */
 package de.alpharogroup.collections.array;
 
+import java.lang.reflect.Array;
 import java.util.Arrays;
 import java.util.List;
 import java.util.Set;
@@ -192,7 +193,7 @@ public final class ArrayExtensions
 	 */
 	public static <T> List<T> asList(final T[] array)
 	{
-		return Arrays.asList(array);
+		return ListFactory.newArrayList(array);
 	}
 
 	/**
@@ -368,6 +369,32 @@ public final class ArrayExtensions
 			return previousIndexes;
 		}
 		return null;
+	}
+
+	/**
+	 * Intersection of the given two arrays.
+	 *
+	 * @param <T>
+	 *            the generic type
+	 * @param one
+	 *            the first array
+	 * @param other
+	 *            the other array
+	 * @return the result of the intersection
+	 */
+	@SuppressWarnings("unchecked")
+	public static <T> T[] intersection(final @NonNull T[] one, final @NonNull T[] other)
+	{
+		T[] intersection = (T[])Array.newInstance(one.getClass().getComponentType(), one.length);
+		int j = 0;
+		for (int i = 0; i < one.length; i++)
+		{
+			if (contains(other, one[i]))
+			{
+				intersection[j++] = one[i];
+			}
+		}
+		return ArrayFactory.newSubArray(intersection, 0, j);
 	}
 
 	/**

@@ -11,7 +11,7 @@
 	</parent>
 
 	<artifactId>silly-collections</artifactId>
-	<version>5.2</version>
+	<version>5.2.1</version>
 
 	<name>${project.artifactId}</name>
 
@@ -20,18 +20,19 @@
 	<url>https://github.com/lightblueseas/${project.artifactId}</url>
 
 	<properties>
-		<!-- JOBJECT-EXTENSIONS versions -->
-		<jobject-extensions.version>2.6.3</jobject-extensions.version>
-		<jobject-clone.version>${jobject-extensions.version}</jobject-clone.version>
-		<jobject-evaluate.version>${jobject-extensions.version}</jobject-evaluate.version>
+		<!-- COMMONS-COLLECTIONS4 version -->
+		<commons-collections4.version>4.3</commons-collections4.version>
 		<!-- JOBJ-COMPARE version -->
-		<jobj-compare.version>3</jobj-compare.version>
+		<jobj-compare.version>3.1</jobj-compare.version>
+		<!-- TEST-SCOPE versions -->
+		<!-- JOBJECT-CLONE versions -->
+		<jobject-clone.version>3.1.1</jobject-clone.version>
+		<!-- JOBJ-CONTRACT-VERIFIER version -->
+		<jobj-contract-verifier.version>3.1</jobj-contract-verifier.version>
 		<!-- VINTAGE-TIME version -->
 		<vintage-time.version>5.1</vintage-time.version>
 		<!-- TEST-OBJECTS version -->
 		<test-objects.version>5.0.1</test-objects.version>
-		<!-- EXTERNAL LIBRARIES versions -->
-		<commons-collections4.version>4.2</commons-collections4.version>
 		<jmh.version>1.21</jmh.version>
 	</properties>
 
@@ -62,7 +63,7 @@
 	<dependencyManagement>
 
 		<dependencies>
-
+			<!-- COMMONS-COLLECTIONS4 DEPENDENCY -->
 			<dependency>
 				<groupId>org.apache.commons</groupId>
 				<artifactId>commons-collections4</artifactId>
@@ -92,11 +93,11 @@
 				<artifactId>jobj-compare</artifactId>
 				<version>${jobj-compare.version}</version>
 			</dependency>
-			<!-- JOBJECT-EVALUATE DEPENDENCY -->
+			<!-- JOBJ-CONTRACT-VERIFIER DEPENDENCY -->
 			<dependency>
 				<groupId>de.alpharogroup</groupId>
-				<artifactId>jobject-evaluate</artifactId>
-				<version>${jobject-evaluate.version}</version>
+				<artifactId>jobj-contract-verifier</artifactId>
+				<version>${jobj-contract-verifier.version}</version>
 			</dependency>
 			<!-- JMH DEPENDENCIES for benchmarking -->
 			<dependency>
@@ -115,23 +116,23 @@
 	</dependencyManagement>
 
 	<dependencies>
-
+		<!-- COMMONS-COLLECTIONS4 DEPENDENCY -->
 		<dependency>
 			<groupId>org.apache.commons</groupId>
 			<artifactId>commons-collections4</artifactId>
 		</dependency>
-        <!-- JOBJ-COMPARE DEPENDENCY -->
-        <dependency>
-            <groupId>de.alpharogroup</groupId>
-            <artifactId>jobj-compare</artifactId>
-        </dependency>
-		<!-- JOBJECT-EVALUATE DEPENDENCY -->
+		<!-- JOBJ-COMPARE DEPENDENCY -->
 		<dependency>
 			<groupId>de.alpharogroup</groupId>
-			<artifactId>jobject-evaluate</artifactId>
-			<scope>test</scope>
+			<artifactId>jobj-compare</artifactId>
 		</dependency>
 		<!-- UNIT-TESTS DEPENDENCIES -->
+		<!-- JOBJ-CONTRACT-VERIFIER DEPENDENCY -->
+		<dependency>
+			<groupId>de.alpharogroup</groupId>
+			<artifactId>jobj-contract-verifier</artifactId>
+			<scope>test</scope>
+		</dependency>
 		<!-- VINTAGE-TIME DEPENDENCY -->
 		<dependency>
 			<groupId>de.alpharogroup</groupId>

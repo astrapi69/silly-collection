@@ -26,7 +26,6 @@ package de.alpharogroup.collections.list;
 
 import java.util.Arrays;
 import java.util.Collection;
-import java.util.Collections;
 import java.util.Comparator;
 import java.util.Enumeration;
 import java.util.Iterator;
@@ -99,29 +98,6 @@ public final class ListExtensions
 	}
 
 	/**
-	 * Gets the first object from the given List.
-	 *
-	 * @param <T>
-	 *            the generic type
-	 * @param list
-	 *            the List.
-	 * @return Returns the first object from the given List or null if the List is empty or null.
-	 * @deprecated use instead the same method from the new class
-	 *             <code>OptionalListExtensions</code>. <br>
-	 *             <br>
-	 *             Note: will be removed in the next minor release
-	 */
-	@Deprecated
-	public static <T> Optional<T> getOptionalFirst(final List<T> list)
-	{
-		if (CollectionExtensions.isNotEmpty(list))
-		{
-			return Optional.of(list.get(0));
-		}
-		return Optional.empty();
-	}
-
-	/**
 	 * Gets the last object from the given List.
 	 *
 	 * @param <T>
@@ -137,29 +113,6 @@ public final class ListExtensions
 			return list.get(list.size() - 1);
 		}
 		return null;
-	}
-
-	/**
-	 * Gets the last object from the given List.
-	 *
-	 * @param <T>
-	 *            the generic type
-	 * @param list
-	 *            the List.
-	 * @return Returns the last object from the given List or null if the List is empty or null.
-	 * @deprecated use instead the same method from the new class
-	 *             <code>OptionalListExtensions</code>. <br>
-	 *             <br>
-	 *             Note: will be removed in the next minor release
-	 */
-	@Deprecated
-	public static <T> Optional<T> getOptionalLast(final List<T> list)
-	{
-		if (CollectionExtensions.isNotEmpty(list))
-		{
-			return Optional.of(list.get(list.size() - 1));
-		}
-		return Optional.empty();
 	}
 
 	/**
@@ -210,8 +163,12 @@ public final class ListExtensions
 	 */
 	public static <T> boolean isEqualListOfArrays(List<T[]> one, List<T[]> other)
 	{
-		Optional<Boolean> optionalEvaluation = CollectionExtensions.preconditionOfEqualCollection(one, other);
-		if (optionalEvaluation.isPresent()) return optionalEvaluation.get();
+		Optional<Boolean> optionalEvaluation = CollectionExtensions
+			.preconditionOfEqualCollection(one, other);
+		if (optionalEvaluation.isPresent())
+		{
+			return optionalEvaluation.get();
+		}
 		for (int i = 0; i < one.size(); i++)
 		{
 			if (!Arrays.deepEquals(one.get(i), other.get(i)))
@@ -354,54 +311,6 @@ public final class ListExtensions
 	}
 
 	/**
-	 * Removes the first object from the given List.
-	 *
-	 * @param <T>
-	 *            the generic type
-	 * @param list
-	 *            the List.
-	 * @return Removes and returns the first object from the given List or an empty {@link Optional}
-	 *         if the List is empty or null.
-	 * @deprecated use instead the same method from the new class
-	 *             <code>OptionalListExtensions</code>. <br>
-	 *             <br>
-	 *             Note: will be removed in the next minor release
-	 */
-	@Deprecated
-	public static <T> Optional<T> removeOptionalFirst(final List<T> list)
-	{
-		if (!CollectionExtensions.isEmpty(list) && 0 < list.size())
-		{
-			return Optional.of(list.remove(0));
-		}
-		return Optional.empty();
-	}
-
-	/**
-	 * Removes the last object from the given List.
-	 *
-	 * @param <T>
-	 *            the generic type
-	 * @param list
-	 *            the List.
-	 * @return Removes and returns the last object from the given List or an empty {@link Optional}
-	 *         if the List is empty or null.
-	 * @deprecated use instead the same method from the new class
-	 *             <code>OptionalListExtensions</code>. <br>
-	 *             <br>
-	 *             Note: will be removed in the next minor release
-	 */
-	@Deprecated
-	public static <T> Optional<T> removeOptionalLast(final List<T> list)
-	{
-		if (!CollectionExtensions.isEmpty(list) && 0 < list.size())
-		{
-			return Optional.of(list.remove(list.size() - 1));
-		}
-		return Optional.empty();
-	}
-
-	/**
 	 * Removes the last object from the given List.
 	 *
 	 * @param <T>
@@ -512,7 +421,7 @@ public final class ListExtensions
 		{
 			comparator = ComparatorUtils.reversedComparator(comparator);
 		}
-        list.sort(comparator);
+		list.sort(comparator);
 	}
 
 	/**

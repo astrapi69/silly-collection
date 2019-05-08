@@ -37,7 +37,6 @@ import java.util.Collection;
 import java.util.Collections;
 import java.util.Enumeration;
 import java.util.List;
-import java.util.Optional;
 import java.util.Set;
 
 import org.meanbean.test.BeanTestException;
@@ -293,35 +292,6 @@ public class ListExtensionsTest
 		assertTrue(result.getRemovedElements().equals(expectedremovedList));
 		assertTrue(result.getAddedElements().equals(expectedaddedList));
 
-	}
-
-	/**
-	 * Test method for {@link ListExtensions#getOptionalFirst(List)}
-	 */
-	@SuppressWarnings("deprecation")
-	@Test
-	public void testGetOptionalFirst()
-	{
-		Optional<String> expected;
-		Optional<String> actual;
-		List<String> search;
-
-		expected = Optional.<String> of("Leonidas");
-		search = ListFactory.newArrayList();
-		search.add(expected.get());
-		search.add("Berta");
-		search.add("Caesar");
-		search.add("Dora");
-		search.add("Emil");
-		search.add("Anton");
-
-		actual = ListExtensions.getOptionalFirst(search);
-		assertEquals(expected, actual);
-
-		search = ListFactory.newArrayList();
-		actual = ListExtensions.getOptionalFirst(search);
-		expected = Optional.empty();
-		assertEquals(expected, actual);
 	}
 
 	/**
@@ -687,74 +657,6 @@ public class ListExtensionsTest
 		search.add(removed);
 		final List<String> removedLastValues = ListExtensions.removeLastValues(search, 7);
 		assertTrue(removedLastValues.size() == 4);
-	}
-
-	/**
-	 * Test method for {@link ListExtensions#removeOptionalFirst(List)}
-	 */
-	@SuppressWarnings("deprecation")
-	@Test
-	public void testRemoveOptionalFirst()
-	{
-		Optional<String> expected;
-		Optional<String> actual;
-		String removed;
-		List<String> search;
-		expected = Optional.<String> of("Leonidas");
-		removed = "Berta";
-		search = ListFactory.newArrayList();
-		search.add(removed);
-		search.add(expected.get());
-		search.add("Caesar");
-		search.add("Dora");
-		search.add("Emil");
-		search.add("Anton");
-
-		actual = ListExtensions.removeOptionalFirst(search);
-		assertTrue(removed.equals(actual.get()));
-
-		actual = ListExtensions.getOptionalFirst(search);
-		assertEquals(expected, actual);
-
-		search.clear();
-
-		actual = ListExtensions.removeOptionalFirst(search);
-		expected = Optional.empty();
-		assertEquals(expected, actual);
-	}
-
-	/**
-	 * Test method for {@link ListExtensions#removeOptionalLast(List)}
-	 */
-	@SuppressWarnings("deprecation")
-	@Test
-	public void testRemoveOptionalLast()
-	{
-		Optional<String> expected;
-		Optional<String> actual;
-		String removed;
-		List<String> search;
-		expected = Optional.<String> of("Leonidas");
-		removed = "Berta";
-		search = ListFactory.newArrayList();
-
-		search.add("Anton");
-		search.add("Caesar");
-		search.add("Dora");
-		search.add("Emil");
-		search.add(expected.get());
-		search.add(removed);
-		actual = ListExtensions.removeOptionalLast(search);
-		assertTrue("", removed.equals(actual.get()));
-
-		actual = ListExtensions.getOptionalLast(search);
-		assertEquals(expected, actual);
-
-		search.clear();
-
-		actual = ListExtensions.removeOptionalLast(search);
-		expected = Optional.empty();
-		assertEquals(expected, actual);
 	}
 
 	/**

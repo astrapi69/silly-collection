@@ -33,8 +33,11 @@ import org.meanbean.test.BeanTester;
 import org.testng.annotations.Test;
 
 /**
- * The unit test class for the enum class {@link CompareOrder}.
+ * The unit test class for the enum class {@link CompareOrder}
+ *
+ * @deprecated Will be removed in next minor version
  */
+@Deprecated
 public class CompareOrderTest
 {
 

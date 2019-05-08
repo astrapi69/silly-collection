@@ -24,8 +24,8 @@
  */
 package de.alpharogroup.collections.array;
 
-import static org.testng.Assert.assertNull;
 import static org.testng.AssertJUnit.assertEquals;
+import static org.testng.AssertJUnit.assertNull;
 import static org.testng.AssertJUnit.assertTrue;
 
 import java.lang.reflect.InvocationTargetException;
@@ -47,23 +47,6 @@ import org.testng.annotations.Test;
 public class ArrayExtensionsTest
 {
 
-	/**
-	 * Test method for {@link ArrayExtensions#removeAll(Object[], Object[])}
-	 */
-	@Test
-	public void testRemoveAll(){
-		String[] actual;
-		String[] expected;
-		String[] source;
-		String[] arrayToRemove;
-
-		source = ArrayFactory.newArray("1", "2", "3", "4");
-		arrayToRemove  = ArrayFactory.newArray("2", "3", "4");
-		actual = ArrayExtensions.removeAll(source, arrayToRemove);
-		expected = ArrayFactory.newArray("1");
-		assertTrue(Arrays.equals(actual, expected));
-	}
-	
 	/**
 	 * Test method for {@link ArrayExtensions#arraycopyWithSystem(Object[], Object[])}.
 	 */
@@ -369,6 +352,28 @@ public class ArrayExtensionsTest
 	}
 
 	/**
+	 * Test the method for {@link ArrayExtensions#intersection(Object[], Object[])}
+	 */
+	@Test
+	public void testIntersection()
+	{
+		String[] actual;
+		String[] expected;
+		String[] one;
+		String[] other;
+
+		one = ArrayFactory.newArray("Anton", "Alex", "Berta", "Brad", "Caesar", "Leonardo");
+
+		other = ArrayFactory.newArray("Alex", "Berta", "Brad", "Caesar", "Leonardo");
+
+		actual = ArrayExtensions.intersection(one, other);
+
+		expected = ArrayFactory.newArray("Alex", "Berta", "Brad", "Caesar", "Leonardo");
+		assertTrue(Arrays.equals(actual, expected));
+
+	}
+
+	/**
 	 * Test method for
 	 * {@link de.alpharogroup.collections.array.ArrayExtensions#isFirst(Object[], Object)} .
 	 */
@@ -387,7 +392,6 @@ public class ArrayExtensionsTest
 		expected = false;
 		assertEquals(expected, actual);
 	}
-
 
 	/**
 	 * Test method for
@@ -408,6 +412,24 @@ public class ArrayExtensionsTest
 		actual = ArrayExtensions.isLast(numbers, null);
 		expected = false;
 		assertEquals(expected, actual);
+	}
+
+	/**
+	 * Test method for {@link ArrayExtensions#removeAll(Object[], Object[])}
+	 */
+	@Test
+	public void testRemoveAll()
+	{
+		String[] actual;
+		String[] expected;
+		String[] source;
+		String[] arrayToRemove;
+
+		source = ArrayFactory.newArray("1", "2", "3", "4");
+		arrayToRemove = ArrayFactory.newArray("2", "3", "4");
+		actual = ArrayExtensions.removeAll(source, arrayToRemove);
+		expected = ArrayFactory.newArray("1");
+		assertTrue(Arrays.equals(actual, expected));
 	}
 
 	/**

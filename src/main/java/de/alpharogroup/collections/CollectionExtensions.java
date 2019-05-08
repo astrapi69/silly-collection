@@ -57,14 +57,15 @@ public final class CollectionExtensions
 	public static <T> boolean isEqualCollection(Collection<T> one, Collection<T> other)
 	{
 		Optional<Boolean> optionalEvaluation = preconditionOfEqualCollection(one, other);
-		if (optionalEvaluation.isPresent()) return optionalEvaluation.get();
+		if (optionalEvaluation.isPresent())
+			return optionalEvaluation.get();
 		Collection<T> retainAll = CollectionUtils.retainAll(one, other);
 		return retainAll.isEmpty() || one.containsAll(other) && other.containsAll(one);
 	}
 
 	/**
 	 * Checks the given two {@link Collection} objects if there are null and return the appropriate
-     * {@link Optional} boolean value
+	 * {@link Optional} boolean value
 	 *
 	 * @param <T>
 	 *            the generic type of the elements
@@ -72,19 +73,18 @@ public final class CollectionExtensions
 	 *            the one
 	 * @param other
 	 *            the other
-	 * @return the {@link Optional} boolean if value is true both are null, if value is false given two
-     * {@link Collection} objects are not equal otherwise the {@link Optional} is empty
+	 * @return the {@link Optional} boolean if value is true both are null, if value is false given
+	 *         two {@link Collection} objects are not equal otherwise the {@link Optional} is empty
 	 */
-	public static <T> Optional<Boolean> preconditionOfEqualCollection(Collection<T> one, Collection<T> other) {
+	public static <T> Optional<Boolean> preconditionOfEqualCollection(Collection<T> one,
+		Collection<T> other)
+	{
 		if (one == null && other == null)
 		{
 			return Optional.of(true);
 		}
 
-		if (one == null
-         ||
-                        other == null
-			|| one.size() != other.size())
+		if (one == null || other == null || one.size() != other.size())
 		{
 			return Optional.of(false);
 		}

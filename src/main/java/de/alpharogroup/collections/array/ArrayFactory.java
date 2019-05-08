@@ -24,6 +24,9 @@
  */
 package de.alpharogroup.collections.array;
 
+import java.lang.reflect.Array;
+
+import lombok.NonNull;
 import lombok.experimental.UtilityClass;
 
 /**
@@ -195,5 +198,30 @@ public final class ArrayFactory
 		return elements;
 	}
 
+	/**
+	 * Creates a new partial array from the given source array starting from the given start index
+	 * that is inclusive and the end index that is exclusive
+	 *
+	 * @param <T>
+	 *            the generic type
+	 * @param source
+	 *            the source array
+	 * @param startIndex
+	 *            the start index that is inclusive
+	 * @param endIndex
+	 *            the end index that is exclusive
+	 * @return the new partial array
+	 */
+	@SuppressWarnings("unchecked")
+	public static <T> T[] newSubArray(final @NonNull T[] source, int startIndex, int endIndex)
+	{
+		int newSize = endIndex - startIndex;
+		T[] subArray = (T[])Array.newInstance(source.getClass().getComponentType(), newSize);
+		for (int i = 0; i < newSize; i++)
+		{
+			subArray[i] = source[i + startIndex];
+		}
+		return subArray;
+	}
 
 }
