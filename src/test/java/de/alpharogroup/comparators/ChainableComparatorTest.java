@@ -24,7 +24,7 @@
  */
 package de.alpharogroup.comparators;
 
-import static org.testng.Assert.assertTrue;
+import static org.testng.AssertJUnit.assertTrue;
 
 import java.util.BitSet;
 import java.util.Comparator;
