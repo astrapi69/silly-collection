@@ -1,6 +1,14 @@
 ## Change log
 ----------------------
 
+Version 5.4
+-------------
+
+ADDED:
+
+- new method for convert a not empty existing list to array
+- new method for convert a not empty existing set to array
+
 Version 5.3
 -------------
 

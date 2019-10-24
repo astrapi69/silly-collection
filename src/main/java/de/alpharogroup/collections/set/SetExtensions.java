@@ -28,17 +28,39 @@ import java.util.Collection;
 import java.util.Set;
 import java.util.SortedSet;
 
+import de.alpharogroup.collections.array.ArrayFactory;
+import lombok.NonNull;
 import lombok.experimental.UtilityClass;
 
 /**
- * Extensions class for use with {@link Set} objects.
+ * Extensions class for use with {@link Set} objects
  */
 @UtilityClass
 public class SetExtensions
 {
 
 	/**
-	 * Converts the given {@link Collection} to a {@link Set}.
+	 * Converts the given {@link Set} to an array
+	 *
+	 * @param <T>
+	 *            the generic type
+	 * @param set
+	 *            the set
+	 * @return the array from the given {@link Set}
+	 */
+	@SuppressWarnings("unchecked")
+	public static <T> T[] toArray(final @NonNull Set<T> set)
+	{
+		if (set.isEmpty())
+		{
+			throw new IllegalArgumentException("set is empty");
+		}
+		T[] newArray = (T[])ArrayFactory.newArray(set.iterator().next().getClass(), set.size());
+		return set.toArray(newArray);
+	}
+
+	/**
+	 * Converts the given {@link Collection} to a {@link Set}
 	 *
 	 * @param <T>
 	 *            the generic type of the elements
