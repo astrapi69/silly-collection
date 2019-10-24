@@ -44,14 +44,22 @@ public final class ArrayExtensions
 	/**
 	 * Removes the given prefix array from the first given array
 	 *
-	 * @param array the array
-	 * @param prefix the prefix
+	 * @param <T>
+	 *            the generic type of the objects in the arrays
+	 *
+	 * @param array
+	 *            the array
+	 * @param prefix
+	 *            the prefix
 	 * @return the resulted array
 	 */
 	@SuppressWarnings("unchecked")
-	public static <T> T[] removeFromStart(final @NonNull T[] array, final @NonNull T[] prefix) {
-		if(0<array.length) {
-			T[] result = (T[])ArrayFactory.newArray(array[0].getClass(), array.length-prefix.length);
+	public static <T> T[] removeFromStart(final @NonNull T[] array, final @NonNull T[] prefix)
+	{
+		if (0 < array.length)
+		{
+			T[] result = (T[])ArrayFactory.newArray(array[0].getClass(),
+				array.length - prefix.length);
 			System.arraycopy(array, prefix.length, result, 0, result.length);
 			return result;
 		}
@@ -62,12 +70,18 @@ public final class ArrayExtensions
 	/**
 	 * Removes the given suffix array from the first given array
 	 *
-	 * @param array the array
-	 * @param suffix the suffix
+	 * @param <T>
+	 *            the generic type of the objects in the arrays
+	 *
+	 * @param array
+	 *            the array
+	 * @param suffix
+	 *            the suffix
 	 * @return the resulted array
 	 */
-	public static <T> T[] removeFromEnd(final T[] array, T[] suffix) {
-		return Arrays.copyOf(array, array.length-suffix.length);
+	public static <T> T[] removeFromEnd(final T[] array, T[] suffix)
+	{
+		return Arrays.copyOf(array, array.length - suffix.length);
 	}
 
 	/**

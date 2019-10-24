@@ -48,42 +48,6 @@ public class ArrayExtensionsTest
 {
 
 	/**
-	 * Test method for {@link ArrayExtensions#removeFromEnd(Object[], Object[])}
-	 */
-	@Test
-	public void testRemoveFromEnd()
-	{
-		Integer[] actual;
-		Integer[] expected;
-		Integer[] source;
-		Integer[] toRemove;
-
-		source = ArrayFactory.newArray(1, 2, 3, 4, 5, 6, 7, 8, 9);
-		toRemove= ArrayFactory.newArray(7, 8, 9);
-		actual = ArrayExtensions.removeFromEnd(source, toRemove);
-		expected = ArrayFactory.newArray(1, 2, 3, 4, 5, 6);
-		assertTrue(Arrays.equals(actual, expected));
-	}
-
-	/**
-	 * Test method for {@link ArrayExtensions#removeFromStart(Object[], Object[])}
-	 */
-	@Test
-	public void testRemoveFromStart()
-	{
-		Integer[] actual;
-		Integer[] expected;
-		Integer[] source;
-		Integer[] toRemove;
-
-		source = ArrayFactory.newArray(1, 2, 3, 4, 5, 6, 7, 8, 9);
-		toRemove= ArrayFactory.newArray(1, 2, 3);
-		actual = ArrayExtensions.removeFromStart(source, toRemove);
-		expected = ArrayFactory.newArray(4, 5, 6, 7, 8, 9);
-		assertTrue(Arrays.equals(actual, expected));
-	}
-
-	/**
 	 * Test method for {@link ArrayExtensions#arraycopyWithSystem(Object[], Object[])}.
 	 */
 	@Test
@@ -481,6 +445,42 @@ public class ArrayExtensionsTest
 		source = ArrayFactory.newArray("1", "2", "3", "4");
 		actual = ArrayExtensions.removeFirst(source);
 		expected = ArrayFactory.newArray("2", "3", "4");
+		assertTrue(Arrays.equals(actual, expected));
+	}
+
+	/**
+	 * Test method for {@link ArrayExtensions#removeFromEnd(Object[], Object[])}
+	 */
+	@Test
+	public void testRemoveFromEnd()
+	{
+		Integer[] actual;
+		Integer[] expected;
+		Integer[] source;
+		Integer[] toRemove;
+
+		source = ArrayFactory.newArray(1, 2, 3, 4, 5, 6, 7, 8, 9);
+		toRemove = ArrayFactory.newArray(7, 8, 9);
+		actual = ArrayExtensions.removeFromEnd(source, toRemove);
+		expected = ArrayFactory.newArray(1, 2, 3, 4, 5, 6);
+		assertTrue(Arrays.equals(actual, expected));
+	}
+
+	/**
+	 * Test method for {@link ArrayExtensions#removeFromStart(Object[], Object[])}
+	 */
+	@Test
+	public void testRemoveFromStart()
+	{
+		Integer[] actual;
+		Integer[] expected;
+		Integer[] source;
+		Integer[] toRemove;
+
+		source = ArrayFactory.newArray(1, 2, 3, 4, 5, 6, 7, 8, 9);
+		toRemove = ArrayFactory.newArray(1, 2, 3);
+		actual = ArrayExtensions.removeFromStart(source, toRemove);
+		expected = ArrayFactory.newArray(4, 5, 6, 7, 8, 9);
 		assertTrue(Arrays.equals(actual, expected));
 	}
 

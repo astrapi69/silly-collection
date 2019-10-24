@@ -84,12 +84,14 @@ public final class ArrayFactory
 	}
 
 	/**
-	 * Factory method for create new empty array with the length of the given array
+	 * Factory method for create new empty array with the length of the given array.
 	 *
 	 * @param <T>
 	 *            the generic type of the elements
 	 * @param array
 	 *            the array that is used as a template
+	 * @param length
+	 *            the length of the new empty array
 	 * @return the new empty array
 	 */
 	@SuppressWarnings("unchecked")
