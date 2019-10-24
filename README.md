@@ -56,7 +56,7 @@ Than you can add the dependency to your dependencies:
 	<properties>
 			...
 		<!-- SILLY-COLLECTIONS version -->
-		<silly-collections.version>5.2.1</silly-collections.version>
+		<silly-collections.version>5.3</silly-collections.version>
 			...
 	</properties>
 			...
@@ -70,6 +70,24 @@ Than you can add the dependency to your dependencies:
 			</dependency>
 			...
 		</dependencies>
+
+			
+## gradle dependency
+
+You can first define the version in the ext section and add than the following gradle dependency to your project `build.gradle` if you want to import the core functionality of silly-collections:
+
+```
+ext {
+			...
+    sillyCollectionsVersion = '5.3'
+			...
+}
+dependencies {
+			...
+compile group: 'de.alpharogroup', name: 'silly-collections', version: '${sillyCollectionsVersion}'
+			...
+}
+```
 
 ## Semantic Versioning
 
