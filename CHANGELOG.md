@@ -4,6 +4,10 @@
 Version 5.4-SNAPSHOT
 -------------
 
+ADDED:
+
+- new method for convert a not empty existing list to array
+
 Version 5.3
 -------------
 
