@@ -25,8 +25,10 @@
 package de.alpharogroup.collections.set;
 
 import static org.testng.AssertJUnit.assertNotNull;
+import static org.testng.AssertJUnit.assertTrue;
 
 import java.lang.reflect.InvocationTargetException;
+import java.util.Arrays;
 import java.util.Collection;
 import java.util.Set;
 
@@ -34,6 +36,7 @@ import org.meanbean.test.BeanTestException;
 import org.meanbean.test.BeanTester;
 import org.testng.annotations.Test;
 
+import de.alpharogroup.collections.array.ArrayFactory;
 import de.alpharogroup.collections.list.ListFactory;
 
 /**
@@ -41,6 +44,33 @@ import de.alpharogroup.collections.list.ListFactory;
  */
 public class SetExtensionsTest
 {
+
+
+	/**
+	 * Test the method {@link SetExtensions#toArray(Set)}
+	 */
+	@Test
+	public void testToArray()
+	{
+		Integer[] actual;
+		Integer[] expected;
+		Set<Integer> numbers;
+		// new scenario...
+		numbers = SetFactory.newTreeSet(1, 2, 3);
+		actual = SetExtensions.toArray(numbers);
+		expected = ArrayFactory.newArray(1, 2, 3);
+		assertTrue(Arrays.equals(actual, expected));
+	}
+
+	/**
+	 * Test the method {@link SetExtensions#toArray(Set)} that throws an
+	 * <code>IllegalArgumentException</code>
+	 */
+	@Test(expectedExceptions = IllegalArgumentException.class)
+	public void testToArrayWithException()
+	{
+		SetExtensions.toArray(SetFactory.newTreeSet());
+	}
 
 	/**
 	 * Test for method {@link SetExtensions#toSet(Collection)}

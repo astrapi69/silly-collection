@@ -514,6 +514,32 @@ public class ListExtensionsTest
 	}
 
 	/**
+	 * Test the method {@link ListExtensions#toArray(List)}
+	 */
+	@Test
+	public void testListToArray()
+	{
+		Integer[] actual;
+		Integer[] expected;
+		List<Integer> numbers;
+		// new scenario...
+		numbers = ListFactory.newArrayList(1, 2, 3);
+		actual = ListExtensions.toArray(numbers);
+		expected = ArrayFactory.newArray(1, 2, 3);
+		assertTrue(Arrays.equals(actual, expected));
+	}
+
+	/**
+	 * Test the method {@link ListExtensions#toArray(List)} that throws an
+	 * <code>IllegalArgumentException</code>
+	 */
+	@Test(expectedExceptions = IllegalArgumentException.class)
+	public void testListToArrayWithException()
+	{
+		ListExtensions.toArray(ListFactory.newArrayList());
+	}
+
+	/**
 	 * Test method for {@link ListExtensions#rearrange(List, Object, int)}
 	 */
 	@Test
@@ -827,31 +853,6 @@ public class ListExtensionsTest
 			actual = array[i];
 			assertEquals(expected, actual);
 		}
-	}
-
-	/**
-	 * Test the method {@link ListExtensions#toArray(List)}
-	 */
-	@Test
-	public void testListToArray()
-	{
-		Integer[] actual;
-		Integer[] expected;
-		List<Integer> numbers;
-		// new scenario...
-		numbers = ListFactory.newArrayList(1,2,3);
-		actual = ListExtensions.toArray(numbers);
-		expected = ArrayFactory.newArray(1,2,3);
-		assertTrue(Arrays.equals(actual, expected));
-	}
-
-	/**
-	 * Test the method {@link ListExtensions#toArray(List)} that throws an <code>IllegalArgumentException</code>
-	 */
-	@Test(expectedExceptions = IllegalArgumentException.class)
-	public void testListToArrayWithException()
-	{
-		ListExtensions.toArray(ListFactory.newArrayList());
 	}
 
 	/**

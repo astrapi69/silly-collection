@@ -482,14 +482,17 @@ public final class ListExtensions
 	/**
 	 * To array.
 	 *
-	 * @param <T> the generic type
-	 * @param list the list
+	 * @param <T>
+	 *            the generic type
+	 * @param list
+	 *            the list
 	 * @return the array or null if the list is empty
 	 */
 	@SuppressWarnings("unchecked")
 	public static <T> T[] toArray(final @NonNull List<T> list)
 	{
-		if(list.isEmpty()) {
+		if (list.isEmpty())
+		{
 			throw new IllegalArgumentException("list is empty");
 		}
 		T[] newArray = (T[])ArrayFactory.newArray(list.get(0).getClass(), list.size());
