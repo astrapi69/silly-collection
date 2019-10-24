@@ -64,6 +64,20 @@ public class ArrayFactoryTest
 	}
 
 	/**
+	 * Test for method {@link ArrayFactory#newArray(Class, int)}
+	 */
+	@Test
+	public void testNewArrayTypeWithLength()
+	{
+		int actual;
+		int expected;
+		final Integer[] array = ArrayFactory.newArray(Integer.class, 3);
+		actual = array.length;
+		expected = 3;
+		assertEquals(expected, actual);
+	}
+
+	/**
 	 * Test method for {@link ArrayFactory#newBooleanArray(boolean[])}.
 	 */
 	@Test
@@ -127,6 +141,21 @@ public class ArrayFactoryTest
 		expected = new double[0];
 		actual = ArrayFactory.newDoubleArray();
 		assertTrue(Arrays.equals(actual, expected));
+	}
+
+	/**
+	 * Test for method {@link ArrayFactory#newEmptyArray(Object[])}
+	 */
+	@Test
+	public void testNewEmptyArray()
+	{
+		Integer[] actual;
+		Integer[] expected;
+		final Integer[] numbers = { 1, 2, 3 };
+		expected = new Integer[3];
+		actual = ArrayFactory.newEmptyArray(numbers);
+		assertTrue(Arrays.equals(actual, expected));
+
 	}
 
 	/**

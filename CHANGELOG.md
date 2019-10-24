@@ -1,6 +1,25 @@
 ## Change log
 ----------------------
 
+Version 5.3
+-------------
+
+ADDED:
+
+- new factory method for create an array from a given class type and a given length
+- new factory method for create an empty array from array with the length of the given array
+- new factory method for create an empty array from array with a given length
+- new extension method created that removes a given prefix array from a given array
+- new extension method created that removes a given suffix array from a given array
+
+CHANGED:
+
+- update of parent version to 5.3
+- update of jobject-clone version to 3.1.2
+- update of jobj-contract-verifier version to 3.2
+- update of test-objects version to 5.2
+- update of commons-collections4 version to 4.4
+
 Version 5.2.1
 -------------
 

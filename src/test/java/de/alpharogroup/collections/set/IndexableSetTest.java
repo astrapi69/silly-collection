@@ -24,7 +24,7 @@
  */
 package de.alpharogroup.collections.set;
 
-import static org.testng.Assert.assertEquals;
+import static org.testng.AssertJUnit.assertEquals;
 
 import org.testng.annotations.Test;
 

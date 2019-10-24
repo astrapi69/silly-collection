@@ -7,11 +7,10 @@
 	<parent>
 		<groupId>de.alpharogroup</groupId>
 		<artifactId>mvn-java-parent</artifactId>
-		<version>4.8</version>
+		<version>5.3</version>
 	</parent>
 
 	<artifactId>silly-collections</artifactId>
-	<version>5.2.1</version>
 
 	<name>${project.artifactId}</name>
 
@@ -21,18 +20,18 @@
 
 	<properties>
 		<!-- COMMONS-COLLECTIONS4 version -->
-		<commons-collections4.version>4.3</commons-collections4.version>
+		<commons-collections4.version>4.4</commons-collections4.version>
 		<!-- JOBJ-COMPARE version -->
 		<jobj-compare.version>3.1</jobj-compare.version>
 		<!-- TEST-SCOPE versions -->
 		<!-- JOBJECT-CLONE versions -->
-		<jobject-clone.version>3.1.1</jobject-clone.version>
+		<jobject-clone.version>3.1.2</jobject-clone.version>
 		<!-- JOBJ-CONTRACT-VERIFIER version -->
-		<jobj-contract-verifier.version>3.1</jobj-contract-verifier.version>
+		<jobj-contract-verifier.version>3.2</jobj-contract-verifier.version>
 		<!-- VINTAGE-TIME version -->
 		<vintage-time.version>5.1</vintage-time.version>
 		<!-- TEST-OBJECTS version -->
-		<test-objects.version>5.0.1</test-objects.version>
+		<test-objects.version>5.2</test-objects.version>
 		<jmh.version>1.21</jmh.version>
 	</properties>
 

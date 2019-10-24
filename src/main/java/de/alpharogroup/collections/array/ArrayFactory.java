@@ -38,18 +38,66 @@ public final class ArrayFactory
 {
 
 	/**
+	 * Factory method for create new array from the given class type and the given length
+	 *
+	 * @param <T>
+	 *            the generic type of the elements
+	 * @param cls
+	 *            the class type
+	 * @param length
+	 *            the capacity
+	 * @return the new array of the given class type and the given length
+	 */
+	@SuppressWarnings("unchecked")
+	public static <T> T[] newArray(final Class<T> cls, int length)
+	{
+		return (T[])Array.newInstance(cls, length);
+	}
+
+	/**
 	 * Factory method for create new array from the given optional elements.
 	 *
 	 * @param <T>
 	 *            the generic type of the elements
 	 * @param elements
 	 *            the optional elements that will be in the returned array.
-	 * @return the new array.
+	 * @return the new array
 	 */
 	@SafeVarargs
 	public static <T> T[] newArray(final T... elements)
 	{
 		return elements;
+	}
+
+	/**
+	 * Factory method for create new empty array with the length of the given array
+	 *
+	 * @param <T>
+	 *            the generic type of the elements
+	 * @param array
+	 *            the array that is used as a template
+	 * @return the new empty array
+	 */
+	public static <T> T[] newEmptyArray(final @NonNull T[] array)
+	{
+		return newEmptyArray(array, array.length);
+	}
+
+	/**
+	 * Factory method for create new empty array with the length of the given array.
+	 *
+	 * @param <T>
+	 *            the generic type of the elements
+	 * @param array
+	 *            the array that is used as a template
+	 * @param length
+	 *            the length of the new empty array
+	 * @return the new empty array
+	 */
+	@SuppressWarnings("unchecked")
+	public static <T> T[] newEmptyArray(final @NonNull T[] array, int length)
+	{
+		return (T[])Array.newInstance(array.getClass().getComponentType(), length);
 	}
 
 	/**
@@ -212,11 +260,10 @@ public final class ArrayFactory
 	 *            the end index that is exclusive
 	 * @return the new partial array
 	 */
-	@SuppressWarnings("unchecked")
 	public static <T> T[] newSubArray(final @NonNull T[] source, int startIndex, int endIndex)
 	{
 		int newSize = endIndex - startIndex;
-		T[] subArray = (T[])Array.newInstance(source.getClass().getComponentType(), newSize);
+		T[] subArray = newEmptyArray(source, newSize);
 		for (int i = 0; i < newSize; i++)
 		{
 			subArray[i] = source[i + startIndex];

@@ -24,9 +24,9 @@
  */
 package de.alpharogroup.collections.enumerations;
 
-import static org.testng.Assert.assertFalse;
-import static org.testng.Assert.assertNotNull;
-import static org.testng.Assert.assertTrue;
+import static org.testng.AssertJUnit.assertFalse;
+import static org.testng.AssertJUnit.assertNotNull;
+import static org.testng.AssertJUnit.assertTrue;
 
 import java.util.ArrayList;
 import java.util.Enumeration;

@@ -24,7 +24,6 @@
  */
 package de.alpharogroup.collections.array;
 
-import java.lang.reflect.Array;
 import java.util.Arrays;
 import java.util.List;
 import java.util.Set;
@@ -41,6 +40,49 @@ import lombok.experimental.UtilityClass;
 @UtilityClass
 public final class ArrayExtensions
 {
+
+	/**
+	 * Removes the given prefix array from the first given array
+	 *
+	 * @param <T>
+	 *            the generic type of the objects in the arrays
+	 *
+	 * @param array
+	 *            the array
+	 * @param prefix
+	 *            the prefix
+	 * @return the resulted array
+	 */
+	@SuppressWarnings("unchecked")
+	public static <T> T[] removeFromStart(final @NonNull T[] array, final @NonNull T[] prefix)
+	{
+		if (0 < array.length)
+		{
+			T[] result = (T[])ArrayFactory.newArray(array[0].getClass(),
+				array.length - prefix.length);
+			System.arraycopy(array, prefix.length, result, 0, result.length);
+			return result;
+		}
+		return array;
+
+	}
+
+	/**
+	 * Removes the given suffix array from the first given array
+	 *
+	 * @param <T>
+	 *            the generic type of the objects in the arrays
+	 *
+	 * @param array
+	 *            the array
+	 * @param suffix
+	 *            the suffix
+	 * @return the resulted array
+	 */
+	public static <T> T[] removeFromEnd(final T[] array, T[] suffix)
+	{
+		return Arrays.copyOf(array, array.length - suffix.length);
+	}
 
 	/**
 	 * Removes the first element of the array.
@@ -382,10 +424,9 @@ public final class ArrayExtensions
 	 *            the other array
 	 * @return the result of the intersection
 	 */
-	@SuppressWarnings("unchecked")
 	public static <T> T[] intersection(final @NonNull T[] one, final @NonNull T[] other)
 	{
-		T[] intersection = (T[])Array.newInstance(one.getClass().getComponentType(), one.length);
+		T[] intersection = ArrayFactory.newEmptyArray(one);
 		int j = 0;
 		for (int i = 0; i < one.length; i++)
 		{

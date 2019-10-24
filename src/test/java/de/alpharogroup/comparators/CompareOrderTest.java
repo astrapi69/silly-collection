@@ -24,7 +24,7 @@
  */
 package de.alpharogroup.comparators;
 
-import static org.testng.Assert.assertEquals;
+import static org.testng.AssertJUnit.assertEquals;
 
 import java.lang.reflect.InvocationTargetException;
 

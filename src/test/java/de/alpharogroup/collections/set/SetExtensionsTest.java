@@ -24,7 +24,7 @@
  */
 package de.alpharogroup.collections.set;
 
-import static org.testng.Assert.assertNotNull;
+import static org.testng.AssertJUnit.assertNotNull;
 
 import java.lang.reflect.InvocationTargetException;
 import java.util.Collection;
