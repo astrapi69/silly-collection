@@ -29,7 +29,7 @@ import java.util.LinkedHashSet;
 import java.util.Set;
 
 /**
- * The class {@link InsertionOrderSet} overwrites the put-method from the <tt>LinkedHashSet</tt>.
+ * The class {@link InsertionOrderSet} overwrites the add-method from the <tt>LinkedHashSet</tt>.
  * That inserts the value to the right order it was inserted in the Map. Note that the difference in
  * the LinkedHashMap is the order does not change if we put the same key with a new value. In this
  * class the order changes when we put a new value with the same key.
