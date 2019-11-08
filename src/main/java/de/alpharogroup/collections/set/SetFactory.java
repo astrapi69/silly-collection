@@ -32,8 +32,11 @@ import java.util.LinkedHashSet;
 import java.util.Set;
 import java.util.SortedSet;
 import java.util.TreeSet;
+import java.util.function.Supplier;
 
 import de.alpharogroup.collections.CollectionExtensions;
+import de.alpharogroup.collections.list.ListFactory;
+import lombok.NonNull;
 import lombok.experimental.UtilityClass;
 
 /**
@@ -192,7 +195,23 @@ public final class SetFactory
 	@SafeVarargs
 	public static final <T> SortedSet<T> newTreeSet(final T... elements)
 	{
-		return newTreeSet(null, elements);
+		return newTreeSet(ListFactory.newArrayList(), elements);
+	}
+
+	/**
+	 * Factory method for create new {@link TreeSet} and will be returned as {@link Set}
+	 *
+	 * @param <T>
+	 *            the generic type of the elements
+	 * @param elements
+	 *            the elements to add in the new {@link TreeSet}
+	 * @return the new {@link SortedSet}
+	 */
+	@SafeVarargs
+	public static final <T> SortedSet<T> newTreeSet(final @NonNull Comparator<T> comparator,
+		final T... elements)
+	{
+		return newTreeSet(ListFactory.newArrayList(), comparator, elements);
 	}
 
 	/**
@@ -248,6 +267,22 @@ public final class SetFactory
 			Collections.addAll(sortedSet, elements);
 		}
 		return sortedSet;
+	}
+
+	/**
+	 * Factory method for create new {@link Supplier} for a {@link TreeSet} with a
+	 * {@link Comparator}
+	 *
+	 * @param <T>
+	 *            the generic type of the elements
+	 * @param comparator
+	 *            the comparator
+	 * @return the new {@link Supplier}
+	 */
+	public static final <T> Supplier<SortedSet<T>> newTreeSetSupplier(
+		final @NonNull Comparator<T> comparator)
+	{
+		return () -> new TreeSet<>(comparator);
 	}
 
 }
