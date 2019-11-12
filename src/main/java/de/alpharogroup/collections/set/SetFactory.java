@@ -199,10 +199,12 @@ public final class SetFactory
 	}
 
 	/**
-	 * Factory method for create new {@link TreeSet} and will be returned as {@link Set}
+	 * Factory method for create new {@link TreeSet} and will be returned as {@link Set}.
 	 *
 	 * @param <T>
 	 *            the generic type of the elements
+	 * @param comparator
+	 *            the comparator
 	 * @param elements
 	 *            the elements to add in the new {@link TreeSet}
 	 * @return the new {@link SortedSet}

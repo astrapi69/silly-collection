@@ -159,28 +159,6 @@ public class SetFactoryTest
 	}
 
 	/**
-	 * Test for method {@link SetFactory#newTreeSetSupplier}
-	 */
-	@Test
-	public void testNewTreeSetSupplier()
-	{
-		SortedSet<String> expected;
-		SortedSet<String> actual;
-		final List<String> list = ListFactory.newArrayList("foo", "fasel", "food", "barista", "fao");
-		Comparator<String> stringComparator = (String one, String other)-> one.compareTo(other);
-		Supplier<SortedSet<String>> supplier = SetFactory.newTreeSetSupplier(stringComparator);
-		assertNotNull(supplier);
-		actual = list.stream()
-        .collect(Collectors.toCollection(supplier));
-		assertTrue(actual.size() == 5);
-		final Comparator<String> comparator = StringLengthComparator.of(SortOrder.ASCENDING);
-		final List<String> list2 = ListFactory.newArrayList("foo", "fasel");
-		expected = SetFactory.newTreeSet(list2, comparator, "food", "barista", "fao");
-		assertEquals(actual, expected);
-	}
-
-
-	/**
 	 * Test method for {@link SetFactory#newTreeSet(Collection, Comparator, T[])}.
 	 */
 	@Test
@@ -197,6 +175,28 @@ public class SetFactoryTest
 		set = SetFactory.newTreeSet(ListFactory.<String> newArrayList(), comparator, "foo", "bar",
 			"foo");
 		assertTrue(set.size() == 2);
+	}
+
+
+	/**
+	 * Test for method {@link SetFactory#newTreeSetSupplier}
+	 */
+	@Test
+	public void testNewTreeSetSupplier()
+	{
+		SortedSet<String> expected;
+		SortedSet<String> actual;
+		final List<String> list = ListFactory.newArrayList("foo", "fasel", "food", "barista",
+			"fao");
+		Comparator<String> stringComparator = (String one, String other) -> one.compareTo(other);
+		Supplier<SortedSet<String>> supplier = SetFactory.newTreeSetSupplier(stringComparator);
+		assertNotNull(supplier);
+		actual = list.stream().collect(Collectors.toCollection(supplier));
+		assertTrue(actual.size() == 5);
+		final Comparator<String> comparator = StringLengthComparator.of(SortOrder.ASCENDING);
+		final List<String> list2 = ListFactory.newArrayList("foo", "fasel");
+		expected = SetFactory.newTreeSet(list2, comparator, "food", "barista", "fao");
+		assertEquals(actual, expected);
 	}
 
 	/**
