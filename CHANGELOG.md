@@ -1,6 +1,18 @@
 ## Change log
 ----------------------
 
+Version 5.4.1
+-------------
+
+ADDED:
+
+- new factory method for create a supplier for a tree set from a comparator  
+
+CHANGED:
+
+- update of jmh version to 1.22
+- removed deprecated enum class CompareOrder
+
 Version 5.4
 -------------
 

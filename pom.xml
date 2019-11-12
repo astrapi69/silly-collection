@@ -11,7 +11,7 @@
 	</parent>
 
 	<artifactId>silly-collections</artifactId>
-	<version>5.4</version>
+	<version>5.4.1</version>
 
 	<name>${project.artifactId}</name>
 
@@ -33,7 +33,7 @@
 		<vintage-time.version>5.1</vintage-time.version>
 		<!-- TEST-OBJECTS version -->
 		<test-objects.version>5.2</test-objects.version>
-		<jmh.version>1.21</jmh.version>
+		<jmh.version>1.22</jmh.version>
 	</properties>
 
 	<licenses>
