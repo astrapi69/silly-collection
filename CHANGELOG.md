@@ -1,7 +1,7 @@
 ## Change log
 ----------------------
 
-Version 5.5-SNAPSHOT
+Version 5.4.1
 -------------
 
 ADDED:
@@ -11,6 +11,7 @@ ADDED:
 CHANGED:
 
 - update of jmh version to 1.22
+- removed deprecated enum class CompareOrder
 
 Version 5.4
 -------------
