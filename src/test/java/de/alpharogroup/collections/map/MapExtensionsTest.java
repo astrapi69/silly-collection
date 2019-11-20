@@ -24,10 +24,13 @@
  */
 package de.alpharogroup.collections.map;
 
+import static org.testng.Assert.assertEquals;
 import static org.testng.AssertJUnit.assertTrue;
 
 import java.lang.reflect.InvocationTargetException;
+import java.util.AbstractMap;
 import java.util.Collection;
+import java.util.Comparator;
 import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
@@ -35,14 +38,12 @@ import java.util.Map.Entry;
 
 import org.meanbean.test.BeanTestException;
 import org.meanbean.test.BeanTester;
-import org.testng.annotations.AfterMethod;
-import org.testng.annotations.BeforeMethod;
 import org.testng.annotations.Test;
 
 import de.alpharogroup.collections.list.ListFactory;
 
 /**
- * The unit test class for the class {@link MapExtensions}.
+ * The unit test class for the class {@link MapExtensions}
  *
  * @author Asterios Raptis
  */
@@ -56,32 +57,10 @@ public class MapExtensionsTest
 		{
 			final String key = entry.getKey();
 			final String value = entry.getValue();
-			assertTrue(key.equals(twoDimArray[count][0]));
-			assertTrue(value.equals(twoDimArray[count][1]));
+			assertEquals(key, twoDimArray[count][0]);
+			assertEquals(value, twoDimArray[count][1]);
 			count++;
 		}
-	}
-
-	/**
-	 * Sets up method will be invoked before every unit test method
-	 *
-	 * @throws Exception
-	 *             is thrown if an exception occurs
-	 */
-	@BeforeMethod
-	protected void setUp() throws Exception
-	{
-	}
-
-	/**
-	 * Tear down method will be invoked after every unit test method
-	 *
-	 * @throws Exception
-	 *             is thrown if an exception occurs
-	 */
-	@AfterMethod
-	protected void tearDown() throws Exception
-	{
 	}
 
 	/**
@@ -90,16 +69,19 @@ public class MapExtensionsTest
 	@Test
 	public void testGetKeyFromValue()
 	{
-		final String value = "value";
-		final String expected = "5";
+		String actual;
+		String expected;
+		String value;
+
+		value = "value";
 		final Map<String, String> map = new HashMap<>();
 		map.put("1", "novalue");
 		map.put("2", "somevalue");
 		map.put("3", "othervalue");
 		map.put("5", "value");
-		final String foundedKey = MapExtensions.getKeyFromValue(map, value);
-		assertTrue("Expected value is not equal with key.", foundedKey.equals(expected));
-
+		actual = MapExtensions.getKeyFromValue(map, value);
+		expected = "5";
+		assertEquals(actual, expected);
 	}
 
 	/**
@@ -127,12 +109,111 @@ public class MapExtensionsTest
 	}
 
 	/**
+	 * Test for the Method {@link MapExtensions#sortByValue(Map, boolean)}
+	 */
+	@Test
+	public void testSortByValue()
+	{
+		Map<String, String> map;
+		Map<String, String> actual;
+		Map<String, String> expected;
+		// map with test data ...
+		map = new HashMap<>();
+		map.put("23", "3");
+		map.put("21", "2");
+		map.put("13", "4");
+		map.put("5", "1");
+		// new scenario...
+		actual = MapExtensions.sortByValue(map, false);
+		expected = MapFactory.newLinkedHashMap();
+		expected.put("5", "1");
+		expected.put("21", "2");
+		expected.put("23", "3");
+		expected.put("13", "4");
+		assertEquals(expected, actual);
+		// new scenario...
+		actual = MapExtensions.sortByValue(map, true);
+		expected = MapFactory.newLinkedHashMap();
+		expected.put("13", "4");
+		expected.put("23", "3");
+		expected.put("21", "2");
+		expected.put("5", "1");
+		assertEquals(expected, actual);
+	}
+
+	/**
+	 * Test for the Method {@link MapExtensions#sortByValueAsList(Map, boolean)}
+	 */
+	@Test
+	public void testSortByValueAsList()
+	{
+		Map<String, String> map;
+		List<Entry<String, String>> actual;
+		List<Entry<String, String>> expected;
+		// map with test data ...
+		map = new HashMap<>();
+		map.put("23", "3");
+		map.put("21", "2");
+		map.put("13", "4");
+		map.put("5", "1");
+		// new scenario...
+		actual = MapExtensions.sortByValueAsList(map, false);
+		expected = ListFactory.newArrayList();
+		expected.add(new AbstractMap.SimpleEntry<>("5", "1"));
+		expected.add(new AbstractMap.SimpleEntry<>("21", "2"));
+		expected.add(new AbstractMap.SimpleEntry<>("23", "3"));
+		expected.add(new AbstractMap.SimpleEntry<>("13", "4"));
+		assertEquals(expected, actual);
+		// new scenario...
+		actual = MapExtensions.sortByValueAsList(map, true);
+		expected = ListFactory.newArrayList();
+		expected.add(new AbstractMap.SimpleEntry<>("13", "4"));
+		expected.add(new AbstractMap.SimpleEntry<>("23", "3"));
+		expected.add(new AbstractMap.SimpleEntry<>("21", "2"));
+		expected.add(new AbstractMap.SimpleEntry<>("5", "1"));
+		assertEquals(expected, actual);
+	}
+
+	/**
+	 * Test for the Method {@link MapExtensions#sortByValue(Map, Comparator)}
+	 */
+	@Test
+	public void testSortByValueWithComparator()
+	{
+		Map<String, String> map;
+		Map<String, String> actual;
+		Map<String, String> expected;
+		// map with test data ...
+		map = new HashMap<>();
+		map.put("23", "3");
+		map.put("21", "2");
+		map.put("13", "4");
+		map.put("5", "1");
+		// new scenario...
+		actual = MapExtensions.sortByValue(map, Comparator.naturalOrder());
+		expected = MapFactory.newLinkedHashMap();
+		expected.put("5", "1");
+		expected.put("21", "2");
+		expected.put("23", "3");
+		expected.put("13", "4");
+		assertEquals(expected, actual);
+		// new scenario...
+		actual = MapExtensions.sortByValue(map, Comparator.reverseOrder());
+		expected = MapFactory.newLinkedHashMap();
+		expected.put("13", "4");
+		expected.put("23", "3");
+		expected.put("21", "2");
+		expected.put("5", "1");
+		assertEquals(expected, actual);
+	}
+
+	/**
 	 * Test for the Method {@link MapExtensions#toGenericMap(Object[][])}.
 	 */
 	@Test
 	public void testToGenericMap()
 	{
-		final String twoDimArray[][] = { { "1", "value1" }, { "3", "value3" }, { "4", "value4" },
+		final String[][] twoDimArray = { { "1", "value1" }, { "3", "value3" }, { "4", "value4" },
 				{ "2", "value2" } };
 		final Map<String, String> map = MapExtensions.toGenericMap(twoDimArray);
 		assertMapToArray(map, twoDimArray);
@@ -144,7 +225,7 @@ public class MapExtensionsTest
 	@Test
 	public void testToMap()
 	{
-		final String twoDimArray[][] = { { "1", "value1" }, { "3", "value3" }, { "4", "value4" },
+		final String[][] twoDimArray = { { "1", "value1" }, { "3", "value3" }, { "4", "value4" },
 				{ "2", "value2" } };
 		final Map<String, String> map = MapExtensions.toMap(twoDimArray);
 		assertMapToArray(map, twoDimArray);

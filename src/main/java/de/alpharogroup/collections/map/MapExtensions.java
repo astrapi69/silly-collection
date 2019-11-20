@@ -25,22 +25,90 @@
 package de.alpharogroup.collections.map;
 
 import java.util.Collection;
+import java.util.Collections;
+import java.util.Comparator;
 import java.util.LinkedHashMap;
+import java.util.List;
 import java.util.Map;
 import java.util.Map.Entry;
+import java.util.stream.Collectors;
 
 import de.alpharogroup.collections.list.ListFactory;
+import lombok.NonNull;
 import lombok.experimental.UtilityClass;
 
 /**
  * Extensions class for use with Map objects.
  *
- * @version 1.0
  * @author Asterios Raptis
+ * @version 1.0
  */
 @UtilityClass
 public final class MapExtensions
 {
+
+	/**
+	 * Sort the given Map by its values and returns a sorted list by the values of the given Map
+	 *
+	 * @param <K>
+	 *            the generic type of the key
+	 * @param <V>
+	 *            the generic type of the value
+	 * @param map
+	 *            The Map to sort
+	 * @param reversed
+	 *            the flag if the result should be in reversed order
+	 * @return a sorted list by the values of the given Map
+	 */
+	public static <K, V extends Comparable<? super V>> List<Entry<K, V>> sortByValueAsList(
+		final @NonNull Map<K, V> map, boolean reversed)
+	{
+		return map.entrySet().stream()
+			.sorted(reversed
+				? Collections.reverseOrder(Map.Entry.comparingByValue())
+				: Map.Entry.comparingByValue())
+			.collect(Collectors.toList());
+	}
+
+	/**
+	 * Sort the given Map by its values and returns a sorted list by the values of the given Map
+	 *
+	 * @param <K>
+	 *            the generic type of the key
+	 * @param <V>
+	 *            the generic type of the value
+	 * @param map
+	 *            the Map to sort
+	 * @param reversed
+	 *            the flag if the result should be in reversed order
+	 * @return a sorted Map by the values of the given Map
+	 */
+	public static <K, V extends Comparable<? super V>> Map<K, V> sortByValue(
+		final @NonNull Map<K, V> map, boolean reversed)
+	{
+		return sortByValue(map, reversed ? Comparator.reverseOrder() : Comparator.naturalOrder());
+	}
+
+	/**
+	 * Sort the given Map by its values and returns a sorted list by the values of the given Map
+	 *
+	 * @param <K>
+	 *            the generic type of the key
+	 * @param <V>
+	 *            the generic type of the value
+	 * @param map
+	 *            the Map to sort
+	 * @param comparator
+	 *            the comparator to sort
+	 * @return a sorted Map by the values of the given Map
+	 */
+	public static <K, V extends Comparable<? super V>> Map<K, V> sortByValue(
+		final @NonNull Map<K, V> map, final @NonNull Comparator<? super V> comparator)
+	{
+		return map.entrySet().stream().sorted(Map.Entry.comparingByValue(comparator))
+			.collect(Collectors.toMap(Map.Entry::getKey, Map.Entry::getValue, (k, v) -> k,
+				LinkedHashMap::new));
+	}
 
 	/**
 	 * Returns the first founded key from the given value or null if nothing is found.
@@ -55,7 +123,7 @@ public final class MapExtensions
 	 *            The value.
 	 * @return Returns the first key from the given value or null if nothing found.
 	 */
-	public static <K, V> K getKeyFromValue(final Map<K, V> map, final V value)
+	public static <K, V> K getKeyFromValue(final @NonNull Map<K, V> map, final V value)
 	{
 		K key = null;
 		for (final Entry<K, V> entry : map.entrySet())
@@ -82,7 +150,7 @@ public final class MapExtensions
 	 *            The value.
 	 * @return Returns the key from the given value or an empty Collection if nothing found.
 	 */
-	public static <K, V> Collection<K> getKeysFromValue(final Map<K, V> map, final V value)
+	public static <K, V> Collection<K> getKeysFromValue(final @NonNull Map<K, V> map, final V value)
 	{
 		final Collection<K> keys = ListFactory.newArrayList();
 		for (final Entry<K, V> entry : map.entrySet())
@@ -106,7 +174,7 @@ public final class MapExtensions
 	 *            The two dimensional Array.
 	 * @return The map produced from the two dimensional Array.
 	 */
-	public static <T> Map<T, T> toGenericMap(final T[][] twoDimArray)
+	public static <T> Map<T, T> toGenericMap(final @NonNull T[][] twoDimArray)
 	{
 		final Map<T, T> map = new LinkedHashMap<>();
 		for (final T[] element : twoDimArray)

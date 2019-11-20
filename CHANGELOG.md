@@ -4,6 +4,10 @@
 Version 5.5-SNAPSHOT
 -------------
 
+ADDED:
+
+- new methods created for sort a map by value
+
 Version 5.4.1
 -------------
 

@@ -26,7 +26,6 @@ package de.alpharogroup.collections.set;
 
 import static org.testng.Assert.assertEquals;
 import static org.testng.Assert.assertNotNull;
-import static org.testng.AssertJUnit.assertTrue;
 
 import java.lang.reflect.InvocationTargetException;
 import java.util.Collection;
@@ -57,16 +56,29 @@ public class SetFactoryTest
 	@Test
 	public void testNewHashSetCollectionObjects()
 	{
+		int actual;
+		int expected;
 		Set<String> set;
-		set = SetFactory.newHashSet();
-		assertTrue(set.size() == 0);
-		set.add("foo");
-		assertTrue(set.size() == 1);
-		set = SetFactory.newHashSet(ListFactory.newArrayList("foo", "fasel"), "foo", "bar", "foo");
-		assertTrue(set.size() == 3);
-		set = SetFactory.newHashSet(ListFactory.newArrayList(), "foo", "bar", "foo");
-		assertTrue(set.size() == 2);
 
+		set = SetFactory.newHashSet();
+		actual = set.size();
+		expected = 0;
+		assertEquals(actual, expected);
+
+		set.add("foo");
+		actual = set.size();
+		expected = 1;
+		assertEquals(actual, expected);
+
+		set = SetFactory.newHashSet(ListFactory.newArrayList("foo", "fasel"), "foo", "bar", "foo");
+		actual = set.size();
+		expected = 3;
+		assertEquals(actual, expected);
+
+		set = SetFactory.newHashSet(ListFactory.newArrayList(), "foo", "bar", "foo");
+		actual = set.size();
+		expected = 2;
+		assertEquals(actual, expected);
 	}
 
 	/**
@@ -75,10 +87,19 @@ public class SetFactoryTest
 	@Test
 	public void testNewHashSetObjects()
 	{
-		Set<String> set = SetFactory.newHashSet();
-		assertTrue(set.size() == 0);
+		int actual;
+		int expected;
+		Set<String> set;
+
+		set = SetFactory.newHashSet();
+		actual = set.size();
+		expected = 0;
+		assertEquals(actual, expected);
+
 		set = SetFactory.newHashSet("foo", "bar", "foo");
-		assertTrue(set.size() == 2);
+		actual = set.size();
+		expected = 2;
+		assertEquals(actual, expected);
 	}
 
 	/**
@@ -87,16 +108,30 @@ public class SetFactoryTest
 	@Test
 	public void testNewInsertionOrderSetCollectionObjects()
 	{
-		Set<String> set = SetFactory.newInsertionOrderSet();
-		assertTrue(set.size() == 0);
+		int actual;
+		int expected;
+		Set<String> set;
+
+		set = SetFactory.newInsertionOrderSet();
+		actual = set.size();
+		expected = 0;
+		assertEquals(actual, expected);
+
 		set.add("foo");
-		assertTrue(set.size() == 1);
+		actual = set.size();
+		expected = 1;
+		assertEquals(actual, expected);
+
 		set = SetFactory.newInsertionOrderSet(ListFactory.newArrayList("foo", "fasel"), "foo",
 			"bar", "foo");
-		assertTrue(set.size() == 3);
-		set = SetFactory.newInsertionOrderSet(ListFactory.newArrayList(), "foo", "bar", "foo");
-		assertTrue(set.size() == 2);
+		actual = set.size();
+		expected = 3;
+		assertEquals(actual, expected);
 
+		set = SetFactory.newInsertionOrderSet(ListFactory.newArrayList(), "foo", "bar", "foo");
+		actual = set.size();
+		expected = 2;
+		assertEquals(actual, expected);
 	}
 
 	/**
@@ -105,10 +140,18 @@ public class SetFactoryTest
 	@Test
 	public void testNewInsertionOrderSetObjects()
 	{
-		Set<String> set = SetFactory.newInsertionOrderSet();
-		assertTrue(set.size() == 0);
+		int actual;
+		int expected;
+		Set<String> set;
+		set = SetFactory.newInsertionOrderSet();
+		actual = set.size();
+		expected = 0;
+		assertEquals(actual, expected);
+
 		set = SetFactory.newInsertionOrderSet("foo", "bar", "foo");
-		assertTrue(set.size() == 2);
+		actual = set.size();
+		expected = 2;
+		assertEquals(actual, expected);
 	}
 
 	/**
@@ -117,16 +160,29 @@ public class SetFactoryTest
 	@Test
 	public void testNewLinkedHashSetCollectionObjects()
 	{
-		Set<String> set = SetFactory.newLinkedHashSet();
-		assertTrue(set.size() == 0);
+		int actual;
+		int expected;
+		Set<String> set;
+		set = SetFactory.newLinkedHashSet();
+		actual = set.size();
+		expected = 0;
+		assertEquals(actual, expected);
+
 		set.add("foo");
-		assertTrue(set.size() == 1);
+		actual = set.size();
+		expected = 1;
+		assertEquals(actual, expected);
+
 		set = SetFactory.newLinkedHashSet(ListFactory.newArrayList("foo", "fasel"), "foo", "bar",
 			"foo");
-		assertTrue(set.size() == 3);
-		set = SetFactory.newLinkedHashSet(ListFactory.newArrayList(), "foo", "bar", "foo");
-		assertTrue(set.size() == 2);
+		actual = set.size();
+		expected = 3;
+		assertEquals(actual, expected);
 
+		set = SetFactory.newLinkedHashSet(ListFactory.newArrayList(), "foo", "bar", "foo");
+		actual = set.size();
+		expected = 2;
+		assertEquals(actual, expected);
 	}
 
 	/**
@@ -135,10 +191,18 @@ public class SetFactoryTest
 	@Test
 	public void testNewLinkedHashSetObjects()
 	{
-		Set<String> set = SetFactory.newLinkedHashSet();
-		assertTrue(set.size() == 0);
+		int actual;
+		int expected;
+		Set<String> set;
+		set = SetFactory.newLinkedHashSet();
+		actual = set.size();
+		expected = 0;
+		assertEquals(actual, expected);
+
 		set = SetFactory.newLinkedHashSet("foo", "bar", "foo");
-		assertTrue(set.size() == 2);
+		actual = set.size();
+		expected = 2;
+		assertEquals(actual, expected);
 	}
 
 	/**
@@ -147,16 +211,64 @@ public class SetFactoryTest
 	@Test
 	public void testNewTreeSetCollectionObjects()
 	{
-		SortedSet<String> set = SetFactory.newTreeSet();
-		assertTrue(set.size() == 0);
-		set.add("foo");
-		assertTrue(set.size() == 1);
-		set = SetFactory.newTreeSet(ListFactory.newArrayList("foo", "fasel"), "foo", "bar", "foo");
-		assertTrue(set.size() == 3);
-		set = SetFactory.newTreeSet(ListFactory.newArrayList(), "foo", "bar", "foo");
-		assertTrue(set.size() == 2);
+		int actual;
+		int expected;
+		SortedSet<String> set;
+		set = SetFactory.newTreeSet();
+		actual = set.size();
+		expected = 0;
+		assertEquals(actual, expected);
 
+		set.add("foo");
+		actual = set.size();
+		expected = 1;
+		assertEquals(actual, expected);
+
+		set = SetFactory.newTreeSet(ListFactory.newArrayList("foo", "fasel"), "foo", "bar", "foo");
+		actual = set.size();
+		expected = 3;
+		assertEquals(actual, expected);
+
+		set = SetFactory.newTreeSet(ListFactory.newArrayList(), "foo", "bar", "foo");
+		actual = set.size();
+		expected = 2;
+		assertEquals(actual, expected);
 	}
+
+	/**
+	 * Test method for {@link SetFactory#newTreeSet(Collection, Comparator, Object[])}
+	 */
+	@Test
+	public void testNewTreeSetCollectionOfTComparatorOfTTArray()
+	{
+		int actual;
+		int expected;
+		SortedSet<String> set;
+
+		set = SetFactory.newTreeSet();
+		actual = set.size();
+		expected = 0;
+		assertEquals(actual, expected);
+
+		set.add("foo");
+		actual = set.size();
+		expected = 1;
+		assertEquals(actual, expected);
+
+		final Comparator<String> comparator = StringLengthComparator.of(SortOrder.ASCENDING);
+		final List<String> list = ListFactory.newArrayList("foo", "fasel");
+		set = SetFactory.newTreeSet(list, comparator, "food", "barista", "fao");
+		actual = set.size();
+		expected = 5;
+		assertEquals(actual, expected);
+
+		set = SetFactory.newTreeSet(ListFactory.<String> newArrayList(), comparator, "foo", "bar",
+			"foo");
+		actual = set.size();
+		expected = 2;
+		assertEquals(actual, expected);
+	}
+
 
 	/**
 	 * Test for method {@link SetFactory#newTreeSetSupplier}
@@ -166,37 +278,20 @@ public class SetFactoryTest
 	{
 		SortedSet<String> expected;
 		SortedSet<String> actual;
-		final List<String> list = ListFactory.newArrayList("foo", "fasel", "food", "barista", "fao");
-		Comparator<String> stringComparator = (String one, String other)-> one.compareTo(other);
+		List<String> list;
+		List<String> list2;
+		Comparator<String> comparator;
+
+		list = ListFactory.newArrayList("foo", "fasel", "food", "barista", "fao");
+		Comparator<String> stringComparator = Comparator.naturalOrder();
 		Supplier<SortedSet<String>> supplier = SetFactory.newTreeSetSupplier(stringComparator);
 		assertNotNull(supplier);
-		actual = list.stream()
-        .collect(Collectors.toCollection(supplier));
-		assertTrue(actual.size() == 5);
-		final Comparator<String> comparator = StringLengthComparator.of(SortOrder.ASCENDING);
-		final List<String> list2 = ListFactory.newArrayList("foo", "fasel");
+		actual = list.stream().collect(Collectors.toCollection(supplier));
+		assertEquals(actual.size(), 5);
+		comparator = StringLengthComparator.of(SortOrder.ASCENDING);
+		list2 = ListFactory.newArrayList("foo", "fasel");
 		expected = SetFactory.newTreeSet(list2, comparator, "food", "barista", "fao");
 		assertEquals(actual, expected);
-	}
-
-
-	/**
-	 * Test method for {@link SetFactory#newTreeSet(Collection, Comparator, T[])}.
-	 */
-	@Test
-	public void testNewTreeSetCollectionOfTComparatorOfTTArray()
-	{
-		SortedSet<String> set = SetFactory.newTreeSet();
-		assertTrue(set.size() == 0);
-		set.add("foo");
-		assertTrue(set.size() == 1);
-		final Comparator<String> comparator = StringLengthComparator.of(SortOrder.ASCENDING);
-		final List<String> list = ListFactory.newArrayList("foo", "fasel");
-		set = SetFactory.newTreeSet(list, comparator, "food", "barista", "fao");
-		assertTrue(set.size() == 5);
-		set = SetFactory.newTreeSet(ListFactory.<String> newArrayList(), comparator, "foo", "bar",
-			"foo");
-		assertTrue(set.size() == 2);
 	}
 
 	/**

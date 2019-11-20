@@ -56,7 +56,7 @@ public final class SetFactory
 	 * @return the new {@link HashSet}
 	 */
 	@SafeVarargs
-	public static final <T> Set<T> newHashSet(final T... elements)
+	public static <T> Set<T> newHashSet(final T... elements)
 	{
 		return newHashSet(null, elements);
 	}
@@ -73,7 +73,7 @@ public final class SetFactory
 	 * @return the new {@link HashSet}
 	 */
 	@SafeVarargs
-	public static final <T> Set<T> newHashSet(final Collection<T> collection, final T... elements)
+	public static <T> Set<T> newHashSet(final Collection<T> collection, final T... elements)
 	{
 		final Set<T> set;
 		if (CollectionExtensions.isNotEmpty(collection))
@@ -101,7 +101,7 @@ public final class SetFactory
 	 * @return the new {@link LinkedHashSet}
 	 */
 	@SafeVarargs
-	public static final <T> Set<T> newLinkedHashSet(final T... elements)
+	public static <T> Set<T> newLinkedHashSet(final T... elements)
 	{
 		return newLinkedHashSet(null, elements);
 	}
@@ -118,8 +118,7 @@ public final class SetFactory
 	 * @return the new {@link HashSet}
 	 */
 	@SafeVarargs
-	public static final <T> Set<T> newLinkedHashSet(final Collection<T> collection,
-		final T... elements)
+	public static <T> Set<T> newLinkedHashSet(final Collection<T> collection, final T... elements)
 	{
 		final Set<T> set;
 		if (CollectionExtensions.isNotEmpty(collection))
@@ -147,7 +146,7 @@ public final class SetFactory
 	 * @return the new {@link InsertionOrderSet}
 	 */
 	@SafeVarargs
-	public static final <T> Set<T> newInsertionOrderSet(final T... elements)
+	public static <T> Set<T> newInsertionOrderSet(final T... elements)
 	{
 		return newInsertionOrderSet(null, elements);
 	}
@@ -164,7 +163,7 @@ public final class SetFactory
 	 * @return the new {@link InsertionOrderSet}
 	 */
 	@SafeVarargs
-	public static final <T> Set<T> newInsertionOrderSet(final Collection<T> collection,
+	public static <T> Set<T> newInsertionOrderSet(final Collection<T> collection,
 		final T... elements)
 	{
 		final Set<T> set;
@@ -193,7 +192,7 @@ public final class SetFactory
 	 * @return the new {@link SortedSet}
 	 */
 	@SafeVarargs
-	public static final <T> SortedSet<T> newTreeSet(final T... elements)
+	public static <T> SortedSet<T> newTreeSet(final T... elements)
 	{
 		return newTreeSet(ListFactory.newArrayList(), elements);
 	}
@@ -203,19 +202,21 @@ public final class SetFactory
 	 *
 	 * @param <T>
 	 *            the generic type of the elements
+	 * @param comparator
+	 *            the comparator
 	 * @param elements
 	 *            the elements to add in the new {@link TreeSet}
 	 * @return the new {@link SortedSet}
 	 */
 	@SafeVarargs
-	public static final <T> SortedSet<T> newTreeSet(final @NonNull Comparator<T> comparator,
+	public static <T> SortedSet<T> newTreeSet(final @NonNull Comparator<T> comparator,
 		final T... elements)
 	{
 		return newTreeSet(ListFactory.newArrayList(), comparator, elements);
 	}
 
 	/**
-	 * Factory method for create new {@link TreeSet} and will be returned as {@link SortedSet}
+	 * Factory method for create new {@link TreeSet} and will be returned as {@link SortedSet}.
 	 *
 	 * @param <T>
 	 *            the generic type of the elements
@@ -226,8 +227,7 @@ public final class SetFactory
 	 * @return the new {@link SortedSet}
 	 */
 	@SafeVarargs
-	public static final <T> SortedSet<T> newTreeSet(final Collection<T> collection,
-		final T... elements)
+	public static <T> SortedSet<T> newTreeSet(final Collection<T> collection, final T... elements)
 	{
 		return newTreeSet(collection, null, elements);
 	}
@@ -246,7 +246,7 @@ public final class SetFactory
 	 * @return the new {@link TreeSet}
 	 */
 	@SafeVarargs
-	public static final <T> SortedSet<T> newTreeSet(final Collection<T> collection,
+	public static <T> SortedSet<T> newTreeSet(final Collection<T> collection,
 		final Comparator<T> comparator, final T... elements)
 	{
 		final SortedSet<T> sortedSet;
@@ -279,7 +279,7 @@ public final class SetFactory
 	 *            the comparator
 	 * @return the new {@link Supplier}
 	 */
-	public static final <T> Supplier<SortedSet<T>> newTreeSetSupplier(
+	public static <T> Supplier<SortedSet<T>> newTreeSetSupplier(
 		final @NonNull Comparator<T> comparator)
 	{
 		return () -> new TreeSet<>(comparator);
