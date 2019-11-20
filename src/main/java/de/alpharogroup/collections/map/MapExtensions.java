@@ -25,7 +25,6 @@
 package de.alpharogroup.collections.map;
 
 import java.util.Collection;
-import java.util.Collections;
 import java.util.Comparator;
 import java.util.LinkedHashMap;
 import java.util.List;
@@ -63,10 +62,27 @@ public final class MapExtensions
 	public static <K, V extends Comparable<? super V>> List<Entry<K, V>> sortByValueAsList(
 		final @NonNull Map<K, V> map, boolean reversed)
 	{
+		return sortByValueAsList(map, reversed ? Comparator.reverseOrder() : Comparator.naturalOrder());
+	}
+
+	/**
+	 * Sort the given Map by its values and returns a sorted list by the values of the given Map
+	 *
+	 * @param <K>
+	 *            the generic type of the key
+	 * @param <V>
+	 *            the generic type of the value
+	 * @param map
+	 *            The Map to sort
+	 * @param comparator
+	 *            the comparator to sort
+	 * @return a sorted list by the values of the given Map
+	 */
+	public static <K, V extends Comparable<? super V>> List<Entry<K, V>> sortByValueAsList(
+		final @NonNull Map<K, V> map, final @NonNull Comparator<? super V> comparator)
+	{
 		return map.entrySet().stream()
-			.sorted(reversed
-				? Collections.reverseOrder(Map.Entry.comparingByValue())
-				: Map.Entry.comparingByValue())
+			.sorted(Map.Entry.comparingByValue(comparator))
 			.collect(Collectors.toList());
 	}
 

@@ -175,6 +175,39 @@ public class MapExtensionsTest
 	}
 
 	/**
+	 * Test for the Method {@link MapExtensions#sortByValueAsList(Map, Comparator)}
+	 */
+	@Test
+	public void testSortByValueAsListWithComparator()
+	{
+		Map<String, String> map;
+		List<Entry<String, String>> actual;
+		List<Entry<String, String>> expected;
+		// map with test data ...
+		map = new HashMap<>();
+		map.put("23", "3");
+		map.put("21", "2");
+		map.put("13", "4");
+		map.put("5", "1");
+		// new scenario...
+		actual = MapExtensions.sortByValueAsList(map, Comparator.naturalOrder());
+		expected = ListFactory.newArrayList();
+		expected.add(new AbstractMap.SimpleEntry<>("5", "1"));
+		expected.add(new AbstractMap.SimpleEntry<>("21", "2"));
+		expected.add(new AbstractMap.SimpleEntry<>("23", "3"));
+		expected.add(new AbstractMap.SimpleEntry<>("13", "4"));
+		assertEquals(expected, actual);
+		// new scenario...
+		actual = MapExtensions.sortByValueAsList(map, Comparator.reverseOrder());
+		expected = ListFactory.newArrayList();
+		expected.add(new AbstractMap.SimpleEntry<>("13", "4"));
+		expected.add(new AbstractMap.SimpleEntry<>("23", "3"));
+		expected.add(new AbstractMap.SimpleEntry<>("21", "2"));
+		expected.add(new AbstractMap.SimpleEntry<>("5", "1"));
+		assertEquals(expected, actual);
+	}
+
+	/**
 	 * Test for the Method {@link MapExtensions#sortByValue(Map, Comparator)}
 	 */
 	@Test
