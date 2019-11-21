@@ -62,7 +62,8 @@ public final class MapExtensions
 	public static <K, V extends Comparable<? super V>> List<Entry<K, V>> sortByValueAsList(
 		final @NonNull Map<K, V> map, boolean reversed)
 	{
-		return sortByValueAsList(map, reversed ? Comparator.reverseOrder() : Comparator.naturalOrder());
+		return sortByValueAsList(map,
+			reversed ? Comparator.reverseOrder() : Comparator.naturalOrder());
 	}
 
 	/**
@@ -81,8 +82,7 @@ public final class MapExtensions
 	public static <K, V extends Comparable<? super V>> List<Entry<K, V>> sortByValueAsList(
 		final @NonNull Map<K, V> map, final @NonNull Comparator<? super V> comparator)
 	{
-		return map.entrySet().stream()
-			.sorted(Map.Entry.comparingByValue(comparator))
+		return map.entrySet().stream().sorted(Map.Entry.comparingByValue(comparator))
 			.collect(Collectors.toList());
 	}
 
