@@ -1,6 +1,13 @@
 ## Change log
 ----------------------
 
+Version 5.5.1
+-------------
+
+ADDED:
+
+- new method created for sort a map by value with a comparator
+
 Version 5.5
 -------------
 
