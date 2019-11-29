@@ -15,7 +15,5 @@ notifications:
             - asterios.raptis@web.de
         on_failure: always 
                
-script:
-    - mvn test jacoco:report
 after_success:
-  - mvn coveralls:report
+  - mvn -Pcoveralls clean test cobertura:cobertura jacoco:report coveralls:report
