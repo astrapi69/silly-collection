@@ -16,4 +16,4 @@ notifications:
         on_failure: always 
                
 after_success:
-  - mvn -Pcoveralls -DTRAVIS_JOB_ID=$TRAVIS_JOB_ID clean test cobertura:cobertura jacoco:report org.eluder.coveralls:coveralls-maven-plugin:report
+  - mvn -Pcoveralls -DTRAVIS_JOB_ID=$TRAVIS_JOB_ID clean test cobertura:cobertura jacoco:report coveralls:report
