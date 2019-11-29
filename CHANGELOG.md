@@ -1,6 +1,18 @@
 ## Change log
 ----------------------
 
+Version 5.6
+-------------
+
+ADDED:
+
+- new method factory for for counting elements from the given collection with a map
+
+CHANGED:
+
+- update of jobj-compare version to 3.2
+- replaced obsolete jobject-clone with the new jobj-clone test dependency
+
 Version 5.5.1
 -------------
 

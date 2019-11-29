@@ -24,6 +24,7 @@
  */
 package de.alpharogroup.collections.map;
 
+import java.util.Collection;
 import java.util.Comparator;
 import java.util.HashMap;
 import java.util.LinkedHashMap;
@@ -45,6 +46,30 @@ import lombok.experimental.UtilityClass;
 @UtilityClass
 public final class MapFactory
 {
+
+	/**
+	 * Factory method for create a map for counting elements of the given collection
+	 *
+	 * @param <K>
+	 *            the generic type of the elements
+	 * @param elements
+	 *            the elements
+	 * @return the new map ready to count elements
+	 */
+	public static <K> Map<K, Integer> newCounterMap(Collection<K> elements)
+	{
+		Map<K, Integer> elementsCount = MapFactory.newHashMap();
+		for (K element : elements)
+		{
+			if (elementsCount.containsKey(element))
+			{
+				elementsCount.merge(element, 1, Integer::sum);
+				continue;
+			}
+			elementsCount.put(element, 0);
+		}
+		return elementsCount;
+	}
 
 	/**
 	 * Factory method for create a new {@link InsertionOrderMap}.

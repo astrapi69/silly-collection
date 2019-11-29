@@ -11,7 +11,7 @@
 	</parent>
 
 	<artifactId>silly-collections</artifactId>
-	<version>5.5.1</version>
+	<version>5.6</version>
 
 	<name>${project.artifactId}</name>
 
@@ -23,10 +23,10 @@
 		<!-- COMMONS-COLLECTIONS4 version -->
 		<commons-collections4.version>4.4</commons-collections4.version>
 		<!-- JOBJ-COMPARE version -->
-		<jobj-compare.version>3.1</jobj-compare.version>
+		<jobj-compare.version>3.2</jobj-compare.version>
 		<!-- TEST-SCOPE versions -->
 		<!-- JOBJECT-CLONE versions -->
-		<jobject-clone.version>3.1.2</jobject-clone.version>
+		<jobj-clone.version>3.2</jobj-clone.version>
 		<!-- JOBJ-CONTRACT-VERIFIER version -->
 		<jobj-contract-verifier.version>3.2</jobj-contract-verifier.version>
 		<!-- VINTAGE-TIME version -->
@@ -81,11 +81,11 @@
 				<artifactId>test-objects</artifactId>
 				<version>${test-objects.version}</version>
 			</dependency>
-			<!-- JOBJECT-CLONE DEPENDENCY -->
+			<!-- JOBJ-CLONE DEPENDENCY -->
 			<dependency>
 				<groupId>de.alpharogroup</groupId>
-				<artifactId>jobject-clone</artifactId>
-				<version>${jobject-clone.version}</version>
+				<artifactId>jobj-clone</artifactId>
+				<version>${jobj-clone.version}</version>
 			</dependency>
 			<!-- JOBJ-COMPARE DEPENDENCY -->
 			<dependency>
@@ -157,10 +157,10 @@
 			<artifactId>random-beans</artifactId>
 			<scope>test</scope>
 		</dependency>
-		<!-- JOBJECT-CLONE DEPENDENCY -->
+		<!-- JOBJ-CLONE DEPENDENCY -->
 		<dependency>
 			<groupId>de.alpharogroup</groupId>
-			<artifactId>jobject-clone</artifactId>
+			<artifactId>jobj-clone</artifactId>
 			<scope>test</scope>
 		</dependency>
 		<!-- JMH DEPENDENCIES for benchmarking -->
