@@ -31,6 +31,7 @@ import static org.testng.AssertJUnit.assertTrue;
 import java.lang.reflect.InvocationTargetException;
 import java.util.Comparator;
 import java.util.HashMap;
+import java.util.List;
 import java.util.Map;
 import java.util.TreeMap;
 import java.util.concurrent.ConcurrentHashMap;
@@ -38,6 +39,8 @@ import java.util.concurrent.ConcurrentHashMap;
 import org.meanbean.test.BeanTestException;
 import org.meanbean.test.BeanTester;
 import org.testng.annotations.Test;
+
+import de.alpharogroup.collections.list.ListFactory;
 
 /**
  * The unit test class for the class {@link MapFactory}.
@@ -133,6 +136,32 @@ public class MapFactoryTest
 		Map<String, String> concurrentHashMap = MapFactory.newConcurrentHashMap(map);
 		assertNotNull(concurrentHashMap);
 		assertTrue(concurrentHashMap.size() == 4);
+	}
+
+	/**
+	 * Test for the Method {@link MapFactory#newCounterMap(java.util.Collection)}
+	 */
+	@Test
+	public void testNewCounterMap()
+	{
+		Map<Integer, Integer> actual;
+		Map<Integer, Integer> expected;
+		List<Integer> rangeList;
+		// new scenario...
+		rangeList = ListFactory.newRangeList(1, 5);
+		actual = MapFactory.newCounterMap(rangeList);
+		expected = MapFactory.newHashMap();
+		expected.put(1, 0);
+		expected.put(2, 0);
+		expected.put(3, 0);
+		expected.put(4, 0);
+		expected.put(5, 0);
+		assertEquals(expected, actual);
+		// new scenario...
+		rangeList = ListFactory.newArrayList(1, 2, 3, 4, 5, 5);
+		actual = MapFactory.newCounterMap(rangeList);
+		expected.put(5, 1);
+		assertEquals(expected, actual);
 	}
 
 	/**
