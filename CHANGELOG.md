@@ -6,7 +6,7 @@ Version 5.7-SNAPSHOT
 
 CHANGED:
 
-- update of parent version to 5.4
+- update of parent version to 5.5
 
 Version 5.6
 -------------

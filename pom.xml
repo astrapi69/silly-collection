@@ -177,4 +177,48 @@
 
 	</dependencies>
 
+	<profiles>
+		<profile>
+			<id>coveralls</id>
+			<!-- This profile generates reports with coveralls plugin -->
+			<build>
+				<plugins>
+					<plugin>
+						<groupId>org.eluder.coveralls</groupId>
+						<artifactId>coveralls-maven-plugin</artifactId>
+						<version>${coveralls-maven-plugin.version}</version>
+						<configuration>
+							<repoToken>${env.COVERALLS_TOKEN}</repoToken>
+							<sourceEncoding>UTF-8</sourceEncoding>
+							<sourceDirectories>
+								<sourceDirectory>${basedir}/src/main/java</sourceDirectory>
+							</sourceDirectories>
+						</configuration>
+					</plugin>
+
+					<plugin>
+						<groupId>org.jacoco</groupId>
+						<artifactId>jacoco-maven-plugin</artifactId>
+						<version>${jacoco-maven-plugin.version}</version>
+						<executions>
+							<execution>
+								<goals>
+									<goal>prepare-agent</goal>
+								</goals>
+							</execution>
+							<execution>
+								<id>report</id>
+								<phase>prepare-package</phase>
+								<goals>
+									<goal>report</goal>
+								</goals>
+							</execution>
+						</executions>
+					</plugin>
+				</plugins>
+			</build>
+		</profile>
+
+	</profiles>
+
 </project>
