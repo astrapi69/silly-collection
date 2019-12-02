@@ -22,4 +22,4 @@ notifications:
 script:
     - mvn test cobertura:cobertura
 after_success:
-    - mvn coveralls:report
+    - bash <(curl -s https://codecov.io/bash)
