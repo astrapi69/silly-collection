@@ -20,6 +20,6 @@ notifications:
         on_failure: always 
                
 script:
-    - mvn test jacoco:report
+    - mvn test cobertura:cobertura
 after_success:
     - mvn coveralls:report
