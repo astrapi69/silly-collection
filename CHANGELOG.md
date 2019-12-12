@@ -4,9 +4,15 @@
 Version 5.7-SNAPSHOT
 -------------
 
+ADDED:
+ 
+- gradle as new build system
+
 CHANGED:
 
-- update of parent version to 5.5
+- changed project nature from maven to gradle nature
+- removed maven related files
+- code coverage increased to 100%
 
 Version 5.6
 -------------
