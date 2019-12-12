@@ -10,7 +10,7 @@ plugins {
 apply plugin: "jacoco"
 
 group = "de.alpharogroup"
-version = "5.7-SNAPSHOT"
+version = "5.7"
 description = "silly-collections"
 sourceCompatibility = "1.8"
 
@@ -37,20 +37,20 @@ ext {
 }
 
 dependencies {
-    compile "org.projectlombok:lombok:${lombokVersion}"
-    compile "org.apache.commons:commons-collections4:${commonsCollections4Version}"
-    compile "de.alpharogroup:jobj-compare:${jobjCompareVersion}"
-    testCompile "de.alpharogroup:jobj-clone:${jobjCloneVersion}"
-    testCompile "de.alpharogroup:jobj-contract-verifier:${jobjContractVerifierVersion}"
-    testCompile "de.alpharogroup:vintage-time:${vintageTimeVersion}"
-    testCompile "de.alpharogroup:test-objects:${testObjectsVersion}"
-    testCompile "io.github.benas:random-beans:${randomBeansVersion}"
-    testCompile "org.openjdk.jmh:jmh-core:${jmhVersion}"
-    testCompile "org.openjdk.jmh:jmh-generator-annprocess:${jmhVersion}"
-    testCompile "org.meanbean:meanbean:${meanbeanVersion}"
-    testCompile "org.testng:testng:${testngVersion}"
-    testCompile "junit:junit:${junitVersion}"
-    testCompile "org.mockito:mockito-core:${mockitoCoreVersion}"
+    implementation "org.projectlombok:lombok:${lombokVersion}"
+    implementation "org.apache.commons:commons-collections4:${commonsCollections4Version}"
+    implementation "de.alpharogroup:jobj-compare:${jobjCompareVersion}"
+    testImplementation "de.alpharogroup:jobj-clone:${jobjCloneVersion}"
+    testImplementation "de.alpharogroup:jobj-contract-verifier:${jobjContractVerifierVersion}"
+    testImplementation "de.alpharogroup:vintage-time:${vintageTimeVersion}"
+    testImplementation "de.alpharogroup:test-objects:${testObjectsVersion}"
+    testImplementation "io.github.benas:random-beans:${randomBeansVersion}"
+    testImplementation "org.openjdk.jmh:jmh-core:${jmhVersion}"
+    testImplementation "org.openjdk.jmh:jmh-generator-annprocess:${jmhVersion}"
+    testImplementation "org.meanbean:meanbean:${meanbeanVersion}"
+    testImplementation "org.testng:testng:${testngVersion}"
+    testImplementation "junit:junit:${junitVersion}"
+    testImplementation "org.mockito:mockito-core:${mockitoCoreVersion}"
 }
 
 task sourcesJar(type: Jar) {
@@ -115,6 +115,10 @@ publishing {
             url = version.endsWith("SNAPSHOT") ? snapshotsRepoUrl : releasesRepoUrl
         }
     }
+}
+
+tasks.withType(GenerateModuleMetadata) {
+    enabled = false
 }
 
 signing {
