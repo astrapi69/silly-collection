@@ -18,8 +18,6 @@ notifications:
         recipients:
             - asterios.raptis@web.de
         on_failure: always 
-               
-script:
-    - mvn test cobertura:cobertura
+
 after_success:
     - bash <(curl -s https://codecov.io/bash)
