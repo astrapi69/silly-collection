@@ -2,6 +2,10 @@
 
 language: java
 
+cache:
+  directories:
+    - '$HOME/.m2/repository'
+  
 jdk:
     - openjdk8
 
@@ -14,6 +18,6 @@ notifications:
         recipients:
             - asterios.raptis@web.de
         on_failure: always 
-               
+
 after_success:
-  - mvn clean cobertura:cobertura org.eluder.coveralls:coveralls-maven-plugin:report
+    - bash <(curl -s https://codecov.io/bash)

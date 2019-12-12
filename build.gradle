@@ -1,0 +1,149 @@
+
+plugins {
+    id "io.franzbecker.gradle-lombok" version "3.2.0"
+    id "java"
+    id "maven-publish"
+    id "signing"
+    id "com.github.ben-manes.versions" version "0.27.0"
+}
+
+apply plugin: "jacoco"
+
+group = "de.alpharogroup"
+version = "5.7"
+description = "silly-collections"
+sourceCompatibility = "1.8"
+
+repositories {
+    jcenter()
+    mavenLocal()
+    mavenCentral()
+}
+
+ext {
+    lombokVersion = "1.18.10"
+    commonsCollections4Version = "4.4"
+    jobjCompareVersion = "3.2"
+    jobjCloneVersion = "3.2"
+    jobjContractVerifierVersion = "3.2"
+    vintageTimeVersion = "5.1"
+    testObjectsVersion = "5.2"
+    randomBeansVersion = "3.9.0"
+    jmhVersion = "1.22"
+    meanbeanVersion = "2.0.3"
+    testngVersion = "7.1.0"
+    junitVersion = "4.13-rc-2"
+    mockitoCoreVersion = "3.2.0"
+}
+
+dependencies {
+    implementation "org.projectlombok:lombok:${lombokVersion}"
+    implementation "org.apache.commons:commons-collections4:${commonsCollections4Version}"
+    implementation "de.alpharogroup:jobj-compare:${jobjCompareVersion}"
+    testImplementation "de.alpharogroup:jobj-clone:${jobjCloneVersion}"
+    testImplementation "de.alpharogroup:jobj-contract-verifier:${jobjContractVerifierVersion}"
+    testImplementation "de.alpharogroup:vintage-time:${vintageTimeVersion}"
+    testImplementation "de.alpharogroup:test-objects:${testObjectsVersion}"
+    testImplementation "io.github.benas:random-beans:${randomBeansVersion}"
+    testImplementation "org.openjdk.jmh:jmh-core:${jmhVersion}"
+    testImplementation "org.openjdk.jmh:jmh-generator-annprocess:${jmhVersion}"
+    testImplementation "org.meanbean:meanbean:${meanbeanVersion}"
+    testImplementation "org.testng:testng:${testngVersion}"
+    testImplementation "junit:junit:${junitVersion}"
+    testImplementation "org.mockito:mockito-core:${mockitoCoreVersion}"
+}
+
+task sourcesJar(type: Jar) {
+    archiveClassifier.set("sources")
+    from(sourceSets.main.allJava)
+}
+
+task javadocJar(type: Jar) {
+    from javadoc
+    archiveClassifier.set("javadoc")
+    javadoc.properties.failOnError = true
+}
+
+publishing {
+    publications {
+        mavenJava(MavenPublication) {
+            artifactId = "${rootProject.name}"
+            from components.java
+            artifact sourcesJar
+            artifact javadocJar
+            pom {
+                name = "${rootProject.name}"
+                description = "Utility library for collections, comparators and iterator classes"
+                url = "https://github.com/lightblueseas/"+"${rootProject.name}"
+                organization {
+                    name = "Alpha Ro Group UG (haftungsbeschrängt)"
+                    url = "http://www.alpharogroup.de/"
+                }
+                issueManagement {
+                    system = "GitHub"
+                    url = "https://github.com/lightblueseas/"+"${rootProject.name}"+"/issues"
+                }
+                licenses {
+                    license {
+                        name = "MIT License"
+                        url = "http://www.opensource.org/licenses/mit-license.php"
+                        distribution = "repo"
+                    }
+                }
+                developers {
+                    developer {
+                        id = "astrapi69"
+                        name = "Asterios Raptis"
+                    }
+                }
+                scm {
+                    connection = "scm:git:git:@github.com:lightblueseas/"+"${rootProject.name}"+".git"
+                    developerConnection = "scm:git:git@github.com:lightblueseas/"+"${rootProject.name}"+".git"
+                    url = "git:@github.com:lightblueseas/"+"${rootProject.name}"+".git"
+                }
+            }
+        }
+    }
+    repositories {
+        maven {
+            credentials {
+                username System.getenv("ossrhUsername") ?: project.property("ossrhUsername")
+                password System.getenv("ossrhPassword") ?: project.property("ossrhPassword")
+            }
+            def releasesRepoUrl = "https://oss.sonatype.org/service/local/staging/deploy/maven2/"
+            def snapshotsRepoUrl = "https://oss.sonatype.org/content/repositories/snapshots"
+            url = version.endsWith("SNAPSHOT") ? snapshotsRepoUrl : releasesRepoUrl
+        }
+    }
+}
+
+tasks.withType(GenerateModuleMetadata) {
+    enabled = false
+}
+
+signing {
+    sign publishing.publications.mavenJava
+}
+
+javadoc {
+    if(JavaVersion.current().isJava9Compatible()) {
+        options.addBooleanOption("html5", true)
+    }
+}
+
+tasks.withType(JavaCompile) {
+    options.encoding = "UTF-8"
+}
+
+test {
+    useTestNG()
+}
+
+jacocoTestReport {
+    reports {
+        xml.enabled true
+        html.enabled false
+    }
+}
+
+check.dependsOn jacocoTestReport

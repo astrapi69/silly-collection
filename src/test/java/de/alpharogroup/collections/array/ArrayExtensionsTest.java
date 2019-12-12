@@ -482,6 +482,12 @@ public class ArrayExtensionsTest
 		actual = ArrayExtensions.removeFromStart(source, toRemove);
 		expected = ArrayFactory.newArray(4, 5, 6, 7, 8, 9);
 		assertTrue(Arrays.equals(actual, expected));
+
+		source = ArrayFactory.newArray();
+		toRemove = ArrayFactory.newArray(1, 2, 3);
+		actual = ArrayExtensions.removeFromStart(source, toRemove);
+		expected = ArrayFactory.newArray();
+		assertTrue(Arrays.equals(actual, expected));
 	}
 
 	/**

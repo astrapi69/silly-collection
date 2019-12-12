@@ -295,6 +295,25 @@ public class SetFactoryTest
 	}
 
 	/**
+	 * Test for method {@link SetFactory#newTreeSet(Comparator, Object[])}
+	 */
+	@Test
+	public void testNewTreeSetWithComparator()
+	{
+		SortedSet<String> expected;
+		SortedSet<String> actual;
+		List<String> list;
+		Comparator<String> comparator;
+
+		comparator = Comparator.naturalOrder();
+		actual = SetFactory.newTreeSet(comparator, "foo", "fasel", "food", "barista", "fao");
+		assertEquals(actual.size(), 5);
+		list = ListFactory.newArrayList("foo", "fasel", "food", "barista", "fao");
+		expected = SetFactory.newTreeSet(list, comparator, "food", "barista", "fao");
+		assertEquals(actual, expected);
+	}
+
+	/**
 	 * Test method for {@link SetFactory} with {@link BeanTester}
 	 */
 	@Test(expectedExceptions = { BeanTestException.class, InvocationTargetException.class,
