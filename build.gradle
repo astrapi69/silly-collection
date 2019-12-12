@@ -10,7 +10,7 @@ plugins {
 apply plugin: "jacoco"
 
 group = "de.alpharogroup"
-version = "5.7.1"
+version = "5.8-SNAPSHOT"
 description = "silly-collections"
 sourceCompatibility = "1.8"
 
