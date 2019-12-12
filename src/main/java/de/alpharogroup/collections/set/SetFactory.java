@@ -198,7 +198,7 @@ public final class SetFactory
 	}
 
 	/**
-	 * Factory method for create new {@link TreeSet} and will be returned as {@link Set}
+	 * Factory method for create new {@link TreeSet} and will be returned as {@link Set}.
 	 *
 	 * @param <T>
 	 *            the generic type of the elements
