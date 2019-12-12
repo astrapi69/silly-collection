@@ -1,6 +1,13 @@
 ## Change log
 ----------------------
 
+Version 5.7.1
+-------------
+
+CHANGED:
+
+- downgraded gradle to version 5.5.1 
+
 Version 5.7
 -------------
 
