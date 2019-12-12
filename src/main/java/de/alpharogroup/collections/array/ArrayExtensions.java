@@ -64,7 +64,6 @@ public final class ArrayExtensions
 			return result;
 		}
 		return array;
-
 	}
 
 	/**
