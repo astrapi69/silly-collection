@@ -1,6 +1,19 @@
 ## Change log
 ----------------------
 
+Version 5.8
+-------------
+
+ADDED:
+ 
+- new factory methods for maps created that can take now key value pairs
+- new idea run configurations for gradle builds created
+
+CHANGED:
+
+- update of gradle version 5.6.4 
+- removed idea run configurations for maven
+
 Version 5.7.1
 -------------
 

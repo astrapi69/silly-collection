@@ -56,7 +56,7 @@ Than you can add the dependency to your dependencies:
 	<properties>
 			...
 		<!-- SILLY-COLLECTIONS version -->
-		<silly-collections.version>5.7.1</silly-collections.version>
+		<silly-collections.version>5.8</silly-collections.version>
 			...
 	</properties>
 			...
@@ -79,12 +79,12 @@ You can first define the version in the ext section and add than the following g
 ```
 ext {
 			...
-    sillyCollectionsVersion = '5.7.1'
+    sillyCollectionsVersion = "5.8"
 			...
 }
 dependencies {
 			...
-compile 'de.alpharogroup:silly-collections:${sillyCollectionsVersion}'
+implementation "de.alpharogroup:silly-collections:${sillyCollectionsVersion}"
 			...
 }
 ```

@@ -35,6 +35,9 @@ import java.util.concurrent.ConcurrentHashMap;
 import org.apache.commons.collections4.functors.InstantiateFactory;
 import org.apache.commons.collections4.map.LazyMap;
 
+import de.alpharogroup.collections.list.ListFactory;
+import de.alpharogroup.collections.pairs.KeyValuePair;
+import lombok.NonNull;
 import lombok.experimental.UtilityClass;
 
 /**
@@ -56,7 +59,7 @@ public final class MapFactory
 	 *            the elements
 	 * @return the new map ready to count elements
 	 */
-	public static <K> Map<K, Integer> newCounterMap(Collection<K> elements)
+	public static <K> Map<K, Integer> newCounterMap(final @NonNull Collection<K> elements)
 	{
 		Map<K, Integer> elementsCount = MapFactory.newHashMap();
 		for (K element : elements)
@@ -72,14 +75,14 @@ public final class MapFactory
 	}
 
 	/**
-	 * Factory method for create a new {@link InsertionOrderMap}.
+	 * Factory method for create a new {@link InsertionOrderMap}
 	 *
 	 * @param <K>
 	 *            the generic type of the key
 	 * @param <V>
 	 *            the generic type of the value
 	 *
-	 * @return The new {@link InsertionOrderMap}.
+	 * @return The new {@link InsertionOrderMap}
 	 */
 	public static <K, V> Map<K, V> newInsertionOrderMap()
 	{
@@ -87,7 +90,7 @@ public final class MapFactory
 	}
 
 	/**
-	 * Factory method for create a new {@link InsertionOrderMap}.
+	 * Factory method for create a new {@link InsertionOrderMap}
 	 *
 	 * @param <K>
 	 *            the generic type of the key
@@ -96,7 +99,7 @@ public final class MapFactory
 	 * @param initialCapacity
 	 *            the initial capacity
 	 *
-	 * @return The new {@link InsertionOrderMap}.
+	 * @return The new {@link InsertionOrderMap}
 	 */
 	public static <K, V> Map<K, V> newInsertionOrderMap(final int initialCapacity)
 	{
@@ -104,7 +107,7 @@ public final class MapFactory
 	}
 
 	/**
-	 * Factory method for create a new {@link InsertionOrderMap}.
+	 * Factory method for create a new {@link InsertionOrderMap}
 	 *
 	 * @param <K>
 	 *            the generic type of the key
@@ -112,11 +115,46 @@ public final class MapFactory
 	 *            the generic type of the value
 	 * @param map
 	 *            the map
-	 * @return The new {@link InsertionOrderMap}.
+	 * @return The new {@link InsertionOrderMap}
 	 */
-	public static <K, V> Map<K, V> newInsertionOrderMap(Map<K, V> map)
+	public static <K, V> Map<K, V> newInsertionOrderMap(final @NonNull Map<K, V> map)
 	{
 		return new InsertionOrderMap<>(map);
+	}
+
+	/**
+	 * Factory method for create a new {@link InsertionOrderMap}
+	 *
+	 * @param <K>
+	 *            the generic type of the key
+	 * @param <V>
+	 *            the generic type of the value
+	 * @param keyValuePairs
+	 *            the collection with the key value pairs
+	 * @return The new {@link InsertionOrderMap}
+	 */
+	public static <K, V> Map<K, V> newInsertionOrderMap(
+		final @NonNull Collection<KeyValuePair<K, V>> keyValuePairs)
+	{
+		return newInsertionOrderMap(KeyValuePair.toMap(keyValuePairs));
+	}
+
+	/**
+	 * Factory method for create a new {@link InsertionOrderMap}
+	 *
+	 * @param <K>
+	 *            the generic type of the key
+	 * @param <V>
+	 *            the generic type of the value
+	 * @param keyValuePairs
+	 *            the key value pairs to add in the new {@link InsertionOrderMap}
+	 * @return The new {@link InsertionOrderMap}
+	 */
+	@SafeVarargs
+	public static <K, V> Map<K, V> newInsertionOrderMap(
+		final @NonNull KeyValuePair<K, V>... keyValuePairs)
+	{
+		return newInsertionOrderMap(ListFactory.newArrayList(keyValuePairs));
 	}
 
 	/**
@@ -144,7 +182,7 @@ public final class MapFactory
 	 * arrayMap.get(1).put(&quot;lastName&quot;, &quot;Armstrong&quot;);
 	 * </pre>
 	 *
-	 * @return The {@link java.util.Map} that acts like a javascript associative array.
+	 * @return The {@link java.util.Map} that acts like a javascript associative array
 	 */
 	public static Map<Integer, Map<String, String>> newAssosiativeArrayMap()
 	{
@@ -152,14 +190,14 @@ public final class MapFactory
 	}
 
 	/**
-	 * Factory method for create a new {@link ConcurrentHashMap}.
+	 * Factory method for create a new {@link ConcurrentHashMap}
 	 *
 	 * @param <K>
 	 *            the generic type of the key
 	 * @param <V>
 	 *            the generic type of the value
 	 *
-	 * @return The new {@link ConcurrentHashMap}.
+	 * @return The new {@link ConcurrentHashMap}
 	 */
 	public static <K, V> ConcurrentHashMap<K, V> newConcurrentHashMap()
 	{
@@ -167,7 +205,7 @@ public final class MapFactory
 	}
 
 	/**
-	 * Factory method for create a new {@link ConcurrentHashMap}.
+	 * Factory method for create a new {@link ConcurrentHashMap}
 	 *
 	 * @param <K>
 	 *            the generic type of the key
@@ -175,15 +213,15 @@ public final class MapFactory
 	 *            the generic type of the value
 	 * @param map
 	 *            the map
-	 * @return The new {@link ConcurrentHashMap}.
+	 * @return The new {@link ConcurrentHashMap}
 	 */
-	public static <K, V> ConcurrentHashMap<K, V> newConcurrentHashMap(Map<K, V> map)
+	public static <K, V> ConcurrentHashMap<K, V> newConcurrentHashMap(final @NonNull Map<K, V> map)
 	{
 		return new ConcurrentHashMap<>(map);
 	}
 
 	/**
-	 * Factory method for create a new {@link ConcurrentHashMap}.
+	 * Factory method for create a new {@link ConcurrentHashMap}
 	 *
 	 * @param <K>
 	 *            the generic type of the key
@@ -191,7 +229,7 @@ public final class MapFactory
 	 *            the generic type of the value
 	 * @param initialCapacity
 	 *            the initial capacity
-	 * @return The new {@link ConcurrentHashMap}.
+	 * @return The new {@link ConcurrentHashMap}
 	 */
 	public static <K, V> ConcurrentHashMap<K, V> newConcurrentHashMap(final int initialCapacity)
 	{
@@ -199,69 +237,7 @@ public final class MapFactory
 	}
 
 	/**
-	 * Factory method for create a new {@link HashMap}.
-	 *
-	 * @param <K>
-	 *            the generic type of the key
-	 * @param <V>
-	 *            the generic type of the value
-	 *
-	 * @return The new {@link HashMap}.
-	 */
-	public static <K, V> Map<K, V> newHashMap()
-	{
-		return new HashMap<>();
-	}
-
-	/**
-	 * Factory method for create a new {@link HashMap}.
-	 *
-	 * @param <K>
-	 *            the generic type of the key
-	 * @param <V>
-	 *            the generic type of the value
-	 * @param map
-	 *            the map
-	 * @return The new {@link HashMap}.
-	 */
-	public static <K, V> Map<K, V> newHashMap(Map<K, V> map)
-	{
-		return new HashMap<>(map);
-	}
-
-	/**
-	 * Factory method for create a new {@link LinkedHashMap}.
-	 *
-	 * @param <K>
-	 *            the generic type of the key
-	 * @param <V>
-	 *            the generic type of the value
-	 *
-	 * @return The new {@link LinkedHashMap}.
-	 */
-	public static <K, V> Map<K, V> newLinkedHashMap()
-	{
-		return new LinkedHashMap<>();
-	}
-
-	/**
-	 * Factory method for create a new {@link LinkedHashMap}.
-	 *
-	 * @param <K>
-	 *            the generic type of the key
-	 * @param <V>
-	 *            the generic type of the value
-	 * @param map
-	 *            the map
-	 * @return The new {@link LinkedHashMap}.
-	 */
-	public static <K, V> Map<K, V> newLinkedHashMap(Map<K, V> map)
-	{
-		return new LinkedHashMap<>(map);
-	}
-
-	/**
-	 * Factory method for create a new {@link LinkedHashMap}.
+	 * Factory method for create a new {@link HashMap}
 	 *
 	 * @param <K>
 	 *            the generic type of the key
@@ -269,24 +245,7 @@ public final class MapFactory
 	 *            the generic type of the value
 	 * @param initialCapacity
 	 *            the initial capacity
-	 *
-	 * @return The new {@link LinkedHashMap}.
-	 */
-	public static <K, V> Map<K, V> newLinkedHashMap(final int initialCapacity)
-	{
-		return new LinkedHashMap<>(initialCapacity);
-	}
-
-	/**
-	 * Factory method for create a new {@link HashMap}.
-	 *
-	 * @param <K>
-	 *            the generic type of the key
-	 * @param <V>
-	 *            the generic type of the value
-	 * @param initialCapacity
-	 *            the initial capacity
-	 * @return The new {@link HashMap}.
+	 * @return The new {@link HashMap}
 	 */
 	public static <K, V> Map<K, V> newHashMap(final int initialCapacity)
 	{
@@ -294,15 +253,163 @@ public final class MapFactory
 	}
 
 	/**
-	 * Factory method for create a new {@link LazyMap} from commons-collections4 that encapsulates a
-	 * {@link HashMap}.
+	 * Factory method for create a new {@link HashMap}
 	 *
 	 * @param <K>
 	 *            the generic type of the key
 	 * @param <V>
 	 *            the generic type of the value
 	 *
-	 * @return The new {@link LazyMap}.
+	 * @return The new {@link HashMap}
+	 */
+	public static <K, V> Map<K, V> newHashMap()
+	{
+		return new HashMap<>();
+	}
+
+	/**
+	 * Factory method for create a new {@link HashMap}
+	 *
+	 * @param <K>
+	 *            the generic type of the key
+	 * @param <V>
+	 *            the generic type of the value
+	 * @param map
+	 *            the map
+	 * @return The new {@link HashMap}
+	 */
+	public static <K, V> Map<K, V> newHashMap(final @NonNull Map<K, V> map)
+	{
+		return new HashMap<>(map);
+	}
+
+	/**
+	 * Factory method for create a new {@link HashMap}
+	 *
+	 * @param <K>
+	 *            the generic type of the key
+	 * @param <V>
+	 *            the generic type of the value
+	 * @param keyValuePairs
+	 *            the collection with the key value pairs
+	 * @return The new {@link HashMap}
+	 */
+	public static <K, V> Map<K, V> newHashMap(
+		final @NonNull Collection<KeyValuePair<K, V>> keyValuePairs)
+	{
+		return newHashMap(KeyValuePair.toMap(keyValuePairs));
+	}
+
+	/**
+	 * Factory method for create a new {@link HashMap}
+	 *
+	 * @param <K>
+	 *            the generic type of the key
+	 * @param <V>
+	 *            the generic type of the value
+	 * @param keyValuePairs
+	 *            the key value pairs to add in the new {@link HashMap}
+	 * @return The new {@link HashMap}
+	 */
+	@SafeVarargs
+	public static <K, V> Map<K, V> newHashMap(final @NonNull KeyValuePair<K, V>... keyValuePairs)
+	{
+		return newHashMap(ListFactory.newArrayList(keyValuePairs));
+	}
+
+	/**
+	 * Factory method for create a new {@link LinkedHashMap}
+	 *
+	 * @param <K>
+	 *            the generic type of the key
+	 * @param <V>
+	 *            the generic type of the value
+	 *
+	 * @return The new {@link LinkedHashMap}
+	 */
+	public static <K, V> Map<K, V> newLinkedHashMap()
+	{
+		return new LinkedHashMap<>();
+	}
+
+	/**
+	 * Factory method for create a new {@link LinkedHashMap}
+	 *
+	 * @param <K>
+	 *            the generic type of the key
+	 * @param <V>
+	 *            the generic type of the value
+	 * @param map
+	 *            the map
+	 * @return The new {@link LinkedHashMap}
+	 */
+	public static <K, V> Map<K, V> newLinkedHashMap(final @NonNull Map<K, V> map)
+	{
+		return new LinkedHashMap<>(map);
+	}
+
+	/**
+	 * Factory method for create a new {@link LinkedHashMap}
+	 *
+	 * @param <K>
+	 *            the generic type of the key
+	 * @param <V>
+	 *            the generic type of the value
+	 * @param keyValuePairs
+	 *            the collection with the key value pairs
+	 * @return The new {@link LinkedHashMap}
+	 */
+	public static <K, V> Map<K, V> newLinkedHashMap(
+		final @NonNull Collection<KeyValuePair<K, V>> keyValuePairs)
+	{
+		return newLinkedHashMap(KeyValuePair.toMap(keyValuePairs));
+	}
+
+	/**
+	 * Factory method for create a new {@link LinkedHashMap}
+	 *
+	 * @param <K>
+	 *            the generic type of the key
+	 * @param <V>
+	 *            the generic type of the value
+	 * @param keyValuePairs
+	 *            the key value pairs to add in the new {@link LinkedHashMap}
+	 * @return The new {@link LinkedHashMap}
+	 */
+	@SafeVarargs
+	public static <K, V> Map<K, V> newLinkedHashMap(
+		final @NonNull KeyValuePair<K, V>... keyValuePairs)
+	{
+		return newLinkedHashMap(ListFactory.newArrayList(keyValuePairs));
+	}
+
+	/**
+	 * Factory method for create a new {@link LinkedHashMap}
+	 *
+	 * @param <K>
+	 *            the generic type of the key
+	 * @param <V>
+	 *            the generic type of the value
+	 * @param initialCapacity
+	 *            the initial capacity
+	 *
+	 * @return The new {@link LinkedHashMap}
+	 */
+	public static <K, V> Map<K, V> newLinkedHashMap(final int initialCapacity)
+	{
+		return new LinkedHashMap<>(initialCapacity);
+	}
+
+	/**
+	 * Factory method for create a new {@link LazyMap} from commons-collections4 that encapsulates a
+	 * {@link HashMap}
+	 *
+	 * @param <K>
+	 *            the generic type of the key
+	 * @param <V>
+	 *            the generic type of the value
+	 *
+	 * @return The new {@link LazyMap}
 	 */
 	public static <K, V> Map<K, V> newLazyMap()
 	{
@@ -311,14 +418,14 @@ public final class MapFactory
 
 	/**
 	 * Factory method for create a new {@link LazyMap} from commons-collections4 that encapsulates a
-	 * {@link HashMap}.
+	 * {@link HashMap}
 	 *
 	 * @param <K>
 	 *            the generic type of the key
 	 * @param <V>
 	 *            the generic type of the value
 	 *
-	 * @return The new {@link LazyMap}.
+	 * @return The new {@link LazyMap}
 	 */
 	public static <K, V> Map<K, V> newLazyHashMap()
 	{
@@ -327,7 +434,7 @@ public final class MapFactory
 
 	/**
 	 * Factory method for create a new {@link LazyMap} from commons-collections4 that encapsulates a
-	 * {@link HashMap}.
+	 * {@link HashMap}
 	 *
 	 * @param <K>
 	 *            the generic type of the key
@@ -335,7 +442,7 @@ public final class MapFactory
 	 *            the generic type of the value
 	 * @param map
 	 *            the map to initialize with it
-	 * @return The new {@link LazyMap}.
+	 * @return The new {@link LazyMap}
 	 */
 	@SuppressWarnings({ "unchecked", "rawtypes" })
 	public static <K, V> Map<K, V> newLazyHashMap(HashMap<K, V> map)
@@ -345,14 +452,14 @@ public final class MapFactory
 
 	/**
 	 * Factory method for create a new {@link LazyMap} from commons-collections4 that encapsulates a
-	 * {@link TreeMap}.
+	 * {@link TreeMap}
 	 *
 	 * @param <K>
 	 *            the generic type of the key
 	 * @param <V>
 	 *            the generic type of the value
 	 *
-	 * @return The new {@link LazyMap}.
+	 * @return The new {@link LazyMap}
 	 */
 	public static <K, V> Map<K, V> newLazyTreeMap()
 	{
@@ -361,7 +468,7 @@ public final class MapFactory
 
 	/**
 	 * Factory method for create a new {@link LazyMap} from commons-collections4 that encapsulates a
-	 * {@link TreeMap}.
+	 * {@link TreeMap}
 	 *
 	 * @param <K>
 	 *            the generic type of the key
@@ -369,17 +476,17 @@ public final class MapFactory
 	 *            the generic type of the value
 	 * @param map
 	 *            the map
-	 * @return The new {@link LazyMap}.
+	 * @return The new {@link LazyMap}
 	 */
 	@SuppressWarnings({ "unchecked", "rawtypes" })
-	public static <K, V> Map<K, V> newLazyTreeMap(TreeMap<K, V> map)
+	public static <K, V> Map<K, V> newLazyTreeMap(final @NonNull TreeMap<K, V> map)
 	{
 		return LazyMap.lazyMap(map, new InstantiateFactory(TreeMap.class));
 	}
 
 	/**
 	 * Factory method for create a new {@link LazyMap} from commons-collections4 that encapsulates a
-	 * {@link TreeMap}.
+	 * {@link TreeMap}
 	 *
 	 * @param <K>
 	 *            the generic type of the key
@@ -388,24 +495,24 @@ public final class MapFactory
 	 * @param comparator
 	 *            the comparator
 	 *
-	 * @return The new {@link LazyMap}.
+	 * @return The new {@link LazyMap}
 	 */
 	@SuppressWarnings({ "unchecked", "rawtypes" })
-	public static <K, V> Map<K, V> newLazyTreeMap(final Comparator<? super K> comparator)
+	public static <K, V> Map<K, V> newLazyTreeMap(final @NonNull Comparator<? super K> comparator)
 	{
 		return LazyMap.lazyMap(new TreeMap<K, V>(comparator),
 			new InstantiateFactory(TreeMap.class));
 	}
 
 	/**
-	 * Factory method for create a new {@link TreeMap}.
+	 * Factory method for create a new {@link TreeMap}
 	 *
 	 * @param <K>
 	 *            the generic type of the key
 	 * @param <V>
 	 *            the generic type of the value
 	 *
-	 * @return The new {@link TreeMap}.
+	 * @return The new {@link TreeMap}
 	 */
 	public static <K, V> Map<K, V> newTreeMap()
 	{
@@ -413,7 +520,7 @@ public final class MapFactory
 	}
 
 	/**
-	 * Factory method for create a new {@link TreeMap}.
+	 * Factory method for create a new {@link TreeMap}
 	 *
 	 * @param <K>
 	 *            the generic type of the key
@@ -421,15 +528,15 @@ public final class MapFactory
 	 *            the generic type of the value
 	 * @param map
 	 *            the map
-	 * @return The new {@link TreeMap}.
+	 * @return The new {@link TreeMap}
 	 */
-	public static <K, V> Map<K, V> newTreeMap(Map<K, V> map)
+	public static <K, V> Map<K, V> newTreeMap(final @NonNull Map<K, V> map)
 	{
 		return new TreeMap<>(map);
 	}
 
 	/**
-	 * Factory method for create a new {@link TreeMap}.
+	 * Factory method for create a new {@link TreeMap}
 	 *
 	 * @param <K>
 	 *            the generic type of the key
@@ -437,11 +544,88 @@ public final class MapFactory
 	 *            the generic type of the value
 	 * @param comparator
 	 *            the comparator
-	 * @return The new {@link TreeMap}.
+	 * @return The new {@link TreeMap}
 	 */
-	public static <K, V> Map<K, V> newTreeMap(final Comparator<? super K> comparator)
+	public static <K, V> Map<K, V> newTreeMap(final @NonNull Comparator<? super K> comparator)
 	{
 		return new TreeMap<>(comparator);
+	}
+
+	/**
+	 * Factory method for create a new {@link TreeMap}
+	 *
+	 * @param <K>
+	 *            the generic type of the key
+	 * @param <V>
+	 *            the generic type of the value
+	 * @param comparator
+	 *            the comparator
+	 * @param keyValuePairs
+	 *            the key value pairs
+	 * @return The new {@link TreeMap}
+	 */
+	public static <K, V> Map<K, V> newTreeMap(final @NonNull Comparator<? super K> comparator,
+		final @NonNull Collection<KeyValuePair<K, V>> keyValuePairs)
+	{
+		TreeMap<K, V> treeMap = new TreeMap<>(comparator);
+		treeMap.putAll(newTreeMap(keyValuePairs));
+		return treeMap;
+	}
+
+	/**
+	 * Factory method for create a new {@link TreeMap}
+	 *
+	 * @param <K>
+	 *            the generic type of the key
+	 * @param <V>
+	 *            the generic type of the value
+	 * @param comparator
+	 *            the comparator
+	 * @param keyValuePairs
+	 *            the key value pairs to add in the new {@link TreeMap}
+	 * @return The new {@link TreeMap}
+	 */
+	@SafeVarargs
+	public static <K, V> Map<K, V> newTreeMap(final @NonNull Comparator<? super K> comparator,
+		final @NonNull KeyValuePair<K, V>... keyValuePairs)
+	{
+		TreeMap<K, V> treeMap = new TreeMap<>(comparator);
+		treeMap.putAll(newTreeMap(keyValuePairs));
+		return treeMap;
+	}
+
+	/**
+	 * Factory method for create a new {@link TreeMap}
+	 *
+	 * @param <K>
+	 *            the generic type of the key
+	 * @param <V>
+	 *            the generic type of the value
+	 * @param keyValuePairs
+	 *            the collection with the key value pairs
+	 * @return The new {@link TreeMap}
+	 */
+	public static <K, V> Map<K, V> newTreeMap(
+		final @NonNull Collection<KeyValuePair<K, V>> keyValuePairs)
+	{
+		return newTreeMap(KeyValuePair.toMap(keyValuePairs));
+	}
+
+	/**
+	 * Factory method for create a new {@link TreeMap}
+	 *
+	 * @param <K>
+	 *            the generic type of the key
+	 * @param <V>
+	 *            the generic type of the value
+	 * @param keyValuePairs
+	 *            the key value pairs to add in the new {@link TreeMap}
+	 * @return The new {@link TreeMap}
+	 */
+	@SafeVarargs
+	public static <K, V> Map<K, V> newTreeMap(final @NonNull KeyValuePair<K, V>... keyValuePairs)
+	{
+		return newTreeMap(ListFactory.newArrayList(keyValuePairs));
 	}
 
 }
