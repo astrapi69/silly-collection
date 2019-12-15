@@ -89,7 +89,7 @@ public class OptionalListExtensions
 	 */
 	public static <T> Optional<T> removeFirst(final @NonNull List<T> list)
 	{
-		if (!CollectionExtensions.isEmpty(list) && 0 < list.size())
+		if (!CollectionExtensions.isEmpty(list))
 		{
 			return Optional.of(list.remove(0));
 		}
@@ -109,7 +109,7 @@ public class OptionalListExtensions
 	 */
 	public static <T> Optional<T> removeLast(final @NonNull List<T> list)
 	{
-		if (!CollectionExtensions.isEmpty(list) && 0 < list.size())
+		if (!CollectionExtensions.isEmpty(list))
 		{
 			return Optional.of(list.remove(list.size() - 1));
 		}

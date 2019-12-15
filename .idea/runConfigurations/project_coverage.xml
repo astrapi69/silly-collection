@@ -1,6 +1,5 @@
 <component name="ProjectRunConfigurationManager">
   <configuration default="false" name="project coverage" type="TestNG" singleton="true">
-    <module name="silly-collections" />
     <option name="ALTERNATIVE_JRE_PATH" value="10" />
     <option name="SUITE_NAME" value="" />
     <option name="PACKAGE_NAME" value="" />
@@ -11,6 +10,9 @@
     <option name="PARAMETERS" value="" />
     <option name="WORKING_DIRECTORY" value="%MODULE_WORKING_DIR%" />
     <option name="OUTPUT_DIRECTORY" value="" />
+    <option name="TEST_SEARCH_SCOPE">
+      <value defaultName="wholeProject" />
+    </option>
     <option name="PROPERTIES_FILE" value="" />
     <properties />
     <listeners />

@@ -5,6 +5,7 @@ plugins {
     id "maven-publish"
     id "signing"
     id "com.github.ben-manes.versions" version "0.27.0"
+    id "com.github.hierynomus.license" version "0.15.0"
 }
 
 apply plugin: "jacoco"
@@ -24,6 +25,7 @@ ext {
     lombokVersion = "1.18.10"
     commonsCollections4Version = "4.4"
     jobjCompareVersion = "3.2"
+    sillyBeansVersion = "1"
     jobjCloneVersion = "3.2"
     jobjContractVerifierVersion = "3.2"
     vintageTimeVersion = "5.1"
@@ -40,6 +42,7 @@ dependencies {
     implementation "org.projectlombok:lombok:${lombokVersion}"
     implementation "org.apache.commons:commons-collections4:${commonsCollections4Version}"
     implementation "de.alpharogroup:jobj-compare:${jobjCompareVersion}"
+	implementation "de.alpharogroup:silly-beans:${sillyBeansVersion}"
     testImplementation "de.alpharogroup:jobj-clone:${jobjCloneVersion}"
     testImplementation "de.alpharogroup:jobj-contract-verifier:${jobjContractVerifierVersion}"
     testImplementation "de.alpharogroup:vintage-time:${vintageTimeVersion}"
@@ -134,6 +137,44 @@ javadoc {
 tasks.withType(JavaCompile) {
     options.encoding = "UTF-8"
 }
+
+license {
+    ext.year="2015"
+    ext.owner="Asterios Raptis"
+    header rootProject.file('src/main/resources/LICENSE.txt')
+    excludes(["**/README",
+              "**/README.md",
+              "**/LICENSE",
+              "**/NOTICE",
+              "**/*.xml",
+              "**/*.xsl",
+              "**/*.xsd",
+              "**/*.dtd",
+              "**/*.html",
+              "**/*.jsp",
+              "**/*.jpa",
+              "**/*.sql",
+              "**/*.properties",
+              "**/*.bat",
+              "**/*.gradle",
+              "**/*.MF",
+              "**/*.txt",
+              "**/*.vm",
+              "**/*.log",
+              "**/*.map",
+              "**/*.js.map",
+              "**/*.tmpl",
+              "**/*.js.tmpl",
+              "**/*.editorconfig",
+              "**/*.lombok.config",
+              "src/test/resources/**",
+              "src/main/resources/**",
+              "out/**",
+              "build/**"])
+}
+
+gradle.startParameter.excludedTaskNames += "licenseMain"
+gradle.startParameter.excludedTaskNames += "licenseTest"
 
 test {
     useTestNG()

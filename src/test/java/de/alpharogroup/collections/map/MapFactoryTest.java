@@ -41,6 +41,7 @@ import org.meanbean.test.BeanTester;
 import org.testng.annotations.Test;
 
 import de.alpharogroup.collections.list.ListFactory;
+import de.alpharogroup.collections.pairs.KeyValuePair;
 
 /**
  * The unit test class for the class {@link MapFactory}.
@@ -201,6 +202,54 @@ public class MapFactoryTest
 	}
 
 	/**
+	 * Test method for {@link MapFactory#newHashMap(java.util.Collection)}
+	 */
+	@Test
+	public void testNewHashMapListOfKeyValuePairs()
+	{
+		List<KeyValuePair<String, String>> keyValuePairs;
+		Map<String, String> map;
+		Map<String, String> hashMap;
+
+		map = new HashMap<>();
+		map.put("1", "novalue");
+		map.put("2", "somevalue");
+		map.put("3", "othervalue");
+		map.put("5", "value");
+		keyValuePairs = KeyValuePair.toKeyValuePairs(map);
+		hashMap = MapFactory.newHashMap(keyValuePairs);
+		assertNotNull(hashMap);
+		assertTrue(hashMap.size() == 4);
+
+		keyValuePairs = ListFactory.newArrayList(
+			KeyValuePair.<String, String> builder().key("1").value("novalue").build(),
+			KeyValuePair.<String, String> builder().key("2").value("somevalue").build(),
+			KeyValuePair.<String, String> builder().key("3").value("othervalue").build(),
+			KeyValuePair.<String, String> builder().key("5").value("value").build());
+		hashMap = MapFactory.newHashMap(keyValuePairs);
+		assertNotNull(hashMap);
+		assertTrue(hashMap.size() == 4);
+
+	}
+
+	/**
+	 * Test method for {@link MapFactory#newHashMap(Object...)}
+	 */
+	@Test
+	public void testNewHashMapObjects()
+	{
+		Map<String, String> hashMap;
+
+		hashMap = MapFactory.newHashMap(
+			KeyValuePair.<String, String> builder().key("1").value("novalue").build(),
+			KeyValuePair.<String, String> builder().key("2").value("somevalue").build(),
+			KeyValuePair.<String, String> builder().key("3").value("othervalue").build(),
+			KeyValuePair.<String, String> builder().key("5").value("value").build());
+		assertNotNull(hashMap);
+		assertTrue(hashMap.size() == 4);
+	}
+
+	/**
 	 * Test for the Method {@link MapFactory#newInsertionOrderMap()}.
 	 */
 	@Test
@@ -232,6 +281,53 @@ public class MapFactoryTest
 		map.put("3", "othervalue");
 		map.put("5", "value");
 		Map<String, String> insertionOrderMap = MapFactory.newInsertionOrderMap(map);
+		assertNotNull(insertionOrderMap);
+		assertTrue(insertionOrderMap.size() == 4);
+	}
+
+	/**
+	 * Test method for {@link MapFactory#newInsertionOrderMap(java.util.Collection)}
+	 */
+	@Test
+	public void testNewInsertionOrderMapListOfKeyValuePairs()
+	{
+		List<KeyValuePair<String, String>> keyValuePairs;
+		Map<String, String> map;
+		Map<String, String> insertionOrderMap;
+
+		map = new HashMap<>();
+		map.put("1", "novalue");
+		map.put("2", "somevalue");
+		map.put("3", "othervalue");
+		map.put("5", "value");
+		keyValuePairs = KeyValuePair.toKeyValuePairs(map);
+		insertionOrderMap = MapFactory.newInsertionOrderMap(keyValuePairs);
+		assertNotNull(insertionOrderMap);
+		assertTrue(insertionOrderMap.size() == 4);
+
+		keyValuePairs = ListFactory.newArrayList(
+			KeyValuePair.<String, String> builder().key("1").value("novalue").build(),
+			KeyValuePair.<String, String> builder().key("2").value("somevalue").build(),
+			KeyValuePair.<String, String> builder().key("3").value("othervalue").build(),
+			KeyValuePair.<String, String> builder().key("5").value("value").build());
+		insertionOrderMap = MapFactory.newInsertionOrderMap(keyValuePairs);
+		assertNotNull(insertionOrderMap);
+		assertTrue(insertionOrderMap.size() == 4);
+	}
+
+	/**
+	 * Test method for {@link MapFactory#newInsertionOrderMap(Object...)}
+	 */
+	@Test
+	public void testNewInsertionOrderMapObjects()
+	{
+		Map<String, String> insertionOrderMap;
+
+		insertionOrderMap = MapFactory.newInsertionOrderMap(
+			KeyValuePair.<String, String> builder().key("1").value("novalue").build(),
+			KeyValuePair.<String, String> builder().key("2").value("somevalue").build(),
+			KeyValuePair.<String, String> builder().key("3").value("othervalue").build(),
+			KeyValuePair.<String, String> builder().key("5").value("value").build());
 		assertNotNull(insertionOrderMap);
 		assertTrue(insertionOrderMap.size() == 4);
 	}
@@ -325,6 +421,54 @@ public class MapFactoryTest
 	}
 
 	/**
+	 * Test method for {@link MapFactory#newLinkedHashMap(java.util.Collection)}
+	 */
+	@Test
+	public void testNewLinkedHashMapListOfKeyValuePairs()
+	{
+		List<KeyValuePair<String, String>> keyValuePairs;
+		Map<String, String> map;
+		Map<String, String> hashMap;
+
+		map = new HashMap<>();
+		map.put("1", "novalue");
+		map.put("2", "somevalue");
+		map.put("3", "othervalue");
+		map.put("5", "value");
+		keyValuePairs = KeyValuePair.toKeyValuePairs(map);
+		hashMap = MapFactory.newLinkedHashMap(keyValuePairs);
+		assertNotNull(hashMap);
+		assertTrue(hashMap.size() == 4);
+
+		keyValuePairs = ListFactory.newArrayList(
+			KeyValuePair.<String, String> builder().key("1").value("novalue").build(),
+			KeyValuePair.<String, String> builder().key("2").value("somevalue").build(),
+			KeyValuePair.<String, String> builder().key("3").value("othervalue").build(),
+			KeyValuePair.<String, String> builder().key("5").value("value").build());
+		hashMap = MapFactory.newLinkedHashMap(keyValuePairs);
+		assertNotNull(hashMap);
+		assertTrue(hashMap.size() == 4);
+
+	}
+
+	/**
+	 * Test method for {@link MapFactory#newLinkedHashMap(Object...)}
+	 */
+	@Test
+	public void testNewLinkedHashMapObjects()
+	{
+		Map<String, String> hashMap;
+
+		hashMap = MapFactory.newLinkedHashMap(
+			KeyValuePair.<String, String> builder().key("1").value("novalue").build(),
+			KeyValuePair.<String, String> builder().key("2").value("somevalue").build(),
+			KeyValuePair.<String, String> builder().key("3").value("othervalue").build(),
+			KeyValuePair.<String, String> builder().key("5").value("value").build());
+		assertNotNull(hashMap);
+		assertTrue(hashMap.size() == 4);
+	}
+
+	/**
 	 * Test for the Method {@link MapFactory#newTreeMap()}.
 	 */
 	@Test
@@ -359,6 +503,57 @@ public class MapFactoryTest
 		Map<String, String> concurrentHashMap = MapFactory.newTreeMap(map);
 		assertNotNull(concurrentHashMap);
 		assertTrue(concurrentHashMap.size() == 4);
+	}
+
+	/**
+	 * Test method for {@link MapFactory#newTreeMap(Comparator, java.util.Collection)}
+	 */
+	@Test
+	public void testNewTreeMapComparatorListOfKeyValuePairs()
+	{
+		List<KeyValuePair<Integer, String>> keyValuePairs;
+		Map<Integer, String> map;
+		Map<Integer, String> treeMap;
+		Comparator<Integer> comparator;
+
+		map = new HashMap<>();
+		map.put(1, "novalue");
+		map.put(2, "somevalue");
+		map.put(3, "othervalue");
+		map.put(5, "value");
+		keyValuePairs = KeyValuePair.toKeyValuePairs(map);
+		comparator = (o1, o2) -> o1 - o2;
+		treeMap = MapFactory.newTreeMap(comparator, keyValuePairs);
+		assertNotNull(treeMap);
+		assertTrue(treeMap.size() == 4);
+
+		keyValuePairs = ListFactory.newArrayList(
+			KeyValuePair.<Integer, String> builder().key(1).value("novalue").build(),
+			KeyValuePair.<Integer, String> builder().key(2).value("somevalue").build(),
+			KeyValuePair.<Integer, String> builder().key(3).value("othervalue").build(),
+			KeyValuePair.<Integer, String> builder().key(5).value("value").build());
+		treeMap = MapFactory.newTreeMap(comparator, keyValuePairs);
+		assertNotNull(treeMap);
+		assertTrue(treeMap.size() == 4);
+	}
+
+	/**
+	 * Test method for {@link MapFactory#newTreeMap(Comparator, KeyValuePair...)}
+	 */
+	@Test
+	public void testNewTreeMapObjects()
+	{
+		Map<String, String> treeMap;
+		Comparator<String> comparator;
+
+		comparator = (o1, o2) -> o1.compareTo(o2);
+		treeMap = MapFactory.newTreeMap(comparator,
+			KeyValuePair.<String, String> builder().key("1").value("novalue").build(),
+			KeyValuePair.<String, String> builder().key("2").value("somevalue").build(),
+			KeyValuePair.<String, String> builder().key("3").value("othervalue").build(),
+			KeyValuePair.<String, String> builder().key("5").value("value").build());
+		assertNotNull(treeMap);
+		assertTrue(treeMap.size() == 4);
 	}
 
 	/**

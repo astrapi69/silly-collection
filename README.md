@@ -79,12 +79,12 @@ You can first define the version in the ext section and add than the following g
 ```
 ext {
 			...
-    sillyCollectionsVersion = '5.7.1'
+    sillyCollectionsVersion = "5.7.1"
 			...
 }
 dependencies {
 			...
-compile 'de.alpharogroup:silly-collections:${sillyCollectionsVersion}'
+implementation "de.alpharogroup:silly-collections:${sillyCollectionsVersion}"
 			...
 }
 ```
