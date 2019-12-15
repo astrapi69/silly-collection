@@ -151,7 +151,8 @@ public final class MapFactory
 	 * @return The new {@link InsertionOrderMap}
 	 */
 	@SafeVarargs
-	public static <K, V> Map<K, V> newInsertionOrderMap(final @NonNull KeyValuePair<K, V>... keyValuePairs)
+	public static <K, V> Map<K, V> newInsertionOrderMap(
+		final @NonNull KeyValuePair<K, V>... keyValuePairs)
 	{
 		return newInsertionOrderMap(ListFactory.newArrayList(keyValuePairs));
 	}
@@ -293,7 +294,8 @@ public final class MapFactory
 	 *            the collection with the key value pairs
 	 * @return The new {@link HashMap}
 	 */
-	public static <K, V> Map<K, V> newHashMap(final @NonNull Collection<KeyValuePair<K, V>> keyValuePairs)
+	public static <K, V> Map<K, V> newHashMap(
+		final @NonNull Collection<KeyValuePair<K, V>> keyValuePairs)
 	{
 		return newHashMap(KeyValuePair.toMap(keyValuePairs));
 	}
@@ -357,7 +359,8 @@ public final class MapFactory
 	 *            the collection with the key value pairs
 	 * @return The new {@link LinkedHashMap}
 	 */
-	public static <K, V> Map<K, V> newLinkedHashMap(final @NonNull Collection<KeyValuePair<K, V>> keyValuePairs)
+	public static <K, V> Map<K, V> newLinkedHashMap(
+		final @NonNull Collection<KeyValuePair<K, V>> keyValuePairs)
 	{
 		return newLinkedHashMap(KeyValuePair.toMap(keyValuePairs));
 	}
@@ -374,7 +377,8 @@ public final class MapFactory
 	 * @return The new {@link LinkedHashMap}
 	 */
 	@SafeVarargs
-	public static <K, V> Map<K, V> newLinkedHashMap(final @NonNull KeyValuePair<K, V>... keyValuePairs)
+	public static <K, V> Map<K, V> newLinkedHashMap(
+		final @NonNull KeyValuePair<K, V>... keyValuePairs)
 	{
 		return newLinkedHashMap(ListFactory.newArrayList(keyValuePairs));
 	}
@@ -556,6 +560,8 @@ public final class MapFactory
 	 *            the generic type of the value
 	 * @param comparator
 	 *            the comparator
+	 * @param keyValuePairs
+	 *            the key value pairs
 	 * @return The new {@link TreeMap}
 	 */
 	public static <K, V> Map<K, V> newTreeMap(final @NonNull Comparator<? super K> comparator,
@@ -599,7 +605,8 @@ public final class MapFactory
 	 *            the collection with the key value pairs
 	 * @return The new {@link TreeMap}
 	 */
-	public static <K, V> Map<K, V> newTreeMap(final @NonNull Collection<KeyValuePair<K, V>> keyValuePairs)
+	public static <K, V> Map<K, V> newTreeMap(
+		final @NonNull Collection<KeyValuePair<K, V>> keyValuePairs)
 	{
 		return newTreeMap(KeyValuePair.toMap(keyValuePairs));
 	}
