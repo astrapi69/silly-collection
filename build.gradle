@@ -11,7 +11,7 @@ plugins {
 apply plugin: "jacoco"
 
 group = "de.alpharogroup"
-version = "5.8-SNAPSHOT"
+version = "5.8"
 description = "silly-collections"
 sourceCompatibility = "1.8"
 
