@@ -173,6 +173,7 @@ license {
               "build/**"])
 }
 
+// workhack for license issue #76
 gradle.startParameter.excludedTaskNames += "licenseMain"
 gradle.startParameter.excludedTaskNames += "licenseTest"
 
