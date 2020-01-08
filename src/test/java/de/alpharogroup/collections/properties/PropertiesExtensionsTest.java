@@ -180,13 +180,10 @@ public class PropertiesExtensionsTest
 	}
 
 	/**
-	 * Test for method {@link PropertiesExtensions#findRedundantValues(Properties)}.
-	 *
-	 * @throws IOException
-	 *             Signals that an I/O exception has occurred.
+	 * Test for method {@link PropertiesExtensions#findRedundantValues(Properties)}
 	 */
 	@Test(enabled = true)
-	public void testFindRedundantValues() throws IOException
+	public void testFindRedundantValues()
 	{
 		final Properties properties = new Properties();
 
@@ -245,15 +242,18 @@ public class PropertiesExtensionsTest
 	 * Test for method {@link PropertiesExtensions#getInteger(Properties, String)} where value is
 	 * not a number.
 	 */
-	@Test(expectedExceptions = NumberFormatException.class)
+	@Test
 	public void testGetIntegerWithNoNumberValue()
 	{
+		Optional<Integer> actual;
+		Optional<Integer> expected;
 		Properties properties = new Properties();
 
 		properties.put("com", "foo");
 
-		PropertiesExtensions.getInteger(properties, "com");
-
+		actual = PropertiesExtensions.getInteger(properties, "com");
+		expected = Optional.empty();
+		assertEquals(actual, expected);
 	}
 
 	/**

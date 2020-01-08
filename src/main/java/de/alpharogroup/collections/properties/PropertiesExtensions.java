@@ -53,11 +53,17 @@ public final class PropertiesExtensions
 {
 
 	/**
-	 * The Constant SEARCH_FILE_PATTERN is a regex for searching java and html files.
+	 * The constant PROPERTIES_COMMENT_PATTERN is the regex pattern for find comments in properties
+	 * file
+	 */
+	public static final String PROPERTIES_COMMENT_PATTERN = "(?m)^\\s*(\\#|\\!)";
+
+	/**
+	 * The constant SEARCH_FILE_PATTERN is a regex for searching java and html files
 	 */
 	public static final String SEARCH_FILE_PATTERN = "([^\\s]+(\\.(?i)(java|html|htm))$)";
 	/**
-	 * The Constant PROPERTIES_DELIMITERS contains all valid delimiters for properties files.
+	 * The constant PROPERTIES_DELIMITERS contains all valid delimiters for properties files
 	 */
 	public static final String[] PROPERTIES_DELIMITERS = { "=", ":", " " };
 
@@ -118,7 +124,7 @@ public final class PropertiesExtensions
 		{
 			final String key = (String)e.nextElement();
 			final int lastIndex = key.lastIndexOf(".");
-			String subKey = null;
+			String subKey;
 			if (0 < lastIndex)
 			{
 				subKey = key.substring(0, lastIndex);
@@ -192,7 +198,7 @@ public final class PropertiesExtensions
 		throws IOException
 	{
 		Properties properties = null;
-		InputStream inputStream = null;
+		InputStream inputStream;
 		if (propertiesFile.exists())
 		{
 			inputStream = propertiesFile.toURI().toURL().openStream();
@@ -437,7 +443,8 @@ public final class PropertiesExtensions
 	 *            the properties
 	 * @param propertiesKey
 	 *            the properties key
-	 * @return the port number or an empty {@linkplain Optional}
+	 * @return the {@linkplain Optional} with the number or an empty {@linkplain Optional} if the
+	 *         properties key has no number value or no value at all
 	 */
 	public static Optional<Integer> getInteger(final Properties properties,
 		final String propertiesKey)
@@ -445,8 +452,15 @@ public final class PropertiesExtensions
 		if (properties != null && properties.containsKey(propertiesKey))
 		{
 			final String portAsString = properties.getProperty(propertiesKey);
-			final Integer port = Integer.valueOf(portAsString);
-			return Optional.of(port);
+			try
+			{
+				final Integer port = Integer.valueOf(portAsString);
+				return Optional.of(port);
+			}
+			catch (final NumberFormatException e)
+			{
+				return Optional.empty();
+			}
 		}
 		return Optional.empty();
 	}
