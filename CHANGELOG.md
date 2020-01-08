@@ -1,8 +1,20 @@
 ## Change log
 ----------------------
 
-Version 5.9-SNAPSHOT
+Version 6-SNAPSHOT
 -------------
+
+ADDED:
+ 
+- added new constant for a regular expression pattern that can find comments in properties file
+
+CHANGED:
+
+- changed jdk from version 8 to 11
+- method from PropertiesExtensions getInteger returns now an empty Optional if no integer is found
+- update of test dependency testng version to 7.1.1
+- update of test dependency junit version to 4.13
+- update of test dependency mockito-core version to 3.2.4
 
 Version 5.8
 -------------
