@@ -55,29 +55,23 @@ public class ArrayIteratorTest
 
 	/**
 	 * Sets up method will be invoked before every unit test method
-	 *
-	 * @throws Exception
-	 *             is thrown if an exception occurs
 	 */
 	@BeforeMethod
-	protected void setUp() throws Exception
+	protected void setUp()
 	{
 		this.testArray = new Integer[4];
-		this.testArray[0] = new Integer("0");
-		this.testArray[1] = new Integer("1");
-		this.testArray[2] = new Integer("2");
-		this.testArray[3] = new Integer("3");
+		this.testArray[0] = Integer.valueOf("0");
+		this.testArray[1] = Integer.valueOf("1");
+		this.testArray[2] = Integer.valueOf("2");
+		this.testArray[3] = Integer.valueOf("3");
 		this.iterator = new ArrayIterator<>(this.testArray);
 	}
 
 	/**
 	 * Tear down method will be invoked after every unit test method
-	 *
-	 * @throws Exception
-	 *             is thrown if an exception occurs
 	 */
 	@AfterMethod
-	protected void tearDown() throws Exception
+	protected void tearDown()
 	{
 	}
 
