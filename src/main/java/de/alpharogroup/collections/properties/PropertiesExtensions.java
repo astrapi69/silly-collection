@@ -53,7 +53,8 @@ public final class PropertiesExtensions
 {
 
 	/**
-	 * The constant PROPERTIES_COMMENT_PATTERN is the regex pattern for find comments in properties file
+	 * The constant PROPERTIES_COMMENT_PATTERN is the regex pattern for find comments in properties
+	 * file
 	 */
 	public static final String PROPERTIES_COMMENT_PATTERN = "(?m)^\\s*(\\#|\\!)";
 
@@ -443,7 +444,7 @@ public final class PropertiesExtensions
 	 * @param propertiesKey
 	 *            the properties key
 	 * @return the {@linkplain Optional} with the number or an empty {@linkplain Optional} if the
-	 * properties key has no number value or no value at all
+	 *         properties key has no number value or no value at all
 	 */
 	public static Optional<Integer> getInteger(final Properties properties,
 		final String propertiesKey)
