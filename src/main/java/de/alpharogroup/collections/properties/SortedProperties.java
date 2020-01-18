@@ -24,16 +24,10 @@
  */
 package de.alpharogroup.collections.properties;
 
-import java.util.Collections;
-import java.util.Comparator;
-import java.util.Enumeration;
-import java.util.Properties;
-import java.util.Set;
-import java.util.TreeSet;
-import java.util.Vector;
-
 import de.alpharogroup.collections.list.VectorExtensions;
 import de.alpharogroup.comparators.NullCheckComparator;
+
+import java.util.*;
 
 /**
  * The class {@link SortedProperties} extends Properties and adds sort functionality for the keys.

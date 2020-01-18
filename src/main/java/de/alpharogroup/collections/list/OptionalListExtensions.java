@@ -24,19 +24,21 @@
  */
 package de.alpharogroup.collections.list;
 
-import java.util.List;
-import java.util.Optional;
-
 import de.alpharogroup.collections.CollectionExtensions;
 import lombok.NonNull;
-import lombok.experimental.UtilityClass;
+
+import java.util.List;
+import java.util.Optional;
 
 /**
  * Extensions class for use with {@link List} objects
  */
-@UtilityClass
-public class OptionalListExtensions
+public final class OptionalListExtensions
 {
+
+	private OptionalListExtensions() {
+		throw new UnsupportedOperationException("This is a utility class and cannot be instantiated");
+	}
 
 	/**
 	 * Returns an {@link Optional} with the first object from the given {@link List}

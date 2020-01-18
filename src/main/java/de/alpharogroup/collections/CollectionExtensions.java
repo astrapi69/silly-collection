@@ -24,6 +24,8 @@
  */
 package de.alpharogroup.collections;
 
+import org.apache.commons.collections4.CollectionUtils;
+
 import java.util.Arrays;
 import java.util.Collection;
 import java.util.List;
@@ -31,17 +33,16 @@ import java.util.Optional;
 import java.util.concurrent.atomic.AtomicInteger;
 import java.util.stream.Collectors;
 
-import org.apache.commons.collections4.CollectionUtils;
-
-import lombok.experimental.UtilityClass;
-
 /**
  * The class {@link CollectionExtensions} is an extension class for use with {@link Collection}
  * objects.
  */
-@UtilityClass
 public final class CollectionExtensions
 {
+
+	private CollectionExtensions() {
+		throw new UnsupportedOperationException("This is a utility class and cannot be instantiated");
+	}
 
 	/**
 	 * Compare the given two {@link Collection} objects in equality.
@@ -77,7 +78,7 @@ public final class CollectionExtensions
 	 *         two {@link Collection} objects are not equal otherwise the {@link Optional} is empty
 	 */
 	public static <T> Optional<Boolean> preconditionOfEqualCollection(Collection<T> one,
-		Collection<T> other)
+																	  Collection<T> other)
 	{
 		if (one == null && other == null)
 		{

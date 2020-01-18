@@ -24,22 +24,22 @@
  */
 package de.alpharogroup.collections.array;
 
+import de.alpharogroup.collections.list.ListFactory;
+import lombok.NonNull;
+
 import java.util.Arrays;
 import java.util.List;
 import java.util.Set;
 import java.util.stream.Collectors;
 import java.util.stream.Stream;
 
-import de.alpharogroup.collections.list.ListFactory;
-import lombok.NonNull;
-import lombok.experimental.UtilityClass;
-
 /**
  * The class {@link ArrayExtensions} is an extensions class for use with array objects.
  */
-@UtilityClass
 public final class ArrayExtensions
 {
+	private ArrayExtensions() {
+	}
 
 	/**
 	 * Removes the given prefix array from the first given array

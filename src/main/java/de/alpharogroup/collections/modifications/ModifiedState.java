@@ -24,9 +24,9 @@
  */
 package de.alpharogroup.collections.modifications;
 
-import java.util.Collection;
-
 import lombok.NonNull;
+
+import java.util.Collection;
 
 /**
  * The Enum ModifiedState represents states if a collection have been modified. Checks the same( or

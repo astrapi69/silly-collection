@@ -24,27 +24,22 @@
  */
 package de.alpharogroup.collections.set;
 
-import java.util.Collection;
-import java.util.Collections;
-import java.util.Comparator;
-import java.util.HashSet;
-import java.util.LinkedHashSet;
-import java.util.Set;
-import java.util.SortedSet;
-import java.util.TreeSet;
-import java.util.function.Supplier;
-
 import de.alpharogroup.collections.CollectionExtensions;
 import de.alpharogroup.collections.list.ListFactory;
 import lombok.NonNull;
-import lombok.experimental.UtilityClass;
+
+import java.util.*;
+import java.util.function.Supplier;
 
 /**
  * The factory class {@link SetFactory} provides factory methods for create new {@link Set} objects
  */
-@UtilityClass
 public final class SetFactory
 {
+
+	private SetFactory() {
+		throw new UnsupportedOperationException("This is a utility class and cannot be instantiated");
+	}
 
 	/**
 	 * Factory method for create new {@link HashSet} and will be returned as {@link Set}
@@ -164,7 +159,7 @@ public final class SetFactory
 	 */
 	@SafeVarargs
 	public static <T> Set<T> newInsertionOrderSet(final Collection<T> collection,
-		final T... elements)
+												  final T... elements)
 	{
 		final Set<T> set;
 		if (CollectionExtensions.isNotEmpty(collection))
@@ -210,7 +205,7 @@ public final class SetFactory
 	 */
 	@SafeVarargs
 	public static <T> SortedSet<T> newTreeSet(final @NonNull Comparator<T> comparator,
-		final T... elements)
+											  final T... elements)
 	{
 		return newTreeSet(ListFactory.newArrayList(), comparator, elements);
 	}
@@ -247,7 +242,7 @@ public final class SetFactory
 	 */
 	@SafeVarargs
 	public static <T> SortedSet<T> newTreeSet(final Collection<T> collection,
-		final Comparator<T> comparator, final T... elements)
+											  final Comparator<T> comparator, final T... elements)
 	{
 		final SortedSet<T> sortedSet;
 		if (comparator != null)
@@ -280,7 +275,7 @@ public final class SetFactory
 	 * @return the new {@link Supplier}
 	 */
 	public static <T> Supplier<SortedSet<T>> newTreeSetSupplier(
-		final @NonNull Comparator<T> comparator)
+			final @NonNull Comparator<T> comparator)
 	{
 		return () -> new TreeSet<>(comparator);
 	}

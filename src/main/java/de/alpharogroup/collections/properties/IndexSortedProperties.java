@@ -24,16 +24,11 @@
  */
 package de.alpharogroup.collections.properties;
 
-import java.util.Collections;
-import java.util.Comparator;
-import java.util.List;
-import java.util.Map;
-import java.util.Properties;
-import java.util.Set;
-
 import de.alpharogroup.collections.CollectionExtensions;
 import de.alpharogroup.collections.list.ListFactory;
 import de.alpharogroup.comparators.NullCheckComparator;
+
+import java.util.*;
 
 /**
  * The class {@link IndexSortedProperties} extends SortedProperties and holds an intern list with

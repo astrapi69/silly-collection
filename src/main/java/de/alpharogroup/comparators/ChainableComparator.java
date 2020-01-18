@@ -24,11 +24,11 @@
  */
 package de.alpharogroup.comparators;
 
+import org.apache.commons.collections4.comparators.ComparatorChain;
+
 import java.util.BitSet;
 import java.util.Comparator;
 import java.util.List;
-
-import org.apache.commons.collections4.comparators.ComparatorChain;
 
 /**
  * The class {@link ChainableComparator} extends the {@link ComparatorChain} and provides factory

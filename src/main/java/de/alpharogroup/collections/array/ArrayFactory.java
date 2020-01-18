@@ -24,19 +24,20 @@
  */
 package de.alpharogroup.collections.array;
 
-import java.lang.reflect.Array;
-
 import lombok.NonNull;
-import lombok.experimental.UtilityClass;
+
+import java.lang.reflect.Array;
 
 /**
  * The factory class {@link ArrayFactory} provides factory methods for create new {@code Array}
  * objects
  */
-@UtilityClass
 public final class ArrayFactory
 {
 
+	private ArrayFactory() {
+		throw new UnsupportedOperationException("This is a utility class and cannot be instantiated");
+	}
 	/**
 	 * Factory method for create new array from the given class type and the given length
 	 *
