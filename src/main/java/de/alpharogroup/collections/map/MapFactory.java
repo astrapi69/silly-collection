@@ -24,21 +24,14 @@
  */
 package de.alpharogroup.collections.map;
 
-import java.util.Collection;
-import java.util.Comparator;
-import java.util.HashMap;
-import java.util.LinkedHashMap;
-import java.util.Map;
-import java.util.TreeMap;
-import java.util.concurrent.ConcurrentHashMap;
-
-import org.apache.commons.collections4.functors.InstantiateFactory;
-import org.apache.commons.collections4.map.LazyMap;
-
 import de.alpharogroup.collections.list.ListFactory;
 import de.alpharogroup.collections.pairs.KeyValuePair;
 import lombok.NonNull;
-import lombok.experimental.UtilityClass;
+import org.apache.commons.collections4.functors.InstantiateFactory;
+import org.apache.commons.collections4.map.LazyMap;
+
+import java.util.*;
+import java.util.concurrent.ConcurrentHashMap;
 
 /**
  * The factory class {@link MapFactory} provides factory methods for create new {@link Map} objects
@@ -46,11 +39,14 @@ import lombok.experimental.UtilityClass;
  * @version 1.0
  * @author Asterios Raptis
  */
-@UtilityClass
 public final class MapFactory
 {
 
-	/**
+    private MapFactory() {
+        throw new UnsupportedOperationException("This is a utility class and cannot be instantiated");
+    }
+
+    /**
 	 * Factory method for create a map for counting elements of the given collection
 	 *
 	 * @param <K>
@@ -134,7 +130,7 @@ public final class MapFactory
 	 * @return The new {@link InsertionOrderMap}
 	 */
 	public static <K, V> Map<K, V> newInsertionOrderMap(
-		final @NonNull Collection<KeyValuePair<K, V>> keyValuePairs)
+            final @NonNull Collection<KeyValuePair<K, V>> keyValuePairs)
 	{
 		return newInsertionOrderMap(KeyValuePair.toMap(keyValuePairs));
 	}
@@ -152,7 +148,7 @@ public final class MapFactory
 	 */
 	@SafeVarargs
 	public static <K, V> Map<K, V> newInsertionOrderMap(
-		final @NonNull KeyValuePair<K, V>... keyValuePairs)
+            final @NonNull KeyValuePair<K, V>... keyValuePairs)
 	{
 		return newInsertionOrderMap(ListFactory.newArrayList(keyValuePairs));
 	}
@@ -295,7 +291,7 @@ public final class MapFactory
 	 * @return The new {@link HashMap}
 	 */
 	public static <K, V> Map<K, V> newHashMap(
-		final @NonNull Collection<KeyValuePair<K, V>> keyValuePairs)
+            final @NonNull Collection<KeyValuePair<K, V>> keyValuePairs)
 	{
 		return newHashMap(KeyValuePair.toMap(keyValuePairs));
 	}
@@ -360,7 +356,7 @@ public final class MapFactory
 	 * @return The new {@link LinkedHashMap}
 	 */
 	public static <K, V> Map<K, V> newLinkedHashMap(
-		final @NonNull Collection<KeyValuePair<K, V>> keyValuePairs)
+            final @NonNull Collection<KeyValuePair<K, V>> keyValuePairs)
 	{
 		return newLinkedHashMap(KeyValuePair.toMap(keyValuePairs));
 	}
@@ -378,7 +374,7 @@ public final class MapFactory
 	 */
 	@SafeVarargs
 	public static <K, V> Map<K, V> newLinkedHashMap(
-		final @NonNull KeyValuePair<K, V>... keyValuePairs)
+            final @NonNull KeyValuePair<K, V>... keyValuePairs)
 	{
 		return newLinkedHashMap(ListFactory.newArrayList(keyValuePairs));
 	}
@@ -565,7 +561,7 @@ public final class MapFactory
 	 * @return The new {@link TreeMap}
 	 */
 	public static <K, V> Map<K, V> newTreeMap(final @NonNull Comparator<? super K> comparator,
-		final @NonNull Collection<KeyValuePair<K, V>> keyValuePairs)
+                                              final @NonNull Collection<KeyValuePair<K, V>> keyValuePairs)
 	{
 		TreeMap<K, V> treeMap = new TreeMap<>(comparator);
 		treeMap.putAll(newTreeMap(keyValuePairs));
@@ -587,7 +583,7 @@ public final class MapFactory
 	 */
 	@SafeVarargs
 	public static <K, V> Map<K, V> newTreeMap(final @NonNull Comparator<? super K> comparator,
-		final @NonNull KeyValuePair<K, V>... keyValuePairs)
+                                              final @NonNull KeyValuePair<K, V>... keyValuePairs)
 	{
 		TreeMap<K, V> treeMap = new TreeMap<>(comparator);
 		treeMap.putAll(newTreeMap(keyValuePairs));
@@ -606,7 +602,7 @@ public final class MapFactory
 	 * @return The new {@link TreeMap}
 	 */
 	public static <K, V> Map<K, V> newTreeMap(
-		final @NonNull Collection<KeyValuePair<K, V>> keyValuePairs)
+            final @NonNull Collection<KeyValuePair<K, V>> keyValuePairs)
 	{
 		return newTreeMap(KeyValuePair.toMap(keyValuePairs));
 	}

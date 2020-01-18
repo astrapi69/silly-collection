@@ -24,24 +24,15 @@
  */
 package de.alpharogroup.collections.list;
 
-import java.util.Arrays;
-import java.util.Collection;
-import java.util.Comparator;
-import java.util.Enumeration;
-import java.util.Iterator;
-import java.util.List;
-import java.util.Optional;
-import java.util.Set;
-
-import org.apache.commons.beanutils.BeanComparator;
-import org.apache.commons.collections4.ComparatorUtils;
-
 import de.alpharogroup.collections.CollectionExtensions;
 import de.alpharogroup.collections.array.ArrayFactory;
 import de.alpharogroup.collections.modifications.ModifiedCollections;
 import de.alpharogroup.comparators.SortOrderComparator;
 import lombok.NonNull;
-import lombok.experimental.UtilityClass;
+import org.apache.commons.beanutils.BeanComparator;
+import org.apache.commons.collections4.ComparatorUtils;
+
+import java.util.*;
 
 /**
  * Extensions class for use with {@link List} objects.
@@ -49,9 +40,11 @@ import lombok.experimental.UtilityClass;
  * @author Asterios Raptis
  * @version 1.0
  */
-@UtilityClass
 public final class ListExtensions
 {
+	private ListExtensions() {
+		throw new UnsupportedOperationException("This is a utility class and cannot be instantiated");
+	}
 
 	/**
 	 * This Method look in the List toSearch if at least one Object exists in the List search.

@@ -24,17 +24,12 @@
  */
 package de.alpharogroup.collections.map;
 
-import java.util.Collection;
-import java.util.Comparator;
-import java.util.LinkedHashMap;
-import java.util.List;
-import java.util.Map;
-import java.util.Map.Entry;
-import java.util.stream.Collectors;
-
 import de.alpharogroup.collections.list.ListFactory;
 import lombok.NonNull;
-import lombok.experimental.UtilityClass;
+
+import java.util.*;
+import java.util.Map.Entry;
+import java.util.stream.Collectors;
 
 /**
  * Extensions class for use with Map objects.
@@ -42,11 +37,14 @@ import lombok.experimental.UtilityClass;
  * @author Asterios Raptis
  * @version 1.0
  */
-@UtilityClass
 public final class MapExtensions
 {
 
-	/**
+    private MapExtensions() {
+        throw new UnsupportedOperationException("This is a utility class and cannot be instantiated");
+    }
+
+    /**
 	 * Sort the given Map by its values and returns a sorted list by the values of the given Map
 	 *
 	 * @param <K>
@@ -60,7 +58,7 @@ public final class MapExtensions
 	 * @return a sorted list by the values of the given Map
 	 */
 	public static <K, V extends Comparable<? super V>> List<Entry<K, V>> sortByValueAsList(
-		final @NonNull Map<K, V> map, boolean reversed)
+            final @NonNull Map<K, V> map, boolean reversed)
 	{
 		return sortByValueAsList(map,
 			reversed ? Comparator.reverseOrder() : Comparator.naturalOrder());
@@ -80,7 +78,7 @@ public final class MapExtensions
 	 * @return a sorted list by the values of the given Map
 	 */
 	public static <K, V extends Comparable<? super V>> List<Entry<K, V>> sortByValueAsList(
-		final @NonNull Map<K, V> map, final @NonNull Comparator<? super V> comparator)
+            final @NonNull Map<K, V> map, final @NonNull Comparator<? super V> comparator)
 	{
 		return map.entrySet().stream().sorted(Map.Entry.comparingByValue(comparator))
 			.collect(Collectors.toList());
@@ -100,7 +98,7 @@ public final class MapExtensions
 	 * @return a sorted Map by the values of the given Map
 	 */
 	public static <K, V extends Comparable<? super V>> Map<K, V> sortByValue(
-		final @NonNull Map<K, V> map, boolean reversed)
+            final @NonNull Map<K, V> map, boolean reversed)
 	{
 		return sortByValue(map, reversed ? Comparator.reverseOrder() : Comparator.naturalOrder());
 	}
@@ -119,7 +117,7 @@ public final class MapExtensions
 	 * @return a sorted Map by the values of the given Map
 	 */
 	public static <K, V extends Comparable<? super V>> Map<K, V> sortByValue(
-		final @NonNull Map<K, V> map, final @NonNull Comparator<? super V> comparator)
+            final @NonNull Map<K, V> map, final @NonNull Comparator<? super V> comparator)
 	{
 		return map.entrySet().stream().sorted(Map.Entry.comparingByValue(comparator))
 			.collect(Collectors.toMap(Map.Entry::getKey, Map.Entry::getValue, (k, v) -> k,

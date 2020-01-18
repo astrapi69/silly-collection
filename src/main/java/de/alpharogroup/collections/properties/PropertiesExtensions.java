@@ -24,31 +24,18 @@
  */
 package de.alpharogroup.collections.properties;
 
-import java.io.File;
-import java.io.FileInputStream;
-import java.io.FileNotFoundException;
-import java.io.FileOutputStream;
-import java.io.IOException;
-import java.io.InputStream;
-import java.io.OutputStream;
-import java.util.Enumeration;
-import java.util.LinkedHashMap;
-import java.util.List;
-import java.util.Map;
-import java.util.Optional;
-import java.util.Properties;
+import de.alpharogroup.collections.list.ListFactory;
+
+import java.io.*;
+import java.util.*;
 import java.util.regex.Matcher;
 import java.util.regex.Pattern;
-
-import de.alpharogroup.collections.list.ListFactory;
-import lombok.experimental.UtilityClass;
 
 /**
  * The Class {@link PropertiesExtensions} provides methods loading properties and other related
  * operations for properties like find redundant values or getting all available languages from a
  * bundle.
  */
-@UtilityClass
 public final class PropertiesExtensions
 {
 
@@ -66,6 +53,10 @@ public final class PropertiesExtensions
 	 * The constant PROPERTIES_DELIMITERS contains all valid delimiters for properties files
 	 */
 	public static final String[] PROPERTIES_DELIMITERS = { "=", ":", " " };
+
+	private PropertiesExtensions() {
+		throw new UnsupportedOperationException("This is a utility class and cannot be instantiated");
+	}
 
 	/**
 	 * Finds redundant values from the given Properties object and saves it to a Map.
@@ -253,7 +244,7 @@ public final class PropertiesExtensions
 	 *             Signals that an I/O exception has occurred.
 	 */
 	public static void toProperties(final OutputStream properties, final InputStream xml,
-		final String comment) throws IOException
+									final String comment) throws IOException
 	{
 		toProperties(properties, xml, comment, true);
 	}
@@ -272,7 +263,7 @@ public final class PropertiesExtensions
 	 *             Signals that an I/O exception has occurred.
 	 */
 	public static void toPropertiesFile(final OutputStream outputStream,
-		final InputStream inputStream, final String comment) throws IOException
+										final InputStream inputStream, final String comment) throws IOException
 	{
 		toProperties(outputStream, inputStream, comment, false);
 	}
@@ -296,7 +287,7 @@ public final class PropertiesExtensions
 	 *             Signals that an I/O exception has occurred.
 	 */
 	public static void toProperties(final OutputStream outputStream, final InputStream inputStream,
-		final String comment, boolean xmlFile) throws IOException
+									final String comment, boolean xmlFile) throws IOException
 	{
 		export(null, outputStream, inputStream, comment, xmlFile, false);
 	}
@@ -324,7 +315,7 @@ public final class PropertiesExtensions
 	 *             Signals that an I/O exception has occurred.
 	 */
 	public static void export(Properties properties, OutputStream outputStream,
-		InputStream inputStream, String comment, boolean loadFromXML, boolean storeToXML)
+							  InputStream inputStream, String comment, boolean loadFromXML, boolean storeToXML)
 		throws IOException
 	{ // create a new properties if given properties object is null
 		if (properties == null)
@@ -408,7 +399,7 @@ public final class PropertiesExtensions
 	 *             Signals that an I/O exception has occurred.
 	 */
 	public static void toXml(final File properties, final File xml, final String comment,
-		final String encoding) throws IOException
+							 final String encoding) throws IOException
 	{
 		toXml(new FileInputStream(properties), new FileOutputStream(xml), comment, encoding);
 	}
@@ -428,7 +419,7 @@ public final class PropertiesExtensions
 	 *             Signals that an I/O exception has occurred.
 	 */
 	public static void toXml(final InputStream properties, final OutputStream xml,
-		final String comment, final String encoding) throws IOException
+							 final String comment, final String encoding) throws IOException
 	{
 		final Properties prop = new Properties();
 		prop.load(properties);
@@ -447,7 +438,7 @@ public final class PropertiesExtensions
 	 *         properties key has no number value or no value at all
 	 */
 	public static Optional<Integer> getInteger(final Properties properties,
-		final String propertiesKey)
+											   final String propertiesKey)
 	{
 		if (properties != null && properties.containsKey(propertiesKey))
 		{

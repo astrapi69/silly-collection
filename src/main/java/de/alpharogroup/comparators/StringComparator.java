@@ -26,16 +26,16 @@ package de.alpharogroup.comparators;
 
 import java.util.Comparator;
 
-import lombok.NoArgsConstructor;
-
 /**
  * The class {@link StringComparator} sorts String objects in ascending order as default.
  *
  * @author Asterios Raptis
  */
-@NoArgsConstructor
 public class StringComparator extends SortOrderComparator<String>
 {
+
+	public StringComparator() {
+	}
 
 	/**
 	 * Factory method to create a new {@link StringComparator} object.

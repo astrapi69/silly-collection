@@ -29,9 +29,6 @@ import java.util.Iterator;
 import java.util.NoSuchElementException;
 import java.util.Set;
 
-import lombok.AccessLevel;
-import lombok.experimental.FieldDefaults;
-
 /**
  * The class {@link SetEnumeration} associates the elements of the given {@link Set} and the given
  * {@link Enumeration}.
@@ -39,21 +36,20 @@ import lombok.experimental.FieldDefaults;
  * @param <T>
  *            the generic type
  */
-@FieldDefaults(level = AccessLevel.PRIVATE)
 public class SetEnumeration<T> implements Enumeration<T>
 {
 
 	/** The enumeration. */
-	Enumeration<T> enumeration;
+	private Enumeration<T> enumeration;
 
 	/** The iterator. */
-	Iterator<T> iterator;
+	private Iterator<T> iterator;
 
 	/** The next. */
-	T next;
+	private T next;
 
 	/** The set. */
-	Set<T> set;
+	private Set<T> set;
 
 	/**
 	 * Instantiates a new {@link SetEnumeration} from the given {@link Set} and the given

@@ -24,18 +24,10 @@
  */
 package de.alpharogroup.collections.list;
 
-import java.util.ArrayList;
-import java.util.Arrays;
-import java.util.Collection;
-import java.util.Collections;
-import java.util.Iterator;
-import java.util.LinkedList;
-import java.util.List;
-import java.util.Map;
-
 import de.alpharogroup.collections.CollectionExtensions;
 import de.alpharogroup.collections.array.ArrayFactory;
-import lombok.experimental.UtilityClass;
+
+import java.util.*;
 
 /**
  * The factory class {@link ListFactory} provides factory methods for create new {@link Map} objects
@@ -43,9 +35,12 @@ import lombok.experimental.UtilityClass;
  * @version 1.0
  * @author Asterios Raptis
  */
-@UtilityClass
 public final class ListFactory
 {
+
+	private ListFactory() {
+		throw new UnsupportedOperationException("This is a utility class and cannot be instantiated");
+	}
 
 	/**
 	 * Factory method for create new {@link ArrayList} from the given optional iterator and the

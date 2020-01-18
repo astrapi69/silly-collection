@@ -27,8 +27,6 @@ package de.alpharogroup.collections.iterators;
 import java.util.Iterator;
 import java.util.NoSuchElementException;
 
-import lombok.Getter;
-
 /**
  * An Iterator for an Array.
  * 
@@ -38,10 +36,10 @@ import lombok.Getter;
  */
 public class ArrayIterator<E> implements Iterator<E>
 {
+
 	/**
 	 * The array.
 	 */
-	@Getter
 	private final E[] array;
 
 	/**
@@ -106,5 +104,9 @@ public class ArrayIterator<E> implements Iterator<E>
 			}
 			this.array[this.array.length - 1] = null;
 		}
+	}
+
+	public E[] getArray() {
+		return array;
 	}
 }

@@ -24,20 +24,22 @@
  */
 package de.alpharogroup.collections.set;
 
+import de.alpharogroup.collections.array.ArrayFactory;
+import lombok.NonNull;
+
 import java.util.Collection;
 import java.util.Set;
 import java.util.SortedSet;
 
-import de.alpharogroup.collections.array.ArrayFactory;
-import lombok.NonNull;
-import lombok.experimental.UtilityClass;
-
 /**
  * Extensions class for use with {@link Set} objects
  */
-@UtilityClass
-public class SetExtensions
+public final class SetExtensions
 {
+
+	private SetExtensions() {
+		throw new UnsupportedOperationException("This is a utility class and cannot be instantiated");
+	}
 
 	/**
 	 * Converts the given {@link Set} to an array
