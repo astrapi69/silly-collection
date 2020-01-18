@@ -1,4 +1,15 @@
 
+buildscript {
+    repositories {
+        maven {
+            url "https://plugins.gradle.org/m2/"
+        }
+    }
+    dependencies {
+        classpath "io.franzbecker:gradle-lombok:3.2.0"
+    }
+}
+
 plugins {
     id "io.franzbecker.gradle-lombok" version "3.2.0"
     id "java"
@@ -37,6 +48,20 @@ dependencies {
     testImplementation("org.testng:testng:$testngVersion")
     testImplementation("junit:junit:$junitVersion")
     testImplementation("org.mockito:mockito-core:$mockitoCoreVersion")
+}
+
+import io.franzbecker.gradle.lombok.task.DelombokTask
+
+task delombok(type: DelombokTask, dependsOn: compileJava) {
+    ext.outputDir = file("$buildDir/delombok")
+    outputs.dir(outputDir)
+    sourceSets.main.java.srcDirs.each {
+        inputs.dir(it)
+        args(it, "-d", outputDir)
+    }
+    doFirst {
+        outputDir.deleteDir()
+    }
 }
 
 task sourcesJar(type: Jar) {
@@ -112,6 +137,9 @@ signing {
 }
 
 javadoc {
+    dependsOn delombok
+    source = delombok.outputDir
+    failOnError = false
     if(JavaVersion.current().isJava9Compatible()) {
         options.addBooleanOption("html5", true)
     }
@@ -124,7 +152,7 @@ tasks.withType(JavaCompile) {
 license {
     ext.year="2015"
     ext.owner="Asterios Raptis"
-    header rootProject.file('src/main/resources/LICENSE.txt')
+    header rootProject.file("src/main/resources/LICENSE.txt")
     excludes(["**/README",
               "**/README.md",
               "**/LICENSE",
@@ -172,3 +200,4 @@ jacocoTestReport {
 }
 
 check.dependsOn jacocoTestReport
+
