@@ -4,6 +4,9 @@
 Version 6.1-SNAPSHOT
 -------------
 
+ADDED:
+ 
+- added new method that can summarize two counter Maps and return a new Map that contains the sum of the counts
 
 Version 6
 -------------

@@ -43,7 +43,6 @@ public final class MapFactory
 {
 
     private MapFactory() {
-        throw new UnsupportedOperationException("This is a utility class and cannot be instantiated");
     }
 
     /**

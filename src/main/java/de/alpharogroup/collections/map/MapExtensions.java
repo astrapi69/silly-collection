@@ -30,6 +30,7 @@ import lombok.NonNull;
 import java.util.*;
 import java.util.Map.Entry;
 import java.util.stream.Collectors;
+import java.util.stream.Stream;
 
 /**
  * Extensions class for use with Map objects.
@@ -40,11 +41,30 @@ import java.util.stream.Collectors;
 public final class MapExtensions
 {
 
-    private MapExtensions() {
-        throw new UnsupportedOperationException("This is a utility class and cannot be instantiated");
-    }
+	private MapExtensions()
+	{
+	}
 
-    /**
+	/**
+	 * Factory method for create a map for counting elements of the given collection
+	 *
+	 * @param <K>
+	 *            the generic type of the elements
+	 * @param valueCounterMap
+	 *            the counter map
+	 * @param summarizeWithThisValueCounterMap
+	 *            the other counter map that will be summarized with the first map
+	 * @return the new map ready to count elements
+	 */
+	public static <K> Map<K, Integer> mergeAndSummarize(Map<K, Integer> valueCounterMap,
+		Map<K, Integer> summarizeWithThisValueCounterMap)
+	{
+		return Stream.of(valueCounterMap, summarizeWithThisValueCounterMap)
+			.map(Map::entrySet).flatMap(Collection::stream)
+			.collect(Collectors.toMap(Map.Entry::getKey, Map.Entry::getValue, Integer::sum));
+	}
+
+	/**
 	 * Sort the given Map by its values and returns a sorted list by the values of the given Map
 	 *
 	 * @param <K>

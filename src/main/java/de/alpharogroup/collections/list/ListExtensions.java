@@ -43,7 +43,6 @@ import java.util.*;
 public final class ListExtensions
 {
 	private ListExtensions() {
-		throw new UnsupportedOperationException("This is a utility class and cannot be instantiated");
 	}
 
 	/**
