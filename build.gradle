@@ -22,9 +22,9 @@ plugins {
 apply plugin: "jacoco"
 
 group = "de.alpharogroup"
-version = "6.1-SNAPSHOT"
+version = "$projectVersion"
 description = "silly-collections"
-sourceCompatibility = "11"
+sourceCompatibility = "8"
 
 repositories {
     jcenter()
