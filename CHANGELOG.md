@@ -17,6 +17,7 @@ CHANGED:
 - update of test dependency testng version to 7.1.1
 - update of test dependency junit version to 4.13
 - update of test dependency mockito-core version to 3.2.4
+- update of test benchmark dependency jmh version to 1.23
 - removed lombok dependency
 
 Version 5.8
