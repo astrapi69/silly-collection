@@ -33,24 +33,21 @@ import java.util.List;
 import org.testng.annotations.Test;
 
 import de.alpharogroup.collections.list.ListFactory;
-import lombok.AccessLevel;
-import lombok.experimental.FieldDefaults;
 
 /**
- * The unit test class for the class {@link StringComparator}.
+ * The unit test class for the class {@link StringComparator}
  */
-@FieldDefaults(level = AccessLevel.PRIVATE)
 public class StringComparatorTest
 {
 
 	/** For use of the result of the comparator. */
-	int actual;
+	private int actual;
 
 	/** The comparator. */
-	Comparator<String> comparator;
+	private Comparator<String> comparator;
 
 	/** For use of the expected result. */
-	boolean expected;
+	private boolean expected;
 
 
 	/**

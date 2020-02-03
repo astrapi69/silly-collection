@@ -118,7 +118,7 @@ public class ModifiedStateTest
 	 * Test for method {@link ModifiedState#isModified(java.util.Collection, java.util.Collection)}
 	 * with null value for next
 	 */
-	@Test(expectedExceptions = NullPointerException.class)
+	@Test(expectedExceptions = IllegalArgumentException.class)
 	public void testIsModifiedNextNull()
 	{
 		ModifiedState.isModified(ListFactory.newArrayList(), null);
@@ -128,7 +128,7 @@ public class ModifiedStateTest
 	 * Test for method {@link ModifiedState#isModified(java.util.Collection, java.util.Collection)}
 	 * with null value for previous
 	 */
-	@Test(expectedExceptions = NullPointerException.class)
+	@Test(expectedExceptions = IllegalArgumentException.class)
 	public void testIsModifiedPreviousNull()
 	{
 		ModifiedState.isModified(null, ListFactory.newArrayList());

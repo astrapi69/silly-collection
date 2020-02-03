@@ -33,8 +33,8 @@ import java.util.Map.Entry;
 import java.util.stream.Collectors;
 import java.util.stream.Stream;
 
+import de.alpharogroup.check.Argument;
 import de.alpharogroup.collections.list.ListFactory;
-import lombok.NonNull;
 
 /**
  * Extensions class for use with Map objects.
@@ -58,8 +58,9 @@ public final class MapExtensions
 	 *            The value.
 	 * @return Returns the first key from the given value or null if nothing found.
 	 */
-	public static <K, V> K getKeyFromValue(final @NonNull Map<K, V> map, final V value)
+	public static <K, V> K getKeyFromValue(final Map<K, V> map, final V value)
 	{
+		Argument.notNull(map, "map");
 		K key = null;
 		for (final Entry<K, V> entry : map.entrySet())
 		{
@@ -85,8 +86,9 @@ public final class MapExtensions
 	 *            The value.
 	 * @return Returns the key from the given value or an empty Collection if nothing found.
 	 */
-	public static <K, V> Collection<K> getKeysFromValue(final @NonNull Map<K, V> map, final V value)
+	public static <K, V> Collection<K> getKeysFromValue(final Map<K, V> map, final V value)
 	{
+		Argument.notNull(map, "map");
 		final Collection<K> keys = ListFactory.newArrayList();
 		for (final Entry<K, V> entry : map.entrySet())
 		{
@@ -114,11 +116,34 @@ public final class MapExtensions
 	public static <K> Map<K, Integer> mergeAndSummarize(final Map<K, Integer> valueCounterMap,
 		final Map<K, Integer> summarizeWithThisValueCounterMap)
 	{
-		Map<K, Integer> mergedMap = Stream.of(valueCounterMap, summarizeWithThisValueCounterMap)
-			.map(Map::entrySet).flatMap(Collection::stream)
-			.filter(map -> valueCounterMap.containsKey(map.getKey()))
-			.collect(Collectors.toMap(Map.Entry::getKey, Map.Entry::getValue, Integer::sum));
-		return mergedMap;
+		return mergeAndSummarize(valueCounterMap, summarizeWithThisValueCounterMap, false);
+	}
+
+	/**
+	 * Factory method for create a map for counting elements of the given collection
+	 *
+	 * @param <K>
+	 *            the generic type of the elements
+	 * @param valueCounterMap
+	 *            the counter map
+	 * @param summarizeWithThisValueCounterMap
+	 *            the other counter map that will be summarized with the first map
+	 * @param fullMerge
+	 *            if true all keys from both maps will be considered by the merge otherwise only the
+	 *            keys of the first map will be considered
+	 * @return the new map ready to count elements
+	 */
+	public static <K> Map<K, Integer> mergeAndSummarize(final Map<K, Integer> valueCounterMap,
+		final Map<K, Integer> summarizeWithThisValueCounterMap, boolean fullMerge)
+	{
+		return fullMerge
+			? Stream.of(valueCounterMap, summarizeWithThisValueCounterMap).map(Map::entrySet)
+				.flatMap(Collection::stream)
+				.collect(Collectors.toMap(Map.Entry::getKey, Map.Entry::getValue, Integer::sum))
+			: Stream.of(valueCounterMap, summarizeWithThisValueCounterMap).map(Map::entrySet)
+				.flatMap(Collection::stream)
+				.filter(map -> valueCounterMap.containsKey(map.getKey()))
+				.collect(Collectors.toMap(Map.Entry::getKey, Map.Entry::getValue, Integer::sum));
 	}
 
 	/**
@@ -134,9 +159,10 @@ public final class MapExtensions
 	 *            the flag if the result should be in reversed order
 	 * @return a sorted Map by the values of the given Map
 	 */
-	public static <K, V extends Comparable<? super V>> Map<K, V> sortByValue(
-		final @NonNull Map<K, V> map, boolean reversed)
+	public static <K, V extends Comparable<? super V>> Map<K, V> sortByValue(final Map<K, V> map,
+		boolean reversed)
 	{
+		Argument.notNull(map, "map");
 		return sortByValue(map, reversed ? Comparator.reverseOrder() : Comparator.naturalOrder());
 	}
 
@@ -153,9 +179,11 @@ public final class MapExtensions
 	 *            the comparator to sort
 	 * @return a sorted Map by the values of the given Map
 	 */
-	public static <K, V extends Comparable<? super V>> Map<K, V> sortByValue(
-		final @NonNull Map<K, V> map, final @NonNull Comparator<? super V> comparator)
+	public static <K, V extends Comparable<? super V>> Map<K, V> sortByValue(final Map<K, V> map,
+		final Comparator<? super V> comparator)
 	{
+		Argument.notNull(map, "map");
+		Argument.notNull(comparator, "comparator");
 		return map.entrySet().stream().sorted(Map.Entry.comparingByValue(comparator))
 			.collect(Collectors.toMap(Map.Entry::getKey, Map.Entry::getValue, (k, v) -> k,
 				LinkedHashMap::new));
@@ -175,8 +203,9 @@ public final class MapExtensions
 	 * @return a sorted list by the values of the given Map
 	 */
 	public static <K, V extends Comparable<? super V>> List<Entry<K, V>> sortByValueAsList(
-		final @NonNull Map<K, V> map, boolean reversed)
+		final Map<K, V> map, boolean reversed)
 	{
+		Argument.notNull(map, "map");
 		return sortByValueAsList(map,
 			reversed ? Comparator.reverseOrder() : Comparator.naturalOrder());
 	}
@@ -195,8 +224,10 @@ public final class MapExtensions
 	 * @return a sorted list by the values of the given Map
 	 */
 	public static <K, V extends Comparable<? super V>> List<Entry<K, V>> sortByValueAsList(
-		final @NonNull Map<K, V> map, final @NonNull Comparator<? super V> comparator)
+		final Map<K, V> map, final Comparator<? super V> comparator)
 	{
+		Argument.notNull(map, "map");
+		Argument.notNull(comparator, "comparator");
 		return map.entrySet().stream().sorted(Map.Entry.comparingByValue(comparator))
 			.collect(Collectors.toList());
 	}
@@ -210,8 +241,9 @@ public final class MapExtensions
 	 *            The two dimensional Array.
 	 * @return The map produced from the two dimensional Array.
 	 */
-	public static <T> Map<T, T> toGenericMap(final @NonNull T[][] twoDimArray)
+	public static <T> Map<T, T> toGenericMap(final T[][] twoDimArray)
 	{
+		Argument.notNull(twoDimArray, "twoDimArray");
 		final Map<T, T> map = new LinkedHashMap<>();
 		for (final T[] element : twoDimArray)
 		{

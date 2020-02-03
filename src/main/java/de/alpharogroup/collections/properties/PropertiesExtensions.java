@@ -65,6 +65,7 @@ public final class PropertiesExtensions
 	 * The constant SEARCH_FILE_PATTERN is a regex for searching java and html files
 	 */
 	public static final String SEARCH_FILE_PATTERN = "([^\\s]+(\\.(?i)(java|html|htm))$)";
+
 	/**
 	 * Exports the given {@link InputStream} that represents a properties file to the given
 	 * properties {@link OutputStream} that represents the output file. The flag xmlFile tells if

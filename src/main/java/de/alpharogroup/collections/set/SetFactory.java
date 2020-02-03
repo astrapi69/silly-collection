@@ -34,9 +34,9 @@ import java.util.SortedSet;
 import java.util.TreeSet;
 import java.util.function.Supplier;
 
+import de.alpharogroup.check.Argument;
 import de.alpharogroup.collections.CollectionExtensions;
 import de.alpharogroup.collections.list.ListFactory;
-import lombok.NonNull;
 
 /**
  * The factory class {@link SetFactory} provides factory methods for create new {@link Set} objects
@@ -246,9 +246,9 @@ public final class SetFactory
 	 * @return the new {@link SortedSet}
 	 */
 	@SafeVarargs
-	public static <T> SortedSet<T> newTreeSet(final @NonNull Comparator<T> comparator,
-		final T... elements)
+	public static <T> SortedSet<T> newTreeSet(final Comparator<T> comparator, final T... elements)
 	{
+		Argument.notNull(comparator, "comparator");
 		return newTreeSet(ListFactory.newArrayList(), comparator, elements);
 	}
 
@@ -277,9 +277,9 @@ public final class SetFactory
 	 *            the comparator
 	 * @return the new {@link Supplier}
 	 */
-	public static <T> Supplier<SortedSet<T>> newTreeSetSupplier(
-		final @NonNull Comparator<T> comparator)
+	public static <T> Supplier<SortedSet<T>> newTreeSetSupplier(final Comparator<T> comparator)
 	{
+		Argument.notNull(comparator, "comparator");
 		return () -> new TreeSet<>(comparator);
 	}
 

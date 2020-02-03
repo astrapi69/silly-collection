@@ -26,7 +26,7 @@ package de.alpharogroup.collections.array;
 
 import java.lang.reflect.Array;
 
-import lombok.NonNull;
+import de.alpharogroup.check.Argument;
 
 /**
  * The factory class {@link ArrayFactory} provides factory methods for create new {@code Array}
@@ -136,8 +136,9 @@ public final class ArrayFactory
 	 *            the array that is used as a template
 	 * @return the new empty array
 	 */
-	public static <T> T[] newEmptyArray(final @NonNull T[] array)
+	public static <T> T[] newEmptyArray(final T[] array)
 	{
+		Argument.notNull(array, "array");
 		return newEmptyArray(array, array.length);
 	}
 
@@ -153,8 +154,9 @@ public final class ArrayFactory
 	 * @return the new empty array
 	 */
 	@SuppressWarnings("unchecked")
-	public static <T> T[] newEmptyArray(final @NonNull T[] array, int length)
+	public static <T> T[] newEmptyArray(final T[] array, int length)
 	{
+		Argument.notNull(array, "array");
 		return (T[])Array.newInstance(array.getClass().getComponentType(), length);
 	}
 
@@ -258,8 +260,9 @@ public final class ArrayFactory
 	 *            the end index that is exclusive
 	 * @return the new partial array
 	 */
-	public static <T> T[] newSubArray(final @NonNull T[] source, int startIndex, int endIndex)
+	public static <T> T[] newSubArray(final T[] source, int startIndex, int endIndex)
 	{
+		Argument.notNull(source, "source");
 		int newSize = endIndex - startIndex;
 		T[] subArray = newEmptyArray(source, newSize);
 		for (int i = 0; i < newSize; i++)

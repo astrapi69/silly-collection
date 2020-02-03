@@ -30,8 +30,8 @@ import java.util.Set;
 import java.util.stream.Collectors;
 import java.util.stream.Stream;
 
+import de.alpharogroup.check.Argument;
 import de.alpharogroup.collections.list.ListFactory;
-import lombok.NonNull;
 
 /**
  * The class {@link ArrayExtensions} is an extensions class for use with array objects.
@@ -323,8 +323,10 @@ public final class ArrayExtensions
 	 *            the other array
 	 * @return the result of the intersection
 	 */
-	public static <T> T[] intersection(final @NonNull T[] one, final @NonNull T[] other)
+	public static <T> T[] intersection(final T[] one, final T[] other)
 	{
+		Argument.notNull(one, "one");
+		Argument.notNull(other, "other");
 		T[] intersection = ArrayFactory.newEmptyArray(one);
 		int j = 0;
 		for (int i = 0; i < one.length; i++)
@@ -383,8 +385,9 @@ public final class ArrayExtensions
 	 *            the indexes to remove
 	 * @return the new created array with the elements from the given indexes
 	 */
-	public static <T> T[] remove(@NonNull final T[] array, int... indexes)
+	public static <T> T[] remove(final T[] array, int... indexes)
 	{
+		Argument.notNull(array, "array");
 		List<T> list = ListFactory.newArrayList(array);
 		final int lastIndex = indexes.length - 1;
 		Arrays.sort(indexes);
@@ -407,8 +410,10 @@ public final class ArrayExtensions
 	 *            the array to remove
 	 * @return the new created array with the elements
 	 */
-	public static <T> T[] removeAll(@NonNull final T[] array, @NonNull final T[] arrayToRemove)
+	public static <T> T[] removeAll(final T[] array, final T[] arrayToRemove)
 	{
+		Argument.notNull(array, "array");
+		Argument.notNull(arrayToRemove, "arrayToRemove");
 		List<T> list = ListFactory.newArrayList(array);
 		List<T> listToRemove = ListFactory.newArrayList(arrayToRemove);
 		list.removeAll(listToRemove);
@@ -425,8 +430,9 @@ public final class ArrayExtensions
 	 *            the origin array
 	 * @return the new created array with out the first element
 	 */
-	public static <T> T[] removeFirst(@NonNull final T[] original)
+	public static <T> T[] removeFirst(final T[] original)
 	{
+		Argument.notNull(original, "original");
 		return remove(original, 0);
 	}
 
@@ -460,8 +466,10 @@ public final class ArrayExtensions
 	 * @return the resulted array
 	 */
 	@SuppressWarnings("unchecked")
-	public static <T> T[] removeFromStart(final @NonNull T[] array, final @NonNull T[] prefix)
+	public static <T> T[] removeFromStart(final T[] array, final T[] prefix)
 	{
+		Argument.notNull(array, "array");
+		Argument.notNull(prefix, "prefix");
 		if (0 < array.length)
 		{
 			T[] result = (T[])ArrayFactory.newArray(array[0].getClass(),
@@ -481,8 +489,9 @@ public final class ArrayExtensions
 	 *            the origin array
 	 * @return the new created array with out the first element
 	 */
-	public static <T> T[] removeLast(@NonNull final T[] original)
+	public static <T> T[] removeLast(final T[] original)
 	{
+		Argument.notNull(original, "original");
 		return Arrays.copyOf(original, original.length - 1);
 	}
 

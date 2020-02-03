@@ -36,11 +36,11 @@ import java.util.Set;
 import org.apache.commons.beanutils.BeanComparator;
 import org.apache.commons.collections4.ComparatorUtils;
 
+import de.alpharogroup.check.Argument;
 import de.alpharogroup.collections.CollectionExtensions;
 import de.alpharogroup.collections.array.ArrayFactory;
 import de.alpharogroup.collections.modifications.ModifiedCollections;
 import de.alpharogroup.comparators.SortOrderComparator;
-import lombok.NonNull;
 
 /**
  * Extensions class for use with {@link List} objects.
@@ -122,9 +122,10 @@ public final class ListExtensions
 	 *            the size of the combination to generate
 	 * @return all possible combinations from the given list of {@link Integer} objects
 	 */
-	public static List<List<Integer>> getAllCombinations(
-		@NonNull final List<Integer> possibleNumbers, int combinationSize)
+	public static List<List<Integer>> getAllCombinations(final List<Integer> possibleNumbers,
+		int combinationSize)
 	{
+		Argument.notNull(possibleNumbers, "possibleNumbers");
 		Integer[] currentCombination = new Integer[combinationSize];
 		List<List<Integer>> allCombinations = ListFactory.newArrayList();
 		int currentEnd = possibleNumbers.size() - 1;
@@ -146,7 +147,7 @@ public final class ListExtensions
 	 *            the list with the element values
 	 * @return all possible combinations from the given list
 	 */
-	public static <T> List<List<T>> getCombinations(@NonNull final List<T> possibleValues,
+	public static <T> List<List<T>> getCombinations(final List<T> possibleValues,
 		final int combinationSize)
 	{
 		List<List<T>> combinations = ListFactory.newArrayList();
@@ -271,8 +272,9 @@ public final class ListExtensions
 	 *            the element
 	 * @return true, if successful
 	 */
-	public static <T> boolean hasNext(final @NonNull List<T> list, final T element)
+	public static <T> boolean hasNext(final List<T> list, final T element)
 	{
+		Argument.notNull(list, "list");
 		final int indexOfElement = list.indexOf(element);
 		if (indexOfElement == -1)
 		{
@@ -296,8 +298,9 @@ public final class ListExtensions
 	 *            the element
 	 * @return true, if successful
 	 */
-	public static <T> boolean hasPrevious(final @NonNull List<T> list, final T element)
+	public static <T> boolean hasPrevious(final List<T> list, final T element)
 	{
+		Argument.notNull(list, "list");
 		final int indexOfElement = list.indexOf(element);
 		if (indexOfElement == -1 || indexOfElement == 0)
 		{
@@ -386,9 +389,10 @@ public final class ListExtensions
 	 *            the rearrange to index
 	 * @return the rearranged {@link List}
 	 */
-	public static <T> List<T> rearrange(@NonNull T element, @NonNull List<T> listToResort,
-		int rearrangeToIndex)
+	public static <T> List<T> rearrange(T element, List<T> listToResort, int rearrangeToIndex)
 	{
+		Argument.notNull(element, "element");
+		Argument.notNull(listToResort, "listToResort");
 		int index = listToResort.indexOf(element);
 		if (index < 0 || index == rearrangeToIndex || listToResort.size() == rearrangeToIndex)
 		{
@@ -584,8 +588,9 @@ public final class ListExtensions
 	 * @return the array or null if the list is empty
 	 */
 	@SuppressWarnings("unchecked")
-	public static <T> T[] toArray(final @NonNull List<T> list)
+	public static <T> T[] toArray(final List<T> list)
 	{
+		Argument.notNull(list, "list");
 		if (list.isEmpty())
 		{
 			throw new IllegalArgumentException("list is empty");

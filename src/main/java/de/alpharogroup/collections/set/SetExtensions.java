@@ -28,8 +28,8 @@ import java.util.Collection;
 import java.util.Set;
 import java.util.SortedSet;
 
+import de.alpharogroup.check.Argument;
 import de.alpharogroup.collections.array.ArrayFactory;
-import lombok.NonNull;
 
 /**
  * Extensions class for use with {@link Set} objects
@@ -47,8 +47,9 @@ public final class SetExtensions
 	 * @return the array from the given {@link Set}
 	 */
 	@SuppressWarnings("unchecked")
-	public static <T> T[] toArray(final @NonNull Set<T> set)
+	public static <T> T[] toArray(final Set<T> set)
 	{
+		Argument.notNull(set, "set");
 		if (set.isEmpty())
 		{
 			throw new IllegalArgumentException("set is empty");

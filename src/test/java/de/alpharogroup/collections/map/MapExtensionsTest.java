@@ -173,6 +173,75 @@ public class MapExtensionsTest
 		}
 	}
 
+
+	/**
+	 * Test method for {@link MapExtensions#mergeAndSummarize(Map, Map, boolean)}
+	 */
+	@Test
+	public void testMergeAndSummarizeWithFullMergeOption()
+	{
+		int minVolume;
+		int maxVolume;
+		boolean fullMerge;
+		Map<Integer, Integer> initialNumberCounterMap;
+		Map<Integer, Integer> numberCounterMap;
+		Map<Integer, Integer> mergedMap;
+		List<Integer> integerList;
+		// first scenario ...
+		minVolume = 1;
+		maxVolume = 10;
+		fullMerge = true;
+		integerList = ListFactory.newRangeList(minVolume, maxVolume);
+		numberCounterMap = MapFactory.newCounterMap(integerList);
+		for (int i = minVolume; i <= maxVolume; i++)
+		{
+			numberCounterMap.merge(i, getRandomIntBetween(1, 4), Integer::sum);
+		}
+		initialNumberCounterMap = MapFactory.newCounterMap(integerList);
+		for (int i = minVolume; i <= maxVolume; i++)
+		{
+			initialNumberCounterMap.merge(i, getRandomIntBetween(1, 4), Integer::sum);
+		}
+		mergedMap = MapExtensions.mergeAndSummarize(initialNumberCounterMap, numberCounterMap,
+			fullMerge);
+		for (int i = minVolume; i <= maxVolume; i++)
+		{
+			int actual = mergedMap.get(i);
+			int expected = numberCounterMap.get(i) + initialNumberCounterMap.get(i);
+			assertEquals(actual, expected);
+		}
+		// other scenario ...
+		mergedMap.clear();
+		minVolume = 1;
+		maxVolume = 10;
+		fullMerge = false;
+		integerList = ListFactory.newRangeList(minVolume, maxVolume);
+		numberCounterMap = MapFactory.newCounterMap(integerList);
+		for (int i = minVolume; i <= maxVolume; i++)
+		{
+			numberCounterMap.merge(i, getRandomIntBetween(1, 4), Integer::sum);
+		}
+		minVolume = 6;
+		maxVolume = 15;
+		integerList = ListFactory.newRangeList(minVolume, maxVolume);
+		initialNumberCounterMap = MapFactory.newCounterMap(integerList);
+		for (int i = minVolume; i <= maxVolume; i++)
+		{
+			initialNumberCounterMap.merge(i, getRandomIntBetween(1, 4), Integer::sum);
+		}
+		mergedMap = MapExtensions.mergeAndSummarize(initialNumberCounterMap, numberCounterMap,
+			fullMerge);
+		for (int i = minVolume; i <= maxVolume; i++)
+		{
+			if (numberCounterMap.containsKey(i) && initialNumberCounterMap.containsKey(i))
+			{
+				int actual = mergedMap.get(i);
+				int expected = numberCounterMap.get(i) + initialNumberCounterMap.get(i);
+				assertEquals(actual, expected);
+			}
+		}
+	}
+
 	/**
 	 * Test for the Method {@link MapExtensions#sortByValue(Map, boolean)}
 	 */

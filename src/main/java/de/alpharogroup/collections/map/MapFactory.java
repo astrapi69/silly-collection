@@ -35,9 +35,9 @@ import java.util.concurrent.ConcurrentHashMap;
 import org.apache.commons.collections4.functors.InstantiateFactory;
 import org.apache.commons.collections4.map.LazyMap;
 
+import de.alpharogroup.check.Argument;
 import de.alpharogroup.collections.list.ListFactory;
 import de.alpharogroup.collections.pairs.KeyValuePair;
-import lombok.NonNull;
 
 /**
  * The factory class {@link MapFactory} provides factory methods for create new {@link Map} objects
@@ -122,8 +122,9 @@ public final class MapFactory
 	 *            the map
 	 * @return The new {@link ConcurrentHashMap}
 	 */
-	public static <K, V> ConcurrentHashMap<K, V> newConcurrentHashMap(final @NonNull Map<K, V> map)
+	public static <K, V> ConcurrentHashMap<K, V> newConcurrentHashMap(final Map<K, V> map)
 	{
+		Argument.notNull(map, "map");
 		return new ConcurrentHashMap<>(map);
 	}
 
@@ -136,8 +137,9 @@ public final class MapFactory
 	 *            the elements
 	 * @return the new map ready to count elements
 	 */
-	public static <K> Map<K, Integer> newCounterMap(final @NonNull Collection<K> elements)
+	public static <K> Map<K, Integer> newCounterMap(final Collection<K> elements)
 	{
+		Argument.notNull(elements, "elements");
 		Map<K, Integer> elementsCount = MapFactory.newHashMap();
 		for (K element : elements)
 		{
@@ -177,9 +179,9 @@ public final class MapFactory
 	 *            the collection with the key value pairs
 	 * @return The new {@link HashMap}
 	 */
-	public static <K, V> Map<K, V> newHashMap(
-		final @NonNull Collection<KeyValuePair<K, V>> keyValuePairs)
+	public static <K, V> Map<K, V> newHashMap(final Collection<KeyValuePair<K, V>> keyValuePairs)
 	{
+		Argument.notNull(keyValuePairs, "keyValuePairs");
 		return newHashMap(KeyValuePair.toMap(keyValuePairs));
 	}
 
@@ -211,8 +213,9 @@ public final class MapFactory
 	 * @return The new {@link HashMap}
 	 */
 	@SafeVarargs
-	public static <K, V> Map<K, V> newHashMap(final @NonNull KeyValuePair<K, V>... keyValuePairs)
+	public static <K, V> Map<K, V> newHashMap(final KeyValuePair<K, V>... keyValuePairs)
 	{
+		Argument.notNull(keyValuePairs, "keyValuePairs");
 		return newHashMap(ListFactory.newArrayList(keyValuePairs));
 	}
 
@@ -227,8 +230,9 @@ public final class MapFactory
 	 *            the map
 	 * @return The new {@link HashMap}
 	 */
-	public static <K, V> Map<K, V> newHashMap(final @NonNull Map<K, V> map)
+	public static <K, V> Map<K, V> newHashMap(final Map<K, V> map)
 	{
+		Argument.notNull(map, "map");
 		return new HashMap<>(map);
 	}
 
@@ -259,8 +263,9 @@ public final class MapFactory
 	 * @return The new {@link InsertionOrderMap}
 	 */
 	public static <K, V> Map<K, V> newInsertionOrderMap(
-		final @NonNull Collection<KeyValuePair<K, V>> keyValuePairs)
+		final Collection<KeyValuePair<K, V>> keyValuePairs)
 	{
+		Argument.notNull(keyValuePairs, "keyValuePairs");
 		return newInsertionOrderMap(KeyValuePair.toMap(keyValuePairs));
 	}
 
@@ -293,9 +298,9 @@ public final class MapFactory
 	 * @return The new {@link InsertionOrderMap}
 	 */
 	@SafeVarargs
-	public static <K, V> Map<K, V> newInsertionOrderMap(
-		final @NonNull KeyValuePair<K, V>... keyValuePairs)
+	public static <K, V> Map<K, V> newInsertionOrderMap(final KeyValuePair<K, V>... keyValuePairs)
 	{
+		Argument.notNull(keyValuePairs, "keyValuePairs");
 		return newInsertionOrderMap(ListFactory.newArrayList(keyValuePairs));
 	}
 
@@ -310,8 +315,9 @@ public final class MapFactory
 	 *            the map
 	 * @return The new {@link InsertionOrderMap}
 	 */
-	public static <K, V> Map<K, V> newInsertionOrderMap(final @NonNull Map<K, V> map)
+	public static <K, V> Map<K, V> newInsertionOrderMap(final Map<K, V> map)
 	{
+		Argument.notNull(map, "map");
 		return new InsertionOrderMap<>(map);
 	}
 
@@ -395,8 +401,9 @@ public final class MapFactory
 	 * @return The new {@link LazyMap}
 	 */
 	@SuppressWarnings({ "unchecked", "rawtypes" })
-	public static <K, V> Map<K, V> newLazyTreeMap(final @NonNull Comparator<? super K> comparator)
+	public static <K, V> Map<K, V> newLazyTreeMap(final Comparator<? super K> comparator)
 	{
+		Argument.notNull(comparator, "comparator");
 		return LazyMap.lazyMap(new TreeMap<K, V>(comparator),
 			new InstantiateFactory(TreeMap.class));
 	}
@@ -414,8 +421,9 @@ public final class MapFactory
 	 * @return The new {@link LazyMap}
 	 */
 	@SuppressWarnings({ "unchecked", "rawtypes" })
-	public static <K, V> Map<K, V> newLazyTreeMap(final @NonNull TreeMap<K, V> map)
+	public static <K, V> Map<K, V> newLazyTreeMap(final TreeMap<K, V> map)
 	{
+		Argument.notNull(map, "map");
 		return LazyMap.lazyMap(map, new InstantiateFactory(TreeMap.class));
 	}
 
@@ -446,8 +454,9 @@ public final class MapFactory
 	 * @return The new {@link LinkedHashMap}
 	 */
 	public static <K, V> Map<K, V> newLinkedHashMap(
-		final @NonNull Collection<KeyValuePair<K, V>> keyValuePairs)
+		final Collection<KeyValuePair<K, V>> keyValuePairs)
 	{
+		Argument.notNull(keyValuePairs, "keyValuePairs");
 		return newLinkedHashMap(KeyValuePair.toMap(keyValuePairs));
 	}
 
@@ -480,9 +489,9 @@ public final class MapFactory
 	 * @return The new {@link LinkedHashMap}
 	 */
 	@SafeVarargs
-	public static <K, V> Map<K, V> newLinkedHashMap(
-		final @NonNull KeyValuePair<K, V>... keyValuePairs)
+	public static <K, V> Map<K, V> newLinkedHashMap(final KeyValuePair<K, V>... keyValuePairs)
 	{
+		Argument.notNull(keyValuePairs, "keyValuePairs");
 		return newLinkedHashMap(ListFactory.newArrayList(keyValuePairs));
 	}
 
@@ -497,8 +506,9 @@ public final class MapFactory
 	 *            the map
 	 * @return The new {@link LinkedHashMap}
 	 */
-	public static <K, V> Map<K, V> newLinkedHashMap(final @NonNull Map<K, V> map)
+	public static <K, V> Map<K, V> newLinkedHashMap(final Map<K, V> map)
 	{
+		Argument.notNull(map, "map");
 		return new LinkedHashMap<>(map);
 	}
 
@@ -528,9 +538,9 @@ public final class MapFactory
 	 *            the collection with the key value pairs
 	 * @return The new {@link TreeMap}
 	 */
-	public static <K, V> Map<K, V> newTreeMap(
-		final @NonNull Collection<KeyValuePair<K, V>> keyValuePairs)
+	public static <K, V> Map<K, V> newTreeMap(final Collection<KeyValuePair<K, V>> keyValuePairs)
 	{
+		Argument.notNull(keyValuePairs, "keyValuePairs");
 		return newTreeMap(KeyValuePair.toMap(keyValuePairs));
 	}
 
@@ -545,8 +555,9 @@ public final class MapFactory
 	 *            the comparator
 	 * @return The new {@link TreeMap}
 	 */
-	public static <K, V> Map<K, V> newTreeMap(final @NonNull Comparator<? super K> comparator)
+	public static <K, V> Map<K, V> newTreeMap(final Comparator<? super K> comparator)
 	{
+		Argument.notNull(comparator, "comparator");
 		return new TreeMap<>(comparator);
 	}
 
@@ -563,9 +574,11 @@ public final class MapFactory
 	 *            the key value pairs
 	 * @return The new {@link TreeMap}
 	 */
-	public static <K, V> Map<K, V> newTreeMap(final @NonNull Comparator<? super K> comparator,
-		final @NonNull Collection<KeyValuePair<K, V>> keyValuePairs)
+	public static <K, V> Map<K, V> newTreeMap(final Comparator<? super K> comparator,
+		final Collection<KeyValuePair<K, V>> keyValuePairs)
 	{
+		Argument.notNull(comparator, "comparator");
+		Argument.notNull(keyValuePairs, "keyValuePairs");
 		TreeMap<K, V> treeMap = new TreeMap<>(comparator);
 		treeMap.putAll(newTreeMap(keyValuePairs));
 		return treeMap;
@@ -585,9 +598,11 @@ public final class MapFactory
 	 * @return The new {@link TreeMap}
 	 */
 	@SafeVarargs
-	public static <K, V> Map<K, V> newTreeMap(final @NonNull Comparator<? super K> comparator,
-		final @NonNull KeyValuePair<K, V>... keyValuePairs)
+	public static <K, V> Map<K, V> newTreeMap(final Comparator<? super K> comparator,
+		final KeyValuePair<K, V>... keyValuePairs)
 	{
+		Argument.notNull(comparator, "comparator");
+		Argument.notNull(keyValuePairs, "keyValuePairs");
 		TreeMap<K, V> treeMap = new TreeMap<>(comparator);
 		treeMap.putAll(newTreeMap(keyValuePairs));
 		return treeMap;
@@ -605,8 +620,9 @@ public final class MapFactory
 	 * @return The new {@link TreeMap}
 	 */
 	@SafeVarargs
-	public static <K, V> Map<K, V> newTreeMap(final @NonNull KeyValuePair<K, V>... keyValuePairs)
+	public static <K, V> Map<K, V> newTreeMap(final KeyValuePair<K, V>... keyValuePairs)
 	{
+		Argument.notNull(keyValuePairs, "keyValuePairs");
 		return newTreeMap(ListFactory.newArrayList(keyValuePairs));
 	}
 
@@ -621,8 +637,9 @@ public final class MapFactory
 	 *            the map
 	 * @return The new {@link TreeMap}
 	 */
-	public static <K, V> Map<K, V> newTreeMap(final @NonNull Map<K, V> map)
+	public static <K, V> Map<K, V> newTreeMap(final Map<K, V> map)
 	{
+		Argument.notNull(map, "map");
 		return new TreeMap<>(map);
 	}
 
