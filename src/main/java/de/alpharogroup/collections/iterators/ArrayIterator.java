@@ -58,6 +58,11 @@ public class ArrayIterator<E> implements Iterator<E>
 		this.array = array;
 	}
 
+	public E[] getArray()
+	{
+		return array;
+	}
+
 	/**
 	 * {@inheritDoc}
 	 */
@@ -104,9 +109,5 @@ public class ArrayIterator<E> implements Iterator<E>
 			}
 			this.array[this.array.length - 1] = null;
 		}
-	}
-
-	public E[] getArray() {
-		return array;
 	}
 }

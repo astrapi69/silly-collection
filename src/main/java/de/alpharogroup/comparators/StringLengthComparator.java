@@ -36,9 +36,6 @@ import java.util.Comparator;
 public class StringLengthComparator extends SortOrderComparator<String>
 {
 
-	public StringLengthComparator() {
-	}
-
 	/**
 	 * Factory method to create a new {@link StringLengthComparator} object.
 	 *
@@ -88,6 +85,10 @@ public class StringLengthComparator extends SortOrderComparator<String>
 	{
 		return NullCheckComparator.<String> of(new StringLengthComparator(sortOrder),
 			nullIsGreaterThan);
+	}
+
+	public StringLengthComparator()
+	{
 	}
 
 	/**

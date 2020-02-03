@@ -24,15 +24,23 @@
  */
 package de.alpharogroup.collections.list;
 
+import java.util.Arrays;
+import java.util.Collection;
+import java.util.Comparator;
+import java.util.Enumeration;
+import java.util.Iterator;
+import java.util.List;
+import java.util.Optional;
+import java.util.Set;
+
+import org.apache.commons.beanutils.BeanComparator;
+import org.apache.commons.collections4.ComparatorUtils;
+
 import de.alpharogroup.collections.CollectionExtensions;
 import de.alpharogroup.collections.array.ArrayFactory;
 import de.alpharogroup.collections.modifications.ModifiedCollections;
 import de.alpharogroup.comparators.SortOrderComparator;
 import lombok.NonNull;
-import org.apache.commons.beanutils.BeanComparator;
-import org.apache.commons.collections4.ComparatorUtils;
-
-import java.util.*;
 
 /**
  * Extensions class for use with {@link List} objects.
@@ -42,7 +50,41 @@ import java.util.*;
  */
 public final class ListExtensions
 {
-	private ListExtensions() {
+	/**
+	 * Compute in recursive manner all combinations of the given arguments
+	 *
+	 * @param allCombinations
+	 *            the all combinations
+	 * @param possibleNumbers
+	 *            the possible numbers
+	 * @param currentCombination
+	 *            the current combination
+	 * @param currentStart
+	 *            the current start
+	 * @param currentEnd
+	 *            the current end
+	 * @param currentCombinationIndex
+	 *            the current combination index
+	 * @param combinationSize
+	 *            the combination size
+	 */
+	private static void computeAllCombinations(List<List<Integer>> allCombinations,
+		List<Integer> possibleNumbers, Integer[] currentCombination, int currentStart,
+		int currentEnd, int currentCombinationIndex, int combinationSize)
+	{
+		if (currentCombinationIndex == combinationSize)
+		{
+			allCombinations.add(ListFactory.newArrayList(currentCombination));
+			return;
+		}
+
+		for (int i = currentStart; i <= currentEnd
+			&& currentEnd - i + 1 >= combinationSize - currentCombinationIndex; i++)
+		{
+			currentCombination[currentCombinationIndex] = possibleNumbers.get(i);
+			computeAllCombinations(allCombinations, possibleNumbers, currentCombination, i + 1,
+				currentEnd, currentCombinationIndex + 1, combinationSize);
+		}
 	}
 
 	/**
@@ -69,6 +111,61 @@ public final class ListExtensions
 			}
 		}
 		return contains;
+	}
+
+	/**
+	 * Gets all possible combinations from the given list of {@link Integer} objects
+	 *
+	 * @param possibleNumbers
+	 *            the possible numbers
+	 * @param combinationSize
+	 *            the size of the combination to generate
+	 * @return all possible combinations from the given list of {@link Integer} objects
+	 */
+	public static List<List<Integer>> getAllCombinations(
+		@NonNull final List<Integer> possibleNumbers, int combinationSize)
+	{
+		Integer[] currentCombination = new Integer[combinationSize];
+		List<List<Integer>> allCombinations = ListFactory.newArrayList();
+		int currentEnd = possibleNumbers.size() - 1;
+		int currentStart = 0;
+		int currentCombinationIndex = 0;
+		computeAllCombinations(allCombinations, possibleNumbers, currentCombination, currentStart,
+			currentEnd, currentCombinationIndex, combinationSize);
+		return allCombinations;
+	}
+
+	/**
+	 * Gets all possible combinations from the given list
+	 *
+	 * @param <T>
+	 *            the generic type of the elements in the list
+	 * @param combinationSize
+	 *            the size of the elements of the combinations to generate
+	 * @param possibleValues
+	 *            the list with the element values
+	 * @return all possible combinations from the given list
+	 */
+	public static <T> List<List<T>> getCombinations(@NonNull final List<T> possibleValues,
+		final int combinationSize)
+	{
+		List<List<T>> combinations = ListFactory.newArrayList();
+		if (combinationSize == 0)
+		{
+			combinations.add(ListFactory.newArrayList());
+			return combinations;
+		}
+		for (int i = 0; i < possibleValues.size(); i++)
+		{
+			T element = possibleValues.get(i);
+			List<T> rest = getPartialList(possibleValues, i + 1);
+			for (List<T> previous : getCombinations(rest, combinationSize - 1))
+			{
+				previous.add(element);
+				combinations.add(previous);
+			}
+		}
+		return combinations;
 	}
 
 	/**
@@ -126,6 +223,27 @@ public final class ListExtensions
 	}
 
 	/**
+	 * Gets the partial list
+	 *
+	 * @param <T>
+	 *            the generic type of the elements in the list
+	 * @param list
+	 *            the list
+	 * @param i
+	 *            the i
+	 * @return the partial list
+	 */
+	private static <T> List<T> getPartialList(List<T> list, int i)
+	{
+		List<T> partialList = ListFactory.newArrayList();
+		for (int j = i; j < list.size(); j++)
+		{
+			partialList.add(list.get(j));
+		}
+		return partialList;
+	}
+
+	/**
 	 * This method decorates the retainAll method and returns the result in a new list
 	 *
 	 * @param <T>
@@ -140,6 +258,52 @@ public final class ListExtensions
 	{
 		toSearch.retainAll(search);
 		return ListFactory.newArrayList(toSearch);
+	}
+
+	/**
+	 * Checks if the given {@link List} has a next element from the given element
+	 *
+	 * @param <T>
+	 *            the generic type
+	 * @param list
+	 *            the list
+	 * @param element
+	 *            the element
+	 * @return true, if successful
+	 */
+	public static <T> boolean hasNext(final @NonNull List<T> list, final T element)
+	{
+		final int indexOfElement = list.indexOf(element);
+		if (indexOfElement == -1)
+		{
+			return false;
+		}
+		if (indexOfElement < list.size() - 1)
+		{
+			return true;
+		}
+		return false;
+	}
+
+	/**
+	 * Checks if the given {@link List} has a next element from the given element
+	 *
+	 * @param <T>
+	 *            the generic type
+	 * @param list
+	 *            the list
+	 * @param element
+	 *            the element
+	 * @return true, if successful
+	 */
+	public static <T> boolean hasPrevious(final @NonNull List<T> list, final T element)
+	{
+		final int indexOfElement = list.indexOf(element);
+		if (indexOfElement == -1 || indexOfElement == 0)
+		{
+			return false;
+		}
+		return true;
 	}
 
 	/**
@@ -207,52 +371,6 @@ public final class ListExtensions
 			return optionalLast.get().equals(element);
 		}
 		return false;
-	}
-
-	/**
-	 * Checks if the given {@link List} has a next element from the given element
-	 *
-	 * @param <T>
-	 *            the generic type
-	 * @param list
-	 *            the list
-	 * @param element
-	 *            the element
-	 * @return true, if successful
-	 */
-	public static <T> boolean hasNext(final @NonNull List<T> list, final T element)
-	{
-		final int indexOfElement = list.indexOf(element);
-		if (indexOfElement == -1)
-		{
-			return false;
-		}
-		if (indexOfElement < list.size() - 1)
-		{
-			return true;
-		}
-		return false;
-	}
-
-	/**
-	 * Checks if the given {@link List} has a next element from the given element
-	 *
-	 * @param <T>
-	 *            the generic type
-	 * @param list
-	 *            the list
-	 * @param element
-	 *            the element
-	 * @return true, if successful
-	 */
-	public static <T> boolean hasPrevious(final @NonNull List<T> list, final T element)
-	{
-		final int indexOfElement = list.indexOf(element);
-		if (indexOfElement == -1 || indexOfElement == 0)
-		{
-			return false;
-		}
-		return true;
 	}
 
 	/**
@@ -461,21 +579,6 @@ public final class ListExtensions
 	 *
 	 * @param <T>
 	 *            the generic type
-	 * @param elements
-	 *            the elements
-	 * @return the t[]
-	 */
-	@SafeVarargs
-	public static <T> T[] toArray(final T... elements)
-	{
-		return ArrayFactory.newArray(elements);
-	}
-
-	/**
-	 * To array.
-	 *
-	 * @param <T>
-	 *            the generic type
 	 * @param list
 	 *            the list
 	 * @return the array or null if the list is empty
@@ -489,6 +592,21 @@ public final class ListExtensions
 		}
 		T[] newArray = (T[])ArrayFactory.newArray(list.get(0).getClass(), list.size());
 		return list.toArray(newArray);
+	}
+
+	/**
+	 * To array.
+	 *
+	 * @param <T>
+	 *            the generic type
+	 * @param elements
+	 *            the elements
+	 * @return the t[]
+	 */
+	@SafeVarargs
+	public static <T> T[] toArray(final T... elements)
+	{
+		return ArrayFactory.newArray(elements);
 	}
 
 	/**
@@ -525,6 +643,7 @@ public final class ListExtensions
 		return ListFactory.newArrayList(set);
 	}
 
+
 	/**
 	 * Converts the given parameter elements to an object array.
 	 *
@@ -543,118 +662,8 @@ public final class ListExtensions
 		return decorator;
 	}
 
-	/**
-	 * Gets all possible combinations from the given list of {@link Integer} objects
-	 *
-	 * @param possibleNumbers
-	 *            the possible numbers
-	 * @param combinationSize
-	 *            the size of the combination to generate
-	 * @return all possible combinations from the given list of {@link Integer} objects
-	 */
-	public static List<List<Integer>> getAllCombinations(
-		@NonNull final List<Integer> possibleNumbers, int combinationSize)
+	private ListExtensions()
 	{
-		Integer[] currentCombination = new Integer[combinationSize];
-		List<List<Integer>> allCombinations = ListFactory.newArrayList();
-		int currentEnd = possibleNumbers.size() - 1;
-		int currentStart = 0;
-		int currentCombinationIndex = 0;
-		computeAllCombinations(allCombinations, possibleNumbers, currentCombination, currentStart,
-			currentEnd, currentCombinationIndex, combinationSize);
-		return allCombinations;
-	}
-
-	/**
-	 * Compute in recursive manner all combinations of the given arguments
-	 *
-	 * @param allCombinations
-	 *            the all combinations
-	 * @param possibleNumbers
-	 *            the possible numbers
-	 * @param currentCombination
-	 *            the current combination
-	 * @param currentStart
-	 *            the current start
-	 * @param currentEnd
-	 *            the current end
-	 * @param currentCombinationIndex
-	 *            the current combination index
-	 * @param combinationSize
-	 *            the combination size
-	 */
-	private static void computeAllCombinations(List<List<Integer>> allCombinations,
-		List<Integer> possibleNumbers, Integer[] currentCombination, int currentStart,
-		int currentEnd, int currentCombinationIndex, int combinationSize)
-	{
-		if (currentCombinationIndex == combinationSize)
-		{
-			allCombinations.add(ListFactory.newArrayList(currentCombination));
-			return;
-		}
-
-		for (int i = currentStart; i <= currentEnd
-			&& currentEnd - i + 1 >= combinationSize - currentCombinationIndex; i++)
-		{
-			currentCombination[currentCombinationIndex] = possibleNumbers.get(i);
-			computeAllCombinations(allCombinations, possibleNumbers, currentCombination, i + 1,
-				currentEnd, currentCombinationIndex + 1, combinationSize);
-		}
-	}
-
-
-	/**
-	 * Gets all possible combinations from the given list
-	 *
-	 * @param <T>
-	 *            the generic type of the elements in the list
-	 * @param combinationSize
-	 *            the size of the elements of the combinations to generate
-	 * @param possibleValues
-	 *            the list with the element values
-	 * @return all possible combinations from the given list
-	 */
-	public static <T> List<List<T>> getCombinations(@NonNull final List<T> possibleValues,
-		final int combinationSize)
-	{
-		List<List<T>> combinations = ListFactory.newArrayList();
-		if (combinationSize == 0)
-		{
-			combinations.add(ListFactory.newArrayList());
-			return combinations;
-		}
-		for (int i = 0; i < possibleValues.size(); i++)
-		{
-			T element = possibleValues.get(i);
-			List<T> rest = getPartialList(possibleValues, i + 1);
-			for (List<T> previous : getCombinations(rest, combinationSize - 1))
-			{
-				previous.add(element);
-				combinations.add(previous);
-			}
-		}
-		return combinations;
-	}
-
-	/**
-	 * Gets the partial list
-	 *
-	 * @param <T>
-	 *            the generic type of the elements in the list
-	 * @param list
-	 *            the list
-	 * @param i
-	 *            the i
-	 * @return the partial list
-	 */
-	private static <T> List<T> getPartialList(List<T> list, int i)
-	{
-		List<T> partialList = ListFactory.newArrayList();
-		for (int j = i; j < list.size(); j++)
-		{
-			partialList.add(list.get(j));
-		}
-		return partialList;
 	}
 
 }

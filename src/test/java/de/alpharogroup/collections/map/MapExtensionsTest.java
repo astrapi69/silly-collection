@@ -27,11 +27,14 @@ package de.alpharogroup.collections.map;
 import static org.testng.Assert.assertEquals;
 import static org.testng.AssertJUnit.assertTrue;
 
-import java.lang.reflect.InvocationTargetException;
-import java.util.*;
+import java.util.AbstractMap;
+import java.util.Collection;
+import java.util.Comparator;
+import java.util.HashMap;
+import java.util.List;
+import java.util.Map;
 import java.util.Map.Entry;
 
-import org.meanbean.test.BeanTestException;
 import org.meanbean.test.BeanTester;
 import org.testng.annotations.Test;
 
@@ -44,40 +47,9 @@ import de.alpharogroup.collections.list.ListFactory;
  */
 public class MapExtensionsTest
 {
-	private static int getRandomIntBetween(int min, int max) {
+	private static int getRandomIntBetween(int min, int max)
+	{
 		return (int)(Math.random() * ((max - min) + 1)) + min;
-	}
-
-	/**
-	 * Test method for {@link MapExtensions#mergeAndSummarize(Map, Map)}
-	 */
-	@Test
-	public void testMergeAndSummarize(){
-		int minVolume;
-		int maxVolume;
-		Map<Integer, Integer> initialNumberCounterMap;
-		Map<Integer, Integer> numberCounterMap;
-		List<Integer> integerList;
-
-		minVolume = 1;
-		maxVolume = 10;
-		integerList = ListFactory.newRangeList(minVolume, maxVolume);
-		numberCounterMap =
-			MapFactory.newCounterMap(integerList);
-		for (int i = minVolume; i <= maxVolume; i++){
-			numberCounterMap.merge(i, getRandomIntBetween(1, 4), Integer::sum);
-		}
-		initialNumberCounterMap = MapFactory.newCounterMap(integerList);
-		for (int i = minVolume; i <= maxVolume; i++){
-			initialNumberCounterMap.merge(i, getRandomIntBetween(1, 4), Integer::sum);
-		}
-		Map<Integer, Integer> mergedMap = MapExtensions
-			.mergeAndSummarize(initialNumberCounterMap, numberCounterMap);
-		for (int i = minVolume; i <= maxVolume; i++){
-			int actual = mergedMap.get(i);
-			int expected = numberCounterMap.get(i) + initialNumberCounterMap.get(i);
-			assertEquals(actual, expected);
-		}
 	}
 
 	private void assertMapToArray(Map<String, String> map, String[][] twoDimArray)
@@ -135,6 +107,69 @@ public class MapExtensionsTest
 		{
 			assertTrue("Key should be in the expected List.", expected.contains(key));
 
+		}
+	}
+
+	/**
+	 * Test method for {@link MapExtensions#mergeAndSummarize(Map, Map)}
+	 */
+	@Test
+	public void testMergeAndSummarize()
+	{
+		int minVolume;
+		int maxVolume;
+		Map<Integer, Integer> initialNumberCounterMap;
+		Map<Integer, Integer> numberCounterMap;
+		Map<Integer, Integer> mergedMap;
+		List<Integer> integerList;
+		// first scenario ...
+		minVolume = 1;
+		maxVolume = 10;
+		integerList = ListFactory.newRangeList(minVolume, maxVolume);
+		numberCounterMap = MapFactory.newCounterMap(integerList);
+		for (int i = minVolume; i <= maxVolume; i++)
+		{
+			numberCounterMap.merge(i, getRandomIntBetween(1, 4), Integer::sum);
+		}
+		initialNumberCounterMap = MapFactory.newCounterMap(integerList);
+		for (int i = minVolume; i <= maxVolume; i++)
+		{
+			initialNumberCounterMap.merge(i, getRandomIntBetween(1, 4), Integer::sum);
+		}
+		mergedMap = MapExtensions.mergeAndSummarize(initialNumberCounterMap, numberCounterMap);
+		for (int i = minVolume; i <= maxVolume; i++)
+		{
+			int actual = mergedMap.get(i);
+			int expected = numberCounterMap.get(i) + initialNumberCounterMap.get(i);
+			assertEquals(actual, expected);
+		}
+		// other scenario ...
+		mergedMap.clear();
+		minVolume = 1;
+		maxVolume = 10;
+		integerList = ListFactory.newRangeList(minVolume, maxVolume);
+		numberCounterMap = MapFactory.newCounterMap(integerList);
+		for (int i = minVolume; i <= maxVolume; i++)
+		{
+			numberCounterMap.merge(i, getRandomIntBetween(1, 4), Integer::sum);
+		}
+		minVolume = 6;
+		maxVolume = 15;
+		integerList = ListFactory.newRangeList(minVolume, maxVolume);
+		initialNumberCounterMap = MapFactory.newCounterMap(integerList);
+		for (int i = minVolume; i <= maxVolume; i++)
+		{
+			initialNumberCounterMap.merge(i, getRandomIntBetween(1, 4), Integer::sum);
+		}
+		mergedMap = MapExtensions.mergeAndSummarize(initialNumberCounterMap, numberCounterMap);
+		for (int i = minVolume; i <= maxVolume; i++)
+		{
+			if (numberCounterMap.containsKey(i) && initialNumberCounterMap.containsKey(i))
+			{
+				int actual = mergedMap.get(i);
+				int expected = numberCounterMap.get(i) + initialNumberCounterMap.get(i);
+				assertEquals(actual, expected);
+			}
 		}
 	}
 

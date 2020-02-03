@@ -24,8 +24,6 @@
  */
 package de.alpharogroup.collections;
 
-import org.apache.commons.collections4.CollectionUtils;
-
 import java.util.Arrays;
 import java.util.Collection;
 import java.util.List;
@@ -33,64 +31,14 @@ import java.util.Optional;
 import java.util.concurrent.atomic.AtomicInteger;
 import java.util.stream.Collectors;
 
+import org.apache.commons.collections4.CollectionUtils;
+
 /**
  * The class {@link CollectionExtensions} is an extension class for use with {@link Collection}
  * objects.
  */
 public final class CollectionExtensions
 {
-
-	private CollectionExtensions() {
-		throw new UnsupportedOperationException("This is a utility class and cannot be instantiated");
-	}
-
-	/**
-	 * Compare the given two {@link Collection} objects in equality.
-	 *
-	 * @param <T>
-	 *            the generic type of the elements
-	 * @param one
-	 *            the one
-	 * @param other
-	 *            the other
-	 * @return true, if the given two {@link Collection} objects are equal otherwise false
-	 */
-	public static <T> boolean isEqualCollection(Collection<T> one, Collection<T> other)
-	{
-		Optional<Boolean> optionalEvaluation = preconditionOfEqualCollection(one, other);
-		if (optionalEvaluation.isPresent())
-			return optionalEvaluation.get();
-		Collection<T> retainAll = CollectionUtils.retainAll(one, other);
-		return retainAll.isEmpty() || one.containsAll(other) && other.containsAll(one);
-	}
-
-	/**
-	 * Checks the given two {@link Collection} objects if there are null and return the appropriate
-	 * {@link Optional} boolean value
-	 *
-	 * @param <T>
-	 *            the generic type of the elements
-	 * @param one
-	 *            the one
-	 * @param other
-	 *            the other
-	 * @return the {@link Optional} boolean if value is true both are null, if value is false given
-	 *         two {@link Collection} objects are not equal otherwise the {@link Optional} is empty
-	 */
-	public static <T> Optional<Boolean> preconditionOfEqualCollection(Collection<T> one,
-																	  Collection<T> other)
-	{
-		if (one == null && other == null)
-		{
-			return Optional.of(true);
-		}
-
-		if (one == null || other == null || one.size() != other.size())
-		{
-			return Optional.of(false);
-		}
-		return Optional.empty();
-	}
 
 	/**
 	 * Removes all of the first given collection's elements that are also contained in the second
@@ -106,6 +54,26 @@ public final class CollectionExtensions
 	public static <T> void difference(final Collection<T> one, final Collection<T> other)
 	{
 		one.removeAll(other);
+	}
+
+	/**
+	 * Returns a hash code based on the contents of the collection that contains array objects.
+	 *
+	 * @param <T>
+	 *            the generic type of the array objects
+	 * @param arrayObjects
+	 *            the collection that contains array objects whose content-based hash code to
+	 *            compute
+	 * @return the content-based hash code for the given collection that contains array objects
+	 */
+	public static <T> int hashCode(Collection<T[]> arrayObjects)
+	{
+		int hashCode = 1;
+		for (T[] arrayObject : arrayObjects)
+		{
+			hashCode = 31 * hashCode * Arrays.hashCode(arrayObject);
+		}
+		return hashCode;
 	}
 
 	/**
@@ -135,20 +103,6 @@ public final class CollectionExtensions
 	}
 
 	/**
-	 * Checks if the given {@link Collection} is not null or empty
-	 *
-	 * @param <T>
-	 *            the generic type
-	 * @param collection
-	 *            The collection to check
-	 * @return true if the given {@link Collection} is null or empty otherwise false
-	 */
-	public static <T> boolean isNotEmpty(final Collection<T> collection)
-	{
-		return collection != null && !collection.isEmpty();
-	}
-
-	/**
 	 * Checks if the given {@link Collection} is null or empty.
 	 *
 	 * @param <T>
@@ -162,25 +116,38 @@ public final class CollectionExtensions
 		return collection == null || collection.isEmpty();
 	}
 
-
 	/**
-	 * Returns a hash code based on the contents of the collection that contains array objects.
+	 * Compare the given two {@link Collection} objects in equality.
 	 *
 	 * @param <T>
-	 *            the generic type of the array objects
-	 * @param arrayObjects
-	 *            the collection that contains array objects whose content-based hash code to
-	 *            compute
-	 * @return the content-based hash code for the given collection that contains array objects
+	 *            the generic type of the elements
+	 * @param one
+	 *            the one
+	 * @param other
+	 *            the other
+	 * @return true, if the given two {@link Collection} objects are equal otherwise false
 	 */
-	public static <T> int hashCode(Collection<T[]> arrayObjects)
+	public static <T> boolean isEqualCollection(Collection<T> one, Collection<T> other)
 	{
-		int hashCode = 1;
-		for (T[] arrayObject : arrayObjects)
-		{
-			hashCode = 31 * hashCode * Arrays.hashCode(arrayObject);
-		}
-		return hashCode;
+		Optional<Boolean> optionalEvaluation = preconditionOfEqualCollection(one, other);
+		if (optionalEvaluation.isPresent())
+			return optionalEvaluation.get();
+		Collection<T> retainAll = CollectionUtils.retainAll(one, other);
+		return retainAll.isEmpty() || one.containsAll(other) && other.containsAll(one);
+	}
+
+	/**
+	 * Checks if the given {@link Collection} is not null or empty
+	 *
+	 * @param <T>
+	 *            the generic type
+	 * @param collection
+	 *            The collection to check
+	 * @return true if the given {@link Collection} is null or empty otherwise false
+	 */
+	public static <T> boolean isNotEmpty(final Collection<T> collection)
+	{
+		return collection != null && !collection.isEmpty();
 	}
 
 	/**
@@ -200,6 +167,39 @@ public final class CollectionExtensions
 
 		return collection.stream()
 			.collect(Collectors.groupingBy(it -> counter.getAndIncrement() / size)).values();
+	}
+
+
+	/**
+	 * Checks the given two {@link Collection} objects if there are null and return the appropriate
+	 * {@link Optional} boolean value
+	 *
+	 * @param <T>
+	 *            the generic type of the elements
+	 * @param one
+	 *            the one
+	 * @param other
+	 *            the other
+	 * @return the {@link Optional} boolean if value is true both are null, if value is false given
+	 *         two {@link Collection} objects are not equal otherwise the {@link Optional} is empty
+	 */
+	public static <T> Optional<Boolean> preconditionOfEqualCollection(Collection<T> one,
+		Collection<T> other)
+	{
+		if (one == null && other == null)
+		{
+			return Optional.of(true);
+		}
+
+		if (one == null || other == null || one.size() != other.size())
+		{
+			return Optional.of(false);
+		}
+		return Optional.empty();
+	}
+
+	private CollectionExtensions()
+	{
 	}
 
 }

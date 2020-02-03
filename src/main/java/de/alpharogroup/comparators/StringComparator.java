@@ -34,9 +34,6 @@ import java.util.Comparator;
 public class StringComparator extends SortOrderComparator<String>
 {
 
-	public StringComparator() {
-	}
-
 	/**
 	 * Factory method to create a new {@link StringComparator} object.
 	 *
@@ -85,6 +82,10 @@ public class StringComparator extends SortOrderComparator<String>
 	public static Comparator<String> of(final SortOrder sortOrder, final boolean nullIsGreaterThan)
 	{
 		return NullCheckComparator.<String> of(new StringComparator(sortOrder), nullIsGreaterThan);
+	}
+
+	public StringComparator()
+	{
 	}
 
 	/**

@@ -24,13 +24,17 @@
  */
 package de.alpharogroup.collections.map;
 
-import de.alpharogroup.collections.list.ListFactory;
-import lombok.NonNull;
-
-import java.util.*;
+import java.util.Collection;
+import java.util.Comparator;
+import java.util.LinkedHashMap;
+import java.util.List;
+import java.util.Map;
 import java.util.Map.Entry;
 import java.util.stream.Collectors;
 import java.util.stream.Stream;
+
+import de.alpharogroup.collections.list.ListFactory;
+import lombok.NonNull;
 
 /**
  * Extensions class for use with Map objects.
@@ -40,109 +44,6 @@ import java.util.stream.Stream;
  */
 public final class MapExtensions
 {
-
-	private MapExtensions()
-	{
-	}
-
-	/**
-	 * Factory method for create a map for counting elements of the given collection
-	 *
-	 * @param <K>
-	 *            the generic type of the elements
-	 * @param valueCounterMap
-	 *            the counter map
-	 * @param summarizeWithThisValueCounterMap
-	 *            the other counter map that will be summarized with the first map
-	 * @return the new map ready to count elements
-	 */
-	public static <K> Map<K, Integer> mergeAndSummarize(Map<K, Integer> valueCounterMap,
-		Map<K, Integer> summarizeWithThisValueCounterMap)
-	{
-		return Stream.of(valueCounterMap, summarizeWithThisValueCounterMap)
-			.map(Map::entrySet).flatMap(Collection::stream)
-			.collect(Collectors.toMap(Map.Entry::getKey, Map.Entry::getValue, Integer::sum));
-	}
-
-	/**
-	 * Sort the given Map by its values and returns a sorted list by the values of the given Map
-	 *
-	 * @param <K>
-	 *            the generic type of the key
-	 * @param <V>
-	 *            the generic type of the value
-	 * @param map
-	 *            The Map to sort
-	 * @param reversed
-	 *            the flag if the result should be in reversed order
-	 * @return a sorted list by the values of the given Map
-	 */
-	public static <K, V extends Comparable<? super V>> List<Entry<K, V>> sortByValueAsList(
-            final @NonNull Map<K, V> map, boolean reversed)
-	{
-		return sortByValueAsList(map,
-			reversed ? Comparator.reverseOrder() : Comparator.naturalOrder());
-	}
-
-	/**
-	 * Sort the given Map by its values and returns a sorted list by the values of the given Map
-	 *
-	 * @param <K>
-	 *            the generic type of the key
-	 * @param <V>
-	 *            the generic type of the value
-	 * @param map
-	 *            The Map to sort
-	 * @param comparator
-	 *            the comparator to sort
-	 * @return a sorted list by the values of the given Map
-	 */
-	public static <K, V extends Comparable<? super V>> List<Entry<K, V>> sortByValueAsList(
-            final @NonNull Map<K, V> map, final @NonNull Comparator<? super V> comparator)
-	{
-		return map.entrySet().stream().sorted(Map.Entry.comparingByValue(comparator))
-			.collect(Collectors.toList());
-	}
-
-	/**
-	 * Sort the given Map by its values and returns a sorted list by the values of the given Map
-	 *
-	 * @param <K>
-	 *            the generic type of the key
-	 * @param <V>
-	 *            the generic type of the value
-	 * @param map
-	 *            the Map to sort
-	 * @param reversed
-	 *            the flag if the result should be in reversed order
-	 * @return a sorted Map by the values of the given Map
-	 */
-	public static <K, V extends Comparable<? super V>> Map<K, V> sortByValue(
-            final @NonNull Map<K, V> map, boolean reversed)
-	{
-		return sortByValue(map, reversed ? Comparator.reverseOrder() : Comparator.naturalOrder());
-	}
-
-	/**
-	 * Sort the given Map by its values and returns a sorted list by the values of the given Map
-	 *
-	 * @param <K>
-	 *            the generic type of the key
-	 * @param <V>
-	 *            the generic type of the value
-	 * @param map
-	 *            the Map to sort
-	 * @param comparator
-	 *            the comparator to sort
-	 * @return a sorted Map by the values of the given Map
-	 */
-	public static <K, V extends Comparable<? super V>> Map<K, V> sortByValue(
-            final @NonNull Map<K, V> map, final @NonNull Comparator<? super V> comparator)
-	{
-		return map.entrySet().stream().sorted(Map.Entry.comparingByValue(comparator))
-			.collect(Collectors.toMap(Map.Entry::getKey, Map.Entry::getValue, (k, v) -> k,
-				LinkedHashMap::new));
-	}
 
 	/**
 	 * Returns the first founded key from the given value or null if nothing is found.
@@ -200,6 +101,107 @@ public final class MapExtensions
 	}
 
 	/**
+	 * Factory method for create a map for counting elements of the given collection
+	 *
+	 * @param <K>
+	 *            the generic type of the elements
+	 * @param valueCounterMap
+	 *            the counter map
+	 * @param summarizeWithThisValueCounterMap
+	 *            the other counter map that will be summarized with the first map
+	 * @return the new map ready to count elements
+	 */
+	public static <K> Map<K, Integer> mergeAndSummarize(final Map<K, Integer> valueCounterMap,
+		final Map<K, Integer> summarizeWithThisValueCounterMap)
+	{
+		Map<K, Integer> mergedMap = Stream.of(valueCounterMap, summarizeWithThisValueCounterMap)
+			.map(Map::entrySet).flatMap(Collection::stream)
+			.filter(map -> valueCounterMap.containsKey(map.getKey()))
+			.collect(Collectors.toMap(Map.Entry::getKey, Map.Entry::getValue, Integer::sum));
+		return mergedMap;
+	}
+
+	/**
+	 * Sort the given Map by its values and returns a sorted list by the values of the given Map
+	 *
+	 * @param <K>
+	 *            the generic type of the key
+	 * @param <V>
+	 *            the generic type of the value
+	 * @param map
+	 *            the Map to sort
+	 * @param reversed
+	 *            the flag if the result should be in reversed order
+	 * @return a sorted Map by the values of the given Map
+	 */
+	public static <K, V extends Comparable<? super V>> Map<K, V> sortByValue(
+		final @NonNull Map<K, V> map, boolean reversed)
+	{
+		return sortByValue(map, reversed ? Comparator.reverseOrder() : Comparator.naturalOrder());
+	}
+
+	/**
+	 * Sort the given Map by its values and returns a sorted list by the values of the given Map
+	 *
+	 * @param <K>
+	 *            the generic type of the key
+	 * @param <V>
+	 *            the generic type of the value
+	 * @param map
+	 *            the Map to sort
+	 * @param comparator
+	 *            the comparator to sort
+	 * @return a sorted Map by the values of the given Map
+	 */
+	public static <K, V extends Comparable<? super V>> Map<K, V> sortByValue(
+		final @NonNull Map<K, V> map, final @NonNull Comparator<? super V> comparator)
+	{
+		return map.entrySet().stream().sorted(Map.Entry.comparingByValue(comparator))
+			.collect(Collectors.toMap(Map.Entry::getKey, Map.Entry::getValue, (k, v) -> k,
+				LinkedHashMap::new));
+	}
+
+	/**
+	 * Sort the given Map by its values and returns a sorted list by the values of the given Map
+	 *
+	 * @param <K>
+	 *            the generic type of the key
+	 * @param <V>
+	 *            the generic type of the value
+	 * @param map
+	 *            The Map to sort
+	 * @param reversed
+	 *            the flag if the result should be in reversed order
+	 * @return a sorted list by the values of the given Map
+	 */
+	public static <K, V extends Comparable<? super V>> List<Entry<K, V>> sortByValueAsList(
+		final @NonNull Map<K, V> map, boolean reversed)
+	{
+		return sortByValueAsList(map,
+			reversed ? Comparator.reverseOrder() : Comparator.naturalOrder());
+	}
+
+	/**
+	 * Sort the given Map by its values and returns a sorted list by the values of the given Map
+	 *
+	 * @param <K>
+	 *            the generic type of the key
+	 * @param <V>
+	 *            the generic type of the value
+	 * @param map
+	 *            The Map to sort
+	 * @param comparator
+	 *            the comparator to sort
+	 * @return a sorted list by the values of the given Map
+	 */
+	public static <K, V extends Comparable<? super V>> List<Entry<K, V>> sortByValueAsList(
+		final @NonNull Map<K, V> map, final @NonNull Comparator<? super V> comparator)
+	{
+		return map.entrySet().stream().sorted(Map.Entry.comparingByValue(comparator))
+			.collect(Collectors.toList());
+	}
+
+	/**
 	 * Converts a two dimensional Array to a Map.
 	 *
 	 * @param <T>
@@ -230,6 +232,10 @@ public final class MapExtensions
 	public static Map<String, String> toMap(final String[][] twoDimArray)
 	{
 		return toGenericMap(twoDimArray);
+	}
+
+	private MapExtensions()
+	{
 	}
 
 }
