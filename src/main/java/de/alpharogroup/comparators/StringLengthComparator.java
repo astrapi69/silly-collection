@@ -26,8 +26,6 @@ package de.alpharogroup.comparators;
 
 import java.util.Comparator;
 
-import lombok.NoArgsConstructor;
-
 /**
  * The class {@link StringLengthComparator} compares {@link String} objects based on length. The
  * default order is greater length come first. If length are equal then the natural ordering will be
@@ -35,7 +33,6 @@ import lombok.NoArgsConstructor;
  *
  * @author Asterios Raptis
  */
-@NoArgsConstructor
 public class StringLengthComparator extends SortOrderComparator<String>
 {
 
@@ -88,6 +85,10 @@ public class StringLengthComparator extends SortOrderComparator<String>
 	{
 		return NullCheckComparator.<String> of(new StringLengthComparator(sortOrder),
 			nullIsGreaterThan);
+	}
+
+	public StringLengthComparator()
+	{
 	}
 
 	/**

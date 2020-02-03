@@ -34,32 +34,15 @@ import java.util.SortedSet;
 import java.util.TreeSet;
 import java.util.function.Supplier;
 
+import de.alpharogroup.check.Argument;
 import de.alpharogroup.collections.CollectionExtensions;
 import de.alpharogroup.collections.list.ListFactory;
-import lombok.NonNull;
-import lombok.experimental.UtilityClass;
 
 /**
  * The factory class {@link SetFactory} provides factory methods for create new {@link Set} objects
  */
-@UtilityClass
 public final class SetFactory
 {
-
-	/**
-	 * Factory method for create new {@link HashSet} and will be returned as {@link Set}
-	 *
-	 * @param <T>
-	 *            the generic type of the elements
-	 * @param elements
-	 *            the elements to add in the new {@link HashSet}
-	 * @return the new {@link HashSet}
-	 */
-	@SafeVarargs
-	public static <T> Set<T> newHashSet(final T... elements)
-	{
-		return newHashSet(null, elements);
-	}
 
 	/**
 	 * Factory method for create new {@link HashSet} and will be returned as {@link Set}
@@ -92,63 +75,18 @@ public final class SetFactory
 	}
 
 	/**
-	 * Factory method for create new {@link LinkedHashSet} and will be returned as {@link Set}
+	 * Factory method for create new {@link HashSet} and will be returned as {@link Set}
 	 *
 	 * @param <T>
 	 *            the generic type of the elements
 	 * @param elements
 	 *            the elements to add in the new {@link HashSet}
-	 * @return the new {@link LinkedHashSet}
-	 */
-	@SafeVarargs
-	public static <T> Set<T> newLinkedHashSet(final T... elements)
-	{
-		return newLinkedHashSet(null, elements);
-	}
-
-	/**
-	 * Factory method for create new {@link LinkedHashSet} and will be returned as {@link Set}
-	 *
-	 * @param <T>
-	 *            the generic type of the elements
-	 * @param collection
-	 *            the optional collection that will be added to the new list
-	 * @param elements
-	 *            the elements to add in the new {@link LinkedHashSet}
 	 * @return the new {@link HashSet}
 	 */
 	@SafeVarargs
-	public static <T> Set<T> newLinkedHashSet(final Collection<T> collection, final T... elements)
+	public static <T> Set<T> newHashSet(final T... elements)
 	{
-		final Set<T> set;
-		if (CollectionExtensions.isNotEmpty(collection))
-		{
-			set = new LinkedHashSet<>(collection);
-		}
-		else
-		{
-			set = new LinkedHashSet<>();
-		}
-		if (0 < elements.length)
-		{
-			Collections.addAll(set, elements);
-		}
-		return set;
-	}
-
-	/**
-	 * Factory method for create new {@link InsertionOrderSet} and will be returned as {@link Set}
-	 *
-	 * @param <T>
-	 *            the generic type of the elements
-	 * @param elements
-	 *            the elements to add in the new {@link InsertionOrderSet}
-	 * @return the new {@link InsertionOrderSet}
-	 */
-	@SafeVarargs
-	public static <T> Set<T> newInsertionOrderSet(final T... elements)
-	{
-		return newInsertionOrderSet(null, elements);
+		return newHashSet(null, elements);
 	}
 
 	/**
@@ -183,53 +121,63 @@ public final class SetFactory
 	}
 
 	/**
-	 * Factory method for create new {@link TreeSet} and will be returned as {@link Set}
+	 * Factory method for create new {@link InsertionOrderSet} and will be returned as {@link Set}
 	 *
 	 * @param <T>
 	 *            the generic type of the elements
 	 * @param elements
-	 *            the elements to add in the new {@link TreeSet}
-	 * @return the new {@link SortedSet}
+	 *            the elements to add in the new {@link InsertionOrderSet}
+	 * @return the new {@link InsertionOrderSet}
 	 */
 	@SafeVarargs
-	public static <T> SortedSet<T> newTreeSet(final T... elements)
+	public static <T> Set<T> newInsertionOrderSet(final T... elements)
 	{
-		return newTreeSet(ListFactory.newArrayList(), elements);
+		return newInsertionOrderSet(null, elements);
 	}
 
 	/**
-	 * Factory method for create new {@link TreeSet} and will be returned as {@link Set}.
-	 *
-	 * @param <T>
-	 *            the generic type of the elements
-	 * @param comparator
-	 *            the comparator
-	 * @param elements
-	 *            the elements to add in the new {@link TreeSet}
-	 * @return the new {@link SortedSet}
-	 */
-	@SafeVarargs
-	public static <T> SortedSet<T> newTreeSet(final @NonNull Comparator<T> comparator,
-		final T... elements)
-	{
-		return newTreeSet(ListFactory.newArrayList(), comparator, elements);
-	}
-
-	/**
-	 * Factory method for create new {@link TreeSet} and will be returned as {@link SortedSet}.
+	 * Factory method for create new {@link LinkedHashSet} and will be returned as {@link Set}
 	 *
 	 * @param <T>
 	 *            the generic type of the elements
 	 * @param collection
 	 *            the optional collection that will be added to the new list
 	 * @param elements
-	 *            the elements to add in the new {@link TreeSet}
-	 * @return the new {@link SortedSet}
+	 *            the elements to add in the new {@link LinkedHashSet}
+	 * @return the new {@link HashSet}
 	 */
 	@SafeVarargs
-	public static <T> SortedSet<T> newTreeSet(final Collection<T> collection, final T... elements)
+	public static <T> Set<T> newLinkedHashSet(final Collection<T> collection, final T... elements)
 	{
-		return newTreeSet(collection, null, elements);
+		final Set<T> set;
+		if (CollectionExtensions.isNotEmpty(collection))
+		{
+			set = new LinkedHashSet<>(collection);
+		}
+		else
+		{
+			set = new LinkedHashSet<>();
+		}
+		if (0 < elements.length)
+		{
+			Collections.addAll(set, elements);
+		}
+		return set;
+	}
+
+	/**
+	 * Factory method for create new {@link LinkedHashSet} and will be returned as {@link Set}
+	 *
+	 * @param <T>
+	 *            the generic type of the elements
+	 * @param elements
+	 *            the elements to add in the new {@link HashSet}
+	 * @return the new {@link LinkedHashSet}
+	 */
+	@SafeVarargs
+	public static <T> Set<T> newLinkedHashSet(final T... elements)
+	{
+		return newLinkedHashSet(null, elements);
 	}
 
 	/**
@@ -270,6 +218,56 @@ public final class SetFactory
 	}
 
 	/**
+	 * Factory method for create new {@link TreeSet} and will be returned as {@link SortedSet}.
+	 *
+	 * @param <T>
+	 *            the generic type of the elements
+	 * @param collection
+	 *            the optional collection that will be added to the new list
+	 * @param elements
+	 *            the elements to add in the new {@link TreeSet}
+	 * @return the new {@link SortedSet}
+	 */
+	@SafeVarargs
+	public static <T> SortedSet<T> newTreeSet(final Collection<T> collection, final T... elements)
+	{
+		return newTreeSet(collection, null, elements);
+	}
+
+	/**
+	 * Factory method for create new {@link TreeSet} and will be returned as {@link Set}.
+	 *
+	 * @param <T>
+	 *            the generic type of the elements
+	 * @param comparator
+	 *            the comparator
+	 * @param elements
+	 *            the elements to add in the new {@link TreeSet}
+	 * @return the new {@link SortedSet}
+	 */
+	@SafeVarargs
+	public static <T> SortedSet<T> newTreeSet(final Comparator<T> comparator, final T... elements)
+	{
+		Argument.notNull(comparator, "comparator");
+		return newTreeSet(ListFactory.newArrayList(), comparator, elements);
+	}
+
+	/**
+	 * Factory method for create new {@link TreeSet} and will be returned as {@link Set}
+	 *
+	 * @param <T>
+	 *            the generic type of the elements
+	 * @param elements
+	 *            the elements to add in the new {@link TreeSet}
+	 * @return the new {@link SortedSet}
+	 */
+	@SafeVarargs
+	public static <T> SortedSet<T> newTreeSet(final T... elements)
+	{
+		return newTreeSet(ListFactory.newArrayList(), elements);
+	}
+
+	/**
 	 * Factory method for create new {@link Supplier} for a {@link TreeSet} with a
 	 * {@link Comparator}
 	 *
@@ -279,10 +277,14 @@ public final class SetFactory
 	 *            the comparator
 	 * @return the new {@link Supplier}
 	 */
-	public static <T> Supplier<SortedSet<T>> newTreeSetSupplier(
-		final @NonNull Comparator<T> comparator)
+	public static <T> Supplier<SortedSet<T>> newTreeSetSupplier(final Comparator<T> comparator)
 	{
+		Argument.notNull(comparator, "comparator");
 		return () -> new TreeSet<>(comparator);
+	}
+
+	private SetFactory()
+	{
 	}
 
 }

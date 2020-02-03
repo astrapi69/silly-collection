@@ -1,20 +1,24 @@
 ## Change log
 ----------------------
 
-Version 6
+Version 5.9
 -------------
 
 ADDED:
  
-- added new constant for a regular expression pattern that can find comments in properties file
+- new method created that can summarize two counter Maps and return a new Map that contains the sum of the counts
+- new major release branch for jdk 11 created 
+- new constant created for a regular expression pattern that can find comments in properties file
+- new dependency jobj-core in version 3.5 added
 
 CHANGED:
 
-- changed jdk from version 8 to 11
 - method from PropertiesExtensions getInteger returns now an empty Optional if no integer is found
 - update of test dependency testng version to 7.1.1
 - update of test dependency junit version to 4.13
 - update of test dependency mockito-core version to 3.2.4
+- update of test benchmark dependency jmh version to 1.23
+- removed lombok dependency
 
 Version 5.8
 -------------

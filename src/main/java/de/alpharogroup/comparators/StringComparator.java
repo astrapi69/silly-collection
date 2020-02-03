@@ -26,14 +26,11 @@ package de.alpharogroup.comparators;
 
 import java.util.Comparator;
 
-import lombok.NoArgsConstructor;
-
 /**
  * The class {@link StringComparator} sorts String objects in ascending order as default.
  *
  * @author Asterios Raptis
  */
-@NoArgsConstructor
 public class StringComparator extends SortOrderComparator<String>
 {
 
@@ -85,6 +82,10 @@ public class StringComparator extends SortOrderComparator<String>
 	public static Comparator<String> of(final SortOrder sortOrder, final boolean nullIsGreaterThan)
 	{
 		return NullCheckComparator.<String> of(new StringComparator(sortOrder), nullIsGreaterThan);
+	}
+
+	public StringComparator()
+	{
 	}
 
 	/**

@@ -33,21 +33,18 @@ import org.testng.annotations.Test;
 import de.alpharogroup.BaseComparatorTestCase;
 import de.alpharogroup.collections.list.ListFactory;
 import de.alpharogroup.date.CreateDateExtensions;
-import lombok.AccessLevel;
-import lombok.experimental.FieldDefaults;
 
 /**
- * The unit test class for the class {@link DateComparator}.
+ * The unit test class for the class {@link DateComparator}
  */
-@FieldDefaults(level = AccessLevel.PRIVATE)
 public class DateComparatorTest extends BaseComparatorTestCase<Date>
 {
 
-	final Date after = CreateDateExtensions.newDate(2010, 3, 27, 10, 37, 04);
-	final Date before = CreateDateExtensions.newDate(2010, 3, 26, 10, 37, 04);
+	private final Date after = CreateDateExtensions.newDate(2010, 3, 27, 10, 37, 04);
+	private final Date before = CreateDateExtensions.newDate(2010, 3, 26, 10, 37, 04);
 
-	final Date future = CreateDateExtensions.newDate(2011, 3, 27, 10, 37, 04);
-	final Date past = CreateDateExtensions.newDate(2009, 3, 26, 10, 37, 04);
+	private final Date future = CreateDateExtensions.newDate(2011, 3, 27, 10, 37, 04);
+	private final Date past = CreateDateExtensions.newDate(2009, 3, 26, 10, 37, 04);
 
 	/**
 	 * {@inheritDoc}

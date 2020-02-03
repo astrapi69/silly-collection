@@ -27,13 +27,10 @@ package de.alpharogroup.collections.list;
 import java.util.Enumeration;
 import java.util.Vector;
 
-import lombok.experimental.UtilityClass;
-
 /**
  * The extensions {@link VectorExtensions} class can be used with {@link Vector} objects.
  */
-@UtilityClass
-public class VectorExtensions
+public final class VectorExtensions
 {
 
 	/**
@@ -54,5 +51,11 @@ public class VectorExtensions
 			vector.add(enumaration.nextElement());
 		}
 		return vector;
+	}
+
+	private VectorExtensions()
+	{
+		throw new UnsupportedOperationException(
+			"This is a utility class and cannot be instantiated");
 	}
 }

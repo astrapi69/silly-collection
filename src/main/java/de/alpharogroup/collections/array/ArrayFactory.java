@@ -26,14 +26,12 @@ package de.alpharogroup.collections.array;
 
 import java.lang.reflect.Array;
 
-import lombok.NonNull;
-import lombok.experimental.UtilityClass;
+import de.alpharogroup.check.Argument;
 
 /**
  * The factory class {@link ArrayFactory} provides factory methods for create new {@code Array}
  * objects
  */
-@UtilityClass
 public final class ArrayFactory
 {
 
@@ -67,63 +65,6 @@ public final class ArrayFactory
 	public static <T> T[] newArray(final T... elements)
 	{
 		return elements;
-	}
-
-	/**
-	 * Factory method for create new empty array with the length of the given array
-	 *
-	 * @param <T>
-	 *            the generic type of the elements
-	 * @param array
-	 *            the array that is used as a template
-	 * @return the new empty array
-	 */
-	public static <T> T[] newEmptyArray(final @NonNull T[] array)
-	{
-		return newEmptyArray(array, array.length);
-	}
-
-	/**
-	 * Factory method for create new empty array with the length of the given array.
-	 *
-	 * @param <T>
-	 *            the generic type of the elements
-	 * @param array
-	 *            the array that is used as a template
-	 * @param length
-	 *            the length of the new empty array
-	 * @return the new empty array
-	 */
-	@SuppressWarnings("unchecked")
-	public static <T> T[] newEmptyArray(final @NonNull T[] array, int length)
-	{
-		return (T[])Array.newInstance(array.getClass().getComponentType(), length);
-	}
-
-	/**
-	 * Creates a new {@link Integer} array with the given range that is defined through start and
-	 * end. For instance if the start is 5 and the end is 9 the resulted array will be [5,6,7,8,9]
-	 *
-	 * @param start
-	 *            The number to start
-	 * @param end
-	 *            The number to end minus one
-	 * @return the generated {@link Integer} array
-	 */
-	public static Integer[] newRangeArray(final int start, final int end)
-	{
-		if (end < start)
-		{
-			throw new IllegalArgumentException(
-				"Parameter end should be greater than parameter start.");
-		}
-		final int length = end - start + 1;
-		final Integer[] array = new Integer[length];
-		for (int i = start; i <= end; i++)
-		{
-			array[i - start] = i;
-		}
-		return array;
 	}
 
 	/**
@@ -172,6 +113,69 @@ public final class ArrayFactory
 	}
 
 	/**
+	 * Factory method for create new array of primitive double values from the given optional
+	 * elements.
+	 *
+	 * @param elements
+	 *            the optional primitive double values that will be in the returned array of
+	 *            primitive double values array.
+	 * @return the new array of primitive double values
+	 */
+	@SafeVarargs
+	public static double[] newDoubleArray(final double... elements)
+	{
+		return elements;
+	}
+
+	/**
+	 * Factory method for create new empty array with the length of the given array
+	 *
+	 * @param <T>
+	 *            the generic type of the elements
+	 * @param array
+	 *            the array that is used as a template
+	 * @return the new empty array
+	 */
+	public static <T> T[] newEmptyArray(final T[] array)
+	{
+		Argument.notNull(array, "array");
+		return newEmptyArray(array, array.length);
+	}
+
+	/**
+	 * Factory method for create new empty array with the length of the given array.
+	 *
+	 * @param <T>
+	 *            the generic type of the elements
+	 * @param array
+	 *            the array that is used as a template
+	 * @param length
+	 *            the length of the new empty array
+	 * @return the new empty array
+	 */
+	@SuppressWarnings("unchecked")
+	public static <T> T[] newEmptyArray(final T[] array, int length)
+	{
+		Argument.notNull(array, "array");
+		return (T[])Array.newInstance(array.getClass().getComponentType(), length);
+	}
+
+	/**
+	 * Factory method for create new array of primitive float values from the given optional
+	 * elements.
+	 *
+	 * @param elements
+	 *            the optional primitive float values that will be in the returned array of
+	 *            primitive float values array.
+	 * @return the new array of primitive float values
+	 */
+	@SafeVarargs
+	public static float[] newFloatArray(final float... elements)
+	{
+		return elements;
+	}
+
+	/**
 	 * Factory method for create new array of primitive integer values from the given optional
 	 * elements.
 	 *
@@ -202,33 +206,29 @@ public final class ArrayFactory
 	}
 
 	/**
-	 * Factory method for create new array of primitive float values from the given optional
-	 * elements.
+	 * Creates a new {@link Integer} array with the given range that is defined through start and
+	 * end. For instance if the start is 5 and the end is 9 the resulted array will be [5,6,7,8,9]
 	 *
-	 * @param elements
-	 *            the optional primitive float values that will be in the returned array of
-	 *            primitive float values array.
-	 * @return the new array of primitive float values
+	 * @param start
+	 *            The number to start
+	 * @param end
+	 *            The number to end minus one
+	 * @return the generated {@link Integer} array
 	 */
-	@SafeVarargs
-	public static float[] newFloatArray(final float... elements)
+	public static Integer[] newRangeArray(final int start, final int end)
 	{
-		return elements;
-	}
-
-	/**
-	 * Factory method for create new array of primitive double values from the given optional
-	 * elements.
-	 *
-	 * @param elements
-	 *            the optional primitive double values that will be in the returned array of
-	 *            primitive double values array.
-	 * @return the new array of primitive double values
-	 */
-	@SafeVarargs
-	public static double[] newDoubleArray(final double... elements)
-	{
-		return elements;
+		if (end < start)
+		{
+			throw new IllegalArgumentException(
+				"Parameter end should be greater than parameter start.");
+		}
+		final int length = end - start + 1;
+		final Integer[] array = new Integer[length];
+		for (int i = start; i <= end; i++)
+		{
+			array[i - start] = i;
+		}
+		return array;
 	}
 
 	/**
@@ -260,8 +260,9 @@ public final class ArrayFactory
 	 *            the end index that is exclusive
 	 * @return the new partial array
 	 */
-	public static <T> T[] newSubArray(final @NonNull T[] source, int startIndex, int endIndex)
+	public static <T> T[] newSubArray(final T[] source, int startIndex, int endIndex)
 	{
+		Argument.notNull(source, "source");
 		int newSize = endIndex - startIndex;
 		T[] subArray = newEmptyArray(source, newSize);
 		for (int i = 0; i < newSize; i++)
@@ -269,6 +270,12 @@ public final class ArrayFactory
 			subArray[i] = source[i + startIndex];
 		}
 		return subArray;
+	}
+
+	private ArrayFactory()
+	{
+		throw new UnsupportedOperationException(
+			"This is a utility class and cannot be instantiated");
 	}
 
 }

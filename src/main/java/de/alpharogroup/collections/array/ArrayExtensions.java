@@ -30,148 +30,14 @@ import java.util.Set;
 import java.util.stream.Collectors;
 import java.util.stream.Stream;
 
+import de.alpharogroup.check.Argument;
 import de.alpharogroup.collections.list.ListFactory;
-import lombok.NonNull;
-import lombok.experimental.UtilityClass;
 
 /**
  * The class {@link ArrayExtensions} is an extensions class for use with array objects.
  */
-@UtilityClass
 public final class ArrayExtensions
 {
-
-	/**
-	 * Removes the given prefix array from the first given array
-	 *
-	 * @param <T>
-	 *            the generic type of the objects in the arrays
-	 *
-	 * @param array
-	 *            the array
-	 * @param prefix
-	 *            the prefix
-	 * @return the resulted array
-	 */
-	@SuppressWarnings("unchecked")
-	public static <T> T[] removeFromStart(final @NonNull T[] array, final @NonNull T[] prefix)
-	{
-		if (0 < array.length)
-		{
-			T[] result = (T[])ArrayFactory.newArray(array[0].getClass(),
-				array.length - prefix.length);
-			System.arraycopy(array, prefix.length, result, 0, result.length);
-			return result;
-		}
-		return array;
-	}
-
-	/**
-	 * Removes the given suffix array from the first given array
-	 *
-	 * @param <T>
-	 *            the generic type of the objects in the arrays
-	 *
-	 * @param array
-	 *            the array
-	 * @param suffix
-	 *            the suffix
-	 * @return the resulted array
-	 */
-	public static <T> T[] removeFromEnd(final T[] array, T[] suffix)
-	{
-		return Arrays.copyOf(array, array.length - suffix.length);
-	}
-
-	/**
-	 * Removes the first element of the array.
-	 *
-	 * @param <T>
-	 *            the generic type of the objects in the array
-	 * @param array
-	 *            the origin array
-	 * @param arrayToRemove
-	 *            the array to remove
-	 * @return the new created array with the elements
-	 */
-	public static <T> T[] removeAll(@NonNull final T[] array, @NonNull final T[] arrayToRemove)
-	{
-		List<T> list = ListFactory.newArrayList(array);
-		List<T> listToRemove = ListFactory.newArrayList(arrayToRemove);
-		list.removeAll(listToRemove);
-		return list.toArray(Arrays.copyOf(array, list.size()));
-	}
-
-	/**
-	 * Returns <tt>true</tt> if and only if the given element is in the given array
-	 *
-	 * @param <T>
-	 *            the generic type
-	 * @param array
-	 *            the array
-	 * @param element
-	 *            the element
-	 * @return <tt>true</tt> if and only if the given element is in the given array otherwise
-	 *         <tt>false</tt>
-	 */
-	public static <T> boolean contains(final T[] array, final T element)
-	{
-		return indexOf(array, element) >= 0;
-	}
-
-	/**
-	 * Removes the first element of the array.
-	 *
-	 * @param <T>
-	 *            the generic type of the objects in the array
-	 * @param array
-	 *            the origin array
-	 * @param indexes
-	 *            the indexes to remove
-	 * @return the new created array with the elements from the given indexes
-	 */
-	public static <T> T[] remove(@NonNull final T[] array, int... indexes)
-	{
-		List<T> list = ListFactory.newArrayList(array);
-		final int lastIndex = indexes.length - 1;
-		Arrays.sort(indexes);
-		for (int i = lastIndex; -1 < i; i--)
-		{
-			int index = indexes[i];
-			list.remove(index);
-		}
-		return list.toArray(Arrays.copyOf(array, list.size()));
-	}
-
-	/**
-	 * Creates a new array cloned from the given array with the difference that the first element is
-	 * removed
-	 *
-	 * @param <T>
-	 *            the generic type of the objects in the array
-	 * @param original
-	 *            the origin array
-	 * @return the new created array with out the first element
-	 */
-	public static <T> T[] removeFirst(@NonNull final T[] original)
-	{
-		return remove(original, 0);
-	}
-
-	/**
-	 * Removes the first element of the array
-	 *
-	 * @param <T>
-	 *            the generic type of the objects in the array
-	 * @param original
-	 *            the origin array
-	 * @return the new created array with out the first element
-	 */
-	public static <T> T[] removeLast(@NonNull final T[] original)
-	{
-		return Arrays.copyOf(original, original.length - 1);
-	}
-
 	/**
 	 * Copy the given source array to the given destination array.<br>
 	 * <br>
@@ -206,6 +72,22 @@ public final class ArrayExtensions
 	}
 
 	/**
+	 * Creates a new {@link List} from the given array. <br>
+	 * <br>
+	 * Note: This wraps only the method asList from {@link Arrays#asList(Object...)}.
+	 *
+	 * @param <T>
+	 *            the generic type of the objects in the array.
+	 * @param array
+	 *            the array
+	 * @return the new {@link List} created from the given array.
+	 */
+	public static <T> List<T> asList(final T[] array)
+	{
+		return ListFactory.newArrayList(array);
+	}
+
+	/**
 	 * Creates a new {@link Set} from the given array. <br>
 	 * <br>
 	 *
@@ -222,19 +104,20 @@ public final class ArrayExtensions
 	}
 
 	/**
-	 * Creates a new {@link List} from the given array. <br>
-	 * <br>
-	 * Note: This wraps only the method asList from {@link Arrays#asList(Object...)}.
+	 * Returns <tt>true</tt> if and only if the given element is in the given array
 	 *
 	 * @param <T>
-	 *            the generic type of the objects in the array.
+	 *            the generic type
 	 * @param array
 	 *            the array
-	 * @return the new {@link List} created from the given array.
+	 * @param element
+	 *            the element
+	 * @return <tt>true</tt> if and only if the given element is in the given array otherwise
+	 *         <tt>false</tt>
 	 */
-	public static <T> List<T> asList(final T[] array)
+	public static <T> boolean contains(final T[] array, final T element)
 	{
-		return ListFactory.newArrayList(array);
+		return indexOf(array, element) >= 0;
 	}
 
 	/**
@@ -413,31 +296,6 @@ public final class ArrayExtensions
 	}
 
 	/**
-	 * Intersection of the given two arrays.
-	 *
-	 * @param <T>
-	 *            the generic type
-	 * @param one
-	 *            the first array
-	 * @param other
-	 *            the other array
-	 * @return the result of the intersection
-	 */
-	public static <T> T[] intersection(final @NonNull T[] one, final @NonNull T[] other)
-	{
-		T[] intersection = ArrayFactory.newEmptyArray(one);
-		int j = 0;
-		for (int i = 0; i < one.length; i++)
-		{
-			if (contains(other, one[i]))
-			{
-				intersection[j++] = one[i];
-			}
-		}
-		return ArrayFactory.newSubArray(intersection, 0, j);
-	}
-
-	/**
 	 * Gets the index of the given element in the given array.
 	 *
 	 * @param <T>
@@ -452,6 +310,33 @@ public final class ArrayExtensions
 	{
 		final int indexOfElement = Arrays.asList(array).indexOf(element);
 		return indexOfElement;
+	}
+
+	/**
+	 * Intersection of the given two arrays.
+	 *
+	 * @param <T>
+	 *            the generic type
+	 * @param one
+	 *            the first array
+	 * @param other
+	 *            the other array
+	 * @return the result of the intersection
+	 */
+	public static <T> T[] intersection(final T[] one, final T[] other)
+	{
+		Argument.notNull(one, "one");
+		Argument.notNull(other, "other");
+		T[] intersection = ArrayFactory.newEmptyArray(one);
+		int j = 0;
+		for (int i = 0; i < one.length; i++)
+		{
+			if (contains(other, one[i]))
+			{
+				intersection[j++] = one[i];
+			}
+		}
+		return ArrayFactory.newSubArray(intersection, 0, j);
 	}
 
 	/**
@@ -487,6 +372,127 @@ public final class ArrayExtensions
 		final int lastIndex = array.length - 1;
 		final int indexOfElement = Arrays.asList(array).indexOf(element);
 		return indexOfElement == lastIndex;
+	}
+
+	/**
+	 * Removes the first element of the array.
+	 *
+	 * @param <T>
+	 *            the generic type of the objects in the array
+	 * @param array
+	 *            the origin array
+	 * @param indexes
+	 *            the indexes to remove
+	 * @return the new created array with the elements from the given indexes
+	 */
+	public static <T> T[] remove(final T[] array, int... indexes)
+	{
+		Argument.notNull(array, "array");
+		List<T> list = ListFactory.newArrayList(array);
+		final int lastIndex = indexes.length - 1;
+		Arrays.sort(indexes);
+		for (int i = lastIndex; -1 < i; i--)
+		{
+			int index = indexes[i];
+			list.remove(index);
+		}
+		return list.toArray(Arrays.copyOf(array, list.size()));
+	}
+
+	/**
+	 * Removes the first element of the array.
+	 *
+	 * @param <T>
+	 *            the generic type of the objects in the array
+	 * @param array
+	 *            the origin array
+	 * @param arrayToRemove
+	 *            the array to remove
+	 * @return the new created array with the elements
+	 */
+	public static <T> T[] removeAll(final T[] array, final T[] arrayToRemove)
+	{
+		Argument.notNull(array, "array");
+		Argument.notNull(arrayToRemove, "arrayToRemove");
+		List<T> list = ListFactory.newArrayList(array);
+		List<T> listToRemove = ListFactory.newArrayList(arrayToRemove);
+		list.removeAll(listToRemove);
+		return list.toArray(Arrays.copyOf(array, list.size()));
+	}
+
+	/**
+	 * Creates a new array cloned from the given array with the difference that the first element is
+	 * removed
+	 *
+	 * @param <T>
+	 *            the generic type of the objects in the array
+	 * @param original
+	 *            the origin array
+	 * @return the new created array with out the first element
+	 */
+	public static <T> T[] removeFirst(final T[] original)
+	{
+		Argument.notNull(original, "original");
+		return remove(original, 0);
+	}
+
+	/**
+	 * Removes the given suffix array from the first given array
+	 *
+	 * @param <T>
+	 *            the generic type of the objects in the arrays
+	 *
+	 * @param array
+	 *            the array
+	 * @param suffix
+	 *            the suffix
+	 * @return the resulted array
+	 */
+	public static <T> T[] removeFromEnd(final T[] array, T[] suffix)
+	{
+		return Arrays.copyOf(array, array.length - suffix.length);
+	}
+
+	/**
+	 * Removes the given prefix array from the first given array
+	 *
+	 * @param <T>
+	 *            the generic type of the objects in the arrays
+	 *
+	 * @param array
+	 *            the array
+	 * @param prefix
+	 *            the prefix
+	 * @return the resulted array
+	 */
+	@SuppressWarnings("unchecked")
+	public static <T> T[] removeFromStart(final T[] array, final T[] prefix)
+	{
+		Argument.notNull(array, "array");
+		Argument.notNull(prefix, "prefix");
+		if (0 < array.length)
+		{
+			T[] result = (T[])ArrayFactory.newArray(array[0].getClass(),
+				array.length - prefix.length);
+			System.arraycopy(array, prefix.length, result, 0, result.length);
+			return result;
+		}
+		return array;
+	}
+
+	/**
+	 * Removes the first element of the array
+	 *
+	 * @param <T>
+	 *            the generic type of the objects in the array
+	 * @param original
+	 *            the origin array
+	 * @return the new created array with out the first element
+	 */
+	public static <T> T[] removeLast(final T[] original)
+	{
+		Argument.notNull(original, "original");
+		return Arrays.copyOf(original, original.length - 1);
 	}
 
 	/**
@@ -529,6 +535,10 @@ public final class ArrayExtensions
 	public static <T> List<T> toList(final T[] array)
 	{
 		return asList(array);
+	}
+
+	private ArrayExtensions()
+	{
 	}
 
 }

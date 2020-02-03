@@ -49,7 +49,6 @@ public class EnumerationIterator<T> implements Iterator<T>
 	 */
 	public EnumerationIterator(final Enumeration<T> enumeration)
 	{
-		super();
 		this.enumeration = enumeration;
 	}
 

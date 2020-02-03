@@ -27,15 +27,13 @@ package de.alpharogroup.collections.list;
 import java.util.List;
 import java.util.Optional;
 
+import de.alpharogroup.check.Argument;
 import de.alpharogroup.collections.CollectionExtensions;
-import lombok.NonNull;
-import lombok.experimental.UtilityClass;
 
 /**
  * Extensions class for use with {@link List} objects
  */
-@UtilityClass
-public class OptionalListExtensions
+public final class OptionalListExtensions
 {
 
 	/**
@@ -48,8 +46,9 @@ public class OptionalListExtensions
 	 * @return an {@link Optional} with the first object from the given {@link List} or an empty
 	 *         {@link Optional} if the List is empty
 	 */
-	public static <T> Optional<T> getFirst(final @NonNull List<T> list)
+	public static <T> Optional<T> getFirst(final List<T> list)
 	{
+		Argument.notNull(list, "list");
 		if (CollectionExtensions.isNotEmpty(list))
 		{
 			return Optional.of(list.get(0));
@@ -67,13 +66,61 @@ public class OptionalListExtensions
 	 * @return an {@link Optional} with the last object from the given {@link List} or an empty
 	 *         {@link Optional} if the List is empty
 	 */
-	public static <T> Optional<T> getLast(final @NonNull List<T> list)
+	public static <T> Optional<T> getLast(final List<T> list)
 	{
+		Argument.notNull(list, "list");
 		if (CollectionExtensions.isNotEmpty(list))
 		{
 			return Optional.of(list.get(list.size() - 1));
 		}
 		return Optional.empty();
+	}
+
+	/**
+	 * Gets the next element from the given {@link List}. As start point is the given element
+	 *
+	 * @param <T>
+	 *            the generic type of elements
+	 * @param list
+	 *            the list
+	 * @param element
+	 *            the element
+	 * @return an {@link Optional} with the next element from the given {@link List} or an empty
+	 *         {@link Optional} if the {@link List} has no next element
+	 */
+	public static <T> Optional<T> getNext(final List<T> list, final T element)
+	{
+		Argument.notNull(list, "list");
+		if (ListExtensions.hasNext(list, element))
+		{
+			int nextIndex = list.indexOf(element) + 1;
+			return Optional.of(list.get(nextIndex));
+		}
+		return Optional.empty();
+	}
+
+	/**
+	 * Gets the previous element from the given {@link List}. As start point is the given element
+	 *
+	 * @param <T>
+	 *            the generic type of elements
+	 * @param list
+	 *            the list
+	 * @param element
+	 *            the element
+	 * @return an {@link Optional} with the previous element from the given {@link List} or an empty
+	 *         {@link Optional} if the {@link List} has no previous element
+	 */
+	public static <T> Optional<T> getPrevious(final List<T> list, final T element)
+	{
+		Argument.notNull(list, "list");
+		final int indexOfElement = list.indexOf(element);
+		if (indexOfElement == -1 || indexOfElement == 0)
+		{
+			return Optional.empty();
+		}
+		int previousIndex = indexOfElement - 1;
+		return Optional.of(list.get(previousIndex));
 	}
 
 	/**
@@ -87,8 +134,9 @@ public class OptionalListExtensions
 	 * @return returns an {@link Optional} with the first object if it was removed from the given
 	 *         {@link List} or an empty {@link Optional} if the {@link List} is empty
 	 */
-	public static <T> Optional<T> removeFirst(final @NonNull List<T> list)
+	public static <T> Optional<T> removeFirst(final List<T> list)
 	{
+		Argument.notNull(list, "list");
 		if (!CollectionExtensions.isEmpty(list))
 		{
 			return Optional.of(list.remove(0));
@@ -107,8 +155,9 @@ public class OptionalListExtensions
 	 * @return returns an {@link Optional} with the last object if it was removed from the given
 	 *         {@link List} or an empty {@link Optional} if the {@link List} is empty
 	 */
-	public static <T> Optional<T> removeLast(final @NonNull List<T> list)
+	public static <T> Optional<T> removeLast(final List<T> list)
 	{
+		Argument.notNull(list, "list");
 		if (!CollectionExtensions.isEmpty(list))
 		{
 			return Optional.of(list.remove(list.size() - 1));
@@ -116,49 +165,10 @@ public class OptionalListExtensions
 		return Optional.empty();
 	}
 
-	/**
-	 * Gets the previous element from the given {@link List}. As start point is the given element
-	 *
-	 * @param <T>
-	 *            the generic type of elements
-	 * @param list
-	 *            the list
-	 * @param element
-	 *            the element
-	 * @return an {@link Optional} with the previous element from the given {@link List} or an empty
-	 *         {@link Optional} if the {@link List} has no previous element
-	 */
-	public static <T> Optional<T> getPrevious(final @NonNull List<T> list, final T element)
+	private OptionalListExtensions()
 	{
-		final int indexOfElement = list.indexOf(element);
-		if (indexOfElement == -1 || indexOfElement == 0)
-		{
-			return Optional.empty();
-		}
-		int previousIndex = indexOfElement - 1;
-		return Optional.of(list.get(previousIndex));
-	}
-
-	/**
-	 * Gets the next element from the given {@link List}. As start point is the given element
-	 *
-	 * @param <T>
-	 *            the generic type of elements
-	 * @param list
-	 *            the list
-	 * @param element
-	 *            the element
-	 * @return an {@link Optional} with the next element from the given {@link List} or an empty
-	 *         {@link Optional} if the {@link List} has no next element
-	 */
-	public static <T> Optional<T> getNext(final @NonNull List<T> list, final T element)
-	{
-		if (ListExtensions.hasNext(list, element))
-		{
-			int nextIndex = list.indexOf(element) + 1;
-			return Optional.of(list.get(nextIndex));
-		}
-		return Optional.empty();
+		throw new UnsupportedOperationException(
+			"This is a utility class and cannot be instantiated");
 	}
 
 }
