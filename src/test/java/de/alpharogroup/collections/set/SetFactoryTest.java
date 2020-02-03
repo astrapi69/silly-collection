@@ -27,7 +27,6 @@ package de.alpharogroup.collections.set;
 import static org.testng.Assert.assertEquals;
 import static org.testng.Assert.assertNotNull;
 
-import java.lang.reflect.InvocationTargetException;
 import java.util.Collection;
 import java.util.Comparator;
 import java.util.List;
@@ -36,7 +35,6 @@ import java.util.SortedSet;
 import java.util.function.Supplier;
 import java.util.stream.Collectors;
 
-import org.meanbean.test.BeanTestException;
 import org.meanbean.test.BeanTester;
 import org.testng.annotations.Test;
 
@@ -316,8 +314,7 @@ public class SetFactoryTest
 	/**
 	 * Test method for {@link SetFactory} with {@link BeanTester}
 	 */
-	@Test(expectedExceptions = { BeanTestException.class, InvocationTargetException.class,
-			UnsupportedOperationException.class })
+	@Test
 	public void testWithBeanTester()
 	{
 		final BeanTester beanTester = new BeanTester();

@@ -31,19 +31,15 @@ import org.openjdk.jmh.annotations.Scope;
 import org.openjdk.jmh.annotations.State;
 import org.openjdk.jmh.annotations.Warmup;
 
-import lombok.AccessLevel;
-import lombok.experimental.FieldDefaults;
-
 /**
  * The benchmark class for the class {@link IndexableSet}
  */
 @State(Scope.Benchmark)
-@FieldDefaults(level = AccessLevel.PRIVATE, makeFinal = true)
 public class IndexableSetBenchmark
 {
 
 	/** The set for benchmark. */
-	IndexableSet<Integer> set = new IndexableSet<>();
+	private final IndexableSet<Integer> set = new IndexableSet<>();
 
 	/**
 	 * Instantiates a new {@link IndexableSetBenchmark} object

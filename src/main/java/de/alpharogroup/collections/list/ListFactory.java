@@ -24,10 +24,17 @@
  */
 package de.alpharogroup.collections.list;
 
+import java.util.ArrayList;
+import java.util.Arrays;
+import java.util.Collection;
+import java.util.Collections;
+import java.util.Iterator;
+import java.util.LinkedList;
+import java.util.List;
+import java.util.Map;
+
 import de.alpharogroup.collections.CollectionExtensions;
 import de.alpharogroup.collections.array.ArrayFactory;
-
-import java.util.*;
 
 /**
  * The factory class {@link ListFactory} provides factory methods for create new {@link Map} objects
@@ -37,65 +44,6 @@ import java.util.*;
  */
 public final class ListFactory
 {
-
-	private ListFactory() {
-		throw new UnsupportedOperationException("This is a utility class and cannot be instantiated");
-	}
-
-	/**
-	 * Factory method for create new {@link ArrayList} from the given optional iterator and the
-	 * given optional elements.
-	 *
-	 * @param <T>
-	 *            the generic type of the elements
-	 * @param iterator
-	 *            the optional iterator that will be added to the new list
-	 * @param elements
-	 *            the optional elements to be added in the new {@link ArrayList}.
-	 * @return the new {@link ArrayList} as {@link List}.
-	 */
-	@SafeVarargs
-	public static <T> List<T> newArrayList(final Iterator<T> iterator, final T... elements)
-	{
-		final List<T> list = new ArrayList<>();
-		if (iterator != null)
-		{
-			while (iterator.hasNext())
-			{
-				list.add(iterator.next());
-			}
-		}
-		Collections.addAll(list, elements);
-		return list;
-	}
-
-
-	/**
-	 * Factory method for create new {@link ArrayList} from the given optional iterable and the
-	 * given optional elements.
-	 *
-	 * @param <T>
-	 *            the generic type of the elements
-	 * @param iterable
-	 *            the optional iterable that will be added to the new list
-	 * @param elements
-	 *            the optional elements to be added in the new {@link ArrayList}.
-	 * @return the new {@link ArrayList} as {@link List}.
-	 */
-	@SafeVarargs
-	public static <T> List<T> newArrayList(final Iterable<T> iterable, final T... elements)
-	{
-		final List<T> list = new ArrayList<>();
-		if (iterable != null)
-		{
-			for (T t : iterable)
-			{
-				list.add(t);
-			}
-		}
-		Collections.addAll(list, elements);
-		return list;
-	}
 
 	/**
 	 * Factory method for create new {@link ArrayList} from the given optional collection and the
@@ -127,6 +75,61 @@ public final class ListFactory
 	}
 
 	/**
+	 * Factory method for create new {@link ArrayList} from the given optional iterable and the
+	 * given optional elements.
+	 *
+	 * @param <T>
+	 *            the generic type of the elements
+	 * @param iterable
+	 *            the optional iterable that will be added to the new list
+	 * @param elements
+	 *            the optional elements to be added in the new {@link ArrayList}.
+	 * @return the new {@link ArrayList} as {@link List}.
+	 */
+	@SafeVarargs
+	public static <T> List<T> newArrayList(final Iterable<T> iterable, final T... elements)
+	{
+		final List<T> list = new ArrayList<>();
+		if (iterable != null)
+		{
+			for (T t : iterable)
+			{
+				list.add(t);
+			}
+		}
+		Collections.addAll(list, elements);
+		return list;
+	}
+
+
+	/**
+	 * Factory method for create new {@link ArrayList} from the given optional iterator and the
+	 * given optional elements.
+	 *
+	 * @param <T>
+	 *            the generic type of the elements
+	 * @param iterator
+	 *            the optional iterator that will be added to the new list
+	 * @param elements
+	 *            the optional elements to be added in the new {@link ArrayList}.
+	 * @return the new {@link ArrayList} as {@link List}.
+	 */
+	@SafeVarargs
+	public static <T> List<T> newArrayList(final Iterator<T> iterator, final T... elements)
+	{
+		final List<T> list = new ArrayList<>();
+		if (iterator != null)
+		{
+			while (iterator.hasNext())
+			{
+				list.add(iterator.next());
+			}
+		}
+		Collections.addAll(list, elements);
+		return list;
+	}
+
+	/**
 	 * Factory method for create new {@link ArrayList} from the given optional elements.
 	 *
 	 * @param <T>
@@ -139,22 +142,6 @@ public final class ListFactory
 	public static <T> List<T> newArrayList(final T... elements)
 	{
 		return newArrayList((Collection<T>)null, elements);
-	}
-
-	/**
-	 * Creates a new {@link Integer} {@link List} with the given range that is defined through start
-	 * and end. For instance if the start is 5 and the end is 9 the resulted {@link List} will be
-	 * [5,6,7,8,9]
-	 *
-	 * @param start
-	 *            The number to start
-	 * @param end
-	 *            The number to end minus one
-	 * @return the generated {@link Integer} List
-	 */
-	public static List<Integer> newRangeList(final int start, final int end)
-	{
-		return Arrays.asList(ArrayFactory.newRangeArray(start, end));
 	}
 
 	/**
@@ -199,6 +186,28 @@ public final class ListFactory
 	public static <T> List<T> newLinkedList(final T... elements)
 	{
 		return newLinkedList(null, elements);
+	}
+
+	/**
+	 * Creates a new {@link Integer} {@link List} with the given range that is defined through start
+	 * and end. For instance if the start is 5 and the end is 9 the resulted {@link List} will be
+	 * [5,6,7,8,9]
+	 *
+	 * @param start
+	 *            The number to start
+	 * @param end
+	 *            The number to end minus one
+	 * @return the generated {@link Integer} List
+	 */
+	public static List<Integer> newRangeList(final int start, final int end)
+	{
+		return Arrays.asList(ArrayFactory.newRangeArray(start, end));
+	}
+
+	private ListFactory()
+	{
+		throw new UnsupportedOperationException(
+			"This is a utility class and cannot be instantiated");
 	}
 
 }

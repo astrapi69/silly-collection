@@ -34,15 +34,12 @@ import org.meanbean.test.BeanTestException;
 import org.meanbean.test.BeanTester;
 import org.testng.annotations.Test;
 
-import lombok.experimental.ExtensionMethod;
-
 /**
  * The unit test class for the class {@link VectorExtensions}.
  *
  * @version 1.0
  * @author Asterios Raptis
  */
-@ExtensionMethod(ListExtensions.class)
 public class VectorExtensionsTest
 {
 

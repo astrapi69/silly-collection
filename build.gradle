@@ -6,12 +6,10 @@ buildscript {
         }
     }
     dependencies {
-        classpath "io.franzbecker:gradle-lombok:3.2.0"
     }
 }
 
 plugins {
-    id "io.franzbecker.gradle-lombok" version "3.2.0"
     id "java"
     id "maven-publish"
     id "signing"
@@ -22,9 +20,9 @@ plugins {
 apply plugin: "jacoco"
 
 group = "de.alpharogroup"
-version = "6.1-SNAPSHOT"
+version = "$projectVersion"
 description = "silly-collections"
-sourceCompatibility = "11"
+sourceCompatibility = "8"
 
 repositories {
     jcenter()
@@ -33,9 +31,9 @@ repositories {
 }
 
 dependencies {
-    implementation("org.projectlombok:lombok:$lombokVersion")
     implementation("org.apache.commons:commons-collections4:$commonsCollections4Version")
     implementation("de.alpharogroup:silly-beans:$sillyBeansVersion")
+    implementation("de.alpharogroup:jobj-core:$jobjCoreVersion")
     implementation("de.alpharogroup:jobj-compare:$jobjCompareVersion")
     testImplementation("de.alpharogroup:jobj-clone:$jobjCloneVersion")
     testImplementation("de.alpharogroup:jobj-contract-verifier:$jobjContractVerifierVersion")
@@ -50,20 +48,6 @@ dependencies {
     testImplementation("org.mockito:mockito-core:$mockitoCoreVersion")
 }
 
-import io.franzbecker.gradle.lombok.task.DelombokTask
-
-task delombok(type: DelombokTask, dependsOn: compileJava) {
-    ext.outputDir = file("$buildDir/delombok")
-    outputs.dir(outputDir)
-    sourceSets.main.java.srcDirs.each {
-        inputs.dir(it)
-        args(it, "-d", outputDir)
-    }
-    doFirst {
-        outputDir.deleteDir()
-    }
-}
-
 task sourcesJar(type: Jar) {
     archiveClassifier.set("sources")
     from(sourceSets.main.allJava)
@@ -74,6 +58,8 @@ task javadocJar(type: Jar) {
     archiveClassifier.set("javadoc")
     javadoc.properties.failOnError = true
 }
+
+def releaseVersion = !version.endsWith("SNAPSHOT")
 
 publishing {
     publications {
@@ -123,7 +109,7 @@ publishing {
             }
             def releasesRepoUrl = "https://oss.sonatype.org/service/local/staging/deploy/maven2/"
             def snapshotsRepoUrl = "https://oss.sonatype.org/content/repositories/snapshots"
-            url = version.endsWith("SNAPSHOT") ? snapshotsRepoUrl : releasesRepoUrl
+            url = releaseVersion ? releasesRepoUrl : snapshotsRepoUrl
         }
     }
 }
@@ -133,12 +119,12 @@ tasks.withType(GenerateModuleMetadata) {
 }
 
 signing {
-    sign publishing.publications.mavenJava
+    if (releaseVersion) {
+        sign publishing.publications.mavenJava
+    }
 }
 
 javadoc {
-    dependsOn delombok
-    source = delombok.outputDir
     failOnError = false
     if(JavaVersion.current().isJava9Compatible()) {
         options.addBooleanOption("html5", true)
@@ -177,7 +163,6 @@ license {
               "**/*.tmpl",
               "**/*.js.tmpl",
               "**/*.editorconfig",
-              "**/*.lombok.config",
               "src/test/resources/**",
               "src/main/resources/**",
               "out/**",

@@ -24,9 +24,9 @@
  */
 package de.alpharogroup.collections.modifications;
 
-import de.alpharogroup.collections.list.ListFactory;
-
 import java.util.Collection;
+
+import de.alpharogroup.collections.list.ListFactory;
 
 /**
  * The class ModifiedLists holds two collections. It is used as return type for finding from an old
@@ -44,7 +44,13 @@ public class ModifiedCollections<T>
 	/** The removed elements. */
 	private final Collection<T> removedElements = ListFactory.newArrayList();
 
-	public ModifiedCollections() {
+	public ModifiedCollections()
+	{
+	}
+
+	public Collection<T> getAddedElements()
+	{
+		return this.addedElements;
 	}
 
 	/**
@@ -84,11 +90,8 @@ public class ModifiedCollections<T>
 		return this;
 	}
 
-	public Collection<T> getAddedElements() {
-		return this.addedElements;
-	}
-
-	public Collection<T> getRemovedElements() {
+	public Collection<T> getRemovedElements()
+	{
 		return this.removedElements;
 	}
 }
