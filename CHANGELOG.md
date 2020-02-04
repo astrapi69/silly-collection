@@ -1,8 +1,12 @@
 ## Change log
 ----------------------
 
-Version 5.10-SNAPSHOT
+Version 8-SNAPSHOT
 -------------
+
+CHANGED:
+
+- update of dependency silly-beans in new version 1.1
 
 Version 5.9
 -------------
