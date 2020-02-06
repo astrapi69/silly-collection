@@ -44,8 +44,6 @@ dependencies {
     testImplementation("org.openjdk.jmh:jmh-generator-annprocess:$jmhVersion")
     testImplementation("org.meanbean:meanbean:$meanbeanVersion")
     testImplementation("org.testng:testng:$testngVersion")
-    testImplementation("junit:junit:$junitVersion")
-    testImplementation("org.mockito:mockito-core:$mockitoCoreVersion")
 }
 
 task sourcesJar(type: Jar) {
