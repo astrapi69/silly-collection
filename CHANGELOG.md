@@ -1,6 +1,15 @@
 ## Change log
 ----------------------
 
+Version 8
+-------------
+
+CHANGED:
+
+- update of dependency silly-beans in new version 1.1
+- update of dependency jobj-compare in new version 3.3
+- removed unused test dependency junit and mockito-core
+
 Version 5.9
 -------------
 
