@@ -4,6 +4,14 @@
 Version 8.1-SNAPSHOT
 -------------
 
+CHANGED:
+
+- update of test dependency jobj-clone to new version 3.3
+- update of test dependency jobj-contract-verifier to new version 3.3
+- update of test dependency test-objects to new version 5.3
+- update of test dependency vintage-time to new version 5.2
+- update of gradle-plugin com.github.ben-manes.versions to new version 0.28.0
+
 Version 8
 -------------
 
