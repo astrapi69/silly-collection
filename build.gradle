@@ -21,7 +21,7 @@ apply plugin: "jacoco"
 
 group = "de.alpharogroup"
 version = "$projectVersion"
-description = "silly-collections"
+description = "$rootProject.name"
 sourceCompatibility = "1.8"
 
 repositories {
@@ -62,21 +62,21 @@ def releaseVersion = !version.endsWith("SNAPSHOT")
 publishing {
     publications {
         mavenJava(MavenPublication) {
-            artifactId = "${rootProject.name}"
+            artifactId = "$rootProject.name"
             from components.java
             artifact sourcesJar
             artifact javadocJar
             pom {
-                name = "${rootProject.name}"
+                name = "$rootProject.name"
                 description = "Utility library for collections, comparators and iterator classes"
-                url = "https://github.com/lightblueseas/"+"${rootProject.name}"
+                url = "https://github.com/lightblueseas/"+"$rootProject.name"
                 organization {
                     name = "Alpha Ro Group UG (haftungsbeschrängt)"
                     url = "http://www.alpharogroup.de/"
                 }
                 issueManagement {
                     system = "GitHub"
-                    url = "https://github.com/lightblueseas/"+"${rootProject.name}"+"/issues"
+                    url = "https://github.com/lightblueseas/"+"$rootProject.name"+"/issues"
                 }
                 licenses {
                     license {
@@ -92,9 +92,9 @@ publishing {
                     }
                 }
                 scm {
-                    connection = "scm:git:git:@github.com:lightblueseas/"+"${rootProject.name}"+".git"
-                    developerConnection = "scm:git:git@github.com:lightblueseas/"+"${rootProject.name}"+".git"
-                    url = "git:@github.com:lightblueseas/"+"${rootProject.name}"+".git"
+                    connection = "scm:git:git:@github.com:lightblueseas/"+"$rootProject.name"+".git"
+                    developerConnection = "scm:git:git@github.com:lightblueseas/"+"$rootProject.name"+".git"
+                    url = "git:@github.com:lightblueseas/"+"$rootProject.name"+".git"
                 }
             }
         }
