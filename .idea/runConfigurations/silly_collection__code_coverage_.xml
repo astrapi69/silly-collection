@@ -1,5 +1,6 @@
 <component name="ProjectRunConfigurationManager">
-  <configuration default="false" name="project coverage" type="TestNG" singleton="true">
+  <configuration default="false" name="silly-collection [code coverage]" type="TestNG" singleton="true">
+    <useClassPathOnly />
     <option name="ALTERNATIVE_JRE_PATH" value="10" />
     <option name="SUITE_NAME" value="" />
     <option name="PACKAGE_NAME" value="" />

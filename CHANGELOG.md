@@ -1,6 +1,23 @@
 ## Change log
 ----------------------
 
+Version 8.1
+-------------
+
+ADDED:
+ 
+- new method created that can summarize a given counter Maps with a given collection of keys with 
+the possibility of full merge
+- new factory method created for create a counter map with a already initialized counter Map
+
+CHANGED:
+
+- update of test dependency jobj-clone to new version 3.3
+- update of test dependency jobj-contract-verifier to new version 3.3
+- update of test dependency test-objects to new version 5.3
+- update of test dependency vintage-time to new version 5.2
+- update of gradle-plugin com.github.ben-manes.versions to new version 0.28.0
+
 Version 8
 -------------
 

@@ -103,7 +103,51 @@ public final class MapExtensions
 	}
 
 	/**
-	 * Factory method for create a map for counting elements of the given collection
+	 * Merge and summarize the values of the given map with the given collection of keys. Every key
+	 * of the collection will be summarized with the value of the given map.
+	 *
+	 * @param <K>
+	 *            the generic type of the elements
+	 * @param valueCounterMap
+	 *            the counter map
+	 * @param summarizeWithThisValueCounterMap
+	 *            the set with the key values that will be summarized with the first map
+	 * @return the new map ready to count elements
+	 */
+	public static <K> Map<K, Integer> mergeAndSummarize(final Map<K, Integer> valueCounterMap,
+		final Collection<K> summarizeWithThisValueCounterMap)
+	{
+		return mergeAndSummarize(valueCounterMap, summarizeWithThisValueCounterMap, false);
+	}
+
+	/**
+	 * Merge and summarize the values of the given map with the given collection of keys. Every key
+	 * of the collection will be summarized with the value of the given map. If the flag fullMerge
+	 * is true all keys from the collection and the map will be considered by the merge otherwise
+	 * only the keys of the first map will be considered
+	 *
+	 * @param <K>
+	 *            the generic type of the elements
+	 * @param valueCounterMap
+	 *            the counter map
+	 * @param summarizeWithThisValueCounterMap
+	 *            the set with the key values that will be summarized with the first map
+	 * @param fullMerge
+	 *            if true all keys from both maps will be considered by the merge otherwise only the
+	 *            keys of the first map will be considered
+	 * @return the new map ready to count elements
+	 */
+	public static <K> Map<K, Integer> mergeAndSummarize(final Map<K, Integer> valueCounterMap,
+		final Collection<K> summarizeWithThisValueCounterMap, boolean fullMerge)
+	{
+		return mergeAndSummarize(valueCounterMap,
+			MapFactory.newCounterMap(MapFactory.newCounterMap(summarizeWithThisValueCounterMap),
+				summarizeWithThisValueCounterMap),
+			fullMerge);
+	}
+
+	/**
+	 * Merge and summarize the values of the given maps
 	 *
 	 * @param <K>
 	 *            the generic type of the elements
@@ -120,7 +164,9 @@ public final class MapExtensions
 	}
 
 	/**
-	 * Factory method for create a map for counting elements of the given collection
+	 * Merge and summarize the values of the given maps with a flag fullMerge. If the flag fullMerge
+	 * is true all keys from both maps will be considered by the merge otherwise only the keys of
+	 * the first map will be considered
 	 *
 	 * @param <K>
 	 *            the generic type of the elements
