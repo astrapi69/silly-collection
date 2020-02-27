@@ -4,6 +4,12 @@
 Version 8.1-SNAPSHOT
 -------------
 
+ADDED:
+ 
+- new method created that can summarize a given counter Maps with a given collection of keys with 
+the possibility of full merge
+- new factory method created for create a counter map with a already initialized counter Map
+
 CHANGED:
 
 - update of test dependency jobj-clone to new version 3.3

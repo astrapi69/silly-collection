@@ -34,11 +34,13 @@ import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
 import java.util.Map.Entry;
+import java.util.Set;
 
 import org.meanbean.test.BeanTester;
 import org.testng.annotations.Test;
 
 import de.alpharogroup.collections.list.ListFactory;
+import de.alpharogroup.collections.set.SetFactory;
 
 /**
  * The unit test class for the class {@link MapExtensions}
@@ -173,7 +175,6 @@ public class MapExtensionsTest
 		}
 	}
 
-
 	/**
 	 * Test method for {@link MapExtensions#mergeAndSummarize(Map, Map, boolean)}
 	 */
@@ -240,6 +241,66 @@ public class MapExtensionsTest
 				assertEquals(actual, expected);
 			}
 		}
+	}
+
+
+	/**
+	 * Test method for {@link MapExtensions#mergeAndSummarize(Map, Collection)} and
+	 * {@link MapExtensions#mergeAndSummarize(Map, Collection, boolean)}
+	 */
+	@Test
+	public void testMergeAndSummarizeWithSet()
+	{
+		int minVolume;
+		int maxVolume;
+		boolean fullMerge;
+		Map<Integer, Integer> initialNumberCounterMap;
+		Map<Integer, Integer> mergedMap;
+		Set<Integer> summarizeWith;
+		List<Integer> integerList;
+		// new scenario ...
+		minVolume = 1;
+		maxVolume = 10;
+		fullMerge = true;
+		integerList = ListFactory.newRangeList(minVolume, maxVolume);
+		summarizeWith = SetFactory.newHashSet(1, 5, 4, 3, 9, 11);
+
+		initialNumberCounterMap = MapFactory.newCounterMap(integerList);
+
+		mergedMap = MapExtensions.mergeAndSummarize(initialNumberCounterMap, summarizeWith,
+			fullMerge);
+		assertTrue(mergedMap.size() == 11);
+		for (int i = minVolume; i <= 11; i++)
+		{
+			int expected = 0;
+			int actual = mergedMap.get(i);
+			if (summarizeWith.contains(i))
+			{
+				expected = 1;
+			}
+			assertEquals(actual, expected);
+		}
+		// new scenario ...
+		minVolume = 1;
+		maxVolume = 10;
+		integerList = ListFactory.newRangeList(minVolume, maxVolume);
+		summarizeWith = SetFactory.newHashSet(1, 5, 4, 3, 9, 11);
+
+		initialNumberCounterMap = MapFactory.newCounterMap(integerList);
+
+		mergedMap = MapExtensions.mergeAndSummarize(initialNumberCounterMap, summarizeWith);
+		assertTrue(mergedMap.size() == 10);
+		for (int i = minVolume; i <= maxVolume; i++)
+		{
+			int expected = 0;
+			int actual = mergedMap.get(i);
+			if (summarizeWith.contains(i))
+			{
+				expected = 1;
+			}
+			assertEquals(actual, expected);
+		}
+
 	}
 
 	/**

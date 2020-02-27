@@ -29,6 +29,7 @@ import java.util.Comparator;
 import java.util.HashMap;
 import java.util.LinkedHashMap;
 import java.util.Map;
+import java.util.Objects;
 import java.util.TreeMap;
 import java.util.concurrent.ConcurrentHashMap;
 
@@ -139,18 +140,35 @@ public final class MapFactory
 	 */
 	public static <K> Map<K, Integer> newCounterMap(final Collection<K> elements)
 	{
-		Argument.notNull(elements, "elements");
-		Map<K, Integer> elementsCount = MapFactory.newHashMap();
+		Objects.requireNonNull(elements);
+		return newCounterMap(MapFactory.newHashMap(), elements);
+	}
+
+	/**
+	 * Factory method for create a map for and count elements of the given collection
+	 *
+	 * @param <K>
+	 *            the generic type of the elements
+	 * @param counterMap
+	 *            the counter Map
+	 * @param elements
+	 *            the elements
+	 * @return the new map ready to count elements
+	 */
+	public static <K> Map<K, Integer> newCounterMap(Map<K, Integer> counterMap,
+		Collection<K> elements)
+	{
+		Objects.requireNonNull(counterMap);
 		for (K element : elements)
 		{
-			if (elementsCount.containsKey(element))
+			if (counterMap.containsKey(element))
 			{
-				elementsCount.merge(element, 1, Integer::sum);
+				counterMap.merge(element, 1, Integer::sum);
 				continue;
 			}
-			elementsCount.put(element, 0);
+			counterMap.put(element, 0);
 		}
-		return elementsCount;
+		return counterMap;
 	}
 
 	/**
@@ -334,7 +352,7 @@ public final class MapFactory
 	 */
 	public static <K, V> Map<K, V> newLazyHashMap()
 	{
-		return newLazyHashMap(new HashMap<K, V>());
+		return newLazyHashMap(new HashMap<>());
 	}
 
 	/**
@@ -384,7 +402,7 @@ public final class MapFactory
 	 */
 	public static <K, V> Map<K, V> newLazyTreeMap()
 	{
-		return newLazyTreeMap(new TreeMap<K, V>());
+		return newLazyTreeMap(new TreeMap<>());
 	}
 
 	/**
