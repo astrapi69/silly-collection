@@ -45,6 +45,30 @@ public class CollectionExtensionsTest
 {
 
 	/**
+	 * Test method for {@link CollectionExtensions#contains(Collection, Object[])}
+	 */
+	@Test
+	public void testContains()
+	{
+		boolean expected;
+		boolean actual;
+		Integer[] objectsToCheckIfContains;
+		Collection<Integer> someNumbers;
+		// new scenario ...
+		someNumbers = ListFactory.newArrayList(22, 33, 25, 45);
+		objectsToCheckIfContains = ArrayFactory.newArray(3, 7);
+		actual = CollectionExtensions.contains(someNumbers, objectsToCheckIfContains);
+		expected = false;
+		assertEquals(expected, actual);
+		// new scenario ...
+		someNumbers = ListFactory.newArrayList(22, 33, 25, 45);
+		objectsToCheckIfContains = ArrayFactory.newArray(3, 33);
+		actual = CollectionExtensions.contains(someNumbers, objectsToCheckIfContains);
+		expected = true;
+		assertEquals(expected, actual);
+	}
+
+	/**
 	 * Test method for {@link CollectionExtensions#difference(Collection, Collection)}
 	 */
 	@Test
@@ -66,7 +90,7 @@ public class CollectionExtensionsTest
 	}
 
 	/**
-	 * Test method for {@link CollectionExtensions#equalCollections(Collection, Collection)}.
+	 * Test method for {@link CollectionExtensions#isEqualCollection(Collection, Collection)}
 	 */
 	@Test
 	public void testEqualCollections()
@@ -301,8 +325,8 @@ public class CollectionExtensionsTest
 			list.add(i);
 		}
 		Collection<List<Integer>> all = CollectionExtensions.partition(list, 50);
-		assertTrue(all.size() == 20);
-		all.stream().forEach(l -> assertTrue(l.size() == 50 || l.size() == 49));
+		assertEquals(all.size(), 20);
+		all.forEach(l -> assertTrue(l.size() == 50 || l.size() == 49));
 	}
 
 	/**
