@@ -4,7 +4,15 @@
 Version 8.2-SNAPSHOT
 -------------
 
+ADDED:
+ 
+- new extension method created that provides the contains over several objects in a Collection
 
+CHANGED:
+
+- update of gradle to new version 6.4
+- update of dependency jobj-compare in new version 3.4
+- update of test dependency testng to new version 7.2.0
 
 Version 8.1
 -------------
