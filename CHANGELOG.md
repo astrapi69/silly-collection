@@ -307,6 +307,8 @@ CHANGED:
 - update of test-objects dependency version from 4.26 to 4.28
 - DateComparatorTest extends now from BaseComparatorTestCase
 
+- update of gradle to new version 6.4 
+- update of test dependency testng version to 7.2.0
 
 Version 4.29
 -------------

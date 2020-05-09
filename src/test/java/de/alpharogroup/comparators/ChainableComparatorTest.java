@@ -30,7 +30,8 @@ import java.util.BitSet;
 import java.util.Comparator;
 import java.util.List;
 
-import org.apache.commons.beanutils.BeanComparator;
+
+import de.alpharogroup.comparators.BeanPropertyComparator;
 import org.testng.annotations.Test;
 
 import de.alpharogroup.collections.list.ListFactory;
@@ -63,8 +64,8 @@ public class ChainableComparatorTest
 		bitSet.set(0);
 		bitSet.set(1);
 
-		final Comparator<Employee> idComparator = new BeanComparator<>("id");
-		final Comparator<Employee> personComparator = new BeanComparator<>("person");
+		final Comparator<Employee> idComparator = new BeanPropertyComparator<>("id");
+		final Comparator<Employee> personComparator = new BeanPropertyComparator<>("person");
 
 		final List<Comparator<Employee>> comparators = ListFactory.newArrayList(idComparator,
 			personComparator);

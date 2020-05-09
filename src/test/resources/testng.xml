@@ -3,7 +3,6 @@
 <suite name="Suite">
   <test name="Test">
     <classes>
-    <class name="de.alpharogroup.check.CheckTest"/>
     <class name="de.alpharogroup.collections.array.ArrayExtensionsTest"/>
     <class name="de.alpharogroup.collections.iterators.ArrayIteratorTest"/>
     <class name="de.alpharogroup.collections.iterators.EnumerationIteratorTest"/>
@@ -13,11 +12,8 @@
     <class name="de.alpharogroup.collections.map.MapExtensionsTest"/>
     <class name="de.alpharogroup.collections.modifications.ModifiedCollectionsTest"/>
     <class name="de.alpharogroup.collections.modifications.ModifiedStateTest"/>
-    <class name="de.alpharogroup.collections.pairs.ValueBoxTest"/>
     <class name="de.alpharogroup.collections.set.InsertionOrderSetTest"/>
     <class name="de.alpharogroup.collections.set.SetExtensionsTest"/>
-    <class name="de.alpharogroup.comparators.ComparableComparatorTest"/>
-    <class name="de.alpharogroup.comparators.ComparatorExtensionsTest"/>
     <class name="de.alpharogroup.comparators.DateComparatorTest"/>
     <class name="de.alpharogroup.comparators.DescendingDateComparatorTest"/>
     <class name="de.alpharogroup.comparators.HashCodeComparatorTest"/>

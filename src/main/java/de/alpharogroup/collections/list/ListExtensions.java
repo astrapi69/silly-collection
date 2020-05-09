@@ -33,7 +33,7 @@ import java.util.List;
 import java.util.Optional;
 import java.util.Set;
 
-import org.apache.commons.beanutils.BeanComparator;
+import de.alpharogroup.comparators.BeanPropertyComparator;
 import org.apache.commons.collections4.ComparatorUtils;
 
 import de.alpharogroup.check.Argument;
@@ -530,7 +530,7 @@ public final class ListExtensions
 	public static <T> void sortByProperty(final List<T> list, final String property,
 		final boolean ascending)
 	{
-		Comparator comparator = new BeanComparator(property, SortOrderComparator.of());
+		Comparator comparator = new BeanPropertyComparator(property, SortOrderComparator.of());
 		if (ascending)
 		{
 			comparator = ComparatorUtils.reversedComparator(comparator);
