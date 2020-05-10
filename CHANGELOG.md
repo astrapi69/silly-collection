@@ -11,7 +11,7 @@ ADDED:
 CHANGED:
 
 - update of gradle to new version 6.4
-- update of dependency jobj-compare in new version 3.4
+- update of dependency jobj-compare in new version 3.6.1
 - update of test dependency testng to new version 7.2.0
 
 Version 8.1
