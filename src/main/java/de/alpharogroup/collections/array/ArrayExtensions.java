@@ -121,6 +121,33 @@ public final class ArrayExtensions
 	}
 
 	/**
+	 * Returns <tt>true</tt> if at least one of given elements is in the given array
+	 *
+	 * @param <T>
+	 *            the generic type
+	 * @param array
+	 *            the array
+	 * @param elements
+	 *            the elements to check if is containing in the given array
+	 * @return <tt>true</tt> if at least one of given elements is in the given array otherwise
+	 *         <tt>false</tt>
+	 */
+	@SafeVarargs
+	public static <T> boolean containsAtLeastOne(final T[] array, final T... elements)
+	{
+		boolean contains = false;
+		for (T element : elements)
+		{
+			if(contains(array, element))
+			{
+				contains = true;
+				break;
+			}
+		}
+		return contains;
+	}
+
+	/**
 	 * Gets the first object from the given array.
 	 *
 	 * @param <T>
