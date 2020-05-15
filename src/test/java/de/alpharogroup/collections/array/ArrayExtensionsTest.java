@@ -138,6 +138,42 @@ public class ArrayExtensionsTest
 	}
 
 	/**
+	 * Test method for
+	 * {@link de.alpharogroup.collections.array.ArrayExtensions#containsAtLeastOne(Object[], Object[])}
+	 */
+	@Test
+	public void testContainsAtLeastOne()
+	{
+		boolean expected;
+		boolean actual;
+		String last;
+
+		last = "7";
+		final String numbers[] = { "1", "2", "3", "4", "5", "6", last };
+		// Old vanilla java with static method...
+		actual = ArrayExtensions.containsAtLeastOne(numbers, last, "6");
+		expected = true;
+		assertEquals(expected, actual);
+		final String empty[] = { };
+		expected = false;
+		actual = ArrayExtensions.contains(empty, last);
+		assertEquals(expected, actual);
+
+		actual = ArrayExtensions.contains(empty, 8);
+		assertEquals(expected, actual);
+	}
+
+	/**
+	 * Test method for
+	 * {@link de.alpharogroup.collections.array.ArrayExtensions#containsAtLeastOne(Object[], Object[])}
+	 */
+	@Test(expectedExceptions = NullPointerException.class )
+	public void testContainsAtLeastOneThrowNullPointerException()
+	{
+		ArrayExtensions.containsAtLeastOne(ArrayFactory.newArray(), null);
+	}
+
+	/**
 	 * Test for method {@link ArrayExtensions#getFirst(Object[])}
 	 */
 	@Test
