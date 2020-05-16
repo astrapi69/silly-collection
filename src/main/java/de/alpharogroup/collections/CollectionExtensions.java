@@ -54,7 +54,7 @@ public final class CollectionExtensions
 	 * 	          otherwise it returns <tt>false</tt>.
 	 */
 	@SafeVarargs
-	public static <T> boolean contains(Collection<T> collection, T... objects)
+	public static <T> boolean containsAtLeastOne(Collection<T> collection, T... objects)
 	{
 		if (0 < objects.length){
 			for (T object : objects) {

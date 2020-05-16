@@ -45,10 +45,10 @@ public class CollectionExtensionsTest
 {
 
 	/**
-	 * Test method for {@link CollectionExtensions#contains(Collection, Object[])}
+	 * Test method for {@link CollectionExtensions#containsAtLeastOne(Collection, Object[])}
 	 */
 	@Test
-	public void testContains()
+	public void testContainsAtLeastOne()
 	{
 		boolean expected;
 		boolean actual;
@@ -57,13 +57,13 @@ public class CollectionExtensionsTest
 		// new scenario ...
 		someNumbers = ListFactory.newArrayList(22, 33, 25, 45);
 		objectsToCheckIfContains = ArrayFactory.newArray(3, 7);
-		actual = CollectionExtensions.contains(someNumbers, objectsToCheckIfContains);
+		actual = CollectionExtensions.containsAtLeastOne(someNumbers, objectsToCheckIfContains);
 		expected = false;
 		assertEquals(expected, actual);
 		// new scenario ...
 		someNumbers = ListFactory.newArrayList(22, 33, 25, 45);
 		objectsToCheckIfContains = ArrayFactory.newArray(3, 33);
-		actual = CollectionExtensions.contains(someNumbers, objectsToCheckIfContains);
+		actual = CollectionExtensions.containsAtLeastOne(someNumbers, objectsToCheckIfContains);
 		expected = true;
 		assertEquals(expected, actual);
 	}
