@@ -1,16 +1,17 @@
 ## Change log
 ----------------------
 
-Version 8.2-SNAPSHOT
+Version 8.2
 -------------
 
 ADDED:
  
-- new extension method created that provides the contains over several objects in a Collection
+- new extension method created that provides the containsAtLeastOne with varargs objects in a Collection
+- new extension method created that provides the containsAtLeastOne with varargs objects in an Array
 
 CHANGED:
 
-- update of gradle to new version 6.4
+- update of gradle to new version 6.4.1
 - update of dependency jobj-compare in new version 3.6.1
 - update of test dependency testng to new version 7.2.0
 

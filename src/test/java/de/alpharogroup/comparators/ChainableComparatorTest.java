@@ -30,8 +30,6 @@ import java.util.BitSet;
 import java.util.Comparator;
 import java.util.List;
 
-
-import de.alpharogroup.comparators.BeanPropertyComparator;
 import org.testng.annotations.Test;
 
 import de.alpharogroup.collections.list.ListFactory;

@@ -138,7 +138,7 @@ public final class ArrayExtensions
 		boolean contains = false;
 		for (T element : elements)
 		{
-			if(contains(array, element))
+			if (contains(array, element))
 			{
 				contains = true;
 				break;

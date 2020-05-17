@@ -156,21 +156,11 @@ public class ArrayExtensionsTest
 		assertEquals(expected, actual);
 		final String empty[] = { };
 		expected = false;
-		actual = ArrayExtensions.contains(empty, last);
+		actual = ArrayExtensions.containsAtLeastOne(empty, last);
 		assertEquals(expected, actual);
 
-		actual = ArrayExtensions.contains(empty, 8);
+		actual = ArrayExtensions.containsAtLeastOne(empty, 8);
 		assertEquals(expected, actual);
-	}
-
-	/**
-	 * Test method for
-	 * {@link de.alpharogroup.collections.array.ArrayExtensions#containsAtLeastOne(Object[], Object[])}
-	 */
-	@Test(expectedExceptions = NullPointerException.class )
-	public void testContainsAtLeastOneThrowNullPointerException()
-	{
-		ArrayExtensions.containsAtLeastOne(ArrayFactory.newArray(), null);
 	}
 
 	/**

@@ -33,13 +33,13 @@ import java.util.List;
 import java.util.Optional;
 import java.util.Set;
 
-import de.alpharogroup.comparators.BeanPropertyComparator;
 import org.apache.commons.collections4.ComparatorUtils;
 
 import de.alpharogroup.check.Argument;
 import de.alpharogroup.collections.CollectionExtensions;
 import de.alpharogroup.collections.array.ArrayFactory;
 import de.alpharogroup.collections.modifications.ModifiedCollections;
+import de.alpharogroup.comparators.BeanPropertyComparator;
 import de.alpharogroup.comparators.SortOrderComparator;
 
 /**

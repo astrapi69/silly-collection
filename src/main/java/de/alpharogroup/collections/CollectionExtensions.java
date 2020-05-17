@@ -41,8 +41,8 @@ public final class CollectionExtensions
 {
 
 	/**
-	 * Returns <tt>true</tt> if the given {@link Collection} contains at least one object of the given objects
-	 * otherwise it returns <tt>false</tt>
+	 * Returns <tt>true</tt> if the given {@link Collection} contains at least one object of the
+	 * given objects otherwise it returns <tt>false</tt>
 	 *
 	 * @param <T>
 	 *            the generic type
@@ -50,21 +50,25 @@ public final class CollectionExtensions
 	 *            the collection
 	 * @param objects
 	 *            the objects for check if there are containing in the given collection
-	 * @return <tt>true</tt> if the given {@link Collection} contains at least one object of the given objects
-	 * 	          otherwise it returns <tt>false</tt>.
+	 * @return <tt>true</tt> if the given {@link Collection} contains at least one object of the
+	 *         given objects otherwise it returns <tt>false</tt>.
 	 */
 	@SafeVarargs
 	public static <T> boolean containsAtLeastOne(Collection<T> collection, T... objects)
 	{
-		if (0 < objects.length){
-			for (T object : objects) {
-				if(collection.contains(object)){
+		if (0 < objects.length)
+		{
+			for (T object : objects)
+			{
+				if (collection.contains(object))
+				{
 					return true;
 				}
 			}
 		}
 		return false;
 	}
+
 	/**
 	 * Removes all of the first given collection's elements that are also contained in the second
 	 * given collection.
