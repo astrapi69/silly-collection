@@ -19,10 +19,10 @@ plugins {
 
 apply plugin: "jacoco"
 
-group = "de.alpharogroup"
+group = "$groupPackage"
 version = "$projectVersion"
 description = "$rootProject.name"
-sourceCompatibility = "1.8"
+sourceCompatibility = "$projectSourceCompatibility"
 
 repositories {
     jcenter()
@@ -68,33 +68,33 @@ publishing {
             artifact javadocJar
             pom {
                 name = "$rootProject.name"
-                description = "Utility library for collections, comparators and iterator classes"
-                url = "https://github.com/lightblueseas/"+"$rootProject.name"
+                description = "$projectDescription"
+                url = "$projectScmProviderUrl"+"$projectHolderUsername"+"/"+"$rootProject.name"
                 organization {
-                    name = "Alpha Ro Group UG (haftungsbeschrängt)"
-                    url = "http://www.alpharogroup.de/"
+                    name = "$projectOrganizationName"
+                    url = "$projectOrganizationUrl"
                 }
                 issueManagement {
-                    system = "GitHub"
-                    url = "https://github.com/lightblueseas/"+"$rootProject.name"+"/issues"
+                    system = "$projectIssueManagementSystem"
+                    url = "$projectScmProviderUrl"+"$projectHolderUsername"+"/"+"$rootProject.name"+"/issues"
                 }
                 licenses {
                     license {
-                        name = "MIT License"
-                        url = "http://www.opensource.org/licenses/mit-license.php"
-                        distribution = "repo"
+                        name = "$projectLicenseName"
+                        url = "$projectLicenseUrl"
+                        distribution = "$projectLicenseDistribution"
                     }
                 }
                 developers {
                     developer {
-                        id = "astrapi69"
+                        id = "$projectHolderUsername"
                         name = "Asterios Raptis"
                     }
                 }
                 scm {
-                    connection = "scm:git:git:@github.com:lightblueseas/"+"$rootProject.name"+".git"
-                    developerConnection = "scm:git:git@github.com:lightblueseas/"+"$rootProject.name"+".git"
-                    url = "git:@github.com:lightblueseas/"+"$rootProject.name"+".git"
+                    connection = "scm:git:git:@" + "$projectScmProviderDomain" + ":" + "$projectHolderUsername" + "/" + "$rootProject.name" + ".git"
+                    developerConnection = "scm:git:git:@" + "$projectScmProviderDomain" + ":" + "$projectHolderUsername" + "/" + "$rootProject.name" + ".git"
+                    url = "scm:git:git:@" + "$projectScmProviderDomain" + ":" + "$projectHolderUsername" + "/" + "$rootProject.name" + ".git"
                 }
             }
         }
@@ -105,8 +105,8 @@ publishing {
                 username System.getenv("ossrhUsername") ?: project.property("ossrhUsername")
                 password System.getenv("ossrhPassword") ?: project.property("ossrhPassword")
             }
-            def releasesRepoUrl = "https://oss.sonatype.org/service/local/staging/deploy/maven2/"
-            def snapshotsRepoUrl = "https://oss.sonatype.org/content/repositories/snapshots"
+            def releasesRepoUrl = "$projectRepositoriesReleasesRepoUrl"
+            def snapshotsRepoUrl = "$projectRepositoriesSnapshotsRepoUrl"
             url = releaseVersion ? releasesRepoUrl : snapshotsRepoUrl
         }
     }

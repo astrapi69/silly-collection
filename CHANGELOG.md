@@ -4,6 +4,10 @@
 Version 8.3-SNAPSHOT
 -------------
 
+CHANGED:
+
+- extracted project properties to gradle.properties
+
 Version 8.2
 -------------
 
