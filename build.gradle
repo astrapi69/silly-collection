@@ -88,13 +88,13 @@ publishing {
                 developers {
                     developer {
                         id = "$projectHolderUsername"
-                        name = "Asterios Raptis"
+                        name = "$projectLeaderName"
                     }
                 }
                 scm {
-                    connection = "scm:git:git:@" + "$projectScmProviderDomain" + ":" + "$projectHolderUsername" + "/" + "$rootProject.name" + ".git"
-                    developerConnection = "scm:git:git:@" + "$projectScmProviderDomain" + ":" + "$projectHolderUsername" + "/" + "$rootProject.name" + ".git"
-                    url = "scm:git:git:@" + "$projectScmProviderDomain" + ":" + "$projectHolderUsername" + "/" + "$rootProject.name" + ".git"
+                    connection = "$projectScmGitUrlPrefix" + "$projectScmProviderDomain" + ":" + "$projectHolderUsername" + "/" + "$rootProject.name" + ".git"
+                    developerConnection = "$projectScmGitUrlPrefix" + "$projectScmProviderDomain" + ":" + "$projectHolderUsername" + "/" + "$rootProject.name" + ".git"
+                    url = "$projectScmGitUrlPrefix" + "$projectScmProviderDomain" + ":" + "$projectHolderUsername" + "/" + "$rootProject.name" + ".git"
                 }
             }
         }
@@ -102,8 +102,8 @@ publishing {
     repositories {
         maven {
             credentials {
-                username System.getenv("ossrhUsername") ?: project.property("ossrhUsername")
-                password System.getenv("ossrhPassword") ?: project.property("ossrhPassword")
+                username System.getenv("$projectRepositoriesUserNameKey") ?: project.property("$projectRepositoriesUserNameKey")
+                password System.getenv("$projectRepositoriesPasswordKey") ?: project.property("$projectRepositoriesPasswordKey")
             }
             def releasesRepoUrl = "$projectRepositoriesReleasesRepoUrl"
             def snapshotsRepoUrl = "$projectRepositoriesSnapshotsRepoUrl"
