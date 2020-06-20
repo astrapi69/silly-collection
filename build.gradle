@@ -1,23 +1,26 @@
 
 buildscript {
+    ext {
+        gradlePluginVersionsVersion = "0.28.0"
+        licenseGradlePluginVersion = "0.15.0"
+    }
     repositories {
         maven {
             url "https://plugins.gradle.org/m2/"
         }
     }
     dependencies {
+        classpath "com.github.ben-manes:gradle-versions-plugin:$gradlePluginVersionsVersion"
+        classpath "gradle.plugin.com.hierynomus.gradle.plugins:license-gradle-plugin:$licenseGradlePluginVersion"
     }
 }
 
-plugins {
-    id "java"
-    id "maven-publish"
-    id "signing"
-    id "com.github.ben-manes.versions" version "0.28.0"
-    id "com.github.hierynomus.license" version "0.15.0"
-}
-
+apply plugin: "java"
+apply plugin: "maven-publish"
 apply plugin: "jacoco"
+apply plugin: "signing"
+apply plugin: "com.github.ben-manes.versions"
+apply plugin: "com.github.hierynomus.license"
 
 group = "$groupPackage"
 version = "$projectVersion"
