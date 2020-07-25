@@ -4,6 +4,10 @@
 Version 8.3-SNAPSHOT
 -------------
 
+ADDED:
+ 
+- new area 'gradle-plugins versions' for hold the versions of the gradle plugins
+
 CHANGED:
 
 - update of gradle to new version 6.5

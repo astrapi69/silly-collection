@@ -1,9 +1,5 @@
 
 buildscript {
-    ext {
-        gradlePluginVersionsVersion = "0.28.0"
-        licenseGradlePluginVersion = "0.15.0"
-    }
     repositories {
         maven {
             url "https://plugins.gradle.org/m2/"
@@ -17,10 +13,10 @@ buildscript {
 
 apply plugin: "java"
 apply plugin: "maven-publish"
-apply plugin: "jacoco"
 apply plugin: "signing"
 apply plugin: "com.github.ben-manes.versions"
 apply plugin: "com.github.hierynomus.license"
+apply plugin: "jacoco"
 
 group = "$groupPackage"
 version = "$projectVersion"
