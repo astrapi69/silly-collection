@@ -13,6 +13,7 @@ CHANGED:
 - update of gradle to new version 6.5
 - extracted project properties to gradle.properties
 - extracted project gradle plugin versions to buildscript.ext area in gradle.properties
+- extended jar task for build manifest file
 
 Version 8.2
 -------------
