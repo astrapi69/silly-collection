@@ -11,6 +11,7 @@ ADDED:
 CHANGED:
 
 - update of gradle to new version 6.5
+- update of com.github.ben-manes.versions.gradle.plugin to new version 0.31.0
 - extracted project properties to gradle.properties
 - extracted project gradle plugin versions to buildscript.ext area in gradle.properties
 - extended jar task for build manifest file
