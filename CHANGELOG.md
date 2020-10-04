@@ -10,11 +10,14 @@ ADDED:
 
 CHANGED:
 
-- update of gradle to new version 6.5
-- update of com.github.ben-manes.versions.gradle.plugin to new version 0.31.0
+- update of gradle to new version 6.6.1
+- update of com.github.ben-manes.versions.gradle.plugin to new version 0.33.0
 - extracted project properties to gradle.properties
 - extracted project gradle plugin versions to buildscript.ext area in gradle.properties
 - extended jar task for build manifest file
+- update of dependency jobj-core in new version 3.6
+- update of test dependency testng to new version 7.3.0
+- update of test dependency org.openjdk.jmh:jmh-core to new version 1.25.2
 
 Version 8.2
 -------------
