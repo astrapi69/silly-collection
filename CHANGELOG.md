@@ -7,6 +7,7 @@ Version 8.3-SNAPSHOT
 ADDED:
  
 - new area 'gradle-plugins versions' for hold the versions of the gradle plugins
+- new factory method for create a number map for count integer values 
 
 CHANGED:
 
@@ -17,7 +18,7 @@ CHANGED:
 - extended jar task for build manifest file
 - update of dependency jobj-core in new version 3.6
 - update of test dependency testng to new version 7.3.0
-- update of test dependency org.openjdk.jmh:jmh-core to new version 1.25.2
+- update of test dependency org.openjdk.jmh:jmh-core to new version 1.26
 
 Version 8.2
 -------------

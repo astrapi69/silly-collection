@@ -36,6 +36,7 @@ import java.util.TreeMap;
 import java.util.concurrent.ConcurrentHashMap;
 
 import org.meanbean.test.BeanTester;
+import org.testng.Assert;
 import org.testng.annotations.Test;
 
 import de.alpharogroup.collections.list.ListFactory;
@@ -464,6 +465,21 @@ public class MapFactoryTest
 			KeyValuePair.<String, String> builder().key("5").value("value").build());
 		assertNotNull(hashMap);
 		assertTrue(hashMap.size() == 4);
+	}
+
+	/**
+	 * Test method for {@link MapFactory#newNumberCounterMap(int, int)}
+	 */
+	@Test
+	public void testNewNumberCounterMap()
+	{
+		int minVolume;
+		int maxVolume;
+		minVolume = 1;
+		maxVolume = 10;
+		Map<Integer, Integer> numberCounterMap = MapFactory.newNumberCounterMap(minVolume, maxVolume);
+		Assert.assertNotNull(numberCounterMap);
+		Assert.assertEquals(numberCounterMap.size(), maxVolume);
 	}
 
 	/**
