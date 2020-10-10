@@ -531,6 +531,20 @@ public final class MapFactory
 	}
 
 	/**
+	 * Factory method for create a map for count drawn numbers
+	 *
+	 * @param minVolume
+	 *            the min volume
+	 * @param maxVolume
+	 *            the max volume
+	 * @return the new map with the initial values
+	 */
+	public static Map<Integer, Integer> newNumberCounterMap(int minVolume, int maxVolume)
+	{
+		return MapFactory.newCounterMap(ListFactory.newRangeList(minVolume, maxVolume));
+	}
+
+	/**
 	 * Factory method for create a new {@link TreeMap}
 	 *
 	 * @param <K>

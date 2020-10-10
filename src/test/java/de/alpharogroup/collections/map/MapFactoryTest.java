@@ -467,6 +467,22 @@ public class MapFactoryTest
 	}
 
 	/**
+	 * Test method for {@link MapFactory#newNumberCounterMap(int, int)}
+	 */
+	@Test
+	public void testNewNumberCounterMap()
+	{
+		int minVolume;
+		int maxVolume;
+		minVolume = 1;
+		maxVolume = 10;
+		Map<Integer, Integer> numberCounterMap = MapFactory.newNumberCounterMap(minVolume,
+			maxVolume);
+		assertNotNull(numberCounterMap);
+		assertEquals(numberCounterMap.size(), maxVolume);
+	}
+
+	/**
 	 * Test for the Method {@link MapFactory#newTreeMap()}.
 	 */
 	@Test

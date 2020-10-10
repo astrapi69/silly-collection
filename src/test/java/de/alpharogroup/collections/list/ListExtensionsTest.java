@@ -94,8 +94,6 @@ public class ListExtensionsTest
 
 		possibleNumbers = ListFactory.newRangeList(1, 49);
 		combinationSize = 6;
-		start = System.currentTimeMillis();
-		// List<List<Integer>> result =
 
 		start = System.currentTimeMillis();
 		ListExtensions.getCombinations(possibleNumbers, combinationSize);
