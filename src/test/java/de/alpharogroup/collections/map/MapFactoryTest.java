@@ -477,7 +477,8 @@ public class MapFactoryTest
 		int maxVolume;
 		minVolume = 1;
 		maxVolume = 10;
-		Map<Integer, Integer> numberCounterMap = MapFactory.newNumberCounterMap(minVolume, maxVolume);
+		Map<Integer, Integer> numberCounterMap = MapFactory.newNumberCounterMap(minVolume,
+			maxVolume);
 		Assert.assertNotNull(numberCounterMap);
 		Assert.assertEquals(numberCounterMap.size(), maxVolume);
 	}
