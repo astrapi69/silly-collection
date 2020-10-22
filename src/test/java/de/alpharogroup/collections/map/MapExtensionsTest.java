@@ -280,6 +280,20 @@ public class MapExtensionsTest
 			}
 			assertEquals(actual, expected);
 		}
+
+        mergedMap = MapExtensions.mergeAndSummarize(mergedMap, summarizeWith,
+                fullMerge);
+		assertTrue(mergedMap.size() == 11);
+		for (int i = minVolume; i <= 11; i++)
+		{
+			int expected = 0;
+			int actual = mergedMap.get(i);
+			if (summarizeWith.contains(i))
+			{
+				expected = 2;
+			}
+			assertEquals(actual, expected);
+		}
 		// new scenario ...
 		minVolume = 1;
 		maxVolume = 10;
