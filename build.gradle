@@ -25,9 +25,9 @@ description = "$rootProject.name"
 sourceCompatibility = "$projectSourceCompatibility"
 
 repositories {
-    jcenter()
     mavenLocal()
     mavenCentral()
+    jcenter()
 }
 
 dependencies {
@@ -46,6 +46,32 @@ dependencies {
     testImplementation("org.testng:testng:$testngVersion")
 }
 
+tasks.withType(GenerateModuleMetadata) {
+    enabled = false
+}
+
+javadoc {
+    failOnError = false
+    if(JavaVersion.current().isJava9Compatible()) {
+        options.addBooleanOption("html5", true)
+    }
+}
+
+tasks.withType(JavaCompile) {
+    options.encoding = "UTF-8"
+}
+
+test {
+    useTestNG()
+}
+
+jacocoTestReport {
+    reports {
+        xml.enabled true
+        html.enabled true
+    }
+}
+
 task sourcesJar(type: Jar) {
     archiveClassifier.set("sources")
     from(sourceSets.main.allJava)
@@ -57,21 +83,7 @@ task javadocJar(type: Jar) {
     javadoc.properties.failOnError = true
 }
 
-jar {
-    manifest {
-        attributes(
-                "Name"                  : project.name,
-                "Manifest-Version"      : project.version,
-                "Implementation-Title"  : "$groupPackage" + "." + "$rootProject.name",
-                "Implementation-Version": project.version,
-                "Implementation-Vendor" : "$projectLeaderName",
-                "Created-By"            : "Gradle ${gradle.gradleVersion}",
-                "Built-By"              : "$projectLeaderName",
-                "Build-Timestamp"       : new java.text.SimpleDateFormat("yyyy-MM-dd'T'HH:mm:ss.SSSZ").format(new Date()),
-                "Build-Jdk"             : "${System.properties['java.version']} (${System.properties['java.vendor']} ${System.properties['java.vm.version']})",
-                "Build-OS"              : "${System.properties['os.name']} ${System.properties['os.arch']} ${System.properties['os.version']}")
-    }
-}
+check.dependsOn jacocoTestReport
 
 def releaseVersion = !version.endsWith("SNAPSHOT")
 
@@ -128,25 +140,26 @@ publishing {
     }
 }
 
-tasks.withType(GenerateModuleMetadata) {
-    enabled = false
-}
-
 signing {
     if (releaseVersion) {
         sign publishing.publications.mavenJava
     }
 }
 
-javadoc {
-    failOnError = false
-    if(JavaVersion.current().isJava9Compatible()) {
-        options.addBooleanOption("html5", true)
+jar {
+    manifest {
+        attributes(
+                "Name"                  : project.name,
+                "Manifest-Version"      : project.version,
+                "Implementation-Title"  : "$groupPackage" + "." + "$rootProject.name",
+                "Implementation-Version": project.version,
+                "Implementation-Vendor" : "$projectLeaderName",
+                "Created-By"            : "Gradle ${gradle.gradleVersion}",
+                "Built-By"              : "$projectLeaderName",
+                "Build-Timestamp"       : new java.text.SimpleDateFormat("yyyy-MM-dd'T'HH:mm:ss.SSSZ").format(new Date()),
+                "Build-Jdk"             : "${System.properties['java.version']} (${System.properties['java.vendor']} ${System.properties['java.vm.version']})",
+                "Build-OS"              : "${System.properties['os.name']} ${System.properties['os.arch']} ${System.properties['os.version']}")
     }
-}
-
-tasks.withType(JavaCompile) {
-    options.encoding = "UTF-8"
 }
 
 license {
@@ -182,21 +195,6 @@ license {
               "out/**",
               "build/**"])
 }
-
 // workhack for license issue #76
 gradle.startParameter.excludedTaskNames += "licenseMain"
 gradle.startParameter.excludedTaskNames += "licenseTest"
-
-test {
-    useTestNG()
-}
-
-jacocoTestReport {
-    reports {
-        xml.enabled true
-        html.enabled true
-    }
-}
-
-check.dependsOn jacocoTestReport
-

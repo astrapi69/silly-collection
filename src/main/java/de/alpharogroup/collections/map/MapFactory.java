@@ -545,6 +545,27 @@ public final class MapFactory
 	}
 
 	/**
+	 * Factory method for create a map for count drawn numbers and will be summarized with the given
+	 * Map
+	 *
+	 * @param minVolume
+	 *            the min volume
+	 * @param maxVolume
+	 *            the max volume
+	 * @param numberCounterMap
+	 *            the Map that will be summarized
+	 * @return the new map with the initial values
+	 */
+	public static Map<Integer, Integer> newNumberCounterMap(int minVolume, int maxVolume,
+															Map<Integer, Integer> numberCounterMap)
+	{
+		Argument.notNull(numberCounterMap, "numberCounterMap");
+		return MapExtensions.mergeAndSummarize(
+				newNumberCounterMap(minVolume, maxVolume),
+				numberCounterMap);
+	}
+
+	/**
 	 * Factory method for create a new {@link TreeMap}
 	 *
 	 * @param <K>

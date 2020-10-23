@@ -1,6 +1,19 @@
 ## Change log
 ----------------------
 
+Version 8.4
+-------------
+
+ADDED:
+ 
+- new factory method for create a number map for count integer values with an existing counter map
+
+CHANGED:
+
+- update of gradle to new version 6.7
+- update of dependency jobj-compare in new version 3.7
+- order of build tasks changed in the build.gradle file
+
 Version 8.3
 -------------
 
