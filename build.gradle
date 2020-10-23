@@ -87,12 +87,6 @@ check.dependsOn jacocoTestReport
 
 def releaseVersion = !version.endsWith("SNAPSHOT")
 
-signing {
-    if (releaseVersion) {
-        sign publishing.publications.mavenJava
-    }
-}
-
 publishing {
     publications {
         mavenJava(MavenPublication) {
@@ -143,6 +137,12 @@ publishing {
             def snapshotsRepoUrl = "$projectRepositoriesSnapshotsRepoUrl"
             url = releaseVersion ? releasesRepoUrl : snapshotsRepoUrl
         }
+    }
+}
+
+signing {
+    if (releaseVersion) {
+        sign publishing.publications.mavenJava
     }
 }
 
