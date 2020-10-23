@@ -561,7 +561,7 @@ public final class MapFactory
 	{
 		Argument.notNull(numberCounterMap, "numberCounterMap");
 		return MapExtensions.mergeAndSummarize(
-				MapFactory.newCounterMap(ListFactory.newRangeList(minVolume, maxVolume)),
+				newNumberCounterMap(minVolume, maxVolume),
 				numberCounterMap);
 	}
 
