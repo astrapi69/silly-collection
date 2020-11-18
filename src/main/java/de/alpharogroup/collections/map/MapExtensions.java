@@ -30,11 +30,13 @@ import java.util.LinkedHashMap;
 import java.util.List;
 import java.util.Map;
 import java.util.Map.Entry;
+import java.util.Properties;
 import java.util.stream.Collectors;
 import java.util.stream.Stream;
 
 import de.alpharogroup.check.Argument;
 import de.alpharogroup.collections.list.ListFactory;
+import org.apache.commons.collections4.MapUtils;
 
 /**
  * Extensions class for use with Map objects.
@@ -310,6 +312,27 @@ public final class MapExtensions
 	public static Map<String, String> toMap(final String[][] twoDimArray)
 	{
 		return toGenericMap(twoDimArray);
+	}
+
+	/**
+	 * Converts the given Map to a Properties object
+	 *
+	 * @param map
+	 *            The map to convert
+	 * @return The Properties produced from the Map
+	 */
+	public static<K, V> Properties toProperties(final Map<K, V> map)
+	{
+		final Properties answer = new Properties();
+		if (map != null) {
+			for (final Entry<K, V> entry2 : map.entrySet()) {
+				final Map.Entry<?, ?> entry = entry2;
+				final Object key = entry.getKey().toString();
+				final Object value = entry.getValue().toString();
+				answer.put(key, value);
+			}
+		}
+		return answer;
 	}
 
 	private MapExtensions()

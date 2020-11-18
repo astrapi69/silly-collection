@@ -70,11 +70,18 @@ Than you can add the dependency to your dependencies:
 			</dependency>
 			...
 		</dependencies>
-
-			
+		
 ## gradle dependency
 
 You can first define the version in the ext section and add than the following gradle dependency to your project `build.gradle` if you want to import the core functionality of silly-collections:
+
+```
+define version in file gradle.properties
+
+sillyCollectionsVersion=8.4
+```
+
+or in build.gradle ext area
 
 ```
 ext {
@@ -82,9 +89,14 @@ ext {
     sillyCollectionsVersion = "8.4"
 			...
 }
+```
+
+and than add the dependency to the dependencies area
+ 
+```
 dependencies {
 			...
-implementation("de.alpharogroup:silly-collections:$sillyCollectionsVersion")
+    implementation("de.alpharogroup:silly-collections:$sillyCollectionsVersion")
 			...
 }
 ```
