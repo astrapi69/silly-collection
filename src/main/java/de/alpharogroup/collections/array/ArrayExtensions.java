@@ -104,6 +104,21 @@ public final class ArrayExtensions
 	}
 
 	/**
+	 * Creates a new {@link Stream} from the given array. <br>
+	 * <br>
+	 *
+	 * @param <T>
+	 *            the generic type of the objects in the array.
+	 * @param array
+	 *            the array
+	 * @return the new {@link Stream} created from the given array.
+	 */
+	@SafeVarargs
+	public static <T> Stream<T> asStream(T... array) {
+		return Arrays.stream(array);
+	}
+
+	/**
 	 * Returns <tt>true</tt> if and only if the given element is in the given array
 	 *
 	 * @param <T>
