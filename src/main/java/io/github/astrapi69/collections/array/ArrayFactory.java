@@ -35,6 +35,12 @@ import de.alpharogroup.check.Argument;
 public final class ArrayFactory
 {
 
+	private ArrayFactory()
+	{
+		throw new UnsupportedOperationException(
+			"This is a utility class and cannot be instantiated");
+	}
+
 	/**
 	 * Factory method for create new array from the given class type and the given length
 	 *
@@ -270,12 +276,6 @@ public final class ArrayFactory
 			subArray[i] = source[i + startIndex];
 		}
 		return subArray;
-	}
-
-	private ArrayFactory()
-	{
-		throw new UnsupportedOperationException(
-			"This is a utility class and cannot be instantiated");
 	}
 
 }

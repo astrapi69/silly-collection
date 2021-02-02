@@ -44,6 +44,10 @@ import io.github.astrapi69.collections.list.ListFactory;
 public final class SetFactory
 {
 
+	private SetFactory()
+	{
+	}
+
 	/**
 	 * Factory method for create new {@link HashSet} and will be returned as {@link Set}
 	 *
@@ -281,10 +285,6 @@ public final class SetFactory
 	{
 		Argument.notNull(comparator, "comparator");
 		return () -> new TreeSet<>(comparator);
-	}
-
-	private SetFactory()
-	{
 	}
 
 }

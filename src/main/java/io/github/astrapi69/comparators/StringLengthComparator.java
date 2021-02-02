@@ -24,11 +24,11 @@
  */
 package io.github.astrapi69.comparators;
 
+import java.util.Comparator;
+
 import de.alpharogroup.comparators.NullCheckComparator;
 import de.alpharogroup.comparators.SortOrder;
 import de.alpharogroup.comparators.SortOrderComparator;
-
-import java.util.Comparator;
 
 /**
  * The class {@link StringLengthComparator} compares {@link String} objects based on length. The
@@ -39,6 +39,21 @@ import java.util.Comparator;
  */
 public class StringLengthComparator extends SortOrderComparator<String>
 {
+
+	public StringLengthComparator()
+	{
+	}
+
+	/**
+	 * Instantiates a new {@link StringLengthComparator}.
+	 *
+	 * @param sortOrder
+	 *            the sort order
+	 */
+	public StringLengthComparator(final SortOrder sortOrder)
+	{
+		super(sortOrder);
+	}
 
 	/**
 	 * Factory method to create a new {@link StringLengthComparator} object.
@@ -89,21 +104,6 @@ public class StringLengthComparator extends SortOrderComparator<String>
 	{
 		return NullCheckComparator.<String> of(new StringLengthComparator(sortOrder),
 			nullIsGreaterThan);
-	}
-
-	public StringLengthComparator()
-	{
-	}
-
-	/**
-	 * Instantiates a new {@link StringLengthComparator}.
-	 *
-	 * @param sortOrder
-	 *            the sort order
-	 */
-	public StringLengthComparator(final SortOrder sortOrder)
-	{
-		super(sortOrder);
 	}
 
 	/**

@@ -38,6 +38,10 @@ import io.github.astrapi69.collections.list.ListFactory;
  */
 public final class ArrayExtensions
 {
+	private ArrayExtensions()
+	{
+	}
+
 	/**
 	 * Copy the given source array to the given destination array.<br>
 	 * <br>
@@ -114,7 +118,8 @@ public final class ArrayExtensions
 	 * @return the new {@link Stream} created from the given array.
 	 */
 	@SafeVarargs
-	public static <T> Stream<T> asStream(T... array) {
+	public static <T> Stream<T> asStream(T... array)
+	{
 		return Arrays.stream(array);
 	}
 
@@ -577,10 +582,6 @@ public final class ArrayExtensions
 	public static <T> List<T> toList(final T[] array)
 	{
 		return asList(array);
-	}
-
-	private ArrayExtensions()
-	{
 	}
 
 }

@@ -31,7 +31,6 @@ import java.util.Comparator;
 import java.util.Enumeration;
 import java.util.Properties;
 
-import io.github.astrapi69.collections.properties.IndexSortedProperties;
 import org.testng.annotations.Test;
 
 import de.alpharogroup.comparators.NullCheckComparator;

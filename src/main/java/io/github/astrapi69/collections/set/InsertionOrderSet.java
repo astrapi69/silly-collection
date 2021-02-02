@@ -49,21 +49,6 @@ public class InsertionOrderSet<E> extends LinkedHashSet<E>
 	private static final long serialVersionUID = -2010420135340052455L;
 
 	/**
-	 * Factory method for create an {@link InsertionOrderSet} with the given elements.
-	 *
-	 * @param <E>
-	 *            the generic type of the elements
-	 * @param elements
-	 *            The given elements.
-	 * @return a new {@link InsertionOrderSet} that contains the given elements.
-	 */
-	@SuppressWarnings("unchecked")
-	public static <E> Set<E> setOf(final E... elements)
-	{
-		return SetFactory.newInsertionOrderSet(elements);
-	}
-
-	/**
 	 * Constructs an empty insertion-ordered <tt>InsertionOrderSet</tt> instance with a default
 	 * capacity (16) and load factor (0.75).
 	 */
@@ -114,6 +99,21 @@ public class InsertionOrderSet<E> extends LinkedHashSet<E>
 	public InsertionOrderSet(final int initialCapacity, final float loadFactor)
 	{
 		super(initialCapacity, loadFactor);
+	}
+
+	/**
+	 * Factory method for create an {@link InsertionOrderSet} with the given elements.
+	 *
+	 * @param <E>
+	 *            the generic type of the elements
+	 * @param elements
+	 *            The given elements.
+	 * @return a new {@link InsertionOrderSet} that contains the given elements.
+	 */
+	@SuppressWarnings("unchecked")
+	public static <E> Set<E> setOf(final E... elements)
+	{
+		return SetFactory.newInsertionOrderSet(elements);
 	}
 
 	/**

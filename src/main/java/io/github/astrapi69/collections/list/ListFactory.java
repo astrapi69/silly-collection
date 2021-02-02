@@ -45,6 +45,12 @@ import io.github.astrapi69.collections.array.ArrayFactory;
 public final class ListFactory
 {
 
+	private ListFactory()
+	{
+		throw new UnsupportedOperationException(
+			"This is a utility class and cannot be instantiated");
+	}
+
 	/**
 	 * Factory method for create new {@link ArrayList} from the given optional collection and the
 	 * given optional elements.
@@ -100,7 +106,6 @@ public final class ListFactory
 		Collections.addAll(list, elements);
 		return list;
 	}
-
 
 	/**
 	 * Factory method for create new {@link ArrayList} from the given optional iterator and the
@@ -202,12 +207,6 @@ public final class ListFactory
 	public static List<Integer> newRangeList(final int start, final int end)
 	{
 		return Arrays.asList(ArrayFactory.newRangeArray(start, end));
-	}
-
-	private ListFactory()
-	{
-		throw new UnsupportedOperationException(
-			"This is a utility class and cannot be instantiated");
 	}
 
 }

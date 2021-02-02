@@ -31,8 +31,6 @@ import java.lang.reflect.InvocationTargetException;
 import java.util.List;
 import java.util.Optional;
 
-import io.github.astrapi69.collections.list.ListFactory;
-import io.github.astrapi69.collections.list.OptionalListExtensions;
 import org.meanbean.test.BeanTestException;
 import org.meanbean.test.BeanTester;
 import org.testng.annotations.Test;

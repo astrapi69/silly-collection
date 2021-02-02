@@ -31,7 +31,6 @@ import java.util.Enumeration;
 import java.util.Properties;
 import java.util.Set;
 
-import io.github.astrapi69.collections.properties.SortedProperties;
 import org.testng.AssertJUnit;
 import org.testng.annotations.Test;
 

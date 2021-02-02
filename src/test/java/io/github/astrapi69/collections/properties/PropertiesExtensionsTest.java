@@ -42,7 +42,6 @@ import java.util.Map;
 import java.util.Optional;
 import java.util.Properties;
 
-import io.github.astrapi69.collections.properties.PropertiesExtensions;
 import org.meanbean.test.BeanTester;
 import org.testng.annotations.Test;
 

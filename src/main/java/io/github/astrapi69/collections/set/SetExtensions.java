@@ -37,6 +37,10 @@ import io.github.astrapi69.collections.array.ArrayFactory;
 public final class SetExtensions
 {
 
+	private SetExtensions()
+	{
+	}
+
 	/**
 	 * Converts the given {@link Set} to an array
 	 *
@@ -54,7 +58,7 @@ public final class SetExtensions
 		{
 			throw new IllegalArgumentException("set is empty");
 		}
-		T[] newArray = (T[]) ArrayFactory.newArray(set.iterator().next().getClass(), set.size());
+		T[] newArray = (T[])ArrayFactory.newArray(set.iterator().next().getClass(), set.size());
 		return set.toArray(newArray);
 	}
 
@@ -84,10 +88,6 @@ public final class SetExtensions
 	public static <T> SortedSet<T> toSortedSet(final Collection<T> collection)
 	{
 		return SetFactory.newTreeSet(collection);
-	}
-
-	private SetExtensions()
-	{
 	}
 
 }

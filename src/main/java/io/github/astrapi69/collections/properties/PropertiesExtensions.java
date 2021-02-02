@@ -66,6 +66,10 @@ public final class PropertiesExtensions
 	 */
 	public static final String SEARCH_FILE_PATTERN = "([^\\s]+(\\.(?i)(java|html|htm))$)";
 
+	private PropertiesExtensions()
+	{
+	}
+
 	/**
 	 * Exports the given {@link InputStream} that represents a properties file to the given
 	 * properties {@link OutputStream} that represents the output file. The flag xmlFile tells if
@@ -462,10 +466,6 @@ public final class PropertiesExtensions
 		final Properties prop = new Properties();
 		prop.load(properties);
 		prop.storeToXML(xml, comment, encoding);
-	}
-
-	private PropertiesExtensions()
-	{
 	}
 
 }

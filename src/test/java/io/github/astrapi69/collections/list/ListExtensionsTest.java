@@ -38,19 +38,17 @@ import java.util.Enumeration;
 import java.util.List;
 import java.util.Set;
 
-import io.github.astrapi69.collections.list.ListExtensions;
-import io.github.astrapi69.collections.list.ListFactory;
 import org.meanbean.test.BeanTester;
 import org.testng.annotations.AfterMethod;
 import org.testng.annotations.BeforeMethod;
 import org.testng.annotations.Test;
 
+import de.alpharogroup.test.objects.Person;
+import de.alpharogroup.test.objects.enums.Gender;
 import io.github.astrapi69.collections.CollectionExtensions;
 import io.github.astrapi69.collections.array.ArrayFactory;
 import io.github.astrapi69.collections.modifications.ModifiedCollections;
 import io.github.astrapi69.collections.set.SetFactory;
-import de.alpharogroup.test.objects.Person;
-import de.alpharogroup.test.objects.enums.Gender;
 
 /**
  * The unit test class for the class {@link ListExtensions}

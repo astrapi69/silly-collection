@@ -46,6 +46,10 @@ import io.github.astrapi69.collections.list.ListFactory;
 public final class MapExtensions
 {
 
+	private MapExtensions()
+	{
+	}
+
 	/**
 	 * Returns the first founded key from the given value or null if nothing is found.
 	 *
@@ -320,11 +324,13 @@ public final class MapExtensions
 	 *            The map to convert
 	 * @return The Properties produced from the Map
 	 */
-	public static<K, V> Properties toProperties(final Map<K, V> map)
+	public static <K, V> Properties toProperties(final Map<K, V> map)
 	{
 		final Properties properties = new Properties();
-		if (map != null) {
-			for (final Entry<K, V> entry2 : map.entrySet()) {
+		if (map != null)
+		{
+			for (final Entry<K, V> entry2 : map.entrySet())
+			{
 				final Map.Entry<?, ?> entry = entry2;
 				final Object key = entry.getKey().toString();
 				final Object value = entry.getValue().toString();
@@ -332,10 +338,6 @@ public final class MapExtensions
 			}
 		}
 		return properties;
-	}
-
-	private MapExtensions()
-	{
 	}
 
 }

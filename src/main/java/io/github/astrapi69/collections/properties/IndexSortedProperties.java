@@ -31,9 +31,9 @@ import java.util.Map;
 import java.util.Properties;
 import java.util.Set;
 
+import de.alpharogroup.comparators.NullCheckComparator;
 import io.github.astrapi69.collections.CollectionExtensions;
 import io.github.astrapi69.collections.list.ListFactory;
-import de.alpharogroup.comparators.NullCheckComparator;
 
 /**
  * The class {@link IndexSortedProperties} extends SortedProperties and holds an intern list with
@@ -46,6 +46,28 @@ public class IndexSortedProperties extends SortedProperties
 
 	/** The Constant serialVersionUID. */
 	private static final long serialVersionUID = 1L;
+	/** The keys. */
+	private List<Object> keys;
+
+	/**
+	 * Instantiates a new {@link IndexSortedProperties}.
+	 */
+	public IndexSortedProperties()
+	{
+		this(new Properties());
+	}
+
+	/**
+	 * Instantiates a new {@link IndexSortedProperties}.
+	 *
+	 * @param defaults
+	 *            the defaults
+	 */
+	public IndexSortedProperties(final Properties defaults)
+	{
+		super(defaults);
+		sortKeyList(defaults.keySet());
+	}
 
 	/**
 	 * Factory method to create a new {@link IndexSortedProperties} object.
@@ -117,29 +139,6 @@ public class IndexSortedProperties extends SortedProperties
 				return NullCheckComparator.<Object> of(comparator, nullIsGreaterThan);
 			}
 		};
-	}
-
-	/** The keys. */
-	private List<Object> keys;
-
-	/**
-	 * Instantiates a new {@link IndexSortedProperties}.
-	 */
-	public IndexSortedProperties()
-	{
-		this(new Properties());
-	}
-
-	/**
-	 * Instantiates a new {@link IndexSortedProperties}.
-	 *
-	 * @param defaults
-	 *            the defaults
-	 */
-	public IndexSortedProperties(final Properties defaults)
-	{
-		super(defaults);
-		sortKeyList(defaults.keySet());
 	}
 
 	/**

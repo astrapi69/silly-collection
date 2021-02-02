@@ -32,8 +32,8 @@ import java.util.Set;
 import java.util.TreeSet;
 import java.util.Vector;
 
-import io.github.astrapi69.collections.list.VectorExtensions;
 import de.alpharogroup.comparators.NullCheckComparator;
+import io.github.astrapi69.collections.list.VectorExtensions;
 
 /**
  * The class {@link SortedProperties} extends Properties and adds sort functionality for the keys.
@@ -43,6 +43,27 @@ public class SortedProperties extends Properties
 
 	/** The Constant serialVersionUID. */
 	private static final long serialVersionUID = 1L;
+	/** The {@link Comparator} object. */
+	private Comparator<Object> comparator;
+
+	/**
+	 * Instantiates a new {@link SortedProperties}.
+	 */
+	public SortedProperties()
+	{
+		this(new Properties());
+	}
+
+	/**
+	 * Instantiates a new {@link SortedProperties}.
+	 *
+	 * @param defaults
+	 *            the defaults
+	 */
+	public SortedProperties(final Properties defaults)
+	{
+		super(defaults);
+	}
 
 	/**
 	 * Factory method to create a new {@link SortedProperties} object.
@@ -88,28 +109,6 @@ public class SortedProperties extends Properties
 				return NullCheckComparator.<Object> of(comparator, false);
 			}
 		};
-	}
-
-	/** The {@link Comparator} object. */
-	private Comparator<Object> comparator;
-
-	/**
-	 * Instantiates a new {@link SortedProperties}.
-	 */
-	public SortedProperties()
-	{
-		this(new Properties());
-	}
-
-	/**
-	 * Instantiates a new {@link SortedProperties}.
-	 *
-	 * @param defaults
-	 *            the defaults
-	 */
-	public SortedProperties(final Properties defaults)
-	{
-		super(defaults);
 	}
 
 	/**

@@ -40,6 +40,10 @@ import org.apache.commons.collections4.CollectionUtils;
 public final class CollectionExtensions
 {
 
+	private CollectionExtensions()
+	{
+	}
+
 	/**
 	 * Returns <tt>true</tt> if the given {@link Collection} contains at least one object of the
 	 * given objects otherwise it returns <tt>false</tt>
@@ -198,7 +202,6 @@ public final class CollectionExtensions
 			.collect(Collectors.groupingBy(it -> counter.getAndIncrement() / size)).values();
 	}
 
-
 	/**
 	 * Checks the given two {@link Collection} objects if there are null and return the appropriate
 	 * {@link Optional} boolean value
@@ -225,10 +228,6 @@ public final class CollectionExtensions
 			return Optional.of(false);
 		}
 		return Optional.empty();
-	}
-
-	private CollectionExtensions()
-	{
 	}
 
 }

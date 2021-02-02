@@ -29,7 +29,6 @@ import static org.testng.AssertJUnit.assertNotNull;
 
 import java.util.NoSuchElementException;
 
-import io.github.astrapi69.collections.iterators.ArrayIterator;
 import org.meanbean.test.BeanTestException;
 import org.meanbean.test.BeanTester;
 import org.testng.annotations.AfterMethod;

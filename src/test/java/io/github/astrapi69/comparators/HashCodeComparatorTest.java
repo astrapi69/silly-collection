@@ -28,7 +28,6 @@ import static org.testng.AssertJUnit.assertTrue;
 
 import java.util.Comparator;
 
-import io.github.astrapi69.comparators.HashCodeComparator;
 import org.testng.annotations.AfterMethod;
 import org.testng.annotations.BeforeMethod;
 import org.testng.annotations.Test;

@@ -33,6 +33,12 @@ import java.util.Vector;
 public final class VectorExtensions
 {
 
+	private VectorExtensions()
+	{
+		throw new UnsupportedOperationException(
+			"This is a utility class and cannot be instantiated");
+	}
+
 	/**
 	 * Converts the given enumaration to a Vector.
 	 *
@@ -51,11 +57,5 @@ public final class VectorExtensions
 			vector.add(enumaration.nextElement());
 		}
 		return vector;
-	}
-
-	private VectorExtensions()
-	{
-		throw new UnsupportedOperationException(
-			"This is a utility class and cannot be instantiated");
 	}
 }

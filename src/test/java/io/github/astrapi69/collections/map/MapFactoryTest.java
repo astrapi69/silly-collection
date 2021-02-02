@@ -28,15 +28,19 @@ import static org.testng.AssertJUnit.assertEquals;
 import static org.testng.AssertJUnit.assertNotNull;
 import static org.testng.AssertJUnit.assertTrue;
 
-import java.util.*;
+import java.util.Comparator;
+import java.util.HashMap;
+import java.util.List;
+import java.util.Map;
+import java.util.Random;
+import java.util.TreeMap;
 import java.util.concurrent.ConcurrentHashMap;
 
-import io.github.astrapi69.collections.map.MapFactory;
 import org.meanbean.test.BeanTester;
 import org.testng.annotations.Test;
 
-import io.github.astrapi69.collections.list.ListFactory;
 import de.alpharogroup.collections.pairs.KeyValuePair;
+import io.github.astrapi69.collections.list.ListFactory;
 
 /**
  * The unit test class for the class {@link MapFactory}.
@@ -228,7 +232,7 @@ public class MapFactoryTest
 	}
 
 	/**
-	 * Test method for {@link MapFactory#newHashMap(KeyValuePair[])} 
+	 * Test method for {@link MapFactory#newHashMap(KeyValuePair[])}
 	 */
 	@Test
 	public void testNewHashMapObjects()
@@ -311,7 +315,7 @@ public class MapFactoryTest
 	}
 
 	/**
-	 * Test method for {@link MapFactory#newInsertionOrderMap(KeyValuePair[])} 
+	 * Test method for {@link MapFactory#newInsertionOrderMap(KeyValuePair[])}
 	 */
 	@Test
 	public void testNewInsertionOrderMapObjects()
@@ -328,7 +332,7 @@ public class MapFactoryTest
 	}
 
 	/**
-	 * Test method for {@link MapFactory#newLazyHashMap(HashMap)} 
+	 * Test method for {@link MapFactory#newLazyHashMap(HashMap)}
 	 */
 	@Test
 	public void testNewLazyHashMap()
@@ -447,7 +451,7 @@ public class MapFactoryTest
 	}
 
 	/**
-	 * Test method for {@link MapFactory#newLinkedHashMap(KeyValuePair[])} 
+	 * Test method for {@link MapFactory#newLinkedHashMap(KeyValuePair[])}
 	 */
 	@Test
 	public void testNewLinkedHashMapObjects()
@@ -474,7 +478,7 @@ public class MapFactoryTest
 		minVolume = 1;
 		maxVolume = 10;
 		Map<Integer, Integer> numberCounterMap = MapFactory.newNumberCounterMap(minVolume,
-				maxVolume);
+			maxVolume);
 		assertNotNull(numberCounterMap);
 		assertEquals(numberCounterMap.size(), maxVolume);
 	}
@@ -495,11 +499,10 @@ public class MapFactoryTest
 		initialNumberCounterMap = MapFactory.newNumberCounterMap(minVolume, maxVolume);
 		for (int i = minVolume; i <= maxVolume; i++)
 		{
-			initialNumberCounterMap.merge(i, 1 + new Random().nextInt() * 4,
-					Integer::sum);
+			initialNumberCounterMap.merge(i, 1 + new Random().nextInt() * 4, Integer::sum);
 		}
-		numberCounterMap = MapFactory.newNumberCounterMap(minVolume,
-				maxVolume, initialNumberCounterMap);
+		numberCounterMap = MapFactory.newNumberCounterMap(minVolume, maxVolume,
+			initialNumberCounterMap);
 		assertNotNull(numberCounterMap);
 		assertEquals(numberCounterMap.size(), maxVolume);
 	}

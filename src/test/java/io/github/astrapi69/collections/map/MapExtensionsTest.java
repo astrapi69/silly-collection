@@ -27,11 +27,16 @@ package io.github.astrapi69.collections.map;
 import static org.testng.Assert.assertEquals;
 import static org.testng.AssertJUnit.assertTrue;
 
-import java.util.*;
+import java.util.AbstractMap;
+import java.util.Collection;
+import java.util.Comparator;
+import java.util.HashMap;
+import java.util.List;
+import java.util.Map;
 import java.util.Map.Entry;
+import java.util.Properties;
+import java.util.Set;
 
-import io.github.astrapi69.collections.map.MapExtensions;
-import io.github.astrapi69.collections.map.MapFactory;
 import org.meanbean.test.BeanTester;
 import org.testng.annotations.Test;
 
@@ -277,8 +282,7 @@ public class MapExtensionsTest
 			assertEquals(actual, expected);
 		}
 
-        mergedMap = MapExtensions.mergeAndSummarize(mergedMap, summarizeWith,
-                fullMerge);
+		mergedMap = MapExtensions.mergeAndSummarize(mergedMap, summarizeWith, fullMerge);
 		assertTrue(mergedMap.size() == 11);
 		for (int i = minVolume; i <= 11; i++)
 		{

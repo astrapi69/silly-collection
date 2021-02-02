@@ -29,7 +29,6 @@ import static org.testng.AssertJUnit.assertTrue;
 import java.util.Comparator;
 import java.util.Locale;
 
-import io.github.astrapi69.comparators.LocaleComparator;
 import org.testng.annotations.Test;
 
 /**

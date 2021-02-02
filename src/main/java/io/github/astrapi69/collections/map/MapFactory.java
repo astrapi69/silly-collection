@@ -33,12 +33,12 @@ import java.util.Objects;
 import java.util.TreeMap;
 import java.util.concurrent.ConcurrentHashMap;
 
-import io.github.astrapi69.collections.list.ListFactory;
 import org.apache.commons.collections4.functors.InstantiateFactory;
 import org.apache.commons.collections4.map.LazyMap;
 
 import de.alpharogroup.check.Argument;
 import de.alpharogroup.collections.pairs.KeyValuePair;
+import io.github.astrapi69.collections.list.ListFactory;
 
 /**
  * The factory class {@link MapFactory} provides factory methods for create new {@link Map} objects
@@ -48,6 +48,10 @@ import de.alpharogroup.collections.pairs.KeyValuePair;
  */
 public final class MapFactory
 {
+
+	private MapFactory()
+	{
+	}
 
 	/**
 	 * Factory method for {@link java.util.Map} that acts like a javascript associative array.
@@ -557,12 +561,11 @@ public final class MapFactory
 	 * @return the new map with the initial values
 	 */
 	public static Map<Integer, Integer> newNumberCounterMap(int minVolume, int maxVolume,
-															Map<Integer, Integer> numberCounterMap)
+		Map<Integer, Integer> numberCounterMap)
 	{
 		Argument.notNull(numberCounterMap, "numberCounterMap");
-		return MapExtensions.mergeAndSummarize(
-				newNumberCounterMap(minVolume, maxVolume),
-				numberCounterMap);
+		return MapExtensions.mergeAndSummarize(newNumberCounterMap(minVolume, maxVolume),
+			numberCounterMap);
 	}
 
 	/**
@@ -694,10 +697,6 @@ public final class MapFactory
 	{
 		Argument.notNull(map, "map");
 		return new TreeMap<>(map);
-	}
-
-	private MapFactory()
-	{
 	}
 
 }

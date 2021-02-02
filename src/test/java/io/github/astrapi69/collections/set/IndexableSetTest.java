@@ -26,7 +26,6 @@ package io.github.astrapi69.collections.set;
 
 import static org.testng.AssertJUnit.assertEquals;
 
-import io.github.astrapi69.collections.set.IndexableSet;
 import org.testng.annotations.Test;
 
 /**

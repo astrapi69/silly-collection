@@ -1,22 +1,22 @@
 <?xml version="1.0" encoding="UTF-8"?>
 <!DOCTYPE suite SYSTEM "http://testng.org/testng-1.0.dtd">
 <suite name="Suite">
-  <test name="Test">
-    <classes>
-    <class name="io.github.astrapi69.collections.array.ArrayExtensionsTest"/>
-    <class name="io.github.astrapi69.collections.iterators.ArrayIteratorTest"/>
-    <class name="io.github.astrapi69.collections.iterators.EnumerationIteratorTest"/>
-    <class name="io.github.astrapi69.collections.list.ListExtensionsTest"/>
-    <class name="io.github.astrapi69.collections.list.VectorExtensionsTest"/>
-    <class name="io.github.astrapi69.collections.map.InsertionOrderMapTest"/>
-    <class name="io.github.astrapi69.collections.map.MapExtensionsTest"/>
-    <class name="io.github.astrapi69.collections.modifications.ModifiedCollectionsTest"/>
-    <class name="io.github.astrapi69.collections.modifications.ModifiedStateTest"/>
-    <class name="io.github.astrapi69.collections.set.InsertionOrderSetTest"/>
-    <class name="io.github.astrapi69.collections.set.SetExtensionsTest"/>
-    <class name="io.github.astrapi69.comparators.DateComparatorTest"/>
-    <class name="io.github.astrapi69.comparators.DescendingDateComparatorTest"/>
-    <class name="io.github.astrapi69.comparators.HashCodeComparatorTest"/>
-    </classes>
-  </test> <!-- Test -->
+    <test name="Test">
+        <classes>
+            <class name="io.github.astrapi69.collections.array.ArrayExtensionsTest"/>
+            <class name="io.github.astrapi69.collections.iterators.ArrayIteratorTest"/>
+            <class name="io.github.astrapi69.collections.iterators.EnumerationIteratorTest"/>
+            <class name="io.github.astrapi69.collections.list.ListExtensionsTest"/>
+            <class name="io.github.astrapi69.collections.list.VectorExtensionsTest"/>
+            <class name="io.github.astrapi69.collections.map.InsertionOrderMapTest"/>
+            <class name="io.github.astrapi69.collections.map.MapExtensionsTest"/>
+            <class name="io.github.astrapi69.collections.modifications.ModifiedCollectionsTest"/>
+            <class name="io.github.astrapi69.collections.modifications.ModifiedStateTest"/>
+            <class name="io.github.astrapi69.collections.set.InsertionOrderSetTest"/>
+            <class name="io.github.astrapi69.collections.set.SetExtensionsTest"/>
+            <class name="io.github.astrapi69.comparators.DateComparatorTest"/>
+            <class name="io.github.astrapi69.comparators.DescendingDateComparatorTest"/>
+            <class name="io.github.astrapi69.comparators.HashCodeComparatorTest"/>
+        </classes>
+    </test> <!-- Test -->
 </suite> <!-- Suite -->

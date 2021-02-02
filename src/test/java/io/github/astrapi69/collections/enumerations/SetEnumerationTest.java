@@ -35,7 +35,6 @@ import java.util.NoSuchElementException;
 import java.util.Set;
 import java.util.Vector;
 
-import io.github.astrapi69.collections.enumerations.SetEnumeration;
 import org.meanbean.test.BeanTestException;
 import org.meanbean.test.BeanTester;
 import org.testng.annotations.Test;

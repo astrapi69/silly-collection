@@ -46,6 +46,62 @@ public class ChainableComparator<T> extends ComparatorChain<T>
 	private static final long serialVersionUID = 1L;
 
 	/**
+	 * Instantiates a new {@link ChainableComparator}.
+	 */
+	private ChainableComparator()
+	{
+	}
+
+	/**
+	 * Instantiates a new {@link ChainableComparator}.
+	 *
+	 * @param comparator
+	 *            the comparator
+	 */
+	private ChainableComparator(final Comparator<T> comparator)
+	{
+		super(comparator);
+	}
+
+	/**
+	 * Instantiates a new {@link ChainableComparator}.
+	 *
+	 * @param comparator
+	 *            the comparator
+	 * @param reverse
+	 *            the reverse
+	 */
+	private ChainableComparator(final Comparator<T> comparator, final boolean reverse)
+	{
+		super(comparator, reverse);
+	}
+
+	/**
+	 * Instantiates a new {@link ChainableComparator}.
+	 *
+	 * @param list
+	 *            the list
+	 */
+	private ChainableComparator(final List<Comparator<T>> list)
+	{
+		super(list);
+	}
+
+	/**
+	 * Instantiates a new {@link ChainableComparator}.
+	 *
+	 * @param list
+	 *            the list
+	 * @param bits
+	 *            Sort order for each Comparator. Extra bits are ignored, unless extra Comparators
+	 *            are added by another method.
+	 */
+	private ChainableComparator(final List<Comparator<T>> list, final BitSet bits)
+	{
+		super(list, bits);
+	}
+
+	/**
 	 * Factory method to create a new chainable {@link Comparator} object.
 	 *
 	 * @param <T>
@@ -136,62 +192,6 @@ public class ChainableComparator<T> extends ComparatorChain<T>
 	public static <T> ChainableComparator<T> of(final List<Comparator<T>> list, final BitSet bits)
 	{
 		return new ChainableComparator<T>(list, bits);
-	}
-
-	/**
-	 * Instantiates a new {@link ChainableComparator}.
-	 */
-	private ChainableComparator()
-	{
-	}
-
-	/**
-	 * Instantiates a new {@link ChainableComparator}.
-	 *
-	 * @param comparator
-	 *            the comparator
-	 */
-	private ChainableComparator(final Comparator<T> comparator)
-	{
-		super(comparator);
-	}
-
-	/**
-	 * Instantiates a new {@link ChainableComparator}.
-	 *
-	 * @param comparator
-	 *            the comparator
-	 * @param reverse
-	 *            the reverse
-	 */
-	private ChainableComparator(final Comparator<T> comparator, final boolean reverse)
-	{
-		super(comparator, reverse);
-	}
-
-	/**
-	 * Instantiates a new {@link ChainableComparator}.
-	 *
-	 * @param list
-	 *            the list
-	 */
-	private ChainableComparator(final List<Comparator<T>> list)
-	{
-		super(list);
-	}
-
-	/**
-	 * Instantiates a new {@link ChainableComparator}.
-	 *
-	 * @param list
-	 *            the list
-	 * @param bits
-	 *            Sort order for each Comparator. Extra bits are ignored, unless extra Comparators
-	 *            are added by another method.
-	 */
-	private ChainableComparator(final List<Comparator<T>> list, final BitSet bits)
-	{
-		super(list, bits);
 	}
 
 }

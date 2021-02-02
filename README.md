@@ -2,9 +2,9 @@
 
 <div align="center">
 
-[![Build Status](https://travis-ci.org/lightblueseas/silly-collections.svg?branch=master)](https://travis-ci.org/lightblueseas/silly-collections) 
-[![Coverage Status](https://coveralls.io/repos/github/lightblueseas/silly-collections/badge.svg?branch=master)](https://coveralls.io/github/lightblueseas/silly-collections?branch=master) 
-[![Open Issues](https://img.shields.io/github/issues/lightblueseas/silly-collections.svg?style=flat)](https://github.com/lightblueseas/silly-collections/issues) 
+[![Build Status](https://travis-ci.org/lightblueseas/silly-collections.svg?branch=master)](https://travis-ci.org/lightblueseas/silly-collections)
+[![Coverage Status](https://coveralls.io/repos/github/lightblueseas/silly-collections/badge.svg?branch=master)](https://coveralls.io/github/lightblueseas/silly-collections?branch=master)
+[![Open Issues](https://img.shields.io/github/issues/lightblueseas/silly-collections.svg?style=flat)](https://github.com/lightblueseas/silly-collections/issues)
 [![Maven Central](https://maven-badges.herokuapp.com/maven-central/de.alpharogroup/silly-collections/badge.svg)](https://maven-badges.herokuapp.com/maven-central/de.alpharogroup/silly-collections)
 [![Javadocs](http://www.javadoc.io/badge/de.alpharogroup/silly-collections.svg)](http://www.javadoc.io/doc/de.alpharogroup/silly-collections)
 [![MIT license](http://img.shields.io/badge/license-MIT-brightgreen.svg?style=flat)](http://opensource.org/licenses/MIT)
@@ -18,7 +18,8 @@ If you like this project put a ⭐ and donate
 
 # Donations
 
-If you like this library, please consider a donation through paypal: <a href="https://www.paypal.com/cgi-bin/webscr?cmd=_s-xclick&hosted_button_id=MJ7V43GU2H386" target="_blank">
+If you like this library, please consider a donation through
+paypal: <a href="https://www.paypal.com/cgi-bin/webscr?cmd=_s-xclick&hosted_button_id=MJ7V43GU2H386" target="_blank">
 <img src="https://www.paypalobjects.com/en_US/GB/i/btn/btn_donateCC_LG.gif" alt="PayPal this" title="PayPal – The safer, easier way to pay online!" border="0" />
 </a>
 
@@ -31,14 +32,15 @@ or over ether with:
 0x588Aa02De98B1Ef70afeDC3ec5290130a3E5e273
 
 or over flattr:
-  
+
 <a href="https://flattr.com/submit/auto?fid=r7vp62&url=https%3A%2F%2Fgithub.com%2Flightblueseas%2Fsilly-collections" target="_blank">
 <img src="http://api.flattr.com/button/flattr-badge-large.png" alt="Flattr this" title="Flattr this" border="0" />
 </a>
 
 ## License
 
-The source code comes under the liberal MIT License, making silly-collections great for all types of applications.
+The source code comes under the liberal MIT License, making silly-collections great for all types of
+applications.
 
 ## Note
 
@@ -46,10 +48,12 @@ No animals were harmed in the making of this library.
 
 ## Maven dependency
 
-Maven dependency is now on sonatype.
-Check out [sonatype repository](https://oss.sonatype.org/index.html#nexus-search;gav~de.alpharogroup~silly-collections~~~) for latest snapshots and releases.
+Maven dependency is now on sonatype. Check
+out [sonatype repository](https://oss.sonatype.org/index.html#nexus-search;gav~de.alpharogroup~silly-collections~~~)
+for latest snapshots and releases.
 
-Add the following maven dependency to your project `pom.xml` if you want to import the core functionality of silly-collections:
+Add the following maven dependency to your project `pom.xml` if you want to import the core
+functionality of silly-collections:
 
 Than you can add the dependency to your dependencies:
 
@@ -70,10 +74,10 @@ Than you can add the dependency to your dependencies:
 			</dependency>
 			...
 		</dependencies>
-		
+
 ## gradle dependency
 
-You can first define the version in the ext section and add than the following gradle dependency to 
+You can first define the version in the ext section and add than the following gradle dependency to
 your project `build.gradle` if you want to import the core functionality of silly-collections:
 
 ```
@@ -93,7 +97,7 @@ ext {
 ```
 
 and than add the dependency to the dependencies area
- 
+
 ```
 dependencies {
 			...
@@ -110,22 +114,31 @@ Release version numbers will be incremented in the following format:
 
 `<major>.<minor>.<patch>`
 
-For detailed information on versioning for this project you can visit this [wiki page](https://github.com/lightblueseas/mvn-parent-projects/wiki/Simplified-Semantic-Versioning).
+For detailed information on versioning for this project you can visit
+this [wiki page](https://github.com/lightblueseas/mvn-parent-projects/wiki/Simplified-Semantic-Versioning)
+.
 
 ## Want to Help and improve it? ###
 
-The source code for silly-collections are on GitHub. Please feel free to fork and send pull requests!
+The source code for silly-collections are on GitHub. Please feel free to fork and send pull
+requests!
 
-Create your own fork of [lightblueseas/silly-collections/fork](https://github.com/lightblueseas/silly-collections/fork)
+Create your own fork
+of [lightblueseas/silly-collections/fork](https://github.com/lightblueseas/silly-collections/fork)
 
-To share your changes, [submit a pull request](https://github.com/lightblueseas/silly-collections/pull/new/develop).
+To share your
+changes, [submit a pull request](https://github.com/lightblueseas/silly-collections/pull/new/develop)
+.
 
 Don't forget to add new units tests on your changes.
 
 ## Contacting the Developers
 
-Do not hesitate to contact the silly-collections developers with your questions, concerns, comments, bug reports, or feature requests.
-- Feature requests, questions and bug reports can be reported at the [issues page](https://github.com/lightblueseas/silly-collections/issues).
+Do not hesitate to contact the silly-collections developers with your questions, concerns, comments,
+bug reports, or feature requests.
+
+- Feature requests, questions and bug reports can be reported at
+  the [issues page](https://github.com/lightblueseas/silly-collections/issues).
 
 ## Similar projects
 
@@ -133,8 +146,9 @@ Here is a list of awesome similar projects:
 
 Open Source:
 
- * [streamex](https://github.com/amaembo/streamex) Enhancing Java 8 Streams
- * [glazedlists](https://github.com/glazedlists/glazedlists) Open Source List Transformations for Java
+* [streamex](https://github.com/amaembo/streamex) Enhancing Java 8 Streams
+* [glazedlists](https://github.com/glazedlists/glazedlists) Open Source List Transformations for
+  Java
 
 ## Credits
 

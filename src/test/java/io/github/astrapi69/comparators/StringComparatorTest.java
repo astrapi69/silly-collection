@@ -30,10 +30,9 @@ import java.util.Collections;
 import java.util.Comparator;
 import java.util.List;
 
-import de.alpharogroup.comparators.SortOrder;
-import io.github.astrapi69.comparators.StringComparator;
 import org.testng.annotations.Test;
 
+import de.alpharogroup.comparators.SortOrder;
 import io.github.astrapi69.collections.list.ListFactory;
 
 /**

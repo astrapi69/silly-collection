@@ -32,7 +32,6 @@ import static org.testng.AssertJUnit.assertTrue;
 import java.util.Collection;
 import java.util.List;
 
-import io.github.astrapi69.collections.CollectionExtensions;
 import org.meanbean.test.BeanTester;
 import org.testng.annotations.Test;
 

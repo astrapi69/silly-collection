@@ -33,14 +33,14 @@ import java.util.List;
 import java.util.Optional;
 import java.util.Set;
 
-import io.github.astrapi69.collections.array.ArrayFactory;
-import io.github.astrapi69.collections.modifications.ModifiedCollections;
 import org.apache.commons.collections4.ComparatorUtils;
 
 import de.alpharogroup.check.Argument;
-import io.github.astrapi69.collections.CollectionExtensions;
 import de.alpharogroup.comparators.BeanPropertyComparator;
 import de.alpharogroup.comparators.SortOrderComparator;
+import io.github.astrapi69.collections.CollectionExtensions;
+import io.github.astrapi69.collections.array.ArrayFactory;
+import io.github.astrapi69.collections.modifications.ModifiedCollections;
 
 /**
  * Extensions class for use with {@link List} objects.
@@ -50,6 +50,10 @@ import de.alpharogroup.comparators.SortOrderComparator;
  */
 public final class ListExtensions
 {
+	private ListExtensions()
+	{
+	}
+
 	/**
 	 * Compute in recursive manner all combinations of the given arguments
 	 *
@@ -218,7 +222,7 @@ public final class ListExtensions
 	 * @return 's the ModifiedLists in which the lists are keeped.
 	 */
 	public static <T> ModifiedCollections<T> getModifiedCollections(final Collection<T> previous,
-                                                                    final Collection<T> next)
+		final Collection<T> next)
 	{
 		return new ModifiedCollections<T>().getModifiedLists(previous, next);
 	}
@@ -595,7 +599,7 @@ public final class ListExtensions
 		{
 			throw new IllegalArgumentException("list is empty");
 		}
-		T[] newArray = (T[]) ArrayFactory.newArray(list.get(0).getClass(), list.size());
+		T[] newArray = (T[])ArrayFactory.newArray(list.get(0).getClass(), list.size());
 		return list.toArray(newArray);
 	}
 
@@ -648,7 +652,6 @@ public final class ListExtensions
 		return ListFactory.newArrayList(set);
 	}
 
-
 	/**
 	 * Converts the given parameter elements to an object array.
 	 *
@@ -665,10 +668,6 @@ public final class ListExtensions
 		final Object[] decorator = new Object[elements.length];
 		System.arraycopy(elements, 0, decorator, 0, elements.length);
 		return decorator;
-	}
-
-	private ListExtensions()
-	{
 	}
 
 }

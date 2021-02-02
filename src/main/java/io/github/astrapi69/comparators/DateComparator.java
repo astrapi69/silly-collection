@@ -24,11 +24,11 @@
  */
 package io.github.astrapi69.comparators;
 
-import de.alpharogroup.comparators.ComparatorExtensions;
-import de.alpharogroup.comparators.SortOrder;
-
 import java.util.Comparator;
 import java.util.Date;
+
+import de.alpharogroup.comparators.ComparatorExtensions;
+import de.alpharogroup.comparators.SortOrder;
 
 /**
  * The class DateComparator sorts Date object in ascending order as default or descending if the

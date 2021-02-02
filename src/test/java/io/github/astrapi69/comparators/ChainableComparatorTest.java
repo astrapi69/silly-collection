@@ -30,13 +30,12 @@ import java.util.BitSet;
 import java.util.Comparator;
 import java.util.List;
 
-import de.alpharogroup.comparators.BeanPropertyComparator;
-import io.github.astrapi69.comparators.ChainableComparator;
 import org.testng.annotations.Test;
 
-import io.github.astrapi69.collections.list.ListFactory;
+import de.alpharogroup.comparators.BeanPropertyComparator;
 import de.alpharogroup.test.objects.Employee;
 import de.alpharogroup.test.objects.Person;
+import io.github.astrapi69.collections.list.ListFactory;
 
 /**
  * The unit test class for the class {@link ChainableComparator}.

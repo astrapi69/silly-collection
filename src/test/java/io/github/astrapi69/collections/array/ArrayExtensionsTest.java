@@ -34,8 +34,6 @@ import java.util.List;
 import java.util.Set;
 import java.util.stream.Stream;
 
-import io.github.astrapi69.collections.array.ArrayExtensions;
-import io.github.astrapi69.collections.array.ArrayFactory;
 import org.meanbean.test.BeanTester;
 import org.testng.annotations.Test;
 
@@ -118,7 +116,8 @@ public class ArrayExtensionsTest
 	public void testAsStream()
 	{
 		final String numbers[] = { "1", "2", "3", "4", "5", "6", "7" };
-		final Stream<String> numberSet = ArrayExtensions.asStream("1", "2", "3", "4", "5", "6", "7");
+		final Stream<String> numberSet = ArrayExtensions.asStream("1", "2", "3", "4", "5", "6",
+			"7");
 
 		numberSet.forEach(i -> {
 			assertTrue(ArrayExtensions.contains(numbers, i));
@@ -126,8 +125,7 @@ public class ArrayExtensionsTest
 	}
 
 	/**
-	 * Test method for
-	 * {@link ArrayExtensions#contains(Object[], Object)} .
+	 * Test method for {@link ArrayExtensions#contains(Object[], Object)} .
 	 */
 	@Test
 	public void testContains()
@@ -155,8 +153,7 @@ public class ArrayExtensionsTest
 	}
 
 	/**
-	 * Test method for
-	 * {@link ArrayExtensions#containsAtLeastOne(Object[], Object[])}
+	 * Test method for {@link ArrayExtensions#containsAtLeastOne(Object[], Object[])}
 	 */
 	@Test
 	public void testContainsAtLeastOne()
@@ -415,8 +412,7 @@ public class ArrayExtensionsTest
 	}
 
 	/**
-	 * Test method for
-	 * {@link ArrayExtensions#isFirst(Object[], Object)} .
+	 * Test method for {@link ArrayExtensions#isFirst(Object[], Object)} .
 	 */
 	@Test
 	public void testIsFirst()
@@ -435,8 +431,7 @@ public class ArrayExtensionsTest
 	}
 
 	/**
-	 * Test method for
-	 * {@link ArrayExtensions#isLast(Object[], Object)} .
+	 * Test method for {@link ArrayExtensions#isLast(Object[], Object)} .
 	 */
 	@Test
 	public void testIsLast()

@@ -24,11 +24,11 @@
  */
 package io.github.astrapi69.comparators;
 
+import java.util.Comparator;
+
 import de.alpharogroup.comparators.NullCheckComparator;
 import de.alpharogroup.comparators.SortOrder;
 import de.alpharogroup.comparators.SortOrderComparator;
-
-import java.util.Comparator;
 
 /**
  * The class {@link StringComparator} sorts String objects in ascending order as default.
@@ -37,6 +37,21 @@ import java.util.Comparator;
  */
 public class StringComparator extends SortOrderComparator<String>
 {
+
+	public StringComparator()
+	{
+	}
+
+	/**
+	 * Instantiates a new {@link StringComparator}.
+	 *
+	 * @param sortOrder
+	 *            the sort order
+	 */
+	public StringComparator(final SortOrder sortOrder)
+	{
+		super(sortOrder);
+	}
 
 	/**
 	 * Factory method to create a new {@link StringComparator} object.
@@ -86,21 +101,6 @@ public class StringComparator extends SortOrderComparator<String>
 	public static Comparator<String> of(final SortOrder sortOrder, final boolean nullIsGreaterThan)
 	{
 		return NullCheckComparator.<String> of(new StringComparator(sortOrder), nullIsGreaterThan);
-	}
-
-	public StringComparator()
-	{
-	}
-
-	/**
-	 * Instantiates a new {@link StringComparator}.
-	 *
-	 * @param sortOrder
-	 *            the sort order
-	 */
-	public StringComparator(final SortOrder sortOrder)
-	{
-		super(sortOrder);
 	}
 
 }

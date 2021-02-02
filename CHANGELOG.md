@@ -21,7 +21,7 @@ Version 8.4
 ADDED:
 
 - new factory method for create a number map for count integer values with an existing counter map
-CHANGED:
+  CHANGED:
 
 - update of gradle to new version 6.7
 - update of dependency jobj-compare in new version 3.7
@@ -31,9 +31,9 @@ Version 8.3
 -------------
 
 ADDED:
- 
+
 - new area 'gradle-plugins versions' for hold the versions of the gradle plugins
-- new factory method for create a number map for count integer values 
+- new factory method for create a number map for count integer values
 
 CHANGED:
 
@@ -50,8 +50,9 @@ Version 8.2
 -------------
 
 ADDED:
- 
-- new extension method created that provides the containsAtLeastOne with varargs objects in a Collection
+
+- new extension method created that provides the containsAtLeastOne with varargs objects in a
+  Collection
 - new extension method created that provides the containsAtLeastOne with varargs objects in an Array
 
 CHANGED:
@@ -64,9 +65,9 @@ Version 8.1
 -------------
 
 ADDED:
- 
-- new method created that can summarize a given counter Maps with a given collection of keys with 
-the possibility of full merge
+
+- new method created that can summarize a given counter Maps with a given collection of keys with
+  the possibility of full merge
 - new factory method created for create a counter map with a already initialized counter Map
 
 CHANGED:
@@ -90,9 +91,10 @@ Version 5.9
 -------------
 
 ADDED:
- 
-- new method created that can summarize two counter Maps and return a new Map that contains the sum of the counts
-- new major release branch for jdk 11 created 
+
+- new method created that can summarize two counter Maps and return a new Map that contains the sum
+  of the counts
+- new major release branch for jdk 11 created
 - new constant created for a regular expression pattern that can find comments in properties file
 - new dependency jobj-core in version 3.5 added
 
@@ -109,13 +111,13 @@ Version 5.8
 -------------
 
 ADDED:
- 
+
 - new factory methods for maps created that can take now key value pairs
 - new idea run configurations for gradle builds created
 
 CHANGED:
 
-- update of gradle version 5.6.4 
+- update of gradle version 5.6.4
 - removed idea run configurations for maven
 
 Version 5.7.1
@@ -123,13 +125,13 @@ Version 5.7.1
 
 CHANGED:
 
-- downgraded gradle to version 5.5.1 
+- downgraded gradle to version 5.5.1
 
 Version 5.7
 -------------
 
 ADDED:
- 
+
 - gradle as new build system
 
 CHANGED:
@@ -169,7 +171,7 @@ Version 5.4.1
 
 ADDED:
 
-- new factory method for create a supplier for a tree set from a comparator  
+- new factory method for create a supplier for a tree set from a comparator
 
 CHANGED:
 
@@ -207,11 +209,11 @@ Version 5.2.1
 -------------
 
 ADDED:
- 
+
 - new method created for make an intersection of arrays
 - new factory method for create a sub array from a given array
 - new jobj-contract-verifier dependency in test scope added for unit test of beans
-- new maven launch script created for execution of clean package 
+- new maven launch script created for execution of clean package
 
 CHANGED:
 
@@ -223,11 +225,11 @@ Version 5.2
 -------------
 
 ADDED:
- 
+
 - new method created for get element from index in the class IndexableSet
 - new class OptionalListExtensions created
 - new method hasNext in class ListExtensions created
-- new benchmark jmh-core and jmh-generator-annprocess dependencies in version 1.21 added 
+- new benchmark jmh-core and jmh-generator-annprocess dependencies in version 1.21 added
 - new BenchmarkRunner created that starts the benchmarking process
 - new benchmark class for IndexableSet created
 - new methods for getNext and getPrevious created in class OptionalListExtensions
@@ -241,8 +243,8 @@ Version 5.1
 -------------
 
 ADDED:
- 
-- new method created for get all combinations of a given list of values 
+
+- new method created for get all combinations of a given list of values
 - new method created partition created in java 8 style
 - new method created for remove the first element in a given array
 - new method created for remove the last element in a given array
@@ -268,7 +270,7 @@ Version 4.35
 -------------
 
 ADDED:
- 
+
 - new methods created that returns an Optional instead of null values
 - new factory methods created for iterables and iterators
 
@@ -288,7 +290,7 @@ Version 4.34
 -------------
 
 ADDED:
- 
+
 - new factory methods for LinkedList objects created
 - new IndexableSet class created that can get the index of an element in the set
 - new method for rearrange an element of a List to a specified index created
@@ -321,7 +323,7 @@ Version 4.31
 -------------
 
 ADDED:
- 
+
 - new factory methods with initial capacity for create set objects created
 - new factory methods for primitive array types created
 
@@ -329,7 +331,7 @@ Version 4.30.1
 -------------
 
 ADDED:
- 
+
 - new factory methods for create map objects with a given map
 - new method isEqualListOfArrays in ListExtensions created
 
@@ -341,7 +343,7 @@ Version 4.30
 -------------
 
 ADDED:
- 
+
 - new factory methods for LinkedHashSet and InsertionOrderSet created
 - new hashcode method for collections that contains array objects
 - new isEqualCollection method for collections created
@@ -353,14 +355,14 @@ CHANGED:
 - update of test-objects dependency version from 4.26 to 4.28
 - DateComparatorTest extends now from BaseComparatorTestCase
 
-- update of gradle to new version 6.4 
+- update of gradle to new version 6.4
 - update of test dependency testng version to 7.2.0
 
 Version 4.29
 -------------
 
 ADDED:
- 
+
 - new section 'Semantic Versioning' in README.md file
 - new ArrayFactory class created and moved all factory method to it
 - new ListFactory class created and moved all factory method to it
@@ -370,14 +372,14 @@ CHANGED:
 
 - update of parent version to 3.11
 - removed unneeded .0 at the end of version
-- update of test-objects dependency version from 4.24.0 to 4.26 
+- update of test-objects dependency version from 4.24.0 to 4.26
 - update of jobject-extensions version to 1.11
 
 Version 4.28.0
 -------------
 
 ADDED:
- 
+
 - new generic Enumeration class created that associates a Set and an Enumeration
 
 CHANGED:
@@ -396,14 +398,14 @@ Version 4.26.0
 -------------
 
 ADDED:
- 
+
 - new factory methods for LinkedHashMap created
 - new factory class for maps created and moved all factory methods from MapExtensions to it
 
 CHANGED:
 
 - update of parent version to 3.9.0
-- update of test-objects dependency version from 4.23.0 to 4.24.0 
+- update of test-objects dependency version from 4.23.0 to 4.24.0
 - update of jobject-extensions dependency version from 1.8.0 to 1.10.0
 - moved method newRangeArray from ListExtensions to ArrayExtensions
 - tagged methods with int parameter for initialCapacity in ListFactory and SetFactory as deprecated
@@ -412,7 +414,7 @@ Version 4.25.0
 -------------
 
 ADDED:
- 
+
 - created new method for get an Integer from properties object with a given properties key
 - new factory methods for create new Treeset as SortedSet objects
 - new factory methods for create new TreeMap as SortedMap objects
@@ -426,19 +428,18 @@ CHANGED:
 - update of parent version
 - unit tests extended for new created methods
 
-
 Version 4.24.0
 -------------
 
 ADDED:
- 
+
 - new extension class CollectionExtensions for collections
 - new pair class with key and set
 
 CHANGED:
 
 - removed deprecated classes and methods
-- update of documentation of README.md 
+- update of documentation of README.md
 - unit tests extended for improve code coverage to 100%
 - several bugfixes
 
@@ -446,7 +447,7 @@ Version 4.23.0
 -------------
 
 ADDED:
- 
+
 - this changelog file
 - created PULL_REQUEST_TEMPLATE.md file
 - created CODE_OF_CONDUCT.md file
@@ -456,7 +457,7 @@ ADDED:
 CHANGED:
 
 - update of parent version
-- update of documentation of README.md 
+- update of documentation of README.md
 - unit tests extended for improve code coverage
 
 

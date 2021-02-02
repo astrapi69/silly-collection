@@ -31,14 +31,12 @@ import java.util.Comparator;
 import java.util.Date;
 import java.util.List;
 
-import io.github.astrapi69.comparators.DateComparator;
-import io.github.astrapi69.comparators.DescendingDateComparator;
 import org.testng.annotations.AfterMethod;
 import org.testng.annotations.BeforeMethod;
 import org.testng.annotations.Test;
 
-import io.github.astrapi69.collections.list.ListFactory;
 import de.alpharogroup.date.CreateDateExtensions;
+import io.github.astrapi69.collections.list.ListFactory;
 
 /**
  * The unit test class for the class {@link DescendingDateComparator}.

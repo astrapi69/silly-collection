@@ -36,6 +36,12 @@ import io.github.astrapi69.collections.CollectionExtensions;
 public final class OptionalListExtensions
 {
 
+	private OptionalListExtensions()
+	{
+		throw new UnsupportedOperationException(
+			"This is a utility class and cannot be instantiated");
+	}
+
 	/**
 	 * Returns an {@link Optional} with the first object from the given {@link List}
 	 *
@@ -163,12 +169,6 @@ public final class OptionalListExtensions
 			return Optional.of(list.remove(list.size() - 1));
 		}
 		return Optional.empty();
-	}
-
-	private OptionalListExtensions()
-	{
-		throw new UnsupportedOperationException(
-			"This is a utility class and cannot be instantiated");
 	}
 
 }

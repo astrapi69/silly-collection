@@ -28,12 +28,11 @@ import java.util.Comparator;
 import java.util.Date;
 import java.util.List;
 
-import io.github.astrapi69.comparators.DateComparator;
 import org.testng.annotations.Test;
 
 import de.alpharogroup.BaseComparatorTestCase;
-import io.github.astrapi69.collections.list.ListFactory;
 import de.alpharogroup.date.CreateDateExtensions;
+import io.github.astrapi69.collections.list.ListFactory;
 
 /**
  * The unit test class for the class {@link DateComparator}

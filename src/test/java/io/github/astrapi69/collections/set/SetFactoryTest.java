@@ -35,12 +35,11 @@ import java.util.SortedSet;
 import java.util.function.Supplier;
 import java.util.stream.Collectors;
 
-import io.github.astrapi69.collections.set.SetFactory;
 import org.meanbean.test.BeanTester;
 import org.testng.annotations.Test;
 
-import io.github.astrapi69.collections.list.ListFactory;
 import de.alpharogroup.comparators.SortOrder;
+import io.github.astrapi69.collections.list.ListFactory;
 import io.github.astrapi69.comparators.StringLengthComparator;
 
 /**
