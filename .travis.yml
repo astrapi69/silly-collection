@@ -3,17 +3,17 @@
 language: java
 
 jdk:
-    - openjdk8
+  - openjdk8
 
 addons:
-    apt:
-        update: true
+  apt:
+    update: true
 
 notifications:
-    email:
-        recipients:
-            - asterios.raptis@web.de
-        on_failure: always 
+  email:
+    recipients:
+      - asterios.raptis@web.de
+    on_failure: always
 
 after_success:
-    - bash <(curl -s https://codecov.io/bash)
+  - bash <(curl -s https://codecov.io/bash)

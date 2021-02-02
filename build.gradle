@@ -1,4 +1,3 @@
-
 buildscript {
     repositories {
         maven {
@@ -30,29 +29,13 @@ repositories {
     jcenter()
 }
 
-dependencies {
-    implementation("org.apache.commons:commons-collections4:$commonsCollections4Version")
-    implementation("de.alpharogroup:jobj-core:$jobjCoreVersion")
-    implementation("de.alpharogroup:jobj-compare:$jobjCompareVersion")
-    implementation("de.alpharogroup:silly-beans:$sillyBeansVersion")
-    testImplementation("de.alpharogroup:jobj-clone:$jobjCloneVersion")
-    testImplementation("de.alpharogroup:jobj-contract-verifier:$jobjContractVerifierVersion")
-    testImplementation("de.alpharogroup:vintage-time:$vintageTimeVersion")
-    testImplementation("de.alpharogroup:test-objects:$testObjectsVersion")
-    testImplementation("io.github.benas:random-beans:$randomBeansVersion")
-    testImplementation("org.openjdk.jmh:jmh-core:$jmhVersion")
-    testImplementation("org.openjdk.jmh:jmh-generator-annprocess:$jmhVersion")
-    testImplementation("org.meanbean:meanbean:$meanbeanVersion")
-    testImplementation("org.testng:testng:$testngVersion")
-}
-
 tasks.withType(GenerateModuleMetadata) {
     enabled = false
 }
 
 javadoc {
     failOnError = false
-    if(JavaVersion.current().isJava9Compatible()) {
+    if (JavaVersion.current().isJava9Compatible()) {
         options.addBooleanOption("html5", true)
     }
 }
@@ -97,14 +80,14 @@ publishing {
             pom {
                 name = "$rootProject.name"
                 description = "$projectDescription"
-                url = "$projectScmProviderUrl"+"$projectHolderUsername"+"$slash"+"$rootProject.name"
+                url = "$projectScmProviderUrl" + "$projectHolderUsername" + "$slash" + "$rootProject.name"
                 organization {
                     name = "$projectOrganizationName"
                     url = "$projectOrganizationUrl"
                 }
                 issueManagement {
                     system = "$projectIssueManagementSystem"
-                    url = "$projectScmProviderUrl"+"$projectHolderUsername"+"$slash"+"$rootProject.name"+"$issuesPath"
+                    url = "$projectScmProviderUrl" + "$projectHolderUsername" + "$slash" + "$rootProject.name" + "$issuesPath"
                 }
                 licenses {
                     license {
@@ -149,22 +132,22 @@ signing {
 jar {
     manifest {
         attributes(
-                "Name"                  : project.name,
-                "Manifest-Version"      : project.version,
-                "Implementation-Title"  : "$groupPackage" + "." + "$rootProject.name",
+                "Name": project.name,
+                "Manifest-Version": project.version,
+                "Implementation-Title": "$groupPackage" + "." + "$rootProject.name",
                 "Implementation-Version": project.version,
-                "Implementation-Vendor" : "$projectLeaderName",
-                "Created-By"            : "Gradle ${gradle.gradleVersion}",
-                "Built-By"              : "$projectLeaderName",
-                "Build-Timestamp"       : new java.text.SimpleDateFormat("yyyy-MM-dd'T'HH:mm:ss.SSSZ").format(new Date()),
-                "Build-Jdk"             : "${System.properties['java.version']} (${System.properties['java.vendor']} ${System.properties['java.vm.version']})",
-                "Build-OS"              : "${System.properties['os.name']} ${System.properties['os.arch']} ${System.properties['os.version']}")
+                "Implementation-Vendor": "$projectLeaderName",
+                "Created-By": "Gradle ${gradle.gradleVersion}",
+                "Built-By": "$projectLeaderName",
+                "Build-Timestamp": new java.text.SimpleDateFormat("yyyy-MM-dd'T'HH:mm:ss.SSSZ").format(new Date()),
+                "Build-Jdk": "${System.properties['java.version']} (${System.properties['java.vendor']} ${System.properties['java.vm.version']})",
+                "Build-OS": "${System.properties['os.name']} ${System.properties['os.arch']} ${System.properties['os.version']}")
     }
 }
 
 license {
-    ext.year="$projectInceptionYear"
-    ext.owner="$projectLeaderName"
+    ext.year = "$projectInceptionYear"
+    ext.owner = "$projectLeaderName"
     header rootProject.file("src/main/resources/LICENSE.txt")
     excludes(["**/README",
               "**/README.md",
@@ -198,3 +181,19 @@ license {
 // workhack for license issue #76
 gradle.startParameter.excludedTaskNames += "licenseMain"
 gradle.startParameter.excludedTaskNames += "licenseTest"
+
+dependencies {
+    implementation("org.apache.commons:commons-collections4:$commonsCollections4Version")
+    implementation("de.alpharogroup:jobj-core:$jobjCoreVersion")
+    implementation("de.alpharogroup:jobj-compare:$jobjCompareVersion")
+    implementation("de.alpharogroup:silly-beans:$sillyBeansVersion")
+    testImplementation("de.alpharogroup:jobj-clone:$jobjCloneVersion")
+    testImplementation("de.alpharogroup:jobj-contract-verifier:$jobjContractVerifierVersion")
+    testImplementation("de.alpharogroup:vintage-time:$vintageTimeVersion")
+    testImplementation("de.alpharogroup:test-objects:$testObjectsVersion")
+    testImplementation("io.github.benas:random-beans:$randomBeansVersion")
+    testImplementation("org.openjdk.jmh:jmh-core:$jmhVersion")
+    testImplementation("org.openjdk.jmh:jmh-generator-annprocess:$jmhVersion")
+    testImplementation("org.meanbean:meanbean:$meanbeanVersion")
+    testImplementation("org.testng:testng:$testngVersion")
+}
