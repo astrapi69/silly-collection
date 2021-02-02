@@ -320,6 +320,10 @@ public final class MapExtensions
 	/**
 	 * Converts the given Map to a Properties object
 	 *
+	 * @param <K>
+	 *            the generic type of the key
+	 * @param <V>
+	 *            the generic type of the value
 	 * @param map
 	 *            The map to convert
 	 * @return The Properties produced from the Map
