@@ -3,20 +3,20 @@
 <suite name="Suite">
   <test name="Test">
     <classes>
-    <class name="de.alpharogroup.collections.array.ArrayExtensionsTest"/>
-    <class name="de.alpharogroup.collections.iterators.ArrayIteratorTest"/>
-    <class name="de.alpharogroup.collections.iterators.EnumerationIteratorTest"/>
-    <class name="de.alpharogroup.collections.list.ListExtensionsTest"/>
-    <class name="de.alpharogroup.collections.list.VectorExtensionsTest"/>
-    <class name="de.alpharogroup.collections.map.InsertionOrderMapTest"/>
-    <class name="de.alpharogroup.collections.map.MapExtensionsTest"/>
-    <class name="de.alpharogroup.collections.modifications.ModifiedCollectionsTest"/>
-    <class name="de.alpharogroup.collections.modifications.ModifiedStateTest"/>
-    <class name="de.alpharogroup.collections.set.InsertionOrderSetTest"/>
-    <class name="de.alpharogroup.collections.set.SetExtensionsTest"/>
-    <class name="de.alpharogroup.comparators.DateComparatorTest"/>
-    <class name="de.alpharogroup.comparators.DescendingDateComparatorTest"/>
-    <class name="de.alpharogroup.comparators.HashCodeComparatorTest"/>
+    <class name="io.github.astrapi69.collections.array.ArrayExtensionsTest"/>
+    <class name="io.github.astrapi69.collections.iterators.ArrayIteratorTest"/>
+    <class name="io.github.astrapi69.collections.iterators.EnumerationIteratorTest"/>
+    <class name="io.github.astrapi69.collections.list.ListExtensionsTest"/>
+    <class name="io.github.astrapi69.collections.list.VectorExtensionsTest"/>
+    <class name="io.github.astrapi69.collections.map.InsertionOrderMapTest"/>
+    <class name="io.github.astrapi69.collections.map.MapExtensionsTest"/>
+    <class name="io.github.astrapi69.collections.modifications.ModifiedCollectionsTest"/>
+    <class name="io.github.astrapi69.collections.modifications.ModifiedStateTest"/>
+    <class name="io.github.astrapi69.collections.set.InsertionOrderSetTest"/>
+    <class name="io.github.astrapi69.collections.set.SetExtensionsTest"/>
+    <class name="io.github.astrapi69.comparators.DateComparatorTest"/>
+    <class name="io.github.astrapi69.comparators.DescendingDateComparatorTest"/>
+    <class name="io.github.astrapi69.comparators.HashCodeComparatorTest"/>
     </classes>
   </test> <!-- Test -->
 </suite> <!-- Suite -->
