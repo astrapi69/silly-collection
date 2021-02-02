@@ -27,14 +27,8 @@ package de.alpharogroup.collections.map;
 import static org.testng.Assert.assertEquals;
 import static org.testng.AssertJUnit.assertTrue;
 
-import java.util.AbstractMap;
-import java.util.Collection;
-import java.util.Comparator;
-import java.util.HashMap;
-import java.util.List;
-import java.util.Map;
+import java.util.*;
 import java.util.Map.Entry;
-import java.util.Set;
 
 import org.meanbean.test.BeanTester;
 import org.testng.annotations.Test;
@@ -315,6 +309,30 @@ public class MapExtensionsTest
 			assertEquals(actual, expected);
 		}
 
+	}
+
+	/**
+	 * Test for the Method {@link MapExtensions#toProperties(Map)}
+	 */
+	@Test
+	public void testToProperties()
+	{
+		Map<String, String> map;
+		Properties actual;
+		Properties expected;
+		// map with test data ...
+		map = new HashMap<>();
+		map.put("23", "3");
+		map.put("21", "2");
+		map.put("13", "4");
+		map.put("5", "1");
+		actual = MapExtensions.toProperties(map);
+		expected = new Properties();
+		expected.put("5", "1");
+		expected.put("21", "2");
+		expected.put("23", "3");
+		expected.put("13", "4");
+		assertEquals(expected, actual);
 	}
 
 	/**

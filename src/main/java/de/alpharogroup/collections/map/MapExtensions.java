@@ -323,16 +323,16 @@ public final class MapExtensions
 	 */
 	public static<K, V> Properties toProperties(final Map<K, V> map)
 	{
-		final Properties answer = new Properties();
+		final Properties properties = new Properties();
 		if (map != null) {
 			for (final Entry<K, V> entry2 : map.entrySet()) {
 				final Map.Entry<?, ?> entry = entry2;
 				final Object key = entry.getKey().toString();
 				final Object value = entry.getValue().toString();
-				answer.put(key, value);
+				properties.put(key, value);
 			}
 		}
-		return answer;
+		return properties;
 	}
 
 	private MapExtensions()

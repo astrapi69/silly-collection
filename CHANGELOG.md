@@ -12,12 +12,15 @@ Version 8.4
 ADDED:
  
 - new factory method for create a number map for count integer values with an existing counter map
+- new method that creates a stream from a given array
 
 CHANGED:
 
-- update of gradle to new version 6.7
+- update of gradle to new version 6.8.1
 - update of dependency jobj-compare in new version 3.7
 - order of build tasks changed in the build.gradle file
+- update of test dependency org.openjdk.jmh:jmh-core to new version 1.27
+- update of com.github.ben-manes.versions.gradle.plugin to new version 0.36.0
 
 Version 8.3
 -------------

@@ -32,6 +32,7 @@ import java.util.Arrays;
 import java.util.Iterator;
 import java.util.List;
 import java.util.Set;
+import java.util.stream.Stream;
 
 import org.meanbean.test.BeanTester;
 import org.testng.annotations.Test;
@@ -106,6 +107,20 @@ public class ArrayExtensionsTest
 			assertEquals(expected, actual);
 			i++;
 		}
+	}
+
+	/**
+	 * Test for method {@link ArrayExtensions#asStream(Object[])}
+	 */
+	@Test
+	public void testAsStream()
+	{
+		final String numbers[] = { "1", "2", "3", "4", "5", "6", "7" };
+		final Stream<String> numberSet = ArrayExtensions.asStream("1", "2", "3", "4", "5", "6", "7");
+
+		numberSet.forEach(i -> {
+			assertTrue(ArrayExtensions.contains(numbers, i));
+		});
 	}
 
 	/**
