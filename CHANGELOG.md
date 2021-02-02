@@ -1,7 +1,7 @@
 ## Change log
 ----------------------
 
-Version 8.5-SNAPSHOT
+Version 8.5
 -------------
 
 ADDED:
