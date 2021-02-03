@@ -1,12 +1,12 @@
 ## Change log
 ----------------------
 
-Version 9-SNAPSHOT
+Version 9
 -------------
 
 CHANGED:
 
-- update to jdk version 11
+- update jdk from version 8 to 11
 
 Version 8.5
 -------------
