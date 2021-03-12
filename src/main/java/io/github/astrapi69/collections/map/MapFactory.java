@@ -189,9 +189,12 @@ public final class MapFactory
 				counterMap.merge(element, 1, Integer::sum);
 				continue;
 			}
-			if(startByZero){
+			if (startByZero)
+			{
 				counterMap.put(element, 0);
-			} else {
+			}
+			else
+			{
 				counterMap.put(element, 1);
 			}
 		}
