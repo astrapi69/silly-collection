@@ -5,8 +5,8 @@
 [![Build Status](https://travis-ci.org/lightblueseas/silly-collections.svg?branch=master)](https://travis-ci.org/lightblueseas/silly-collections)
 [![Coverage Status](https://coveralls.io/repos/github/lightblueseas/silly-collections/badge.svg?branch=master)](https://coveralls.io/github/lightblueseas/silly-collections?branch=master)
 [![Open Issues](https://img.shields.io/github/issues/lightblueseas/silly-collections.svg?style=flat)](https://github.com/lightblueseas/silly-collections/issues)
-[![Maven Central](https://maven-badges.herokuapp.com/maven-central/de.alpharogroup/silly-collections/badge.svg)](https://maven-badges.herokuapp.com/maven-central/de.alpharogroup/silly-collections)
-[![Javadocs](http://www.javadoc.io/badge/de.alpharogroup/silly-collections.svg)](http://www.javadoc.io/doc/de.alpharogroup/silly-collections)
+[![Maven Central](https://maven-badges.herokuapp.com/maven-central/io.github.astrapi69/silly-collections/badge.svg)](https://maven-badges.herokuapp.com/maven-central/io.github.astrapi69/silly-collections)
+[![Javadocs](http://www.javadoc.io/badge/io.github.astrapi69/silly-collections.svg)](http://www.javadoc.io/doc/io.github.astrapi69/silly-collections)
 [![MIT license](http://img.shields.io/badge/license-MIT-brightgreen.svg?style=flat)](http://opensource.org/licenses/MIT)
 [![Donate](https://img.shields.io/badge/donate-❤-ff2244.svg)](https://www.paypal.com/cgi-bin/webscr?cmd=_s-xclick&hosted_button_id=GVBTWLRAZ7HB8)
 
@@ -49,7 +49,7 @@ No animals were harmed in the making of this library.
 ## Maven dependency
 
 Maven dependency is now on sonatype. Check
-out [sonatype repository](https://oss.sonatype.org/index.html#nexus-search;gav~de.alpharogroup~silly-collections~~~)
+out [sonatype repository](https://oss.sonatype.org/index.html#nexus-search;gav~io.github.astrapi69~silly-collections~~~)
 for latest snapshots and releases.
 
 Add the following maven dependency to your project `pom.xml` if you want to import the core
@@ -60,7 +60,7 @@ Than you can add the dependency to your dependencies:
 	<properties>
 			...
 		<!-- SILLY-COLLECTIONS version -->
-		<silly-collections.version>8.4</silly-collections.version>
+		<silly-collections.version>9</silly-collections.version>
 			...
 	</properties>
 			...
@@ -68,7 +68,7 @@ Than you can add the dependency to your dependencies:
 			...
 			<!-- SILLY-COLLECTIONS DEPENDENCY -->
 			<dependency>
-				<groupId>de.alpharogroup</groupId>
+				<groupId>io.github.astrapi69</groupId>
 				<artifactId>silly-collections</artifactId>
 				<version>${silly-collections.version}</version>
 			</dependency>
@@ -80,10 +80,10 @@ Than you can add the dependency to your dependencies:
 You can first define the version in the ext section and add than the following gradle dependency to
 your project `build.gradle` if you want to import the core functionality of silly-collections:
 
-```
 define version in file gradle.properties
+```
 
-sillyCollectionsVersion=8.4
+sillyCollectionsVersion=9
 ```
 
 or in build.gradle ext area
@@ -91,7 +91,7 @@ or in build.gradle ext area
 ```
 ext {
 			...
-    sillyCollectionsVersion = "8.4"
+    sillyCollectionsVersion = "9"
 			...
 }
 ```
@@ -101,7 +101,7 @@ and than add the dependency to the dependencies area
 ```
 dependencies {
 			...
-    implementation("de.alpharogroup:silly-collections:$sillyCollectionsVersion")
+    implementation("io.github.astrapi69:silly-collections:$sillyCollectionsVersion")
 			...
 }
 ```
@@ -160,7 +160,7 @@ Open Source:
 
 |**Nexus Sonatype repositories**|
 |     :---:      |
-|[![sonatype repository](https://img.shields.io/nexus/r/https/oss.sonatype.org/de.alpharogroup/silly-collections.svg?style=for-the-badge)](https://oss.sonatype.org/index.html#nexus-search;gav~de.alpharogroup~silly-collections~~~)|
+|[![sonatype repository](https://img.shields.io/nexus/r/https/oss.sonatype.org/io.github.astrapi69/silly-collections.svg?style=for-the-badge)](https://oss.sonatype.org/index.html#nexus-search;gav~io.github.astrapi69~silly-collections~~~)|
 |Special thanks to [sonatype repository](https://www.sonatype.com) for providing a free maven repository service for open source projects|
 |     <img width=1000/>     |
 
@@ -172,6 +172,6 @@ Open Source:
 
 |**javadoc.io**|
 |     :---:      |
-|[![Javadocs](http://www.javadoc.io/badge/de.alpharogroup/silly-collections.svg)](http://www.javadoc.io/doc/de.alpharogroup/silly-collections)|
+|[![Javadocs](http://www.javadoc.io/badge/io.github.astrapi69/silly-collections.svg)](http://www.javadoc.io/doc/io.github.astrapi69/silly-collections)|
 |Special thanks to [javadoc.io](http://www.javadoc.io) for providing a free javadoc documentation for open source projects|
 |     <img width=1000/>     |
