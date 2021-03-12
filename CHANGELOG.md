@@ -1,6 +1,21 @@
 ## Change log
 ----------------------
 
+Version 9.1
+-------------
+
+ADDED:
+
+- new factory method for create a number map with a flag for start from one or zero
+
+CHANGED:
+
+- update of gradle to new version 6.8.3
+- update of test dependency org.openjdk.jmh:jmh-core to new version 1.28
+- update of test dependency testng to new version 7.4.0
+- update of com.github.ben-manes.versions.gradle.plugin to new version 0.38.0
+
+
 Version 9
 -------------
 
@@ -28,7 +43,8 @@ Version 8.4
 ADDED:
 
 - new factory method for create a number map for count integer values with an existing counter map
-  CHANGED:
+  
+CHANGED:
 
 - update of gradle to new version 6.7
 - update of dependency jobj-compare in new version 3.7

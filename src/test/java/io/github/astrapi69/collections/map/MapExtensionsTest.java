@@ -40,6 +40,7 @@ import java.util.Set;
 import org.meanbean.test.BeanTester;
 import org.testng.annotations.Test;
 
+import io.github.astrapi69.collections.CollectionExtensions;
 import io.github.astrapi69.collections.list.ListFactory;
 import io.github.astrapi69.collections.set.SetFactory;
 
@@ -339,6 +340,26 @@ public class MapExtensionsTest
 		expected.put("23", "3");
 		expected.put("13", "4");
 		assertEquals(expected, actual);
+	}
+
+	/**
+	 * Test for the Method {@link MapExtensions#valuesAsList(Map)}
+	 */
+	@Test
+	public void testValuesAsList()
+	{
+		Map<String, String> map;
+		List<String> actual;
+		List<String> expected;
+		// map with test data ...
+		map = new HashMap<>();
+		map.put("23", "3");
+		map.put("21", "2");
+		map.put("13", "4");
+		map.put("5", "1");
+		actual = MapExtensions.valuesAsList(map);
+		expected = ListFactory.newArrayList("1", "2", "3", "4");
+		assertTrue(CollectionExtensions.isEqualCollection(actual, expected));
 	}
 
 	/**

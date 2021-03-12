@@ -165,6 +165,32 @@ public class MapFactoryTest
 	}
 
 	/**
+	 * Test for the Method {@link MapFactory#newCounterMap(java.util.Collection)}
+	 */
+	@Test
+	public void testNewCounterMapWithZeroFlag()
+	{
+		Map<Integer, Integer> actual;
+		Map<Integer, Integer> expected;
+		List<Integer> rangeList;
+		// new scenario...
+		rangeList = ListFactory.newRangeList(1, 5);
+		actual = MapFactory.newCounterMap(MapFactory.newHashMap(), rangeList, false);
+		expected = MapFactory.newHashMap();
+		expected.put(1, 1);
+		expected.put(2, 1);
+		expected.put(3, 1);
+		expected.put(4, 1);
+		expected.put(5, 1);
+		assertEquals(expected, actual);
+		// new scenario...
+		rangeList = ListFactory.newArrayList(1, 2, 3, 4, 5, 5);
+		actual = MapFactory.newCounterMap(MapFactory.newHashMap(), rangeList, false);
+		expected.put(5, 2);
+		assertEquals(expected, actual);
+	}
+
+	/**
 	 * Test for the Method {@link MapFactory#newHashMap()}.
 	 */
 	@Test
