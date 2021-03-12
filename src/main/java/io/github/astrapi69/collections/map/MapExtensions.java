@@ -24,6 +24,7 @@
  */
 package io.github.astrapi69.collections.map;
 
+import java.util.ArrayList;
 import java.util.Collection;
 import java.util.Comparator;
 import java.util.LinkedHashMap;
@@ -338,6 +339,18 @@ public final class MapExtensions
 			}
 		}
 		return properties;
+	}
+
+	/**
+	 * Converts the values from the given Map to a List object
+	 *
+	 * @param map
+	 *            The map to convert
+	 * @return The List produced from the Map
+	 */
+	public static <K, V> List<V> valuesAsList(final Map<K, V> map)
+	{
+		return new ArrayList<>(map.values());
 	}
 
 }
