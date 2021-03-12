@@ -162,6 +162,25 @@ public final class MapFactory
 	public static <K> Map<K, Integer> newCounterMap(Map<K, Integer> counterMap,
 		Collection<K> elements)
 	{
+		return newCounterMap(counterMap, elements, true);
+	}
+
+	/**
+	 * Factory method for create a map for and count elements of the given collection
+	 *
+	 * @param <K>
+	 *            the generic type of the elements
+	 * @param counterMap
+	 *            the counter Map
+	 * @param elements
+	 *            the elements
+	 * @param startByZero
+	 *            if this flag is true the first element will start with 0 count
+	 * @return the new map ready to count elements
+	 */
+	public static <K> Map<K, Integer> newCounterMap(Map<K, Integer> counterMap,
+		Collection<K> elements, boolean startByZero)
+	{
 		Objects.requireNonNull(counterMap);
 		for (K element : elements)
 		{
@@ -170,7 +189,11 @@ public final class MapFactory
 				counterMap.merge(element, 1, Integer::sum);
 				continue;
 			}
-			counterMap.put(element, 1);
+			if(startByZero){
+				counterMap.put(element, 0);
+			} else {
+				counterMap.put(element, 1);
+			}
 		}
 		return counterMap;
 	}
