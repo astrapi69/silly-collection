@@ -170,7 +170,7 @@ public final class MapFactory
 				counterMap.merge(element, 1, Integer::sum);
 				continue;
 			}
-			counterMap.put(element, 0);
+			counterMap.put(element, 1);
 		}
 		return counterMap;
 	}

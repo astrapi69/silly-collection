@@ -151,16 +151,16 @@ public class MapFactoryTest
 		rangeList = ListFactory.newRangeList(1, 5);
 		actual = MapFactory.newCounterMap(rangeList);
 		expected = MapFactory.newHashMap();
-		expected.put(1, 0);
-		expected.put(2, 0);
-		expected.put(3, 0);
-		expected.put(4, 0);
-		expected.put(5, 0);
+		expected.put(1, 1);
+		expected.put(2, 1);
+		expected.put(3, 1);
+		expected.put(4, 1);
+		expected.put(5, 1);
 		assertEquals(expected, actual);
 		// new scenario...
 		rangeList = ListFactory.newArrayList(1, 2, 3, 4, 5, 5);
 		actual = MapFactory.newCounterMap(rangeList);
-		expected.put(5, 1);
+		expected.put(5, 2);
 		assertEquals(expected, actual);
 	}
 
