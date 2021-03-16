@@ -144,8 +144,24 @@ public final class MapFactory
 	 */
 	public static <K> Map<K, Integer> newCounterMap(final Collection<K> elements)
 	{
+		return newCounterMap(elements, true);
+	}
+
+	/**
+	 * Factory method for create a map for counting elements of the given collection
+	 *
+	 * @param <K>
+	 *            the generic type of the elements
+	 * @param elements
+	 *            the elements
+	 * @param startByZero
+	 *            if this flag is true the first element will start with 0 count
+	 * @return the new map ready to count elements
+	 */
+	public static <K> Map<K, Integer> newCounterMap(final Collection<K> elements, boolean startByZero)
+	{
 		Objects.requireNonNull(elements);
-		return newCounterMap(MapFactory.newHashMap(), elements);
+		return newCounterMap(MapFactory.newHashMap(), elements, startByZero);
 	}
 
 	/**
