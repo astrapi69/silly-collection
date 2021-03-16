@@ -30,7 +30,7 @@ import java.util.List;
 
 import org.testng.annotations.Test;
 
-import de.alpharogroup.BaseComparatorTestCase;
+import io.github.astrapi69.BaseComparatorTestCase;
 import de.alpharogroup.date.CreateDateExtensions;
 import io.github.astrapi69.collections.list.ListFactory;
 

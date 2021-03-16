@@ -8,6 +8,10 @@ ADDED:
 
 - new factory method for create a number map with a collection, and a flag for start from one or zero
 
+CHANGED:
+
+- update of test dependency test-objects to new version 5.4
+
 Version 9.1
 -------------
 

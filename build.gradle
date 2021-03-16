@@ -190,7 +190,7 @@ dependencies {
     testImplementation("de.alpharogroup:jobj-clone:$jobjCloneVersion")
     testImplementation("de.alpharogroup:jobj-contract-verifier:$jobjContractVerifierVersion")
     testImplementation("de.alpharogroup:vintage-time:$vintageTimeVersion")
-    testImplementation("de.alpharogroup:test-objects:$testObjectsVersion")
+    testImplementation("io.github.astrapi69:test-objects:$testObjectsVersion")
     testImplementation("io.github.benas:random-beans:$randomBeansVersion")
     testImplementation("org.openjdk.jmh:jmh-core:$jmhVersion")
     testImplementation("org.openjdk.jmh:jmh-generator-annprocess:$jmhVersion")
