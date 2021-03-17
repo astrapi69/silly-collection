@@ -35,7 +35,7 @@ import java.util.Set;
 
 import org.apache.commons.collections4.ComparatorUtils;
 
-import de.alpharogroup.check.Argument;
+import io.github.astrapi69.check.Argument;
 import de.alpharogroup.comparators.BeanPropertyComparator;
 import de.alpharogroup.comparators.SortOrderComparator;
 import io.github.astrapi69.collections.CollectionExtensions;

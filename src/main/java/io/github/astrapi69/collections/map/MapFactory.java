@@ -36,7 +36,7 @@ import java.util.concurrent.ConcurrentHashMap;
 import org.apache.commons.collections4.functors.InstantiateFactory;
 import org.apache.commons.collections4.map.LazyMap;
 
-import de.alpharogroup.check.Argument;
+import io.github.astrapi69.check.Argument;
 import de.alpharogroup.collections.pairs.KeyValuePair;
 import io.github.astrapi69.collections.list.ListFactory;
 

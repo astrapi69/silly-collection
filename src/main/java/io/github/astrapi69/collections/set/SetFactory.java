@@ -34,7 +34,7 @@ import java.util.SortedSet;
 import java.util.TreeSet;
 import java.util.function.Supplier;
 
-import de.alpharogroup.check.Argument;
+import io.github.astrapi69.check.Argument;
 import io.github.astrapi69.collections.CollectionExtensions;
 import io.github.astrapi69.collections.list.ListFactory;
 
