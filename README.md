@@ -2,7 +2,7 @@
 
 <div align="center">
 
-[![Build Status](https://travis-ci.org/lightblueseas/silly-collections.svg?branch=master)](https://travis-ci.org/lightblueseas/silly-collections)
+[![Build Status](https://api.travis-ci.com/lightblueseas/silly-collections.svg?branch=master)](https://travis-ci.com/github/lightblueseas/silly-collections)
 [![Coverage Status](https://coveralls.io/repos/github/lightblueseas/silly-collections/badge.svg?branch=master)](https://coveralls.io/github/lightblueseas/silly-collections?branch=master)
 [![Open Issues](https://img.shields.io/github/issues/lightblueseas/silly-collections.svg?style=flat)](https://github.com/lightblueseas/silly-collections/issues)
 [![Maven Central](https://maven-badges.herokuapp.com/maven-central/io.github.astrapi69/silly-collections/badge.svg)](https://maven-badges.herokuapp.com/maven-central/io.github.astrapi69/silly-collections)
@@ -154,7 +154,7 @@ Open Source:
 
 |**Travis CI**|
 |     :---:      |
-|[![Travis CI](https://travis-ci.com/images/logos/TravisCI-Full-Color.png)](https://coveralls.io/github/lightblueseas/silly-collections?branch=master)|
+|[![Travis CI](https://travis-ci.com/images/logos/TravisCI-Full-Color.png)](https://travis-ci.com)|
 |Special thanks to [Travis CI](https://travis-ci.org) for providing a free continuous integration service for open source projects|
 |     <img width=1000/>     |
 
