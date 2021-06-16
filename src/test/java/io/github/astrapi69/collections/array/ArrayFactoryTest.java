@@ -112,6 +112,23 @@ public class ArrayFactoryTest
 	}
 
 	/**
+	 * Test method for {@link ArrayFactory#newByteArray(int[])}
+	 */
+	@Test
+	public void testNewByteArrayWithIntArray()
+	{
+		byte[] actual;
+		byte[] expected = { -84, -19, 0, 5, 116, 0, 7, 70, 111, 111, 32, 98, 97, 114 };
+		int[] intArray =  { -84, -19, 0, 5, 116, 0, 7, 70, 111, 111, 32, 98, 97, 114 };
+		actual = ArrayFactory.newByteArray(intArray);
+		assertTrue(Arrays.equals(actual, expected));
+
+		expected = new byte[0];
+		actual = ArrayFactory.newByteArray(new int[0]);
+		assertTrue(Arrays.equals(actual, expected));
+	}
+
+	/**
 	 * Test method for {@link ArrayFactory#newCharArray(char[])}.
 	 */
 	@Test

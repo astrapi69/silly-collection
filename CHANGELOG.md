@@ -7,6 +7,7 @@ Version 9.2-SNAPSHOT
 ADDED:
 
 - new factory method for create a number map with a collection, and a flag for start from one or zero
+- new factory method for create a byte array from an int array in factory class ArrayFactory
 
 CHANGED:
 
