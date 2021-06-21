@@ -97,7 +97,7 @@ Than you can add the dependency to your dependencies:
 	<properties>
 			...
 		<!-- SILLY-COLLECTIONS version -->
-		<silly-collections.version>9.1</silly-collections.version>
+		<silly-collections.version>8.6</silly-collections.version>
 			...
 	</properties>
 			...
@@ -120,7 +120,7 @@ your project `build.gradle` if you want to import the core functionality of sill
 define version in file gradle.properties
 ```
 
-sillyCollectionsVersion=9.1
+sillyCollectionsVersion=8.6
 ```
 
 or in build.gradle ext area
@@ -128,7 +128,7 @@ or in build.gradle ext area
 ```
 ext {
 			...
-    sillyCollectionsVersion = "9.1"
+    sillyCollectionsVersion = "8.6"
 			...
 }
 ```

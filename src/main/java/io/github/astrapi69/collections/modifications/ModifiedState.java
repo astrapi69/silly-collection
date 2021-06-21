@@ -26,7 +26,7 @@ package io.github.astrapi69.collections.modifications;
 
 import java.util.Collection;
 
-import io.github.astrapi69.check.Argument;
+import de.alpharogroup.check.Argument;
 
 /**
  * The Enum ModifiedState represents states if a collection have been modified. Checks the same( or

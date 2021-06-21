@@ -28,7 +28,7 @@ import java.util.Collection;
 import java.util.Set;
 import java.util.SortedSet;
 
-import io.github.astrapi69.check.Argument;
+import de.alpharogroup.check.Argument;
 import io.github.astrapi69.collections.array.ArrayFactory;
 
 /**

@@ -1,40 +1,21 @@
 ## Change log
 ----------------------
 
-Version 9.2-SNAPSHOT
+Version 8.6
 -------------
 
 ADDED:
 
 - new factory method for create a number map with a collection, and a flag for start from one or zero
 - new factory method for create a byte array from an int array in factory class ArrayFactory
-
-CHANGED:
-
-- update of test dependency test-objects to new version 5.4
-- update of dependency jobj-core in new version 4
-
-Version 9.1
--------------
-
-ADDED:
-
 - new factory method for create a number map with a map, a collection, and a flag for start from one or zero
 
 CHANGED:
 
-- update of gradle to new version 6.8.3
-- update of test dependency org.openjdk.jmh:jmh-core to new version 1.28
+- update of gradle to new version 6.9
+- update of test dependency org.openjdk.jmh:jmh-core to new version 1.32
 - update of test dependency testng to new version 7.4.0
-- update of com.github.ben-manes.versions.gradle.plugin to new version 0.38.0
-
-
-Version 9
--------------
-
-CHANGED:
-
-- update jdk from version 8 to 11
+- update of com.github.ben-manes.versions.gradle.plugin to new version 0.39.0
 
 Version 8.5
 -------------

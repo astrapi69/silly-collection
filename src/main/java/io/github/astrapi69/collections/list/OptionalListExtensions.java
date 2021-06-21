@@ -27,7 +27,7 @@ package io.github.astrapi69.collections.list;
 import java.util.List;
 import java.util.Optional;
 
-import io.github.astrapi69.check.Argument;
+import de.alpharogroup.check.Argument;
 import io.github.astrapi69.collections.CollectionExtensions;
 
 /**
