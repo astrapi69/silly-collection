@@ -186,7 +186,6 @@ dependencies {
     implementation("io.github.astrapi69:jobj-core:$jobjCoreVersion")
     implementation("de.alpharogroup:jobj-compare:$jobjCompareVersion")
     implementation("de.alpharogroup:silly-beans:$sillyBeansVersion")
-    testImplementation("de.alpharogroup:jobj-clone:$jobjCloneVersion")
     testImplementation("de.alpharogroup:vintage-time:$vintageTimeVersion")
     testImplementation("io.github.astrapi69:test-objects:$testObjectsVersion")
     testImplementation("io.github.benas:random-beans:$randomBeansVersion")

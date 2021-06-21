@@ -14,6 +14,7 @@ CHANGED:
 - update of test dependency test-objects to new version 5.4
 - update of dependency jobj-core in new version 4
 - removed unused test dependency jobj-contract-verifier
+- removed unused test dependency jobj-clone
 
 Version 9.1
 -------------
