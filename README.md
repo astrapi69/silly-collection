@@ -118,6 +118,7 @@ You can first define the version in the ext section and add than the following g
 your project `build.gradle` if you want to import the core functionality of silly-collections:
 
 define version in file gradle.properties
+
 ```
 
 sillyCollectionsVersion=9.1
