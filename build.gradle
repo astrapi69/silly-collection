@@ -184,7 +184,7 @@ gradle.startParameter.excludedTaskNames += "licenseTest"
 dependencies {
     implementation("org.apache.commons:commons-collections4:$commonsCollections4Version")
     implementation("io.github.astrapi69:jobj-core:$jobjCoreVersion")
-    implementation("de.alpharogroup:jobj-compare:$jobjCompareVersion")
+    implementation("io.github.astrapi69:jobj-compare:$jobjCompareVersion")
     implementation("de.alpharogroup:silly-beans:$sillyBeansVersion")
     testImplementation("de.alpharogroup:vintage-time:$vintageTimeVersion")
     testImplementation("io.github.astrapi69:test-objects:$testObjectsVersion")

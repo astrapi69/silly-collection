@@ -31,7 +31,7 @@ import java.util.Map;
 import java.util.Properties;
 import java.util.Set;
 
-import de.alpharogroup.comparators.NullCheckComparator;
+import io.github.astrapi69.comparators.NullCheckComparator;
 import io.github.astrapi69.collections.CollectionExtensions;
 import io.github.astrapi69.collections.list.ListFactory;
 

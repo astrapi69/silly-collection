@@ -32,7 +32,7 @@ import java.util.List;
 
 import org.testng.annotations.Test;
 
-import de.alpharogroup.comparators.SortOrder;
+import io.github.astrapi69.comparators.SortOrder;
 import io.github.astrapi69.collections.list.ListFactory;
 
 /**

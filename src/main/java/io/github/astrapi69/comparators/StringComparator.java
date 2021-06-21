@@ -26,9 +26,9 @@ package io.github.astrapi69.comparators;
 
 import java.util.Comparator;
 
-import de.alpharogroup.comparators.NullCheckComparator;
-import de.alpharogroup.comparators.SortOrder;
-import de.alpharogroup.comparators.SortOrderComparator;
+import io.github.astrapi69.comparators.NullCheckComparator;
+import io.github.astrapi69.comparators.SortOrder;
+import io.github.astrapi69.comparators.SortOrderComparator;
 
 /**
  * The class {@link StringComparator} sorts String objects in ascending order as default.

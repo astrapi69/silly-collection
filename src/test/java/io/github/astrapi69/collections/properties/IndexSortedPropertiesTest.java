@@ -33,7 +33,7 @@ import java.util.Properties;
 
 import org.testng.annotations.Test;
 
-import de.alpharogroup.comparators.NullCheckComparator;
+import io.github.astrapi69.comparators.NullCheckComparator;
 
 /**
  * The unit test class for the class {@link IndexSortedProperties}.
