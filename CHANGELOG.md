@@ -12,11 +12,13 @@ ADDED:
 CHANGED:
 
 - update of gradle to new version 6.9
+- update of dependency silly-beans in new version 1.2
 - update of test dependency test-objects to new version 5.4
 - update of dependency jobj-core in new version 4
 - removed unused test dependency jobj-contract-verifier
 - removed unused test dependency jobj-clone
 - update of dependency jobj-compare in new version 3.8
+- update of com.github.ben-manes.versions.gradle.plugin to new version 0.39.0
 
 Version 9.1
 -------------
