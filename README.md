@@ -1,6 +1,6 @@
 # Overview
 
-<div align="center">
+<div style="text-align: center">
 
 [![Build Status](https://api.travis-ci.com/lightblueseas/silly-collections.svg?branch=master)](https://travis-ci.com/github/lightblueseas/silly-collections)
 [![Coverage Status](https://coveralls.io/repos/github/lightblueseas/silly-collections/badge.svg?branch=master)](https://coveralls.io/github/lightblueseas/silly-collections?branch=master)
@@ -78,7 +78,7 @@ alt="Donation Monero Wallet" width="250"/>
 or over flattr:
 
 <a href="https://flattr.com/submit/auto?fid=r7vp62&url=https%3A%2F%2Fgithub.com%2Flightblueseas%2Fsilly-collections" target="_blank">
-<img src="http://api.flattr.com/button/flattr-badge-large.png" alt="Flattr this" title="Flattr this" border="0" />
+<img src="http://api.flattr.com/button/flattr-badge-large.png" alt="Flattr this" title="Flattr this" style="border: none" />
 </a>
 
 ## License
