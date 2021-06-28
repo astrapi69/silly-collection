@@ -39,8 +39,8 @@ import java.util.concurrent.ConcurrentHashMap;
 import org.meanbean.test.BeanTester;
 import org.testng.annotations.Test;
 
-import io.github.astrapi69.collections.pairs.KeyValuePair;
 import io.github.astrapi69.collections.list.ListFactory;
+import io.github.astrapi69.collections.pairs.KeyValuePair;
 
 /**
  * The unit test class for the class {@link MapFactory}.

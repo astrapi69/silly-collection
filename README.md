@@ -16,12 +16,11 @@ Utility library for collections, comparators and iterator classes.
 
 
 > Please support this project by simply putting a Github <!-- Place this tag where you want the button to render. -->
-                                                         <a class="github-button" href="https://github.com/lightblueseas/silly-collections" data-icon="octicon-star" aria-label="Star lightblueseas/silly-collections on GitHub">Star ⭐</a>
+<a class="github-button" href="https://github.com/lightblueseas/silly-collections" data-icon="octicon-star" aria-label="Star lightblueseas/silly-collections on GitHub">Star ⭐</a>
 >
 > Share this library with friends on Twitter and everywhere else you can
 >
 > If you love this project [![donation](https://img.shields.io/badge/donate-❤-ff2244.svg)](https://www.paypal.com/cgi-bin/webscr?cmd=_s-xclick&hosted_button_id=GVBTWLRAZ7HB8)
-
 
 # Donations
 
@@ -37,42 +36,48 @@ or over bitcoin(BTC) with this address:
 
 bc1ql2y99q7e8psndhcc3gferk03esw3qqf677rhjy
 
-<img src="https://github.com/astrapi69/jgeohash/blob/master/src/main/resources/img/bc1ql2y99q7e8psndhcc3gferk03esw3qqf677rhjy.png"
+<img
+src="https://github.com/astrapi69/jgeohash/blob/master/src/main/resources/img/bc1ql2y99q7e8psndhcc3gferk03esw3qqf677rhjy.png"
 alt="Donation Bitcoin Wallet" width="250"/>
 
 or over FIO with this address:
 
 FIO7tFMUVAA9cHiPPqKMfMXiSxHrbpiFyRYqTketNuM67aULuwjop
 
-<img src="https://github.com/astrapi69/jgeohash/blob/master/src/main/resources/img/FIO7tFMUVAA9cHiPPqKMfMXiSxHrbpiFyRYqTketNuM67aULuwjop.png"
+<img
+src="https://github.com/astrapi69/jgeohash/blob/master/src/main/resources/img/FIO7tFMUVAA9cHiPPqKMfMXiSxHrbpiFyRYqTketNuM67aULuwjop.png"
 alt="Donation FIO Wallet" width="250"/>
 
 or over Ethereum(ETH) with:
 
 0xc057D159D3C8f3311E73568b334FF6fE82EB2b7D
 
-<img src="https://github.com/astrapi69/jgeohash/blob/master/src/main/resources/img/0xc057D159D3C8f3311E73568b334FF6fE82EB2b7D.png"
+<img
+src="https://github.com/astrapi69/jgeohash/blob/master/src/main/resources/img/0xc057D159D3C8f3311E73568b334FF6fE82EB2b7D.png"
 alt="Donation Ethereum Wallet" width="250"/>
 
 or over Ethereum Classic(ETC) with:
 
 0xF708cA86D86C246B69c3F4BAe431eBbe0c2bfddD
 
-<img src="https://github.com/astrapi69/jgeohash/blob/master/src/main/resources/img/0xF708cA86D86C246B69c3F4BAe431eBbe0c2bfddD.png"
+<img
+src="https://github.com/astrapi69/jgeohash/blob/master/src/main/resources/img/0xF708cA86D86C246B69c3F4BAe431eBbe0c2bfddD.png"
 alt="Donation Ethereum Classic Wallet" width="250"/>
 
 or over Dogecoin(DOGE) with:
 
 D5yi4Um8cpakd6yPRm2hGWuQ5nrVzhSSW1
 
-<img src="https://github.com/astrapi69/jgeohash/blob/master/src/main/resources/img/D5yi4Um8cpakd6yPRm2hGWuQ5nrVzhSSW1.png"
+<img
+src="https://github.com/astrapi69/jgeohash/blob/master/src/main/resources/img/D5yi4Um8cpakd6yPRm2hGWuQ5nrVzhSSW1.png"
 alt="Donation Dogecoin Wallet" width="250"/>
 
 or over Monero(XMR) with:
 
 49bqeRQ7Bf49oJFVC72pqpe5hFbb62pfXDYPdLsadGGF81KZW2ZfrPZ8PbAVu5X2v1TYAspeczMya3cYQysNS4usRRPQHVw
 
-<img src="https://github.com/astrapi69/jgeohash/blob/master/src/main/resources/img/49bqeRQ7Bf49oJFVC72pqpe5hFbb62pfXDYPdLsadGGF81KZW2ZfrPZ8PbAVu5X2v1TYAspeczMya3cYQysNS4usRRPQHVw.png"
+<img
+src="https://github.com/astrapi69/jgeohash/blob/master/src/main/resources/img/49bqeRQ7Bf49oJFVC72pqpe5hFbb62pfXDYPdLsadGGF81KZW2ZfrPZ8PbAVu5X2v1TYAspeczMya3cYQysNS4usRRPQHVw.png"
 alt="Donation Monero Wallet" width="250"/>
 
 or over flattr:

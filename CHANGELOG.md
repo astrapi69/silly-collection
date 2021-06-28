@@ -6,7 +6,8 @@ Version 9.2-SNAPSHOT
 
 ADDED:
 
-- new factory method for create a number map with a collection, and a flag for start from one or zero
+- new factory method for create a number map with a collection, and a flag for start from one or
+  zero
 - new factory method for create a byte array from an int array in factory class ArrayFactory
 
 CHANGED:
@@ -27,7 +28,8 @@ Version 9.1
 
 ADDED:
 
-- new factory method for create a number map with a map, a collection, and a flag for start from one or zero
+- new factory method for create a number map with a map, a collection, and a flag for start from one
+  or zero
 
 CHANGED:
 
@@ -35,7 +37,6 @@ CHANGED:
 - update of test dependency org.openjdk.jmh:jmh-core to new version 1.28
 - update of test dependency testng to new version 7.4.0
 - update of com.github.ben-manes.versions.gradle.plugin to new version 0.38.0
-
 
 Version 9
 -------------
@@ -64,7 +65,7 @@ Version 8.4
 ADDED:
 
 - new factory method for create a number map for count integer values with an existing counter map
-  
+
 CHANGED:
 
 - update of gradle to new version 6.7

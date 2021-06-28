@@ -37,8 +37,8 @@ import org.apache.commons.collections4.functors.InstantiateFactory;
 import org.apache.commons.collections4.map.LazyMap;
 
 import io.github.astrapi69.check.Argument;
-import io.github.astrapi69.collections.pairs.KeyValuePair;
 import io.github.astrapi69.collections.list.ListFactory;
+import io.github.astrapi69.collections.pairs.KeyValuePair;
 
 /**
  * The factory class {@link MapFactory} provides factory methods for create new {@link Map} objects
@@ -158,7 +158,8 @@ public final class MapFactory
 	 *            if this flag is true the first element will start with 0 count
 	 * @return the new map ready to count elements
 	 */
-	public static <K> Map<K, Integer> newCounterMap(final Collection<K> elements, boolean startByZero)
+	public static <K> Map<K, Integer> newCounterMap(final Collection<K> elements,
+		boolean startByZero)
 	{
 		Objects.requireNonNull(elements);
 		return newCounterMap(MapFactory.newHashMap(), elements, startByZero);
