@@ -18,9 +18,11 @@ Version 8.6
 
 ADDED:
 
-- new factory method for create a number map with a collection, and a flag for start from one or zero
+- new factory method for create a number map with a collection, and a flag for start from one or
+  zero
 - new factory method for create a byte array from an int array in factory class ArrayFactory
-- new factory method for create a number map with a map, a collection, and a flag for start from one or zero
+- new factory method for create a number map with a map, a collection, and a flag for start from one
+  or zero
 
 CHANGED:
 
@@ -49,7 +51,7 @@ Version 8.4
 ADDED:
 
 - new factory method for create a number map for count integer values with an existing counter map
-  
+
 CHANGED:
 
 - update of gradle to new version 6.7

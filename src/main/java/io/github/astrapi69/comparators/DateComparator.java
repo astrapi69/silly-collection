@@ -27,9 +27,6 @@ package io.github.astrapi69.comparators;
 import java.util.Comparator;
 import java.util.Date;
 
-import io.github.astrapi69.comparators.ComparatorExtensions;
-import io.github.astrapi69.comparators.SortOrder;
-
 /**
  * The class DateComparator sorts Date object in ascending order as default or descending if the
  * {@link SortOrder} is set to {@link SortOrder#DESCENDING}.

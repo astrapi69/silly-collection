@@ -26,10 +26,6 @@ package io.github.astrapi69.comparators;
 
 import java.util.Comparator;
 
-import io.github.astrapi69.comparators.NullCheckComparator;
-import io.github.astrapi69.comparators.SortOrder;
-import io.github.astrapi69.comparators.SortOrderComparator;
-
 /**
  * The class {@link StringLengthComparator} compares {@link String} objects based on length. The
  * default order is greater length come first. If length are equal then the natural ordering will be

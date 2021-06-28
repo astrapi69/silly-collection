@@ -38,8 +38,8 @@ import java.util.stream.Collectors;
 import org.meanbean.test.BeanTester;
 import org.testng.annotations.Test;
 
-import io.github.astrapi69.comparators.SortOrder;
 import io.github.astrapi69.collections.list.ListFactory;
+import io.github.astrapi69.comparators.SortOrder;
 import io.github.astrapi69.comparators.StringLengthComparator;
 
 /**

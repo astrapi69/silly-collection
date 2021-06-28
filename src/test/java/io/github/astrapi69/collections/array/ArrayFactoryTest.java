@@ -119,7 +119,7 @@ public class ArrayFactoryTest
 	{
 		byte[] actual;
 		byte[] expected = { -84, -19, 0, 5, 116, 0, 7, 70, 111, 111, 32, 98, 97, 114 };
-		int[] intArray =  { -84, -19, 0, 5, 116, 0, 7, 70, 111, 111, 32, 98, 97, 114 };
+		int[] intArray = { -84, -19, 0, 5, 116, 0, 7, 70, 111, 111, 32, 98, 97, 114 };
 		actual = ArrayFactory.newByteArray(intArray);
 		assertTrue(Arrays.equals(actual, expected));
 

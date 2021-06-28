@@ -24,9 +24,6 @@
  */
 package io.github.astrapi69.collections.array;
 
-import java.io.ByteArrayOutputStream;
-import java.io.DataOutputStream;
-import java.io.IOException;
 import java.lang.reflect.Array;
 
 import io.github.astrapi69.check.Argument;
@@ -124,7 +121,7 @@ public final class ArrayFactory
 			array = new byte[elements.length];
 			for (int i = 0; i < elements.length; ++i)
 			{
-				array[i] = (byte) elements[i];
+				array[i] = (byte)elements[i];
 			}
 		}
 		return array;
