@@ -32,9 +32,9 @@ import java.util.List;
 
 import org.testng.annotations.Test;
 
-import de.alpharogroup.comparators.BeanPropertyComparator;
-import de.alpharogroup.test.objects.Employee;
-import de.alpharogroup.test.objects.Person;
+import io.github.astrapi69.comparators.BeanPropertyComparator;
+import io.github.astrapi69.test.objects.Employee;
+import io.github.astrapi69.test.objects.Person;
 import io.github.astrapi69.collections.list.ListFactory;
 
 /**

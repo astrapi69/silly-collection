@@ -1,6 +1,18 @@
 ## Change log
 ----------------------
 
+Version 8.7
+-------------
+
+CHANGED:
+
+- update of dependency silly-beans in new version 1.2
+- update of test dependency vintage-time to new version 5.3
+- update of test dependency test-objects to new version 5.4
+- removed unused test dependency jobj-contract-verifier
+- removed unused test dependency jobj-clone
+- update of dependency jobj-compare in new version 3.8
+
 Version 8.6
 -------------
 

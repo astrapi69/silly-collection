@@ -43,8 +43,8 @@ import org.testng.annotations.AfterMethod;
 import org.testng.annotations.BeforeMethod;
 import org.testng.annotations.Test;
 
-import de.alpharogroup.test.objects.Person;
-import de.alpharogroup.test.objects.enums.Gender;
+import io.github.astrapi69.test.objects.Person;
+import io.github.astrapi69.test.objects.enums.Gender;
 import io.github.astrapi69.collections.CollectionExtensions;
 import io.github.astrapi69.collections.array.ArrayFactory;
 import io.github.astrapi69.collections.modifications.ModifiedCollections;
@@ -536,7 +536,7 @@ public class ListExtensionsTest
 	}
 
 	/**
-	 * Test method for {@link ListExtensions#rearrange(List, Object, int)}
+	 * Test method for {@link ListExtensions#rearrange(Object, List, int)} 
 	 */
 	@Test
 	public void testRearrange()
@@ -805,7 +805,7 @@ public class ListExtensionsTest
 	}
 
 	/**
-	 * Test the method {@link ListExtensions#splitListToParts(List, int)}
+	 * Test the method {@link ListExtensions#splitToParts(Collection, int)} 
 	 */
 	@Test
 	@SuppressWarnings({ "rawtypes" })

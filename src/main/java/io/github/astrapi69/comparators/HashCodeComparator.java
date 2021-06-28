@@ -27,7 +27,7 @@ package io.github.astrapi69.comparators;
 import java.io.Serializable;
 import java.util.Comparator;
 
-import de.alpharogroup.comparators.ComparatorExtensions;
+import io.github.astrapi69.comparators.ComparatorExtensions;
 
 /**
  * This class compare two Objects by the hashcode.

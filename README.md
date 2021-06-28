@@ -1,6 +1,6 @@
 # Overview
 
-<div align="center">
+<div style="text-align: center">
 
 [![Build Status](https://api.travis-ci.com/lightblueseas/silly-collections.svg?branch=master)](https://travis-ci.com/github/lightblueseas/silly-collections)
 [![Coverage Status](https://coveralls.io/repos/github/lightblueseas/silly-collections/badge.svg?branch=master)](https://coveralls.io/github/lightblueseas/silly-collections?branch=master)
@@ -14,7 +14,14 @@
 
 Utility library for collections, comparators and iterator classes.
 
-If you like this project put a ⭐ and donate
+
+> Please support this project by simply putting a Github <!-- Place this tag where you want the button to render. -->
+                                                         <a class="github-button" href="https://github.com/lightblueseas/silly-collections" data-icon="octicon-star" aria-label="Star lightblueseas/silly-collections on GitHub">Star ⭐</a>
+>
+> Share this library with friends on Twitter and everywhere else you can
+>
+> If you love this project [![donation](https://img.shields.io/badge/donate-❤-ff2244.svg)](https://www.paypal.com/cgi-bin/webscr?cmd=_s-xclick&hosted_button_id=GVBTWLRAZ7HB8)
+
 
 # Donations
 
@@ -71,7 +78,7 @@ alt="Donation Monero Wallet" width="250"/>
 or over flattr:
 
 <a href="https://flattr.com/submit/auto?fid=r7vp62&url=https%3A%2F%2Fgithub.com%2Flightblueseas%2Fsilly-collections" target="_blank">
-<img src="http://api.flattr.com/button/flattr-badge-large.png" alt="Flattr this" title="Flattr this" border="0" />
+<img src="http://api.flattr.com/button/flattr-badge-large.png" alt="Flattr this" title="Flattr this" style="border: none" />
 </a>
 
 ## License
@@ -118,6 +125,7 @@ You can first define the version in the ext section and add than the following g
 your project `build.gradle` if you want to import the core functionality of silly-collections:
 
 define version in file gradle.properties
+
 ```
 
 sillyCollectionsVersion=8.6
@@ -133,7 +141,7 @@ ext {
 }
 ```
 
-and than add the dependency to the dependencies area
+and then add the dependency to the dependencies area
 
 ```
 dependencies {

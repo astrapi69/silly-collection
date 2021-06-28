@@ -29,7 +29,7 @@ import java.io.DataOutputStream;
 import java.io.IOException;
 import java.lang.reflect.Array;
 
-import de.alpharogroup.check.Argument;
+import io.github.astrapi69.check.Argument;
 
 /**
  * The factory class {@link ArrayFactory} provides factory methods for create new {@code Array}

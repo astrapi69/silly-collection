@@ -183,13 +183,11 @@ gradle.startParameter.excludedTaskNames += "licenseTest"
 
 dependencies {
     implementation("org.apache.commons:commons-collections4:$commonsCollections4Version")
-    implementation("de.alpharogroup:jobj-core:$jobjCoreVersion")
-    implementation("de.alpharogroup:jobj-compare:$jobjCompareVersion")
-    implementation("de.alpharogroup:silly-beans:$sillyBeansVersion")
-    testImplementation("de.alpharogroup:jobj-clone:$jobjCloneVersion")
-    testImplementation("de.alpharogroup:jobj-contract-verifier:$jobjContractVerifierVersion")
-    testImplementation("de.alpharogroup:vintage-time:$vintageTimeVersion")
-    testImplementation("de.alpharogroup:test-objects:$testObjectsVersion")
+    implementation("io.github.astrapi69:jobj-core:$jobjCoreVersion")
+    implementation("io.github.astrapi69:jobj-compare:$jobjCompareVersion")
+    implementation("io.github.astrapi69:silly-beans:$sillyBeansVersion")
+    testImplementation("io.github.astrapi69:vintage-time:$vintageTimeVersion")
+    testImplementation("io.github.astrapi69:test-objects:$testObjectsVersion")
     testImplementation("io.github.benas:random-beans:$randomBeansVersion")
     testImplementation("org.openjdk.jmh:jmh-core:$jmhVersion")
     testImplementation("org.openjdk.jmh:jmh-generator-annprocess:$jmhVersion")

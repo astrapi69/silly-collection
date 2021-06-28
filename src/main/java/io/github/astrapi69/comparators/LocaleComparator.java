@@ -27,7 +27,7 @@ package io.github.astrapi69.comparators;
 import java.util.Comparator;
 import java.util.Locale;
 
-import de.alpharogroup.comparators.NullCheckComparator;
+import io.github.astrapi69.comparators.NullCheckComparator;
 
 /**
  * The class {@link LocaleComparator} compares {@linkplain Locale} objects. This Comparator does not
