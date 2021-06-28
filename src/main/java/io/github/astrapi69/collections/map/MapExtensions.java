@@ -348,6 +348,10 @@ public final class MapExtensions
 	/**
 	 * Converts the values from the given Map to a List object
 	 *
+	 * @param <K>
+	 *            the generic type of the key
+	 * @param <V>
+	 *            the generic type of the value
 	 * @param map
 	 *            The map to convert
 	 * @return The List produced from the Map
