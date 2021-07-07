@@ -1,7 +1,28 @@
 ## Change log
 ----------------------
 
-Version 9.2-SNAPSHOT
+Version 8.8-SNAPSHOT
+-------------
+
+CHANGED:
+
+- update gradle to new version 7.1
+- changed all dependencies from groupid de.alpharogroup to new groupid io.github.astrapi69
+- update gradle-plugin dependency of gradle.plugin.com.hierynomus.gradle.plugins:license-gradle-plugin to new version 0.16.1
+
+Version 8.7
+-------------
+
+CHANGED:
+
+- update of dependency silly-beans in new version 1.2
+- update of test dependency vintage-time to new version 5.3
+- update of test dependency test-objects to new version 5.4
+- removed unused test dependency jobj-contract-verifier
+- removed unused test dependency jobj-clone
+- update of dependency jobj-compare in new version 3.8
+
+Version 8.6
 -------------
 
 ADDED:
@@ -9,41 +30,15 @@ ADDED:
 - new factory method for create a number map with a collection, and a flag for start from one or
   zero
 - new factory method for create a byte array from an int array in factory class ArrayFactory
-
-CHANGED:
-
-- update of gradle to new version 6.9
-- update of dependency silly-beans in new version 1.2
-- update of test dependency vintage-time to new version 5.3
-- update of test dependency test-objects to new version 5.4
-- update of test dependency org.openjdk.jmh:jmh-core to new version 1.32
-- update of dependency jobj-core in new version 4
-- removed unused test dependency jobj-contract-verifier
-- removed unused test dependency jobj-clone
-- update of dependency jobj-compare in new version 3.8
-- update of com.github.ben-manes.versions.gradle.plugin to new version 0.39.0
-
-Version 9.1
--------------
-
-ADDED:
-
 - new factory method for create a number map with a map, a collection, and a flag for start from one
   or zero
 
 CHANGED:
 
-- update of gradle to new version 6.8.3
-- update of test dependency org.openjdk.jmh:jmh-core to new version 1.28
+- update of gradle to new version 6.9
+- update of test dependency org.openjdk.jmh:jmh-core to new version 1.32
 - update of test dependency testng to new version 7.4.0
-- update of com.github.ben-manes.versions.gradle.plugin to new version 0.38.0
-
-Version 9
--------------
-
-CHANGED:
-
-- update jdk from version 8 to 11
+- update of com.github.ben-manes.versions.gradle.plugin to new version 0.39.0
 
 Version 8.5
 -------------
