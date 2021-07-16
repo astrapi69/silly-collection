@@ -28,10 +28,6 @@ repositories {
     mavenCentral()
 }
 
-tasks.withType(GenerateModuleMetadata) {
-    enabled = false
-}
-
 javadoc {
     failOnError = false
     if (JavaVersion.current().isJava9Compatible()) {
