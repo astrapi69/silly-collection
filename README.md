@@ -14,7 +14,6 @@
 
 Utility library for collections, comparators and iterator classes.
 
-
 > Please support this project by simply putting a Github <!-- Place this tag where you want the button to render. -->
 <a class="github-button" href="https://github.com/lightblueseas/silly-collections" data-icon="octicon-star" aria-label="Star lightblueseas/silly-collections on GitHub">Star ⭐</a>
 >
