@@ -24,10 +24,14 @@
  */
 package io.github.astrapi69.comparators;
 
+
 import java.util.Comparator;
 import java.util.Date;
 import java.util.List;
 
+import org.testng.AssertJUnit;
+import org.testng.annotations.AfterMethod;
+import org.testng.annotations.BeforeMethod;
 import org.testng.annotations.Test;
 
 import io.github.astrapi69.BaseComparatorTestCase;
@@ -45,6 +49,44 @@ public class DateComparatorTest extends BaseComparatorTestCase<Date>
 
 	private final Date future = CreateDateExtensions.newDate(2011, 3, 27, 10, 37, 04);
 	private final Date past = CreateDateExtensions.newDate(2009, 3, 26, 10, 37, 04);
+
+	/**
+	 * {@inheritDoc}
+	 */
+	@Override
+	@BeforeMethod
+	public void setUp()
+	{
+		super.setUp();
+	}
+
+	/**
+	 * {@inheritDoc}
+	 */
+	@Override
+	@AfterMethod
+	public void tearDown()
+	{
+		super.tearDown();
+	}
+
+	/**
+	 * {@inheritDoc}
+	 */
+	@Override
+	protected void assertTrue(Boolean condition)
+	{
+		AssertJUnit.assertTrue(condition);
+	}
+
+	/**
+	 * {@inheritDoc}
+	 */
+	@Override
+	protected void assertEquals(Date expected, Date actual)
+	{
+		AssertJUnit.assertEquals(expected, actual);
+	}
 
 	/**
 	 * {@inheritDoc}

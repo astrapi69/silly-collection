@@ -8,7 +8,8 @@ CHANGED:
 
 - update gradle to new version 7.1
 - changed all dependencies from groupid de.alpharogroup to new groupid io.github.astrapi69
-- update gradle-plugin dependency of gradle.plugin.com.hierynomus.gradle.plugins:license-gradle-plugin to new version 0.16.1
+- update gradle-plugin dependency of gradle.plugin.com.hierynomus.gradle.plugins:
+  license-gradle-plugin to new version 0.16.1
 - update of test dependency test-objects to new version 5.5
 
 Version 8.7
