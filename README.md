@@ -145,7 +145,7 @@ ext {
 }
 ```
 
-and then add the dependency to the dependencies area
+then add the dependency to the dependencies area
 
 ```
 dependencies {
