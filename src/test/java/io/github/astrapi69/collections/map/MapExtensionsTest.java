@@ -396,6 +396,31 @@ public class MapExtensionsTest
 	}
 
 	/**
+	 * Test for the Method {@link MapExtensions#swap(Map)}
+	 */
+	@Test
+	public void testSwap()
+	{
+		Map<String, String> map;
+		Map<String, String> actual;
+		Map<String, String> expected;
+		// map with test data ...
+		map = new HashMap<>();
+		map.put("23", "3");
+		map.put("21", "2");
+		map.put("13", "4");
+		map.put("5", "1");
+		// new scenario...
+		actual = MapExtensions.swap(map);
+		expected = MapFactory.newLinkedHashMap();
+		expected.put("1", "5");
+		expected.put("2", "21");
+		expected.put("3", "23");
+		expected.put("4", "13");
+		assertEquals(expected, actual);
+	}
+
+	/**
 	 * Test for the Method {@link MapExtensions#sortByValueAsList(Map, boolean)}
 	 */
 	@Test

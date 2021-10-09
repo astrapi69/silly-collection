@@ -7,6 +7,7 @@ Version 18-SNAPSHOT
 ADDED:
 
 - new method for generate an index map from a given list
+- new method for swap a map keys and values
 
   CHANGED:
 
