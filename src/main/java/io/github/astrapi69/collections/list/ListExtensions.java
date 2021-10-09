@@ -30,14 +30,17 @@ import java.util.Comparator;
 import java.util.Enumeration;
 import java.util.Iterator;
 import java.util.List;
+import java.util.Map;
 import java.util.Optional;
 import java.util.Set;
 
 import org.apache.commons.collections4.ComparatorUtils;
 
 import io.github.astrapi69.check.Argument;
+import io.github.astrapi69.check.Check;
 import io.github.astrapi69.collections.CollectionExtensions;
 import io.github.astrapi69.collections.array.ArrayFactory;
+import io.github.astrapi69.collections.map.MapFactory;
 import io.github.astrapi69.collections.modifications.ModifiedCollections;
 import io.github.astrapi69.comparators.BeanPropertyComparator;
 import io.github.astrapi69.comparators.SortOrderComparator;
@@ -594,11 +597,7 @@ public final class ListExtensions
 	@SuppressWarnings("unchecked")
 	public static <T> T[] toArray(final List<T> list)
 	{
-		Argument.notNull(list, "list");
-		if (list.isEmpty())
-		{
-			throw new IllegalArgumentException("list is empty");
-		}
+		Check.get().notNull(list, "list").notEmpty(list, "list");
 		T[] newArray = (T[])ArrayFactory.newArray(list.get(0).getClass(), list.size());
 		return list.toArray(newArray);
 	}
@@ -616,6 +615,28 @@ public final class ListExtensions
 	public static <T> T[] toArray(final T... elements)
 	{
 		return ArrayFactory.newArray(elements);
+	}
+
+	/**
+	 * Generates an index map from the given list
+	 *
+	 * @param <T>
+	 *            the generic type
+	 * @param list
+	 *            the list
+	 * @return an index map from the given list
+	 */
+	@SuppressWarnings("unchecked")
+	public static <T> Map<Integer, T> toIndexMap(final List<T> list)
+	{
+		Check.get().notNull(list, "list").notEmpty(list, "list");
+		Map<Integer, T> map = MapFactory.newLinkedHashMap(list.size());
+		for (int i = 0; i < list.size(); i++)
+		{
+
+			map.put(i, list.get(i));
+		}
+		return map;
 	}
 
 	/**

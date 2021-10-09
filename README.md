@@ -21,6 +21,67 @@ Utility library for collections, comparators and iterator classes.
 >
 > If you love this project [![donation](https://img.shields.io/badge/donate-❤-ff2244.svg)](https://www.paypal.com/cgi-bin/webscr?cmd=_s-xclick&hosted_button_id=GVBTWLRAZ7HB8)
 
+## Maven dependency
+
+Maven dependency is now on sonatype. Check
+out [sonatype repository](https://oss.sonatype.org/index.html#nexus-search;gav~io.github.astrapi69~silly-collections~~~)
+for latest snapshots and releases.
+
+Add the following maven dependency to your project `pom.xml` if you want to import the core
+functionality of silly-collections:
+
+Than you can add the dependency to your dependencies:
+
+	<properties>
+			...
+		<!-- SILLY-COLLECTIONS version -->
+		<silly-collections.version>8.7</silly-collections.version>
+			...
+	</properties>
+			...
+		<dependencies>
+			...
+			<!-- SILLY-COLLECTIONS DEPENDENCY -->
+			<dependency>
+				<groupId>io.github.astrapi69</groupId>
+				<artifactId>silly-collections</artifactId>
+				<version>${silly-collections.version}</version>
+			</dependency>
+			...
+		</dependencies>
+
+## gradle dependency
+
+You can first define the version in the ext section and add than the following gradle dependency to
+your project `build.gradle` if you want to import the core functionality of silly-collections:
+
+define version in file gradle.properties
+
+```
+
+sillyCollectionsVersion=8.7
+```
+
+or in build.gradle ext area
+
+```
+ext {
+			...
+    sillyCollectionsVersion = "8.7"
+			...
+}
+```
+
+then add the dependency to the dependencies area
+
+```
+dependencies {
+			...
+    implementation("io.github.astrapi69:silly-collections:$sillyCollectionsVersion")
+			...
+}
+```
+
 # Donations
 
 This project is kept as an open source product and relies on contributions to remain being
@@ -93,67 +154,6 @@ applications.
 ## Note
 
 No animals were harmed in the making of this library.
-
-## Maven dependency
-
-Maven dependency is now on sonatype. Check
-out [sonatype repository](https://oss.sonatype.org/index.html#nexus-search;gav~io.github.astrapi69~silly-collections~~~)
-for latest snapshots and releases.
-
-Add the following maven dependency to your project `pom.xml` if you want to import the core
-functionality of silly-collections:
-
-Than you can add the dependency to your dependencies:
-
-	<properties>
-			...
-		<!-- SILLY-COLLECTIONS version -->
-		<silly-collections.version>8.7</silly-collections.version>
-			...
-	</properties>
-			...
-		<dependencies>
-			...
-			<!-- SILLY-COLLECTIONS DEPENDENCY -->
-			<dependency>
-				<groupId>io.github.astrapi69</groupId>
-				<artifactId>silly-collections</artifactId>
-				<version>${silly-collections.version}</version>
-			</dependency>
-			...
-		</dependencies>
-
-## gradle dependency
-
-You can first define the version in the ext section and add than the following gradle dependency to
-your project `build.gradle` if you want to import the core functionality of silly-collections:
-
-define version in file gradle.properties
-
-```
-
-sillyCollectionsVersion=8.7
-```
-
-or in build.gradle ext area
-
-```
-ext {
-			...
-    sillyCollectionsVersion = "8.7"
-			...
-}
-```
-
-then add the dependency to the dependencies area
-
-```
-dependencies {
-			...
-    implementation("io.github.astrapi69:silly-collections:$sillyCollectionsVersion")
-			...
-}
-```
 
 ## Semantic Versioning
 
