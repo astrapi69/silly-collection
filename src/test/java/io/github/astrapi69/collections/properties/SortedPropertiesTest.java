@@ -94,7 +94,7 @@ public class SortedPropertiesTest
 			protected Comparator<Object> newComparator()
 			{
 
-				return NullCheckComparator.<Object> of(
+				return NullCheckComparator.of(
 					(final Object o1,
 						final Object o2) -> ((o1.toString().compareTo(o2.toString())) * (-1)),
 					false);
@@ -173,7 +173,7 @@ public class SortedPropertiesTest
 			protected Comparator<Object> newComparator()
 			{
 
-				return NullCheckComparator.<Object> of(
+				return NullCheckComparator.of(
 					(final Object o1,
 						final Object o2) -> ((o1.toString().compareTo(o2.toString())) * (-1)),
 					false);
@@ -255,7 +255,7 @@ public class SortedPropertiesTest
 			protected Comparator<Object> newComparator()
 			{
 
-				return NullCheckComparator.<Object> of(
+				return NullCheckComparator.of(
 					(final Object o1,
 						final Object o2) -> ((o1.toString().compareTo(o2.toString())) * (-1)),
 					false);
@@ -410,7 +410,7 @@ public class SortedPropertiesTest
 			protected Comparator<Object> newComparator()
 			{
 
-				return NullCheckComparator.<Object> of(
+				return NullCheckComparator.of(
 					(final Object o1,
 						final Object o2) -> ((o1.toString().compareTo(o2.toString())) * (-1)),
 					false);

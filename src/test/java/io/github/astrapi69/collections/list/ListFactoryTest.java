@@ -139,7 +139,7 @@ public class ListFactoryTest
 	@Test
 	public void testNewLinkedListCollectionObjects()
 	{
-		List<String> strings = ListFactory.newLinkedList((Collection<String>)null, "foo");
+		List<String> strings = ListFactory.newLinkedList(null, "foo");
 		assertNotNull(strings);
 		assertTrue(strings.size() == 1);
 		assertTrue(strings.get(0).equals("foo"));

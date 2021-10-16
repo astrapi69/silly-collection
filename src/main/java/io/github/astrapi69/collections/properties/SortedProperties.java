@@ -106,7 +106,7 @@ public class SortedProperties extends Properties
 			@Override
 			protected Comparator<Object> newComparator()
 			{
-				return NullCheckComparator.<Object> of(comparator, false);
+				return NullCheckComparator.of(comparator, false);
 			}
 		};
 	}
@@ -156,7 +156,7 @@ public class SortedProperties extends Properties
 	 */
 	protected Comparator<Object> newComparator()
 	{
-		return NullCheckComparator.<Object> of(
+		return NullCheckComparator.of(
 			(final Object o1, final Object o2) -> o1.toString().compareTo(o2.toString()), false);
 	}
 

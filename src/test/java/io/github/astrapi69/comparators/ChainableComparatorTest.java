@@ -74,7 +74,7 @@ public class ChainableComparatorTest
 		final Employee employee1 = Employee.builder().person(person1).id("1").build();
 		final Employee employee2 = Employee.builder().person(person2).id("2").build();
 
-		comparator = ChainableComparator.<Employee> of();
+		comparator = ChainableComparator.of();
 		comparator.addComparator(idComparator);
 		comparator.addComparator(personComparator);
 
@@ -90,7 +90,7 @@ public class ChainableComparatorTest
 		expected = actual > 0;
 		assertTrue(expected);
 
-		comparator = ChainableComparator.<Employee> of(idComparator);
+		comparator = ChainableComparator.of(idComparator);
 
 		actual = comparator.compare(employee1, employee1);
 		expected = actual == 0;
@@ -104,7 +104,7 @@ public class ChainableComparatorTest
 		expected = actual > 0;
 		assertTrue(expected);
 
-		comparator = ChainableComparator.<Employee> of(comparators);
+		comparator = ChainableComparator.of(comparators);
 
 		actual = comparator.compare(employee1, employee1);
 		expected = actual == 0;
@@ -118,7 +118,7 @@ public class ChainableComparatorTest
 		expected = actual > 0;
 		assertTrue(expected);
 
-		comparator = ChainableComparator.<Employee> of(comparators, bitSet);
+		comparator = ChainableComparator.of(comparators, bitSet);
 
 		actual = comparator.compare(employee1, employee1);
 		expected = actual == 0;
@@ -132,7 +132,7 @@ public class ChainableComparatorTest
 		expected = actual < 0;
 		assertTrue(expected);
 
-		comparator = ChainableComparator.<Employee> of(idComparator, true);
+		comparator = ChainableComparator.of(idComparator, true);
 
 		actual = comparator.compare(employee1, employee1);
 		expected = actual == 0;

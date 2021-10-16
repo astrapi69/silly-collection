@@ -287,11 +287,7 @@ public final class ListExtensions
 		{
 			return false;
 		}
-		if (indexOfElement < list.size() - 1)
-		{
-			return true;
-		}
-		return false;
+		return indexOfElement < list.size() - 1;
 	}
 
 	/**
@@ -309,11 +305,7 @@ public final class ListExtensions
 	{
 		Argument.notNull(list, "list");
 		final int indexOfElement = list.indexOf(element);
-		if (indexOfElement == -1 || indexOfElement == 0)
-		{
-			return false;
-		}
-		return true;
+		return indexOfElement != -1 && indexOfElement != 0;
 	}
 
 	/**

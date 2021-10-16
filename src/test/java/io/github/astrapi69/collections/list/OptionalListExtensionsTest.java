@@ -48,7 +48,7 @@ public class OptionalListExtensionsTest
 		Optional<String> actual;
 		List<String> search;
 
-		expected = Optional.<String> of("Leonidas");
+		expected = Optional.of("Leonidas");
 		search = ListFactory.newArrayList();
 		search.add(expected.get());
 		search.add("Berta");
@@ -86,7 +86,7 @@ public class OptionalListExtensionsTest
 		search.add("Emil");
 		search.add("Leonidas");
 		actual = OptionalListExtensions.getLast(search);
-		expected = Optional.<String> of("Leonidas");
+		expected = Optional.of("Leonidas");
 		assertEquals(expected, actual);
 	}
 
@@ -190,7 +190,7 @@ public class OptionalListExtensionsTest
 		Optional<String> actual;
 		String removed;
 		List<String> search;
-		expected = Optional.<String> of("Leonidas");
+		expected = Optional.of("Leonidas");
 		removed = "Berta";
 		search = ListFactory.newArrayList();
 		search.add(removed);
@@ -223,7 +223,7 @@ public class OptionalListExtensionsTest
 		Optional<String> actual;
 		String removed;
 		List<String> search;
-		expected = Optional.<String> of("Leonidas");
+		expected = Optional.of("Leonidas");
 		removed = "Berta";
 		search = ListFactory.newArrayList();
 

@@ -47,7 +47,7 @@ public class InsertionOrderMapTest
 	@Test
 	public void testInsertionOrderMap()
 	{
-		final String expected[][] = { { "1", "value1" }, { "3", "value3" }, { "4", "value4" },
+		final String[][] expected = { { "1", "value1" }, { "3", "value3" }, { "4", "value4" },
 				{ "2", "value5" } };
 		int count = 0;
 		final Map<String, String> map = new InsertionOrderMap<>();
@@ -72,7 +72,7 @@ public class InsertionOrderMapTest
 			count++;
 		}
 		map.forEach((key, value) -> System.out
-			.println("[" + key.toString() + "=" + value.toString() + "]"));
+			.println("[" + key + "=" + value + "]"));
 
 		map.clear();
 	}
@@ -91,7 +91,7 @@ public class InsertionOrderMapTest
 		map.put("2", "value2");
 		map.put("3", "value3");
 		map.put("4", "value4");
-		final String expected[][] = { { "1", "value1" }, { "2", "value2" }, { "3", "value3" },
+		final String[][] expected = { { "1", "value1" }, { "2", "value2" }, { "3", "value3" },
 				{ "4", "value4" } };
 		int count = 0;
 		for (final Entry<String, String> entry : map.entrySet())
@@ -123,7 +123,7 @@ public class InsertionOrderMapTest
 		map.put("2", "value2");
 		map.put("3", "value3");
 		map.put("4", "value4");
-		final String expected[][] = { { "1", "value1" }, { "2", "value2" }, { "3", "value3" },
+		final String[][] expected = { { "1", "value1" }, { "2", "value2" }, { "3", "value3" },
 				{ "4", "value4" } };
 		int count = 0;
 		for (final Entry<String, String> entry : map.entrySet())
@@ -155,7 +155,7 @@ public class InsertionOrderMapTest
 		map.put("2", "value2");
 		map.put("3", "value3");
 		map.put("4", "value4");
-		final String expected[][] = { { "1", "value1" }, { "2", "value2" }, { "3", "value3" },
+		final String[][] expected = { { "1", "value1" }, { "2", "value2" }, { "3", "value3" },
 				{ "4", "value4" } };
 		int count = 0;
 		for (final Entry<String, String> entry : map.entrySet())
@@ -187,7 +187,7 @@ public class InsertionOrderMapTest
 		/* Shows that the elements are ordered in insertion-order from the Map. */
 		final Map<String, String> map = new InsertionOrderMap<>(map3);
 
-		final String expected[][] = { { "1", "value1" }, { "2", "value2" }, { "3", "value3" },
+		final String[][] expected = { { "1", "value1" }, { "2", "value2" }, { "3", "value3" },
 				{ "4", "value4" } };
 		int count = 0;
 		for (final Entry<String, String> entry : map.entrySet())
@@ -218,7 +218,7 @@ public class InsertionOrderMapTest
 		map.put("2", "value2");
 		map.put("3", "value3");
 		map.put("4", "value4");
-		final String expected[][] = { { "1", "value1" }, { "2", "value2" }, { "3", "value3" },
+		final String[][] expected = { { "1", "value1" }, { "2", "value2" }, { "3", "value3" },
 				{ "4", "value4" } };
 		int count = 0;
 		for (final Entry<String, String> entry : map.entrySet())
@@ -271,14 +271,14 @@ public class InsertionOrderMapTest
 		System.out.println("----------initHashMap--------------");
 
 		map3.forEach((key, value) -> System.out
-			.println("[" + key.toString() + "=" + value.toString() + "]"));
+			.println("[" + key + "=" + value + "]"));
 
 		System.out.println("------------------------");
 		System.out.println("----------Map linkedMap = new LinkedHashMap(map3);--------------");
 		final Map<String, String> linkedMap = new LinkedHashMap<>(map3);
 
 		linkedMap.forEach((key, value) -> System.out
-			.println("[" + key.toString() + "=" + value.toString() + "]"));
+			.println("[" + key + "=" + value + "]"));
 
 		System.out.println("---------initInsertionOrderMap---------------");
 		map3.clear();

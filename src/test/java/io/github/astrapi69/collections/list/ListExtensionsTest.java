@@ -272,11 +272,11 @@ public class ListExtensionsTest
 	public void testGetModifiedLists()
 	{
 
-		final String previous[] = { "1", "2", "3", "4", "5", "6", "7" };
-		final String next[] = { "2", "5", "6", "7", "8", "9" };
+		final String[] previous = { "1", "2", "3", "4", "5", "6", "7" };
+		final String[] next = { "2", "5", "6", "7", "8", "9" };
 
-		final String expectedadded[] = { "8", "9" };
-		final String expectedremoved[] = { "1", "3", "4" };
+		final String[] expectedadded = { "8", "9" };
+		final String[] expectedremoved = { "1", "3", "4" };
 
 		final List<String> previousList = ListFactory.newArrayList(Arrays.asList(previous));
 		final List<String> nextList = Arrays.asList(next);
@@ -930,7 +930,7 @@ public class ListExtensionsTest
 	@Test
 	public void testToObjectArray()
 	{
-		final Object expected[] = { "2", "5", "6", "7", "8", "9" };
+		final Object[] expected = { "2", "5", "6", "7", "8", "9" };
 		Object[] actual = ListExtensions.toObjectArray("2", "5", "6", "7", "8", "9");
 		assertTrue(expected.length == actual.length);
 		for (int i = 0; i < actual.length; i++)
