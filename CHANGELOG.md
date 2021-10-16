@@ -1,7 +1,7 @@
 ## Change log
 ----------------------
 
-Version 18-SNAPSHOT
+Version 18
 -------------
 
 ADDED:
@@ -19,6 +19,7 @@ ADDED:
 - update of test dependency test-objects to new version 5.5
 - update of test dependency org.openjdk.jmh:jmh-core to new version 1.33
 - update of dependency jobj-core in new version 3.9
+- update of dependency jobj-compare in new version 3.9
 
 Version 8.7
 -------------

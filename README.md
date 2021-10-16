@@ -35,7 +35,7 @@ Than you can add the dependency to your dependencies:
 	<properties>
 			...
 		<!-- SILLY-COLLECTIONS version -->
-		<silly-collections.version>8.7</silly-collections.version>
+		<silly-collections.version>18</silly-collections.version>
 			...
 	</properties>
 			...
@@ -59,7 +59,7 @@ define version in file gradle.properties
 
 ```
 
-sillyCollectionsVersion=8.7
+sillyCollectionsVersion=18
 ```
 
 or in build.gradle ext area
@@ -67,7 +67,7 @@ or in build.gradle ext area
 ```
 ext {
 			...
-    sillyCollectionsVersion = "8.7"
+    sillyCollectionsVersion = "18"
 			...
 }
 ```
