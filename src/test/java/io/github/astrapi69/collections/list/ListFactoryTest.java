@@ -44,6 +44,32 @@ public class ListFactoryTest
 {
 
 	/**
+	 * Test the method {@link ListFactory#newCharacterArrayList(Collection, char...)}
+	 */
+	@Test
+	public void testNewCharacterArrayListCollectionCharArray()
+	{
+		List<Character> characters;
+		List<Character> newCharacterArrayList;
+
+		characters = null;
+		newCharacterArrayList = ListFactory.newCharacterArrayList(characters, 'c', 'd');
+		assertNotNull(newCharacterArrayList);
+		assertTrue(newCharacterArrayList.size() == 2);
+		assertTrue(newCharacterArrayList.get(0).equals('c'));
+		assertTrue(newCharacterArrayList.get(1).equals('d'));
+
+		characters = ListFactory.newArrayList(Character.valueOf('a'), Character.valueOf('b'));
+		newCharacterArrayList = ListFactory.newCharacterArrayList(characters, 'c', 'd');
+		assertNotNull(newCharacterArrayList);
+		assertTrue(newCharacterArrayList.size() == 4);
+		assertTrue(newCharacterArrayList.get(0).equals('a'));
+		assertTrue(newCharacterArrayList.get(1).equals('b'));
+		assertTrue(newCharacterArrayList.get(2).equals('c'));
+		assertTrue(newCharacterArrayList.get(3).equals('d'));
+	}
+
+	/**
 	 * Test the method {@link ListFactory#newArrayList(java.util.Collection, Object...)}.
 	 */
 	@Test

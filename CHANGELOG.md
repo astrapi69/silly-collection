@@ -8,6 +8,7 @@ ADDED:
 
 - new method for generate an index map from a given list
 - new method for swap a map keys and values
+- new factory method for create a Character object list from a given char array
 
   CHANGED:
 
