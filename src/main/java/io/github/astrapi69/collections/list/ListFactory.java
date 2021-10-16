@@ -154,6 +154,8 @@ public final class ListFactory
 	 * Factory method for create new {@link ArrayList} from the given optional primitive type
 	 * elements.
 	 *
+	 * @param collection
+	 *            the optional collection that will be added to the new list
 	 * @param elements
 	 *            the primitive type elements to add in the new {@link ArrayList}.
 	 * @return the new {@link ArrayList} as {@link List}.

@@ -227,8 +227,8 @@ public final class MapExtensions
 	 * @param <V>
 	 *            the generic type of the value
 	 * @param map
-	 *            the swapped map
-	 * @return
+	 *            the map to swap
+	 * @return the swapped map
 	 */
 	public static <K, V> Map<V, K> swap(final Map<K, V> map)
 	{
