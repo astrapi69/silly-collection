@@ -69,7 +69,7 @@ public class StringComparator extends SortOrderComparator<String>
 	 */
 	public static Comparator<String> of(final boolean nullIsGreaterThan)
 	{
-		return NullCheckComparator.<String> of(new StringComparator(), nullIsGreaterThan);
+		return NullCheckComparator.of(new StringComparator(), nullIsGreaterThan);
 	}
 
 	/**
@@ -96,7 +96,7 @@ public class StringComparator extends SortOrderComparator<String>
 	 */
 	public static Comparator<String> of(final SortOrder sortOrder, final boolean nullIsGreaterThan)
 	{
-		return NullCheckComparator.<String> of(new StringComparator(sortOrder), nullIsGreaterThan);
+		return NullCheckComparator.of(new StringComparator(sortOrder), nullIsGreaterThan);
 	}
 
 }

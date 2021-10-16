@@ -40,16 +40,16 @@ public class SetEnumeration<T> implements Enumeration<T>
 {
 
 	/** The enumeration. */
-	private Enumeration<T> enumeration;
+	private final Enumeration<T> enumeration;
 
 	/** The iterator. */
-	private Iterator<T> iterator;
+	private final Iterator<T> iterator;
 
 	/** The next. */
 	private T next;
 
 	/** The set. */
-	private Set<T> set;
+	private final Set<T> set;
 
 	/**
 	 * Instantiates a new {@link SetEnumeration} from the given {@link Set} and the given

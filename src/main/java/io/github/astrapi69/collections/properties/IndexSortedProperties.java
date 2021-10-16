@@ -110,7 +110,7 @@ public class IndexSortedProperties extends SortedProperties
 			@Override
 			protected Comparator<Object> newComparator()
 			{
-				return NullCheckComparator.<Object> of(comparator, false);
+				return NullCheckComparator.of(comparator, false);
 			}
 		};
 	}
@@ -136,7 +136,7 @@ public class IndexSortedProperties extends SortedProperties
 			@Override
 			protected Comparator<Object> newComparator()
 			{
-				return NullCheckComparator.<Object> of(comparator, nullIsGreaterThan);
+				return NullCheckComparator.of(comparator, nullIsGreaterThan);
 			}
 		};
 	}

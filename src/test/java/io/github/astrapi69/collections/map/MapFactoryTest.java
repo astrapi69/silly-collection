@@ -280,7 +280,7 @@ public class MapFactoryTest
 	@Test
 	public void testNewInsertionOrderMap() throws Exception
 	{
-		final Map<Integer, String> map = MapFactory.<Integer, String> newInsertionOrderMap();
+		final Map<Integer, String> map = MapFactory.newInsertionOrderMap();
 		assertNotNull(map);
 	}
 
@@ -378,7 +378,7 @@ public class MapFactoryTest
 	@Test
 	public void testNewLazyTreeMap() throws Exception
 	{
-		final Map<Integer, String> treeMap = MapFactory.<Integer, String> newLazyTreeMap();
+		final Map<Integer, String> treeMap = MapFactory.newLazyTreeMap();
 		assertNotNull(treeMap);
 	}
 
@@ -389,7 +389,7 @@ public class MapFactoryTest
 	public void testNewLazyTreeMapComparator() throws Exception
 	{
 		final Map<Integer, String> treeMap = MapFactory
-			.<Integer, String> newLazyTreeMap((o1, o2) -> o1 - o2);
+			.newLazyTreeMap((o1, o2) -> o1 - o2);
 		assertNotNull(treeMap);
 	}
 
@@ -539,7 +539,7 @@ public class MapFactoryTest
 	@Test
 	public void testNewTreeMap()
 	{
-		final Map<Integer, String> treeMap = MapFactory.<Integer, String> newTreeMap();
+		final Map<Integer, String> treeMap = MapFactory.newTreeMap();
 		assertNotNull(treeMap);
 	}
 
@@ -550,7 +550,7 @@ public class MapFactoryTest
 	public void testNewTreeMapComparator()
 	{
 		final Map<Integer, String> treeMap = MapFactory
-			.<Integer, String> newTreeMap((o1, o2) -> o1 - o2);
+			.newTreeMap((o1, o2) -> o1 - o2);
 		assertNotNull(treeMap);
 	}
 

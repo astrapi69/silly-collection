@@ -130,10 +130,7 @@ public class InsertionOrderSet<E> extends LinkedHashSet<E>
 	@Override
 	public boolean add(final E o)
 	{
-		if (super.contains(o))
-		{
-			super.remove(o);
-		}
+		super.remove(o);
 		return super.add(o);
 	}
 

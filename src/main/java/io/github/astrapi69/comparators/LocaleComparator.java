@@ -55,7 +55,7 @@ public class LocaleComparator implements Comparator<Locale>
 	 */
 	public static Comparator<Locale> of(boolean nullIsGreaterThan)
 	{
-		return NullCheckComparator.<Locale> of(new LocaleComparator(), nullIsGreaterThan);
+		return NullCheckComparator.of(new LocaleComparator(), nullIsGreaterThan);
 	}
 
 	/**

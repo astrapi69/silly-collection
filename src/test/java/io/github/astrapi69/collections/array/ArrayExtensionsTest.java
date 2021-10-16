@@ -77,7 +77,7 @@ public class ArrayExtensionsTest
 	{
 		String actual;
 		String expected;
-		final String numbers[] = { "1", "2", "3", "4", "5", "6", "7" };
+		final String[] numbers = { "1", "2", "3", "4", "5", "6", "7" };
 		final List<String> numberList = ArrayExtensions.asList(numbers);
 		for (int i = 0; i < numbers.length; i++)
 		{
@@ -95,7 +95,7 @@ public class ArrayExtensionsTest
 	{
 		String actual;
 		String expected;
-		final String numbers[] = { "1", "2", "3", "4", "5", "6", "7" };
+		final String[] numbers = { "1", "2", "3", "4", "5", "6", "7" };
 		final Set<String> numberSet = ArrayExtensions.asSet("1", "2", "3", "4", "5", "6", "7");
 
 		Iterator<String> iterator = numberSet.iterator();
@@ -115,7 +115,7 @@ public class ArrayExtensionsTest
 	@Test
 	public void testAsStream()
 	{
-		final String numbers[] = { "1", "2", "3", "4", "5", "6", "7" };
+		final String[] numbers = { "1", "2", "3", "4", "5", "6", "7" };
 		final Stream<String> numberSet = ArrayExtensions.asStream("1", "2", "3", "4", "5", "6",
 			"7");
 
@@ -134,12 +134,12 @@ public class ArrayExtensionsTest
 		boolean actual;
 
 		final String last = "7";
-		final String numbers[] = { "1", "2", "3", "4", "5", "6", last };
+		final String[] numbers = { "1", "2", "3", "4", "5", "6", last };
 		// Old vanilla java with static method...
 		actual = ArrayExtensions.contains(numbers, last);
 		expected = true;
 		assertEquals(expected, actual);
-		final String empty[] = { };
+		final String[] empty = { };
 		expected = false;
 		actual = ArrayExtensions.contains(empty, last);
 		assertEquals(expected, actual);
@@ -163,12 +163,12 @@ public class ArrayExtensionsTest
 		String last;
 
 		last = "7";
-		final String numbers[] = { "1", "2", "3", "4", "5", "6", last };
+		final String[] numbers = { "1", "2", "3", "4", "5", "6", last };
 		// Old vanilla java with static method...
 		actual = ArrayExtensions.containsAtLeastOne(numbers, last, "6");
 		expected = true;
 		assertEquals(expected, actual);
-		final String empty[] = { };
+		final String[] empty = { };
 		expected = false;
 		actual = ArrayExtensions.containsAtLeastOne(empty, last);
 		assertEquals(expected, actual);
@@ -186,11 +186,11 @@ public class ArrayExtensionsTest
 		String expected;
 		String actual;
 		expected = "1";
-		final String numbers[] = { expected, "2", "3", "4", "5", "6", "7" };
+		final String[] numbers = { expected, "2", "3", "4", "5", "6", "7" };
 		// Old vanilla java with static method...
 		actual = ArrayExtensions.getFirst(numbers);
 		assertEquals(expected, actual);
-		final String empty[] = { };
+		final String[] empty = { };
 		expected = null;
 		actual = ArrayExtensions.getFirst(empty);
 		assertEquals(expected, actual);
@@ -209,11 +209,11 @@ public class ArrayExtensionsTest
 		int actual;
 		expected = 6;
 		final String last = "7";
-		final String numbers[] = { "1", "2", "3", "4", "5", "6", last };
+		final String[] numbers = { "1", "2", "3", "4", "5", "6", last };
 		// Old vanilla java with static method...
 		actual = ArrayExtensions.getIndex(numbers, last);
 		assertEquals(expected, actual);
-		final String empty[] = { };
+		final String[] empty = { };
 		expected = -1;
 		actual = ArrayExtensions.getIndex(empty, last);
 		assertEquals(expected, actual);
@@ -231,11 +231,11 @@ public class ArrayExtensionsTest
 		String expected;
 		String actual;
 		expected = "7";
-		final String numbers[] = { "1", "2", "3", "4", "5", "6", expected };
+		final String[] numbers = { "1", "2", "3", "4", "5", "6", expected };
 		// Old vanilla java with static method...
 		actual = ArrayExtensions.getLast(numbers);
 		assertEquals(expected, actual);
-		final String empty[] = { };
+		final String[] empty = { };
 		expected = null;
 		actual = ArrayExtensions.getLast(empty);
 		assertEquals(expected, actual);
@@ -255,7 +255,7 @@ public class ArrayExtensionsTest
 		expected = 0;
 		final String last = "7";
 		final String first = "1";
-		final String numbers[] = { first, "2", "3", "4", "5", "6", last };
+		final String[] numbers = { first, "2", "3", "4", "5", "6", last };
 		// use case with last...
 		// Old vanilla java with static method...
 		actual = ArrayExtensions.getNextIndex(numbers, last);
@@ -265,7 +265,7 @@ public class ArrayExtensionsTest
 		actual = ArrayExtensions.getNextIndex(numbers, first);
 		assertEquals(expected, actual);
 		// scenarios of empty or null value...
-		final String empty[] = { };
+		final String[] empty = { };
 		expected = -1;
 		actual = ArrayExtensions.getNextIndex(empty, last);
 		assertEquals(expected, actual);
@@ -283,7 +283,7 @@ public class ArrayExtensionsTest
 		int[] expected = { 0, 1 };
 		final String last = "7";
 		final String first = "1";
-		final String numbers[] = { first, "2", "3", "4", "5", "6", last };
+		final String[] numbers = { first, "2", "3", "4", "5", "6", last };
 		// use case with last...
 		// Old vanilla java with static method...
 		int[] actual = ArrayExtensions.getNextIndexes(numbers, last, 2);
@@ -296,7 +296,7 @@ public class ArrayExtensionsTest
 		assertEquals(expected[0], actual[0]);
 		assertEquals(expected[1], actual[1]);
 		// scenarios of empty or null value...
-		final String empty[] = { };
+		final String[] empty = { };
 		expected = null;
 		actual = ArrayExtensions.getNextIndexes(empty, last, 2);
 		assertEquals(expected, actual);
@@ -316,7 +316,7 @@ public class ArrayExtensionsTest
 		expected = 5;
 		final String last = "7";
 		final String first = "1";
-		final String numbers[] = { first, "2", "3", "4", "5", "6", last };
+		final String[] numbers = { first, "2", "3", "4", "5", "6", last };
 		// use case with last...
 		// Old vanilla java with static method...
 		actual = ArrayExtensions.getPreviousIndex(numbers, last);
@@ -326,7 +326,7 @@ public class ArrayExtensionsTest
 		actual = ArrayExtensions.getPreviousIndex(numbers, first);
 		assertEquals(expected, actual);
 		// scenarios of empty or null value...
-		final String empty[] = { };
+		final String[] empty = { };
 		expected = -1;
 		actual = ArrayExtensions.getPreviousIndex(empty, last);
 		assertEquals(expected, actual);
@@ -344,7 +344,7 @@ public class ArrayExtensionsTest
 		int[] expected = { 5, 4 };
 		final String last = "7";
 		final String first = "1";
-		final String numbers[] = { first, "2", "3", "4", "5", "6", last };
+		final String[] numbers = { first, "2", "3", "4", "5", "6", last };
 		// use case with last...
 		// Old vanilla java with static method...
 		int[] actual = ArrayExtensions.getPreviousIndexes(numbers, last, 2);
@@ -357,7 +357,7 @@ public class ArrayExtensionsTest
 		assertEquals(expected[0], actual[0]);
 		assertEquals(expected[1], actual[1]);
 		// scenarios of empty or null value...
-		final String empty[] = { };
+		final String[] empty = { };
 		expected = null;
 		actual = ArrayExtensions.getPreviousIndexes(empty, last, 2);
 		assertEquals(expected, actual);
@@ -376,11 +376,11 @@ public class ArrayExtensionsTest
 		int actual;
 		expected = 6;
 		final String last = "7";
-		final String numbers[] = { "1", "2", "3", "4", "5", "6", last };
+		final String[] numbers = { "1", "2", "3", "4", "5", "6", last };
 		// Old vanilla java with static method...
 		actual = ArrayExtensions.indexOf(numbers, last);
 		assertEquals(expected, actual);
-		final String empty[] = { };
+		final String[] empty = { };
 		expected = -1;
 		actual = ArrayExtensions.indexOf(empty, last);
 		assertEquals(expected, actual);
@@ -419,7 +419,7 @@ public class ArrayExtensionsTest
 	{
 		boolean expected;
 		boolean actual;
-		final String numbers[] = { "1", "2", "3", "4", "5", "6", "7" };
+		final String[] numbers = { "1", "2", "3", "4", "5", "6", "7" };
 
 		actual = ArrayExtensions.isFirst(numbers, "1");
 		expected = true;
@@ -439,7 +439,7 @@ public class ArrayExtensionsTest
 		boolean expected;
 		boolean actual;
 
-		final String numbers[] = { "1", "2", "3", "4", "5", "6", "7" };
+		final String[] numbers = { "1", "2", "3", "4", "5", "6", "7" };
 
 		actual = ArrayExtensions.isLast(numbers, "7");
 		expected = true;
@@ -600,7 +600,7 @@ public class ArrayExtensionsTest
 	{
 		String actual;
 		String expected;
-		final String numbers[] = { "1", "2", "3", "4", "5", "6", "7" };
+		final String[] numbers = { "1", "2", "3", "4", "5", "6", "7" };
 		final List<String> numberList = ArrayExtensions.toList(numbers);
 		for (int i = 0; i < numbers.length; i++)
 		{

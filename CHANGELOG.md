@@ -1,6 +1,26 @@
 ## Change log
 ----------------------
 
+Version 18
+-------------
+
+ADDED:
+
+- new method for generate an index map from a given list
+- new method for swap a map keys and values
+- new factory method for create a Character object list from a given char array
+
+  CHANGED:
+
+- update gradle to new version 7.2
+- changed all dependencies from groupid de.alpharogroup to new groupid io.github.astrapi69
+- update gradle-plugin dependency of gradle.plugin.com.hierynomus.gradle.plugins:
+  license-gradle-plugin to new version 0.16.1
+- update of test dependency test-objects to new version 5.5
+- update of test dependency org.openjdk.jmh:jmh-core to new version 1.33
+- update of dependency jobj-core in new version 3.9
+- update of dependency jobj-compare in new version 3.9
+
 Version 8.7
 -------------
 

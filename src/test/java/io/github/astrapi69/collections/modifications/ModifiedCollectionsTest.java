@@ -48,10 +48,10 @@ public class ModifiedCollectionsTest
 	@Test
 	public void testGetModifiedLists()
 	{
-		String previous[];
-		String next[];
-		String expectedadded[];
-		String expectedremoved[];
+		String[] previous;
+		String[] next;
+		String[] expectedadded;
+		String[] expectedremoved;
 		List<String> previousList;
 		List<String> nextList;
 		List<String> expectedaddedList;

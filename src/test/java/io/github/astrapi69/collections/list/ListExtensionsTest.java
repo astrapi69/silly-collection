@@ -36,6 +36,7 @@ import java.util.Collection;
 import java.util.Collections;
 import java.util.Enumeration;
 import java.util.List;
+import java.util.Map;
 import java.util.Set;
 
 import org.meanbean.test.BeanTester;
@@ -45,6 +46,7 @@ import org.testng.annotations.Test;
 
 import io.github.astrapi69.collections.CollectionExtensions;
 import io.github.astrapi69.collections.array.ArrayFactory;
+import io.github.astrapi69.collections.map.MapFactory;
 import io.github.astrapi69.collections.modifications.ModifiedCollections;
 import io.github.astrapi69.collections.set.SetFactory;
 import io.github.astrapi69.test.objects.Person;
@@ -261,11 +263,11 @@ public class ListExtensionsTest
 	@Test public void testGetModifiedLists()
 	{
 
-		final String previous[] = { "1", "2", "3", "4", "5", "6", "7" };
-		final String next[] = { "2", "5", "6", "7", "8", "9" };
+		final String[] previous = { "1", "2", "3", "4", "5", "6", "7" };
+		final String[] next = { "2", "5", "6", "7", "8", "9" };
 
-		final String expectedadded[] = { "8", "9" };
-		final String expectedremoved[] = { "1", "3", "4" };
+		final String[] expectedadded = { "8", "9" };
+		final String[] expectedremoved = { "1", "3", "4" };
 
 		final List<String> previousList = ListFactory.newArrayList(Arrays.asList(previous));
 		final List<String> nextList = Arrays.asList(next);
@@ -507,6 +509,45 @@ public class ListExtensionsTest
 		actual = ListExtensions.toArray(numbers);
 		expected = ArrayFactory.newArray(1, 2, 3);
 		assertTrue(Arrays.equals(actual, expected));
+	}
+
+	/**
+	 * Test the method {@link ListExtensions#toIndexMap(List)}
+	 */
+	@Test
+	public void testListToIndexMapWithInteger()
+	{
+		Map<Integer, Integer> actual;
+		Map<Integer, Integer> expected;
+		List<Integer> numbers;
+		// new scenario...
+		numbers = ListFactory.newArrayList(1, 2, 3);
+		actual = ListExtensions.toIndexMap(numbers);
+		expected = MapFactory.newLinkedHashMap();
+		expected.put(0, 1);
+		expected.put(1, 2);
+		expected.put(2, 3);
+		assertEquals(expected, actual);
+	}
+
+	/**
+	 * Test the method {@link ListExtensions#toIndexMap(List)}
+	 */
+	@Test
+	public void testListToIndexMapWithString()
+	{
+		Map<Integer, String> actual;
+		Map<Integer, String> expected;
+		List<Integer> numbers;
+		List<String> strings;
+		// new scenario...
+		strings = ListFactory.newArrayList("1", "2", "3");
+		actual = ListExtensions.toIndexMap(strings);
+		expected = MapFactory.newLinkedHashMap();
+		expected.put(0, "1");
+		expected.put(1, "2");
+		expected.put(2, "3");
+		assertEquals(expected, actual);
 	}
 
 	/**
@@ -858,7 +899,7 @@ public class ListExtensionsTest
 	 */
 	@Test public void testToObjectArray()
 	{
-		final Object expected[] = { "2", "5", "6", "7", "8", "9" };
+		final Object[] expected = { "2", "5", "6", "7", "8", "9" };
 		Object[] actual = ListExtensions.toObjectArray("2", "5", "6", "7", "8", "9");
 		assertTrue(expected.length == actual.length);
 		for (int i = 0; i < actual.length; i++)

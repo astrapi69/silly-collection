@@ -14,13 +14,73 @@
 
 Utility library for collections, comparators and iterator classes.
 
-
 > Please support this project by simply putting a Github <!-- Place this tag where you want the button to render. -->
 <a class="github-button" href="https://github.com/lightblueseas/silly-collections" data-icon="octicon-star" aria-label="Star lightblueseas/silly-collections on GitHub">Star ⭐</a>
 >
 > Share this library with friends on Twitter and everywhere else you can
 >
 > If you love this project [![donation](https://img.shields.io/badge/donate-❤-ff2244.svg)](https://www.paypal.com/cgi-bin/webscr?cmd=_s-xclick&hosted_button_id=GVBTWLRAZ7HB8)
+
+## Maven dependency
+
+Maven dependency is now on sonatype. Check
+out [sonatype repository](https://oss.sonatype.org/index.html#nexus-search;gav~io.github.astrapi69~silly-collections~~~)
+for latest snapshots and releases.
+
+Add the following maven dependency to your project `pom.xml` if you want to import the core
+functionality of silly-collections:
+
+Than you can add the dependency to your dependencies:
+
+	<properties>
+			...
+		<!-- SILLY-COLLECTIONS version -->
+		<silly-collections.version>18</silly-collections.version>
+			...
+	</properties>
+			...
+		<dependencies>
+			...
+			<!-- SILLY-COLLECTIONS DEPENDENCY -->
+			<dependency>
+				<groupId>io.github.astrapi69</groupId>
+				<artifactId>silly-collections</artifactId>
+				<version>${silly-collections.version}</version>
+			</dependency>
+			...
+		</dependencies>
+
+## gradle dependency
+
+You can first define the version in the ext section and add than the following gradle dependency to
+your project `build.gradle` if you want to import the core functionality of silly-collections:
+
+define version in file gradle.properties
+
+```
+
+sillyCollectionsVersion=18
+```
+
+or in build.gradle ext area
+
+```
+ext {
+			...
+    sillyCollectionsVersion = "18"
+			...
+}
+```
+
+then add the dependency to the dependencies area
+
+```
+dependencies {
+			...
+    implementation("io.github.astrapi69:silly-collections:$sillyCollectionsVersion")
+			...
+}
+```
 
 # Donations
 
@@ -95,67 +155,6 @@ applications.
 
 No animals were harmed in the making of this library.
 
-## Maven dependency
-
-Maven dependency is now on sonatype. Check
-out [sonatype repository](https://oss.sonatype.org/index.html#nexus-search;gav~io.github.astrapi69~silly-collections~~~)
-for latest snapshots and releases.
-
-Add the following maven dependency to your project `pom.xml` if you want to import the core
-functionality of silly-collections:
-
-Than you can add the dependency to your dependencies:
-
-	<properties>
-			...
-		<!-- SILLY-COLLECTIONS version -->
-		<silly-collections.version>8.7</silly-collections.version>
-			...
-	</properties>
-			...
-		<dependencies>
-			...
-			<!-- SILLY-COLLECTIONS DEPENDENCY -->
-			<dependency>
-				<groupId>io.github.astrapi69</groupId>
-				<artifactId>silly-collections</artifactId>
-				<version>${silly-collections.version}</version>
-			</dependency>
-			...
-		</dependencies>
-
-## gradle dependency
-
-You can first define the version in the ext section and add than the following gradle dependency to
-your project `build.gradle` if you want to import the core functionality of silly-collections:
-
-define version in file gradle.properties
-
-```
-
-sillyCollectionsVersion=8.7
-```
-
-or in build.gradle ext area
-
-```
-ext {
-			...
-    sillyCollectionsVersion = "8.7"
-			...
-}
-```
-
-and then add the dependency to the dependencies area
-
-```
-dependencies {
-			...
-    implementation("io.github.astrapi69:silly-collections:$sillyCollectionsVersion")
-			...
-}
-```
-
 ## Semantic Versioning
 
 The versions of silly-collections are maintained with the Simplified Semantic Versioning guidelines.
@@ -205,7 +204,7 @@ Open Source:
 |**Travis CI**|
 |     :---:      |
 |[![Travis CI](https://travis-ci.com/images/logos/TravisCI-Full-Color.png)](https://travis-ci.com)|
-|Special thanks to [Travis CI](https://travis-ci.org) for providing a free continuous integration service for open source projects|
+|Special thanks to [Travis CI](https://travis-ci.com) for providing a free continuous integration service for open source projects|
 |     <img width=1000/>     |
 
 |**Nexus Sonatype repositories**|

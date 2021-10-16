@@ -219,6 +219,24 @@ public final class MapExtensions
 	}
 
 	/**
+	 * Swaps the given map where the returned map have the values of the given map as keys and the
+	 * values are the keys of the given map
+	 * 
+	 * @param <K>
+	 *            the generic type of the key
+	 * @param <V>
+	 *            the generic type of the value
+	 * @param map
+	 *            the map to swap
+	 * @return the swapped map
+	 */
+	public static <K, V> Map<V, K> swap(final Map<K, V> map)
+	{
+		return map.entrySet().stream()
+			.collect(Collectors.toMap(Map.Entry::getValue, Map.Entry::getKey));
+	}
+
+	/**
 	 * Sort the given Map by its values and returns a sorted list by the values of the given Map
 	 *
 	 * @param <K>

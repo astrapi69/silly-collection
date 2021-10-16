@@ -71,7 +71,7 @@ public class StringLengthComparator extends SortOrderComparator<String>
 	 */
 	public static Comparator<String> of(final boolean nullIsGreaterThan)
 	{
-		return NullCheckComparator.<String> of(new StringLengthComparator(), nullIsGreaterThan);
+		return NullCheckComparator.of(new StringLengthComparator(), nullIsGreaterThan);
 	}
 
 	/**
@@ -98,7 +98,7 @@ public class StringLengthComparator extends SortOrderComparator<String>
 	 */
 	public static Comparator<String> of(final SortOrder sortOrder, final boolean nullIsGreaterThan)
 	{
-		return NullCheckComparator.<String> of(new StringLengthComparator(sortOrder),
+		return NullCheckComparator.of(new StringLengthComparator(sortOrder),
 			nullIsGreaterThan);
 	}
 

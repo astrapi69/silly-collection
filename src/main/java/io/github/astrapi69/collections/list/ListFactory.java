@@ -32,6 +32,7 @@ import java.util.Iterator;
 import java.util.LinkedList;
 import java.util.List;
 import java.util.Map;
+import java.util.stream.Collectors;
 
 import io.github.astrapi69.collections.CollectionExtensions;
 import io.github.astrapi69.collections.array.ArrayFactory;
@@ -147,6 +148,34 @@ public final class ListFactory
 	public static <T> List<T> newArrayList(final T... elements)
 	{
 		return newArrayList((Collection<T>)null, elements);
+	}
+
+	/**
+	 * Factory method for create new {@link ArrayList} from the given optional primitive type
+	 * elements.
+	 *
+	 * @param collection
+	 *            the optional collection that will be added to the new list
+	 * @param elements
+	 *            the primitive type elements to add in the new {@link ArrayList}.
+	 * @return the new {@link ArrayList} as {@link List}.
+	 */
+	@SafeVarargs
+	public static List<Character> newCharacterArrayList(final Collection<Character> collection,
+		final char... elements)
+	{
+		final List<Character> list = new ArrayList<>();
+		if (CollectionExtensions.isNotEmpty(collection))
+		{
+			list.addAll(collection);
+		}
+		if (elements != null && 0 < elements.length)
+		{
+			List<Character> elementList = new String(elements).chars().mapToObj(c -> (char)c)
+				.collect(Collectors.toList());
+			list.addAll(elementList);
+		}
+		return list;
 	}
 
 	/**

@@ -69,7 +69,7 @@ public class InsertionOrderSetTest
 	@Test
 	public void testAddE()
 	{
-		final String expected[] = { "value1", "value3", "value4", "value2" };
+		final String[] expected = { "value1", "value3", "value4", "value2" };
 		int count = 0;
 		final Set<String> set = new InsertionOrderSet<>(4, 4f);
 		set.add("value1");
@@ -92,7 +92,7 @@ public class InsertionOrderSetTest
 	@Test
 	public void testInsertionOrderSet()
 	{
-		final String expected[] = { "value1", "value3", "value4", "value2" };
+		final String[] expected = { "value1", "value3", "value4", "value2" };
 		int count = 0;
 		final Set<String> set = new InsertionOrderSet<>();
 		set.add("value1");
@@ -118,9 +118,9 @@ public class InsertionOrderSetTest
 	public void testInsertionOrderSetCollectionOfQextendsE()
 	{
 
-		final String expected[] = { "value1", "value3", "value4", "value2" };
+		final String[] expected = { "value1", "value3", "value4", "value2" };
 
-		final String elements[] = { "value1", "value2", "value3", "value4" };
+		final String[] elements = { "value1", "value2", "value3", "value4" };
 
 		final Set<String> set = new InsertionOrderSet<>(Arrays.asList(elements));
 
@@ -140,7 +140,7 @@ public class InsertionOrderSetTest
 	@Test
 	public void testInsertionOrderSetInt()
 	{
-		final String expected[] = { "value1", "value3", "value4", "value2" };
+		final String[] expected = { "value1", "value3", "value4", "value2" };
 		int count = 0;
 		final Set<String> set = new InsertionOrderSet<>(4);
 		set.add("value1");
@@ -164,7 +164,7 @@ public class InsertionOrderSetTest
 	@Test
 	public void testInsertionOrderSetIntFloat()
 	{
-		final String expected[] = { "value1", "value3", "value4", "value2" };
+		final String[] expected = { "value1", "value3", "value4", "value2" };
 		int count = 0;
 		final Set<String> set = new InsertionOrderSet<>(4, 4f);
 		set.add("value1");
@@ -187,7 +187,7 @@ public class InsertionOrderSetTest
 	@Test
 	public void testInsertionOrderSetOf()
 	{
-		final String expected[] = { "value1", "value3", "value4", "value2" };
+		final String[] expected = { "value1", "value3", "value4", "value2" };
 
 		final Set<String> set = InsertionOrderSet.setOf("value1", "value2", "value3", "value4");
 
