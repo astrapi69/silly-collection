@@ -4,6 +4,14 @@
 Version 18.1-SNAPSHOT
 -------------
 
+ADDED:
+
+- improve gradle build performance by adding new gradle parameters for caching, parallel, configure on demand and file watch
+
+  CHANGED:
+
+- update gradle to new version 7.3
+
 Version 18
 -------------
 
