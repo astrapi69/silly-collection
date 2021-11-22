@@ -7,8 +7,9 @@ Version 18.1-SNAPSHOT
 ADDED:
 
 - improve gradle build performance by adding new gradle parameters for caching, parallel, configure on demand and file watch
+- new method for clone a list
 
-  CHANGED:
+CHANGED:
 
 - update gradle to new version 7.3
 
