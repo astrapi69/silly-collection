@@ -7,6 +7,12 @@ Version 18.1-SNAPSHOT
 ADDED:
 
 - new method for concatenate two arrays
+- improve gradle build performance by adding new gradle parameters for caching, parallel, configure on demand and file watch
+- new method for clone a list
+
+CHANGED:
+
+- update gradle to new version 7.3
 
 Version 18
 -------------
