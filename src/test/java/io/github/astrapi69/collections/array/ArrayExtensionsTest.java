@@ -27,6 +27,7 @@ package io.github.astrapi69.collections.array;
 import static org.testng.AssertJUnit.assertEquals;
 import static org.testng.AssertJUnit.assertNull;
 import static org.testng.AssertJUnit.assertTrue;
+import static org.testng.internal.junit.ArrayAsserts.assertArrayEquals;
 
 import java.util.Arrays;
 import java.util.Iterator;
@@ -608,6 +609,30 @@ public class ArrayExtensionsTest
 			actual = numberList.get(i);
 			assertEquals(expected, actual);
 		}
+	}
+
+	/**
+	 * Test for method {@link ArrayFactory#newArray(Object[], Object[])}
+	 */
+	@Test
+	public void testNewArrayWithExistingArray()
+	{
+		Integer[] actual;
+		Integer[] expected;
+		final Integer[] numbers = { 1, 2, 3 };
+		final Integer[] moreNumbers = { 4, 5, 6 };
+
+		actual = ArrayExtensions.concatenate(numbers, moreNumbers);
+		expected = ArrayFactory.newArray(1, 2, 3, 4, 5, 6);
+		assertArrayEquals(actual, expected);
+
+		actual = ArrayExtensions.concatenate(ArrayFactory.newArray(), numbers);
+		expected = ArrayFactory.newArray(numbers);
+		assertArrayEquals(actual, expected);
+
+		actual = ArrayExtensions.concatenate(null, numbers);
+		expected = ArrayFactory.newArray(numbers);
+		assertArrayEquals(actual, expected);
 	}
 
 	/**

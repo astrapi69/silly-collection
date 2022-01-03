@@ -141,6 +141,37 @@ public final class ArrayExtensions
 	}
 
 	/**
+	 * Returns a concatenated array from given arrays
+	 *
+	 * @param <T>
+	 *            the generic type
+	 * @param existingArray
+	 *            the existing array
+	 * @param elements
+	 *            the element that will be concatenated
+	 * @return a new concatenated array from given arrays
+	 */
+	public static <T> T[] concatenate(T[] existingArray, T[] elements)
+	{
+		if (elements == null || elements.length == 0)
+		{
+			return existingArray;
+		}
+		if (existingArray == null && elements != null)
+		{
+			return elements;
+		}
+		int existingArrayLength = existingArray.length;
+		int elementsLength = elements.length;
+
+		T[] concatenatedArray = (T[])ArrayFactory.newArray(existingArray.getClass().getComponentType(),
+			existingArrayLength + elementsLength);
+		System.arraycopy(existingArray, 0, concatenatedArray, 0, existingArrayLength);
+		System.arraycopy(elements, 0, concatenatedArray, existingArrayLength, elementsLength);
+		return concatenatedArray;
+	}
+
+	/**
 	 * Returns <tt>true</tt> if at least one of given elements is in the given array
 	 *
 	 * @param <T>

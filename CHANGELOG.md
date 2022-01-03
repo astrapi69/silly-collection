@@ -4,6 +4,10 @@
 Version 18.1-SNAPSHOT
 -------------
 
+ADDED:
+
+- new method for concatenate two arrays
+
 Version 18
 -------------
 
