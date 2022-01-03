@@ -12,7 +12,11 @@ ADDED:
 
 CHANGED:
 
-- update gradle to new version 7.3
+- update gradle to new version 7.3.3
+- update of dependency jobj-core in new version 5.2
+- update of test dependency test-objects to new version 5.7
+- update of test dependency org.openjdk.jmh:jmh-core to new version 1.34
+- update of com.github.ben-manes.versions.gradle.plugin to new version 0.40.0
 
 Version 18
 -------------
