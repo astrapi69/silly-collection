@@ -9,14 +9,16 @@ ADDED:
 - new method for concatenate two arrays
 - improve gradle build performance by adding new gradle parameters for caching, parallel, configure on demand and file watch
 - new method for clone a list
+- new methods for get last index of an array
 
 CHANGED:
 
 - update gradle to new version 7.3.3
 - update of dependency jobj-core in new version 5.2
+- update of test dependency testng to new version 7.5
 - update of test dependency test-objects to new version 5.7
 - update of test dependency org.openjdk.jmh:jmh-core to new version 1.34
-- update of com.github.ben-manes.versions.gradle.plugin to new version 0.40.0
+- update of com.github.ben-manes.versions.gradle.plugin to new version 0.41.0
 
 Version 18
 -------------

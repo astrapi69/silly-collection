@@ -245,10 +245,181 @@ public final class ArrayExtensions
 	{
 		if (array != null && array.length != 0)
 		{
-			final int lastIndex = array.length - 1;
+			final int lastIndex = getLastIndex(array);
 			return array[lastIndex];
 		}
 		return null;
+	}
+
+	/**
+	 * Gets the last index from the given array.
+	 *
+	 * @param <T>
+	 *            the generic type
+	 * @param array
+	 *            the array.
+	 * @return Returns the last index from the given array or -1 if the array is null.
+	 */
+	public static <T> int getLastIndex(final T[] array)
+	{
+		if (array == null)
+		{
+			return -1;
+		}
+		final int lastIndex = array.length - 1;
+		return lastIndex;
+	}
+
+	/**
+	 * Gets the last index from the given array.
+	 *
+	 * @param <T>
+	 *            the generic type
+	 * @param array
+	 *            the array.
+	 * @return Returns the last index from the given array or -1 if the array is null.
+	 */
+	public static <T> int getLastIndex(final boolean[] array)
+	{
+		if (array == null)
+		{
+			return -1;
+		}
+		final int lastIndex = array.length - 1;
+		return lastIndex;
+	}
+
+	/**
+	 * Gets the last index from the given array.
+	 *
+	 * @param <T>
+	 *            the generic type
+	 * @param array
+	 *            the array.
+	 * @return Returns the last index from the given array or -1 if the array is null.
+	 */
+	public static <T> int getLastIndex(final byte[] array)
+	{
+		if (array == null)
+		{
+			return -1;
+		}
+		final int lastIndex = array.length - 1;
+		return lastIndex;
+	}
+
+	/**
+	 * Gets the last index from the given array.
+	 *
+	 * @param <T>
+	 *            the generic type
+	 * @param array
+	 *            the array.
+	 * @return Returns the last index from the given array or -1 if the array is null.
+	 */
+	public static <T> int getLastIndex(final char[] array)
+	{
+		if (array == null)
+		{
+			return -1;
+		}
+		final int lastIndex = array.length - 1;
+		return lastIndex;
+	}
+
+	/**
+	 * Gets the last index from the given array.
+	 *
+	 * @param <T>
+	 *            the generic type
+	 * @param array
+	 *            the array.
+	 * @return Returns the last index from the given array or -1 if the array is null.
+	 */
+	public static <T> int getLastIndex(final float[] array)
+	{
+		if (array == null)
+		{
+			return -1;
+		}
+		final int lastIndex = array.length - 1;
+		return lastIndex;
+	}
+
+	/**
+	 * Gets the last index from the given array.
+	 *
+	 * @param <T>
+	 *            the generic type
+	 * @param array
+	 *            the array.
+	 * @return Returns the last index from the given array or -1 if the array is null.
+	 */
+	public static <T> int getLastIndex(final long[] array)
+	{
+		if (array == null)
+		{
+			return -1;
+		}
+		final int lastIndex = array.length - 1;
+		return lastIndex;
+	}
+
+	/**
+	 * Gets the last index from the given array.
+	 *
+	 * @param <T>
+	 *            the generic type
+	 * @param array
+	 *            the array.
+	 * @return Returns the last index from the given array or -1 if the array is null.
+	 */
+	public static <T> int getLastIndex(final short[] array)
+	{
+		if (array == null)
+		{
+			return -1;
+		}
+		final int lastIndex = array.length - 1;
+		return lastIndex;
+	}
+
+	/**
+	 * Gets the last index from the given array.
+	 *
+	 * @param <T>
+	 *            the generic type
+	 * @param array
+	 *            the array.
+	 * @return Returns the last index from the given array or -1 if the array is null.
+	 */
+	public static <T> int getLastIndex(final double[] array)
+	{
+		if (array == null)
+		{
+			return -1;
+		}
+		final int lastIndex = array.length - 1;
+		return lastIndex;
+	}
+
+	/**
+	 * Gets the last index from the given array.
+	 *
+	 * @param <T>
+	 *            the generic type
+	 * @param array
+	 *            the array.
+	 * @return Returns the last index from the given array or -1 if the array is null.
+	 */
+	public static <T> int getLastIndex(final int[] array)
+	{
+		if (array == null)
+		{
+			return -1;
+		}
+		final int lastIndex = array.length - 1;
+		return lastIndex;
 	}
 
 	/**
@@ -269,7 +440,7 @@ public final class ArrayExtensions
 		{
 			return indexOfElement;
 		}
-		final int lastIndex = array.length - 1;
+		final int lastIndex = getLastIndex(array);
 		if (indexOfElement == lastIndex)
 		{
 			return 0;
@@ -325,7 +496,7 @@ public final class ArrayExtensions
 	 */
 	public static <T> int getPreviousIndex(final T[] array, final T element)
 	{
-		final int lastIndex = array.length - 1;
+		final int lastIndex = getLastIndex(array);
 		final int indexOfElement = ArrayExtensions.indexOf(array, element);
 		if (indexOfElement == -1)
 		{
@@ -447,7 +618,7 @@ public final class ArrayExtensions
 	 */
 	public static <T> boolean isLast(final T[] array, final T element)
 	{
-		final int lastIndex = array.length - 1;
+		final int lastIndex = getLastIndex(array);
 		final int indexOfElement = Arrays.asList(array).indexOf(element);
 		return indexOfElement == lastIndex;
 	}

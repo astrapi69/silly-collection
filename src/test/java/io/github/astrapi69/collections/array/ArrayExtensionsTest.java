@@ -48,6 +48,189 @@ public class ArrayExtensionsTest
 {
 
 	/**
+	 * Test method for {@link ArrayExtensions#getLastIndex(Object[])}
+	 */
+	@Test
+	public void testGetLastIndexObjectArray() {
+
+		int actual;
+		int expected;
+		Integer[] source;
+
+		source = ArrayFactory.newArray(1, 2, 3, 4, 5, 6, 7, 8, 9);
+		actual = ArrayExtensions.getLastIndex(source);
+		expected = 8;
+		assertEquals(expected, actual);
+
+		source = null;
+		actual = ArrayExtensions.getLastIndex(source);
+		expected = -1;
+		assertEquals(expected, actual);
+	}
+
+	/**
+	 * Test method for {@link ArrayExtensions#getLastIndex(int[])}
+	 */
+	@Test
+	public void testGetLastIndexIntArray() {
+
+		int actual;
+		int expected;
+		int[] source;
+
+		source = ArrayFactory.newIntArray(1, 2, 3, 4, 5, 6, 7, 8, 9);
+		actual = ArrayExtensions.getLastIndex(source);
+		expected = 8;
+		assertEquals(expected, actual);
+
+		source = null;
+		actual = ArrayExtensions.getLastIndex(source);
+		expected = -1;
+		assertEquals(expected, actual);
+	}
+
+	/**
+	 * Test method for {@link ArrayExtensions#getLastIndex(boolean[])}
+	 */
+	@Test
+	public void testGetLastIndexBooleanArray()
+	{
+		int actual;
+		int expected;
+		boolean[] source;
+		source = ArrayFactory.newBooleanArray(true, true, false);
+		actual = ArrayExtensions.getLastIndex(source);
+		expected = 2;
+		assertEquals(expected, actual);
+
+		source = null;
+		actual = ArrayExtensions.getLastIndex(source);
+		expected = -1;
+		assertEquals(expected, actual);
+	}
+
+	/**
+	 * Test method for {@link ArrayExtensions#getLastIndex(boolean[])}
+	 */
+	@Test
+	public void testGetLastIndexByteArray()
+	{
+		int actual;
+		int expected;
+		byte[] source;
+		source = ArrayFactory.newByteArray((byte)-84, (byte)-19, (byte)0, (byte)5, (byte)116,
+			(byte)0, (byte)7, (byte)70, (byte)111, (byte)111, (byte)32, (byte)98, (byte)97);
+		actual = ArrayExtensions.getLastIndex(source);
+		expected = 12;
+		assertEquals(expected, actual);
+
+		source = null;
+		actual = ArrayExtensions.getLastIndex(source);
+		expected = -1;
+		assertEquals(expected, actual);
+	}
+
+	/**
+	 * Test method for {@link ArrayExtensions#getLastIndex(char[])}
+	 */
+	@Test
+	public void testGetLastIndexCharArray()
+	{
+		int actual;
+		int expected;
+		char[] source;
+		source = ArrayFactory.newCharArray('f', 'o', 'o');
+		actual = ArrayExtensions.getLastIndex(source);
+		expected = 2;
+		assertEquals(expected, actual);
+
+		source = null;
+		actual = ArrayExtensions.getLastIndex(source);
+		expected = -1;
+		assertEquals(expected, actual);
+	}
+
+	/**
+	 * Test method for {@link ArrayExtensions#getLastIndex(double[])}
+	 */
+	@Test
+	public void testGetLastIndexDoubleArray()
+	{
+		int actual;
+		int expected;
+		double[] source;
+		source = ArrayFactory.newDoubleArray(1.1D, 2.1D, 3.1D);
+		actual = ArrayExtensions.getLastIndex(source);
+		expected = 2;
+		assertEquals(expected, actual);
+
+		source = null;
+		actual = ArrayExtensions.getLastIndex(source);
+		expected = -1;
+		assertEquals(expected, actual);
+	}
+
+	/**
+	 * Test method for {@link ArrayExtensions#getLastIndex(float[])}
+	 */
+	@Test
+	public void testGetLastIndexFloatArray()
+	{
+		int actual;
+		int expected;
+		float[] source;
+		source = ArrayFactory.newFloatArray(1.0F, 2.0F, 3.0F);
+		actual = ArrayExtensions.getLastIndex(source);
+		expected = 2;
+		assertEquals(expected, actual);
+
+		source = null;
+		actual = ArrayExtensions.getLastIndex(source);
+		expected = -1;
+		assertEquals(expected, actual);
+	}
+
+	/**
+	 * Test method for {@link ArrayExtensions#getLastIndex(long[])}
+	 */
+	@Test
+	public void testGetLastIndexLongArray()
+	{
+		int actual;
+		int expected;
+		long[] source;
+		source = ArrayFactory.newLongArray(1L, 2L, 3L);
+		actual = ArrayExtensions.getLastIndex(source);
+		expected = 2;
+		assertEquals(expected, actual);
+
+		source = null;
+		actual = ArrayExtensions.getLastIndex(source);
+		expected = -1;
+		assertEquals(expected, actual);
+	}
+
+	/**
+	 * Test method for {@link ArrayExtensions#getLastIndex(short[])}
+	 */
+	@Test
+	public void testGetLastIndexShortArray()
+	{
+		int actual;
+		int expected;
+		short[] source;
+		source = ArrayFactory.newShortArray((short)1, (short)2, (short)3);
+		actual = ArrayExtensions.getLastIndex(source);
+		expected = 2;
+		assertEquals(expected, actual);
+
+		source = null;
+		actual = ArrayExtensions.getLastIndex(source);
+		expected = -1;
+		assertEquals(expected, actual);
+	}
+
+	/**
 	 * Test method for {@link ArrayExtensions#arraycopyWithSystem(Object[], Object[])}.
 	 */
 	@Test
@@ -632,6 +815,10 @@ public class ArrayExtensionsTest
 
 		actual = ArrayExtensions.concatenate(null, numbers);
 		expected = ArrayFactory.newArray(numbers);
+		assertArrayEquals(actual, expected);
+
+		actual = ArrayExtensions.concatenate(null, null);
+		expected = null;
 		assertArrayEquals(actual, expected);
 	}
 
