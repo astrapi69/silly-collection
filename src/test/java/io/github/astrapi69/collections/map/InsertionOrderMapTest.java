@@ -25,7 +25,6 @@
 package io.github.astrapi69.collections.map;
 
 import static org.testng.AssertJUnit.assertEquals;
-import static org.testng.AssertJUnit.assertTrue;
 
 import java.util.HashMap;
 import java.util.LinkedHashMap;

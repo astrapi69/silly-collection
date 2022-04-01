@@ -78,6 +78,8 @@ public final class ArrayFactory
 	 *
 	 * @param <T>
 	 *            the generic type of the elements
+	 * @param existingArray
+	 *            the existing array
 	 * @param elements
 	 *            the optional elements that will be in the returned array.
 	 * @return the new array

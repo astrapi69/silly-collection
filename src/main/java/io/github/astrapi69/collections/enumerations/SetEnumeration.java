@@ -44,12 +44,10 @@ public class SetEnumeration<T> implements Enumeration<T>
 
 	/** The iterator. */
 	private final Iterator<T> iterator;
-
-	/** The next. */
-	private T next;
-
 	/** The set. */
 	private final Set<T> set;
+	/** The next. */
+	private T next;
 
 	/**
 	 * Instantiates a new {@link SetEnumeration} from the given {@link Set} and the given
