@@ -15,6 +15,7 @@ ADDED:
   git release tags
 - new gradle-plugin dependency of 'com.diffplug.spotless:spotless-plugin-gradle' in version 6.4.1
   for format the source files
+- new method in class CollectionExtensions that converts a collection to a list
 
 CHANGED:
 
