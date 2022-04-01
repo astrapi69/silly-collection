@@ -33,8 +33,8 @@ import java.util.List;
 import org.testng.annotations.Test;
 
 import io.github.astrapi69.collections.list.ListFactory;
-import io.github.astrapi69.test.objects.Employee;
-import io.github.astrapi69.test.objects.Person;
+import io.github.astrapi69.test.object.Employee;
+import io.github.astrapi69.test.object.Person;
 
 /**
  * The unit test class for the class {@link ChainableComparator}.

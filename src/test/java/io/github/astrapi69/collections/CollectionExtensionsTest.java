@@ -37,12 +37,39 @@ import org.testng.annotations.Test;
 
 import io.github.astrapi69.collections.array.ArrayFactory;
 import io.github.astrapi69.collections.list.ListFactory;
+import io.github.astrapi69.collections.set.SetFactory;
 
 /**
  * The unit test class for the class {@link CollectionExtensions}.
  */
 public class CollectionExtensionsTest
 {
+
+	/**
+	 * Test method for {@link CollectionExtensions#containsAtLeastOne(Collection, Object[])}
+	 */
+	@Test
+	public void testToList()
+	{
+		List<Integer> expected;
+		List<Integer> actual;
+		Collection<Integer> data;
+
+		data = SetFactory.newLinkedHashSet(1, 2, 3);
+		actual = CollectionExtensions.toList(data);
+		expected = ListFactory.newArrayList(1, 2, 3);
+		assertEquals(expected, actual);
+
+		data = ListFactory.newArrayList(1, 2, 3);
+		actual = CollectionExtensions.toList(data);
+		expected = ListFactory.newArrayList(1, 2, 3);
+		assertEquals(expected, actual);
+
+		data = null;
+		actual = CollectionExtensions.toList(data);
+		expected = null;
+		assertEquals(expected, actual);
+	}
 
 	/**
 	 * Test method for {@link CollectionExtensions#containsAtLeastOne(Collection, Object[])}
@@ -75,7 +102,7 @@ public class CollectionExtensionsTest
 	public void testDifference()
 	{
 		Collection<Integer> expected;
-		final Collection<Integer> actual;
+		Collection<Integer> actual;
 		Collection<Integer> yourNumbers;
 		yourNumbers = ListFactory.newArrayList(22, 33, 25, 45);
 		actual = ListFactory.newArrayList(3, 7, 22, 23, 34, 45);
@@ -120,10 +147,8 @@ public class CollectionExtensionsTest
 		one = null;
 		other = null;
 		actual = CollectionExtensions.isEqualCollection(one, other);
-		expected = true;
 		assertEquals(expected, actual);
 		//
-		one = null;
 		other = ListFactory.newArrayList(lineFour, lineFive, lineSix);
 		actual = CollectionExtensions.isEqualCollection(one, other);
 		expected = false;
@@ -132,13 +157,11 @@ public class CollectionExtensionsTest
 		one = ListFactory.newArrayList(lineOne, lineTwo, lineThree);
 		other = null;
 		actual = CollectionExtensions.isEqualCollection(one, other);
-		expected = false;
 		assertEquals(expected, actual);
 		//
 		one = ListFactory.newArrayList(lineOne, lineTwo);
 		other = ListFactory.newArrayList(lineFour, lineFive, lineSix);
 		actual = CollectionExtensions.isEqualCollection(one, other);
-		expected = false;
 		assertEquals(expected, actual);
 
 	}
@@ -275,7 +298,6 @@ public class CollectionExtensionsTest
 		nullCollection = ListFactory.newArrayList();
 
 		actual = CollectionExtensions.isEmpty(nullCollection);
-		expected = true;
 		assertEquals(expected, actual);
 
 		nullCollection.add("foo");
@@ -303,7 +325,6 @@ public class CollectionExtensionsTest
 		nullCollection = ListFactory.newArrayList();
 
 		actual = CollectionExtensions.isNotEmpty(nullCollection);
-		expected = false;
 		assertEquals(expected, actual);
 
 		nullCollection.add("foo");

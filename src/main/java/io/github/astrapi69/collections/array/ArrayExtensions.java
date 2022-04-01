@@ -157,15 +157,15 @@ public final class ArrayExtensions
 		{
 			return existingArray;
 		}
-		if (existingArray == null && elements != null)
+		if (existingArray == null)
 		{
 			return elements;
 		}
 		int existingArrayLength = existingArray.length;
 		int elementsLength = elements.length;
 
-		T[] concatenatedArray = (T[])ArrayFactory.newArray(existingArray.getClass().getComponentType(),
-			existingArrayLength + elementsLength);
+		T[] concatenatedArray = (T[])ArrayFactory.newArray(
+			existingArray.getClass().getComponentType(), existingArrayLength + elementsLength);
 		System.arraycopy(existingArray, 0, concatenatedArray, 0, existingArrayLength);
 		System.arraycopy(elements, 0, concatenatedArray, existingArrayLength, elementsLength);
 		return concatenatedArray;
@@ -266,8 +266,7 @@ public final class ArrayExtensions
 		{
 			return -1;
 		}
-		final int lastIndex = array.length - 1;
-		return lastIndex;
+		return array.length - 1;
 	}
 
 	/**
@@ -285,8 +284,7 @@ public final class ArrayExtensions
 		{
 			return -1;
 		}
-		final int lastIndex = array.length - 1;
-		return lastIndex;
+		return array.length - 1;
 	}
 
 	/**
@@ -304,8 +302,7 @@ public final class ArrayExtensions
 		{
 			return -1;
 		}
-		final int lastIndex = array.length - 1;
-		return lastIndex;
+		return array.length - 1;
 	}
 
 	/**
@@ -323,8 +320,7 @@ public final class ArrayExtensions
 		{
 			return -1;
 		}
-		final int lastIndex = array.length - 1;
-		return lastIndex;
+		return array.length - 1;
 	}
 
 	/**
@@ -342,8 +338,7 @@ public final class ArrayExtensions
 		{
 			return -1;
 		}
-		final int lastIndex = array.length - 1;
-		return lastIndex;
+		return array.length - 1;
 	}
 
 	/**
@@ -361,8 +356,7 @@ public final class ArrayExtensions
 		{
 			return -1;
 		}
-		final int lastIndex = array.length - 1;
-		return lastIndex;
+		return array.length - 1;
 	}
 
 	/**
@@ -380,8 +374,7 @@ public final class ArrayExtensions
 		{
 			return -1;
 		}
-		final int lastIndex = array.length - 1;
-		return lastIndex;
+		return array.length - 1;
 	}
 
 	/**
@@ -399,8 +392,7 @@ public final class ArrayExtensions
 		{
 			return -1;
 		}
-		final int lastIndex = array.length - 1;
-		return lastIndex;
+		return array.length - 1;
 	}
 
 	/**
@@ -418,8 +410,7 @@ public final class ArrayExtensions
 		{
 			return -1;
 		}
-		final int lastIndex = array.length - 1;
-		return lastIndex;
+		return array.length - 1;
 	}
 
 	/**
@@ -445,8 +436,7 @@ public final class ArrayExtensions
 		{
 			return 0;
 		}
-		final int nextIndex = indexOfElement + 1;
-		return nextIndex;
+		return indexOfElement + 1;
 	}
 
 	/**
@@ -506,8 +496,7 @@ public final class ArrayExtensions
 		{
 			return lastIndex;
 		}
-		final int previousIndex = indexOfElement - 1;
-		return previousIndex;
+		return indexOfElement - 1;
 	}
 
 	/**
@@ -557,8 +546,7 @@ public final class ArrayExtensions
 	 */
 	public static <T> int indexOf(final T[] array, final T element)
 	{
-		final int indexOfElement = Arrays.asList(array).indexOf(element);
-		return indexOfElement;
+		return Arrays.asList(array).indexOf(element);
 	}
 
 	/**

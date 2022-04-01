@@ -41,7 +41,7 @@ import org.testng.annotations.Test;
 /**
  * The unit test class for the class {@link ArrayExtensions}.
  *
- * @venrsion 1.0
+ * @version 1.0
  * @author Asterios Raptis
  */
 public class ArrayExtensionsTest
@@ -51,7 +51,8 @@ public class ArrayExtensionsTest
 	 * Test method for {@link ArrayExtensions#getLastIndex(Object[])}
 	 */
 	@Test
-	public void testGetLastIndexObjectArray() {
+	public void testGetLastIndexObjectArray()
+	{
 
 		int actual;
 		int expected;
@@ -72,7 +73,8 @@ public class ArrayExtensionsTest
 	 * Test method for {@link ArrayExtensions#getLastIndex(int[])}
 	 */
 	@Test
-	public void testGetLastIndexIntArray() {
+	public void testGetLastIndexIntArray()
+	{
 
 		int actual;
 		int expected;
@@ -378,7 +380,7 @@ public class ArrayExtensionsTest
 		expected = null;
 		actual = ArrayExtensions.getFirst(empty);
 		assertEquals(expected, actual);
-		expected = null;
+
 		actual = ArrayExtensions.getFirst(null);
 		assertEquals(expected, actual);
 	}
@@ -423,7 +425,7 @@ public class ArrayExtensionsTest
 		expected = null;
 		actual = ArrayExtensions.getLast(empty);
 		assertEquals(expected, actual);
-		expected = null;
+
 		actual = ArrayExtensions.getLast(null);
 		assertEquals(expected, actual);
 	}
@@ -514,7 +516,7 @@ public class ArrayExtensionsTest
 		expected = -1;
 		actual = ArrayExtensions.getPreviousIndex(empty, last);
 		assertEquals(expected, actual);
-		expected = -1;
+
 		actual = ArrayExtensions.getPreviousIndex(empty, null);
 		assertEquals(expected, actual);
 	}
@@ -591,7 +593,7 @@ public class ArrayExtensionsTest
 		actual = ArrayExtensions.intersection(one, other);
 
 		expected = ArrayFactory.newArray("Alex", "Berta", "Brad", "Caesar", "Leonardo");
-		assertTrue(Arrays.equals(actual, expected));
+		assertArrayEquals(actual, expected);
 
 	}
 
@@ -649,7 +651,7 @@ public class ArrayExtensionsTest
 		arrayToRemove = ArrayFactory.newArray("2", "3", "4");
 		actual = ArrayExtensions.removeAll(source, arrayToRemove);
 		expected = ArrayFactory.newArray("1");
-		assertTrue(Arrays.equals(actual, expected));
+		assertArrayEquals(actual, expected);
 	}
 
 	/**
@@ -665,7 +667,7 @@ public class ArrayExtensionsTest
 		source = ArrayFactory.newArray("1", "2", "3", "4");
 		actual = ArrayExtensions.removeFirst(source);
 		expected = ArrayFactory.newArray("2", "3", "4");
-		assertTrue(Arrays.equals(actual, expected));
+		assertArrayEquals(actual, expected);
 	}
 
 	/**
@@ -683,7 +685,7 @@ public class ArrayExtensionsTest
 		toRemove = ArrayFactory.newArray(7, 8, 9);
 		actual = ArrayExtensions.removeFromEnd(source, toRemove);
 		expected = ArrayFactory.newArray(1, 2, 3, 4, 5, 6);
-		assertTrue(Arrays.equals(actual, expected));
+		assertArrayEquals(actual, expected);
 	}
 
 	/**
@@ -701,13 +703,13 @@ public class ArrayExtensionsTest
 		toRemove = ArrayFactory.newArray(1, 2, 3);
 		actual = ArrayExtensions.removeFromStart(source, toRemove);
 		expected = ArrayFactory.newArray(4, 5, 6, 7, 8, 9);
-		assertTrue(Arrays.equals(actual, expected));
+		assertArrayEquals(actual, expected);
 
 		source = ArrayFactory.newArray();
 		toRemove = ArrayFactory.newArray(1, 2, 3);
 		actual = ArrayExtensions.removeFromStart(source, toRemove);
 		expected = ArrayFactory.newArray();
-		assertTrue(Arrays.equals(actual, expected));
+		assertArrayEquals(actual, expected);
 	}
 
 	/**
@@ -723,13 +725,13 @@ public class ArrayExtensionsTest
 		source = ArrayFactory.newArray("1", "2", "3", "4");
 		actual = ArrayExtensions.removeLast(source);
 		expected = ArrayFactory.newArray("1", "2", "3");
-		assertTrue(Arrays.equals(actual, expected));
+		assertArrayEquals(actual, expected);
 	}
 
 	/**
 	 * Test method for {@link ArrayExtensions#remove(Object[], int... )}
 	 */
-	@Test(enabled = true)
+	@Test
 	public void testRemoveVarArgs()
 	{
 
@@ -740,17 +742,17 @@ public class ArrayExtensionsTest
 		source = ArrayFactory.newArray("1", "2", "3", "4");
 		actual = ArrayExtensions.remove(source, 2, 3);
 		expected = ArrayFactory.newArray("1", "2");
-		assertTrue(Arrays.equals(actual, expected));
+		assertArrayEquals(actual, expected);
 		// new scenario unsorted
 		source = ArrayFactory.newArray("1", "2", "3", "4", "5", "6");
 		actual = ArrayExtensions.remove(source, 5, 3, 1);
 		expected = ArrayFactory.newArray("1", "3", "5");
-		assertTrue(Arrays.equals(actual, expected));
+		assertArrayEquals(actual, expected);
 		// new scenario unsorted
 		source = ArrayFactory.newArray("1", "2", "3", "4", "5", "6");
 		actual = ArrayExtensions.remove(source, 3, 5, 1);
 		expected = ArrayFactory.newArray("1", "3", "5");
-		assertTrue(Arrays.equals(actual, expected));
+		assertArrayEquals(actual, expected);
 	}
 
 	/**
@@ -814,7 +816,6 @@ public class ArrayExtensionsTest
 		assertArrayEquals(actual, expected);
 
 		actual = ArrayExtensions.concatenate(null, numbers);
-		expected = ArrayFactory.newArray(numbers);
 		assertArrayEquals(actual, expected);
 
 		actual = ArrayExtensions.concatenate(null, null);

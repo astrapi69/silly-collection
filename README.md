@@ -32,23 +32,23 @@ functionality of silly-collections:
 
 Than you can add the dependency to your dependencies:
 
-	<properties>
-			...
-		<!-- SILLY-COLLECTIONS version -->
-		<silly-collections.version>18</silly-collections.version>
-			...
-	</properties>
-			...
-		<dependencies>
-			...
-			<!-- SILLY-COLLECTIONS DEPENDENCY -->
-			<dependency>
-				<groupId>io.github.astrapi69</groupId>
-				<artifactId>silly-collections</artifactId>
-				<version>${silly-collections.version}</version>
-			</dependency>
-			...
-		</dependencies>
+    <properties>
+            ...
+        <!-- SILLY-COLLECTIONS version -->
+        <silly-collections.version>18</silly-collections.version>
+            ...
+    </properties>
+            ...
+        <dependencies>
+            ...
+            <!-- SILLY-COLLECTIONS DEPENDENCY -->
+            <dependency>
+                <groupId>io.github.astrapi69</groupId>
+                <artifactId>silly-collections</artifactId>
+                <version>${silly-collections.version}</version>
+            </dependency>
+            ...
+        </dependencies>
 
 ## gradle dependency
 
@@ -66,9 +66,9 @@ or in build.gradle ext area
 
 ```
 ext {
-			...
+            ...
     sillyCollectionsVersion = "18"
-			...
+            ...
 }
 ```
 
@@ -76,9 +76,9 @@ then add the dependency to the dependencies area
 
 ```
 dependencies {
-			...
+            ...
     implementation("io.github.astrapi69:silly-collections:$sillyCollectionsVersion")
-			...
+            ...
 }
 ```
 
