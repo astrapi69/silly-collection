@@ -2,7 +2,7 @@
 
 <div style="text-align: center">
 
-[![Build Status](https://api.travis-ci.com/lightblueseas/silly-collections.svg?branch=master)](https://travis-ci.com/github/lightblueseas/silly-collections)
+[![Java CI with Gradle](https://github.com/lightblueseas/silly-collections/actions/workflows/gradle.yml/badge.svg)](https://github.com/lightblueseas/silly-collections/actions/workflows/gradle.yml)
 [![Coverage Status](https://coveralls.io/repos/github/lightblueseas/silly-collections/badge.svg?branch=master)](https://coveralls.io/github/lightblueseas/silly-collections?branch=master)
 [![Open Issues](https://img.shields.io/github/issues/lightblueseas/silly-collections.svg?style=flat)](https://github.com/lightblueseas/silly-collections/issues)
 [![Maven Central](https://maven-badges.herokuapp.com/maven-central/io.github.astrapi69/silly-collections/badge.svg)](https://maven-badges.herokuapp.com/maven-central/io.github.astrapi69/silly-collections)
@@ -200,12 +200,6 @@ Open Source:
   Java
 
 ## Credits
-
-|**Travis CI**|
-|     :---:      |
-|[![Travis CI](https://travis-ci.com/images/logos/TravisCI-Full-Color.png)](https://travis-ci.com)|
-|Special thanks to [Travis CI](https://travis-ci.com) for providing a free continuous integration service for open source projects|
-|     <img width=1000/>     |
 
 |**Nexus Sonatype repositories**|
 |     :---:      |
