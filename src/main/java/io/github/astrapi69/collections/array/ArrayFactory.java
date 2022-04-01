@@ -74,6 +74,23 @@ public final class ArrayFactory
 	}
 
 	/**
+	 * Factory method for create a new array from an existing array and the given optional elements.
+	 *
+	 * @param <T>
+	 *            the generic type of the elements
+	 * @param existingArray
+	 *            the existing array
+	 * @param elements
+	 *            the optional elements that will be in the returned array.
+	 * @return the new array
+	 */
+	@SafeVarargs
+	public static <T> T[] newArray(T[] existingArray, final T... elements)
+	{
+		return ArrayExtensions.concatenate(existingArray, elements);
+	}
+
+	/**
 	 * Factory method for create new array of primitive boolean values from the given optional
 	 * elements.
 	 *

@@ -24,6 +24,7 @@
  */
 package io.github.astrapi69.collections;
 
+import java.util.ArrayList;
 import java.util.Arrays;
 import java.util.Collection;
 import java.util.List;
@@ -230,4 +231,25 @@ public final class CollectionExtensions
 		return Optional.empty();
 	}
 
+	/**
+	 * Creates a new {@link List} from the given {@link Collection} object
+	 *
+	 * @param <T>
+	 *            the generic type of the objects in the {@link Collection} object
+	 * @param collection
+	 *            the collection to transform
+	 * @return the new {@link List} created from the given {@link Collection} object
+	 */
+	public static <T> List<T> toList(final Collection<T> collection)
+	{
+		if (collection == null)
+		{
+			return null;
+		}
+		if (collection instanceof List)
+		{
+			return (List<T>)collection;
+		}
+		return new ArrayList<>(collection);
+	}
 }

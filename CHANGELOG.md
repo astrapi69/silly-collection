@@ -1,6 +1,31 @@
 ## Change log
 ----------------------
 
+Version 18.1
+-------------
+
+ADDED:
+
+- new method for concatenate two arrays
+- improve gradle build performance by adding new gradle parameters for caching, parallel, configure
+  on demand and file watch
+- new method for clone a list
+- new methods for get last index of an array
+- new gradle-plugin dependency of 'org.ajoberstar.grgit:grgit-gradle' in version 4.4.1 for create
+  git release tags
+- new gradle-plugin dependency of 'com.diffplug.spotless:spotless-plugin-gradle' in version 6.4.1
+  for format the source files
+- new method in class CollectionExtensions that converts a collection to a list
+
+CHANGED:
+
+- update gradle to new version 7.4.2
+- update of dependency jobj-core in new version 5.3
+- update of test dependency testng to new version 7.5
+- update of test dependency test-objects to new version 6
+- update of test dependency org.openjdk.jmh:jmh-core to new version 1.35
+- update of com.github.ben-manes.versions.gradle.plugin to new version 0.42.0
+
 Version 18
 -------------
 
@@ -510,5 +535,3 @@ CHANGED:
 - update of parent version
 - update of documentation of README.md
 - unit tests extended for improve code coverage
-
-

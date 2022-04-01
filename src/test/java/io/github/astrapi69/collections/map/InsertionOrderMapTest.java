@@ -24,7 +24,7 @@
  */
 package io.github.astrapi69.collections.map;
 
-import static org.testng.AssertJUnit.assertTrue;
+import static org.testng.AssertJUnit.assertEquals;
 
 import java.util.HashMap;
 import java.util.LinkedHashMap;
@@ -67,13 +67,11 @@ public class InsertionOrderMapTest
 			final Object value = entry.getValue();
 			final String expectedKey = expected[count][0];
 			final String expectedValue = expected[count][1];
-			assertTrue(expectedKey.equals(key.toString()));
-			assertTrue(expectedValue.equals(value.toString()));
+			assertEquals(key.toString(), expectedKey);
+			assertEquals(value.toString(), expectedValue);
 			count++;
 		}
-		map.forEach((key, value) -> System.out
-			.println("[" + key + "=" + value + "]"));
-
+		map.forEach((key, value) -> System.out.println("[" + key + "=" + value + "]"));
 		map.clear();
 	}
 
@@ -100,10 +98,9 @@ public class InsertionOrderMapTest
 			final Object value = entry.getValue();
 			final String expectedKey = expected[count][0];
 			final String expectedValue = expected[count][1];
-			assertTrue(expectedKey.equals(key.toString()));
-			assertTrue(expectedValue.equals(value.toString()));
+			assertEquals(key.toString(), expectedKey);
+			assertEquals(value.toString(), expectedValue);
 			count++;
-
 		}
 		map.clear();
 	}
@@ -132,10 +129,9 @@ public class InsertionOrderMapTest
 			final Object value = entry.getValue();
 			final String expectedKey = expected[count][0];
 			final String expectedValue = expected[count][1];
-			assertTrue(expectedKey.equals(key.toString()));
-			assertTrue(expectedValue.equals(value.toString()));
+			assertEquals(key.toString(), expectedKey);
+			assertEquals(value.toString(), expectedValue);
 			count++;
-
 		}
 		map.clear();
 	}
@@ -164,10 +160,9 @@ public class InsertionOrderMapTest
 			final Object value = entry.getValue();
 			final String expectedKey = expected[count][0];
 			final String expectedValue = expected[count][1];
-			assertTrue(expectedKey.equals(key.toString()));
-			assertTrue(expectedValue.equals(value.toString()));
+			assertEquals(key.toString(), expectedKey);
+			assertEquals(value.toString(), expectedValue);
 			count++;
-
 		}
 		map.clear();
 	}
@@ -196,8 +191,8 @@ public class InsertionOrderMapTest
 			final Object value = entry.getValue();
 			final String expectedKey = expected[count][0];
 			final String expectedValue = expected[count][1];
-			assertTrue(expectedKey.equals(key.toString()));
-			assertTrue(expectedValue.equals(value.toString()));
+			assertEquals(key.toString(), expectedKey);
+			assertEquals(value.toString(), expectedValue);
 			count++;
 
 		}
@@ -227,8 +222,8 @@ public class InsertionOrderMapTest
 			final Object value = entry.getValue();
 			final String expectedKey = expected[count][0];
 			final String expectedValue = expected[count][1];
-			assertTrue(expectedKey.equals(key.toString()));
-			assertTrue(expectedValue.equals(value.toString()));
+			assertEquals(key.toString(), expectedKey);
+			assertEquals(value.toString(), expectedValue);
 			count++;
 
 		}
@@ -253,8 +248,8 @@ public class InsertionOrderMapTest
 			final Object value = entry.getValue();
 			final String expectedKey = expected[count][0];
 			final String expectedValue = expected[count][1];
-			assertTrue(expectedKey.equals(key.toString()));
-			assertTrue(expectedValue.equals(value.toString()));
+			assertEquals(key.toString(), expectedKey);
+			assertEquals(value.toString(), expectedValue);
 			count++;
 		}
 		map2.clear();
@@ -270,15 +265,13 @@ public class InsertionOrderMapTest
 		map3.put("2", "value5");
 		System.out.println("----------initHashMap--------------");
 
-		map3.forEach((key, value) -> System.out
-			.println("[" + key + "=" + value + "]"));
+		map3.forEach((key, value) -> System.out.println("[" + key + "=" + value + "]"));
 
 		System.out.println("------------------------");
 		System.out.println("----------Map linkedMap = new LinkedHashMap(map3);--------------");
 		final Map<String, String> linkedMap = new LinkedHashMap<>(map3);
 
-		linkedMap.forEach((key, value) -> System.out
-			.println("[" + key + "=" + value + "]"));
+		linkedMap.forEach((key, value) -> System.out.println("[" + key + "=" + value + "]"));
 
 		System.out.println("---------initInsertionOrderMap---------------");
 		map3.clear();

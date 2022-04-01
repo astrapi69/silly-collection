@@ -26,6 +26,7 @@ package io.github.astrapi69.collections.array;
 
 import static org.testng.AssertJUnit.assertEquals;
 import static org.testng.AssertJUnit.assertTrue;
+import static org.testng.internal.junit.ArrayAsserts.assertArrayEquals;
 
 import java.lang.reflect.InvocationTargetException;
 import java.util.Arrays;
@@ -61,6 +62,29 @@ public class ArrayFactoryTest
 		expected = 0;
 		actual = objects.length;
 		assertEquals(expected, actual);
+	}
+
+	/**
+	 * Test for method {@link ArrayFactory#newArray(Object[], Object[])}
+	 */
+	@Test
+	public void testNewArrayWithExistingArray()
+	{
+		Integer[] actual;
+		Integer[] expected;
+		final Integer[] numbers = { 1, 2, 3 };
+
+		actual = ArrayFactory.newArray(numbers, 4, 5, 6);
+		expected = ArrayFactory.newArray(1, 2, 3, 4, 5, 6);
+		assertArrayEquals(actual, expected);
+
+		actual = ArrayFactory.newArray(ArrayFactory.newArray(), 1, 2, 3);
+		expected = ArrayFactory.newArray(numbers);
+		assertArrayEquals(actual, expected);
+
+		actual = ArrayFactory.newArray(null, 1, 2, 3);
+		expected = ArrayFactory.newArray(numbers);
+		assertArrayEquals(actual, expected);
 	}
 
 	/**

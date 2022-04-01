@@ -121,6 +121,20 @@ public final class ListExtensions
 	}
 
 	/**
+	 * Clones the given list by creating a new one from it.
+	 * 
+	 * @param <T>
+	 *            the generic type
+	 * @param list
+	 *            the list to clone
+	 * @return a new cloned list
+	 */
+	public static <T> List<T> clone(final List<T> list)
+	{
+		return ListFactory.newArrayList(list);
+	}
+
+	/**
 	 * Gets all possible combinations from the given list of {@link Integer} objects
 	 *
 	 * @param possibleNumbers

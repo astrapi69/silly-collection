@@ -98,8 +98,7 @@ public class StringLengthComparator extends SortOrderComparator<String>
 	 */
 	public static Comparator<String> of(final SortOrder sortOrder, final boolean nullIsGreaterThan)
 	{
-		return NullCheckComparator.of(new StringLengthComparator(sortOrder),
-			nullIsGreaterThan);
+		return NullCheckComparator.of(new StringLengthComparator(sortOrder), nullIsGreaterThan);
 	}
 
 	/**

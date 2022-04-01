@@ -1,8 +1,8 @@
 /**
  * The MIT License
- * <p>
+ *
  * Copyright (C) 2015 Asterios Raptis
- * <p>
+ *
  * Permission is hereby granted, free of charge, to any person obtaining
  * a copy of this software and associated documentation files (the
  * "Software"), to deal in the Software without restriction, including
@@ -10,10 +10,10 @@
  * distribute, sublicense, and/or sell copies of the Software, and to
  * permit persons to whom the Software is furnished to do so, subject to
  * the following conditions:
- * <p>
+ *
  * The above copyright notice and this permission notice shall be
  * included in all copies or substantial portions of the Software.
- * <p>
+ *
  * THE SOFTWARE IS PROVIDED "AS IS", WITHOUT WARRANTY OF ANY KIND,
  * EXPRESS OR IMPLIED, INCLUDING BUT NOT LIMITED TO THE WARRANTIES OF
  * MERCHANTABILITY, FITNESS FOR A PARTICULAR PURPOSE AND
@@ -29,6 +29,7 @@ import static org.testng.AssertJUnit.assertFalse;
 import static org.testng.AssertJUnit.assertNotNull;
 import static org.testng.AssertJUnit.assertNull;
 import static org.testng.AssertJUnit.assertTrue;
+import static org.testng.internal.junit.ArrayAsserts.assertArrayEquals;
 
 import java.util.ArrayList;
 import java.util.Arrays;
@@ -49,8 +50,8 @@ import io.github.astrapi69.collections.array.ArrayFactory;
 import io.github.astrapi69.collections.map.MapFactory;
 import io.github.astrapi69.collections.modifications.ModifiedCollections;
 import io.github.astrapi69.collections.set.SetFactory;
-import io.github.astrapi69.test.objects.Person;
-import io.github.astrapi69.test.objects.enums.Gender;
+import io.github.astrapi69.test.object.Person;
+import io.github.astrapi69.test.object.enumtype.Gender;
 
 /**
  * The unit test class for the class {@link ListExtensions}
@@ -62,28 +63,25 @@ public class ListExtensionsTest
 
 	/**
 	 * Sets up method will be invoked before every unit test method
-	 *
-	 * @throws Exception
-	 *             is thrown if an exception occurs
 	 */
-	@BeforeMethod protected void setUp() throws Exception
+	@BeforeMethod
+	protected void setUp()
 	{
 	}
 
 	/**
 	 * Tear down method will be invoked after every unit test method
-	 *
-	 * @throws Exception
-	 *             is thrown if an exception occurs
 	 */
-	@AfterMethod protected void tearDown() throws Exception
+	@AfterMethod
+	protected void tearDown()
 	{
 	}
 
 	/**
 	 * Test method for the combination methods
 	 */
-	@Test(enabled = false) public void testBenchmarkCombinations()
+	@Test(enabled = false)
+	public void testBenchmarkCombinations()
 	{
 
 		long start;
@@ -104,11 +102,27 @@ public class ListExtensionsTest
 		System.err.println("getAllCombinations time:" + (end - start));
 	}
 
+	/**
+	 * Test the method {@link ListExtensions#clone(List)}
+	 */
+	@Test
+	public void testClone()
+	{
+		List<String> actual;
+		List<String> expected;
+		expected = ListFactory.newArrayList();
+		expected.add("Dora");
+		expected.add("Emil");
+		expected.add("Franz");
+		actual = ListExtensions.clone(expected);
+		assertTrue(CollectionExtensions.isEqualCollection(actual, expected));
+	}
 
 	/**
 	 * Test the method {@link ListExtensions#containAtleastOneObject(List, List)}
 	 */
-	@Test public void testContainAtleastOneObject()
+	@Test
+	public void testContainAtleastOneObject()
 	{
 		final List<String> toSearch = ListFactory.newArrayList();
 		final List<String> search = ListFactory.newArrayList();
@@ -132,7 +146,8 @@ public class ListExtensionsTest
 	/**
 	 * Test the method {@link ListExtensions#getAllCombinations(List, int)}
 	 */
-	@Test public void testGetAllCombinations()
+	@Test
+	public void testGetAllCombinations()
 	{
 		List<Integer> values;
 		List<List<Integer>> actual;
@@ -162,7 +177,6 @@ public class ListExtensionsTest
 		expected.add(ListFactory.newArrayList(3, 4, 5));
 		assertTrue(CollectionExtensions.isEqualCollection(actual, expected));
 
-		expected = ListFactory.newArrayList();
 		values = ListFactory.newRangeList(1, 11);
 		actual = ListExtensions.getAllCombinations(values, 3);
 		System.err.println(actual.size());
@@ -183,7 +197,8 @@ public class ListExtensionsTest
 	/**
 	 * Test the method {@link ListExtensions#getCombinations(List, int)}
 	 */
-	@Test public void testGetCombinations()
+	@Test
+	public void testGetCombinations()
 	{
 		List<String> values;
 		List<List<String>> actual;
@@ -214,7 +229,8 @@ public class ListExtensionsTest
 	/**
 	 * Test method for {@link ListExtensions#getFirst(List)}
 	 */
-	@Test public void testGetFirst()
+	@Test
+	public void testGetFirst()
 	{
 		String actual;
 		String expected;
@@ -241,7 +257,8 @@ public class ListExtensionsTest
 	/**
 	 * Test method for {@link ListExtensions#getLast(List)}
 	 */
-	@Test public void testGetLast()
+	@Test
+	public void testGetLast()
 	{
 		final String expected = "Leonidas";
 		final List<String> search = ListFactory.newArrayList();
@@ -254,39 +271,38 @@ public class ListExtensionsTest
 		search.add("Emil");
 		search.add(expected);
 		compare = ListExtensions.getLast(search);
-		assertTrue("", expected.equals(compare));
+		assertEquals(compare, expected);
 	}
 
 	/**
 	 * Test method for {@link ListExtensions#getModifiedCollections(Collection, Collection)}
 	 */
-	@Test public void testGetModifiedLists()
+	@Test
+	public void testGetModifiedLists()
 	{
-
 		final String[] previous = { "1", "2", "3", "4", "5", "6", "7" };
 		final String[] next = { "2", "5", "6", "7", "8", "9" };
 
-		final String[] expectedadded = { "8", "9" };
-		final String[] expectedremoved = { "1", "3", "4" };
+		final String[] expectedAdded = { "8", "9" };
+		final String[] expectedRemoved = { "1", "3", "4" };
 
 		final List<String> previousList = ListFactory.newArrayList(Arrays.asList(previous));
 		final List<String> nextList = Arrays.asList(next);
 
-		final List<String> expectedaddedList = Arrays.asList(expectedadded);
-		final List<String> expectedremovedList = Arrays.asList(expectedremoved);
+		final List<String> expectedAddedList = Arrays.asList(expectedAdded);
+		final List<String> expectedRemovedList = Arrays.asList(expectedRemoved);
 
 		final ModifiedCollections<String> result = ListExtensions
 			.getModifiedCollections(previousList, nextList);
-
-		assertTrue(result.getRemovedElements().equals(expectedremovedList));
-		assertTrue(result.getAddedElements().equals(expectedaddedList));
-
+		assertEquals(result.getRemovedElements(), expectedRemovedList);
+		assertEquals(result.getAddedElements(), expectedAddedList);
 	}
 
 	/**
 	 * Test method for {@link ListExtensions#getSameElementsFromLists(List, List)}
 	 */
-	@Test public void testGetSameElementsFromLists()
+	@Test
+	public void testGetSameElementsFromLists()
 	{
 		final List<String> toSearch = ListFactory.newArrayList();
 		final List<String> search = ListFactory.newArrayList();
@@ -303,8 +319,8 @@ public class ListExtensionsTest
 		final List<String> expectedElements = ListFactory.newArrayList();
 		expectedElements.add("Dora");
 		expectedElements.add("Emil");
-		final List<String> foundElements = ListExtensions
-			.getSameElementsFromLists(search, atLeastOneSameObject);
+		final List<String> foundElements = ListExtensions.getSameElementsFromLists(search,
+			atLeastOneSameObject);
 		final boolean isTrue = expectedElements.equals(foundElements);
 		assertTrue(isTrue);
 		for (final String string : foundElements)
@@ -319,7 +335,8 @@ public class ListExtensionsTest
 	/**
 	 * Test method for {@link ListExtensions#hasNext(List, Object)}
 	 */
-	@Test(enabled = true) public void testHasNext()
+	@Test
+	public void testHasNext()
 	{
 		boolean expected;
 		boolean actual;
@@ -348,7 +365,8 @@ public class ListExtensionsTest
 	/**
 	 * Test method for {@link ListExtensions#hasPrevious(List, Object)}
 	 */
-	@Test(enabled = true) public void testHasPrevious()
+	@Test
+	public void testHasPrevious()
 	{
 		boolean expected;
 		boolean actual;
@@ -368,11 +386,9 @@ public class ListExtensionsTest
 		actual = ListExtensions.hasPrevious(search, null);
 		assertEquals(expected, actual);
 
-		expected = false;
 		actual = ListExtensions.hasPrevious(search, "foo");
 		assertEquals(expected, actual);
 
-		expected = false;
 		actual = ListExtensions.hasPrevious(search, caeser);
 		assertEquals(expected, actual);
 
@@ -380,11 +396,9 @@ public class ListExtensionsTest
 		actual = ListExtensions.hasPrevious(search, dora);
 		assertEquals(expected, actual);
 
-		expected = true;
 		actual = ListExtensions.hasPrevious(search, emil);
 		assertEquals(expected, actual);
 
-		expected = true;
 		actual = ListExtensions.hasPrevious(search, anton);
 		assertEquals(expected, actual);
 	}
@@ -392,7 +406,8 @@ public class ListExtensionsTest
 	/**
 	 * Test method for {@link ListExtensions#isEqualListOfArrays(List, List)}.
 	 */
-	@Test public void testIsEqualListOfArrays()
+	@Test
+	public void testIsEqualListOfArrays()
 	{
 		boolean actual;
 		boolean expected;
@@ -420,10 +435,8 @@ public class ListExtensionsTest
 		one = null;
 		other = null;
 		actual = ListExtensions.isEqualListOfArrays(one, other);
-		expected = true;
 		assertEquals(expected, actual);
 		//
-		one = null;
 		other = ListFactory.newArrayList(lineFour, lineFive, lineSix);
 		actual = ListExtensions.isEqualListOfArrays(one, other);
 		expected = false;
@@ -432,27 +445,25 @@ public class ListExtensionsTest
 		one = ListFactory.newArrayList(lineOne, lineTwo, lineThree);
 		other = null;
 		actual = ListExtensions.isEqualListOfArrays(one, other);
-		expected = false;
 		assertEquals(expected, actual);
 		//
 		one = ListFactory.newArrayList(lineOne, lineTwo);
 		other = ListFactory.newArrayList(lineFour, lineFive, lineSix);
 		actual = ListExtensions.isEqualListOfArrays(one, other);
-		expected = false;
 		assertEquals(expected, actual);
 		//
 		lineThree = ArrayFactory.newArray("6", "21", "777");
 		one = ListFactory.newArrayList(lineOne, lineTwo, lineThree);
 		other = ListFactory.newArrayList(lineFour, lineFive, lineSix);
 		actual = ListExtensions.isEqualListOfArrays(one, other);
-		expected = false;
 		assertEquals(expected, actual);
 	}
 
 	/**
 	 * Test method for {@link ListExtensions#isFirst(List, Object)}
 	 */
-	@Test public void testIsFirst()
+	@Test
+	public void testIsFirst()
 	{
 		String expected;
 		expected = "Leonidas";
@@ -470,7 +481,8 @@ public class ListExtensionsTest
 	/**
 	 * Test method for {@link ListExtensions#isLast(List, Object)}
 	 */
-	@Test public void testIsLast()
+	@Test
+	public void testIsLast()
 	{
 		boolean actual;
 		boolean expected;
@@ -492,14 +504,14 @@ public class ListExtensionsTest
 		assertEquals(expected, actual);
 
 		actual = ListExtensions.isLast(ListFactory.newArrayList(), "Foo");
-		expected = false;
 		assertEquals(expected, actual);
 	}
 
 	/**
 	 * Test the method {@link ListExtensions#toArray(List)}
 	 */
-	@Test public void testListToArray()
+	@Test
+	public void testListToArray()
 	{
 		Integer[] actual;
 		Integer[] expected;
@@ -508,7 +520,7 @@ public class ListExtensionsTest
 		numbers = ListFactory.newArrayList(1, 2, 3);
 		actual = ListExtensions.toArray(numbers);
 		expected = ArrayFactory.newArray(1, 2, 3);
-		assertTrue(Arrays.equals(actual, expected));
+		assertArrayEquals(actual, expected);
 	}
 
 	/**
@@ -554,7 +566,8 @@ public class ListExtensionsTest
 	 * Test the method {@link ListExtensions#toArray(List)} that throws an
 	 * <code>IllegalArgumentException</code>
 	 */
-	@Test(expectedExceptions = IllegalArgumentException.class) public void testListToArrayWithException()
+	@Test(expectedExceptions = IllegalArgumentException.class)
+	public void testListToArrayWithException()
 	{
 		ListExtensions.toArray(ListFactory.newArrayList());
 	}
@@ -562,7 +575,8 @@ public class ListExtensionsTest
 	/**
 	 * Test method for {@link ListExtensions#rearrange(Object, List, int)}
 	 */
-	@Test public void testRearrange()
+	@Test
+	public void testRearrange()
 	{
 		List<String> search;
 		List<String> rearrangedList;
@@ -596,7 +610,8 @@ public class ListExtensionsTest
 	/**
 	 * Test method for {@link ListExtensions#removeFirst(List)}
 	 */
-	@Test public void testRemoveFirst()
+	@Test
+	public void testRemoveFirst()
 	{
 		String expected;
 		String actual;
@@ -612,7 +627,7 @@ public class ListExtensionsTest
 		search.add("Emil");
 		search.add("Anton");
 		actual = ListExtensions.removeFirst(search);
-		assertTrue("", removed.equals(actual));
+		assertEquals(removed, actual);
 
 		actual = ListExtensions.getFirst(search);
 		assertEquals(expected, actual);
@@ -627,11 +642,13 @@ public class ListExtensionsTest
 	/**
 	 * Test method for {@link ListExtensions#removeLast(List)}
 	 */
-	@Test public void testRemoveLast()
+	@Test
+	public void testRemoveLast()
 	{
 		String expected;
 		String actual;
 		String removed;
+		String compare;
 		List<String> search;
 		expected = "Leonidas";
 		removed = "Berta";
@@ -643,11 +660,11 @@ public class ListExtensionsTest
 		search.add("Emil");
 		search.add(expected);
 		search.add(removed);
-		String compare = ListExtensions.removeLast(search);
-		assertTrue("", compare.equals(removed));
+		compare = ListExtensions.removeLast(search);
+		assertEquals(removed, compare);
 
 		compare = ListExtensions.getLast(search);
-		assertTrue("", expected.equals(compare));
+		assertEquals(expected, compare);
 
 		search.clear();
 
@@ -659,7 +676,8 @@ public class ListExtensionsTest
 	/**
 	 * Test method for {@link ListExtensions#removeLastValues(List, int)}
 	 */
-	@Test public void testRemoveLastValues()
+	@Test
+	public void testRemoveLastValues()
 	{
 		String expected;
 		String removed;
@@ -677,15 +695,15 @@ public class ListExtensionsTest
 		search.add(expected);
 		search.add(removed);
 		removedLastValues = ListExtensions.removeLastValues(search, 2);
-		assertTrue(removedLastValues.size() == 4);
-
+		assertEquals(4, removedLastValues.size());
 	}
 
 	/**
 	 * Test method for {@link ListExtensions#removeLastValues(List, int)} where the remove value is
 	 * greater then the size of the given list
 	 */
-	@Test(expectedExceptions = IllegalArgumentException.class) public void testRemoveLastValuesException()
+	@Test(expectedExceptions = IllegalArgumentException.class)
+	public void testRemoveLastValuesException()
 	{
 		final String expected = "Leonidas";
 		final String removed = "Berta";
@@ -697,13 +715,14 @@ public class ListExtensionsTest
 		search.add(expected);
 		search.add(removed);
 		final List<String> removedLastValues = ListExtensions.removeLastValues(search, 7);
-		assertTrue(removedLastValues.size() == 4);
+		assertEquals(4, removedLastValues.size());
 	}
 
 	/**
 	 * Test the method {@link ListExtensions#revertOrder(List)}
 	 */
-	@Test public void testRevertOrder()
+	@Test
+	public void testRevertOrder()
 	{
 		final List<String> search = ListFactory.newArrayList();
 		search.add("Anton");
@@ -715,18 +734,19 @@ public class ListExtensionsTest
 		final List<String> revertOrdered = ListExtensions.revertOrder(search);
 		assertNotNull(revertOrdered);
 
-		assertTrue(revertOrdered.get(0).equals("Berta"));
-		assertTrue(revertOrdered.get(1).equals("Leonidas"));
-		assertTrue(revertOrdered.get(2).equals("Emil"));
-		assertTrue(revertOrdered.get(3).equals("Dora"));
-		assertTrue(revertOrdered.get(4).equals("Caesar"));
-		assertTrue(revertOrdered.get(5).equals("Anton"));
+		assertEquals("Berta", revertOrdered.get(0));
+		assertEquals("Leonidas", revertOrdered.get(1));
+		assertEquals("Emil", revertOrdered.get(2));
+		assertEquals("Dora", revertOrdered.get(3));
+		assertEquals("Caesar", revertOrdered.get(4));
+		assertEquals("Anton", revertOrdered.get(5));
 	}
 
 	/**
 	 * Test the method {@link ListExtensions#shuffle(List, List, int[])}
 	 */
-	@Test public void testShuffle()
+	@Test
+	public void testShuffle()
 	{
 		final List<String> source = ListFactory.newArrayList();
 		final List<String> destination = ListFactory.newArrayList();
@@ -755,7 +775,8 @@ public class ListExtensionsTest
 	/**
 	 * Test the method {@link ListExtensions#sortByProperty(List, String, boolean)}
 	 */
-	@Test public void testSortByProperty()
+	@Test
+	public void testSortByProperty()
 	{
 		final List<Person> persons = ListFactory.newArrayList();
 		final Person obelix = new Person();
@@ -775,55 +796,57 @@ public class ListExtensionsTest
 		persons.add(miraculix);
 
 		// Unsorted Persons...
-		assertTrue(
-			"Index of person 'obelix' should be <0> but was <" + persons.indexOf(obelix) + ">.",
-			persons.indexOf(obelix) == 0);
-		assertTrue(
+		assertEquals(
+			"Index of person 'obelix' should be <0> but was <" + persons.indexOf(obelix) + ">.", 0,
+			persons.indexOf(obelix));
+		assertEquals(
 			"Index of person 'asterix' should be <1> but was <" + persons.indexOf(asterix) + ">.",
-			persons.indexOf(asterix) == 1);
-		assertTrue("Index of person 'miraculix' should be <2> but was <" + persons
-			.indexOf(miraculix) + ">.", persons.indexOf(miraculix) == 2);
+			1, persons.indexOf(asterix));
+		assertEquals("Index of person 'miraculix' should be <2> but was <"
+			+ persons.indexOf(miraculix) + ">.", 2, persons.indexOf(miraculix));
 
 		ListExtensions.sortByProperty(persons, "name", true);
 		// Sorted Persons by name in ascending order...
-		assertTrue(
-			"Index of person 'obelix' should be <0> but was <" + persons.indexOf(obelix) + ">.",
-			persons.indexOf(obelix) == 0);
-		assertTrue("Index of person 'miraculix' should be <1> but was <" + persons
-			.indexOf(miraculix) + ">.", persons.indexOf(miraculix) == 1);
-		assertTrue(
+		assertEquals(
+			"Index of person 'obelix' should be <0> but was <" + persons.indexOf(obelix) + ">.", 0,
+			persons.indexOf(obelix));
+		assertEquals("Index of person 'miraculix' should be <1> but was <"
+			+ persons.indexOf(miraculix) + ">.", 1, persons.indexOf(miraculix));
+		assertEquals(
 			"Index of person 'asterix' should be <2> but was <" + persons.indexOf(asterix) + ">.",
-			persons.indexOf(asterix) == 2);
+			2, persons.indexOf(asterix));
 
 		ListExtensions.sortByProperty(persons, "name", false);
 		// Sorted Persons by name in descending order...
-		assertTrue(
+		assertEquals(
 			"Index of person 'asterix' should be <0> but was <" + persons.indexOf(asterix) + ">.",
-			persons.indexOf(asterix) == 0);
-		assertTrue("Index of person 'miraculix' should be <1> but was <" + persons
-			.indexOf(miraculix) + ">.", persons.indexOf(miraculix) == 1);
-		assertTrue(
-			"Index of person 'obelix' should be <2> but was <" + persons.indexOf(obelix) + ">.",
-			persons.indexOf(obelix) == 2);
+			0, persons.indexOf(asterix));
+		assertEquals("Index of person 'miraculix' should be <1> but was <"
+			+ persons.indexOf(miraculix) + ">.", 1, persons.indexOf(miraculix));
+		assertEquals(
+			"Index of person 'obelix' should be <2> but was <" + persons.indexOf(obelix) + ">.", 2,
+			persons.indexOf(obelix));
 		// set a null value...
 		asterix.setName(null);
 
 		ListExtensions.sortByProperty(persons, "name", true);
 		// Sorted Persons by name in ascending order with a null value...
-		assertTrue(
-			"Index of person 'obelix' should be <0> but was <" + persons.indexOf(obelix) + ">.",
-			persons.indexOf(obelix) == 0);
-		assertTrue("Index of person 'miraculix' should be <1> but was <" + persons
-			.indexOf(miraculix) + ">.", persons.indexOf(miraculix) == 1);
-		assertTrue(
+		assertEquals(
+			"Index of person 'obelix' should be <0> but was <" + persons.indexOf(obelix) + ">.", 0,
+			persons.indexOf(obelix));
+		assertEquals("Index of person 'miraculix' should be <1> but was <"
+			+ persons.indexOf(miraculix) + ">.", 1, persons.indexOf(miraculix));
+		assertEquals(
 			"Index of person 'asterix' should be <2> but was <" + persons.indexOf(asterix) + ">.",
-			persons.indexOf(asterix) == 2);
+			2, persons.indexOf(asterix));
 	}
 
 	/**
 	 * Test the method {@link ListExtensions#splitToParts(Collection, int)}
 	 */
-	@Test @SuppressWarnings({ "rawtypes" }) public void testsplitToPartsInList()
+	@Test
+	@SuppressWarnings({ "rawtypes" })
+	public void testsplitToPartsInList()
 	{
 		final List<Integer> list = ListFactory.newArrayList();
 		for (int i = 0; i < 999; i++)
@@ -831,18 +854,18 @@ public class ListExtensionsTest
 			list.add(i);
 		}
 		final List al = ListExtensions.splitToParts(list, 50);
-		assertTrue(al.size() == 20);
+		assertEquals(20, al.size());
 		for (int i = 0; i < al.size(); i++)
 		{
 			if (i == al.size() - 1)
 			{
 				final List lastPart = (ArrayList)al.get(i);
-				assertTrue(lastPart.size() == 49);
+				assertEquals(49, lastPart.size());
 			}
 			else
 			{
 				final List aPart = (ArrayList)al.get(i);
-				assertTrue(aPart.size() == 50);
+				assertEquals(50, aPart.size());
 			}
 		}
 	}
@@ -850,7 +873,8 @@ public class ListExtensionsTest
 	/**
 	 * Test the method {@link ListExtensions#toArray(Object...)}
 	 */
-	@Test public void testToArray()
+	@Test
+	public void testToArray()
 	{
 		Integer actual;
 		Integer expected;
@@ -867,7 +891,8 @@ public class ListExtensionsTest
 	/**
 	 * Test the method {@link ListExtensions#toList(Enumeration)}
 	 */
-	@Test public void testToListEnumerationOfT()
+	@Test
+	public void testToListEnumerationOfT()
 	{
 		final List<String> arrayList = ListFactory.newArrayList("1", "2");
 		final Enumeration<String> elements = Collections.enumeration(arrayList);
@@ -881,12 +906,13 @@ public class ListExtensionsTest
 	/**
 	 * Test the method {@link ListExtensions#toList(Set)}
 	 */
-	@Test public void testToListSetOfT()
+	@Test
+	public void testToListSetOfT()
 	{
 		Set<String> set = SetFactory.newHashSet();
-		assertTrue(set.size() == 0);
+		assertEquals(0, set.size());
 		set = SetFactory.newHashSet("foo", "bar", "foo");
-		assertTrue(set.size() == 2);
+		assertEquals(2, set.size());
 		final List<String> list = ListExtensions.toList(set);
 		for (final String item : list)
 		{
@@ -897,23 +923,25 @@ public class ListExtensionsTest
 	/**
 	 * Test the method {@link ListExtensions#toObjectArray(Object...)}
 	 */
-	@Test public void testToObjectArray()
+	@Test
+	public void testToObjectArray()
 	{
 		final Object[] expected = { "2", "5", "6", "7", "8", "9" };
 		Object[] actual = ListExtensions.toObjectArray("2", "5", "6", "7", "8", "9");
-		assertTrue(expected.length == actual.length);
+		assertEquals(actual.length, expected.length);
 		for (int i = 0; i < actual.length; i++)
 		{
 			assertEquals(expected[i], actual[i]);
 		}
 		actual = ListExtensions.toObjectArray();
-		assertTrue(actual.length == 0);
+		assertEquals(actual.length, 0);
 	}
 
 	/**
 	 * Test method for {@link ListExtensions} with {@link BeanTester}
 	 */
-	@Test public void testWithBeanTester()
+	@Test
+	public void testWithBeanTester()
 	{
 		final BeanTester beanTester = new BeanTester();
 		beanTester.testBean(ListExtensions.class);

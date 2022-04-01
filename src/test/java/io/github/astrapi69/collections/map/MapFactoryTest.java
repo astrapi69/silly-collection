@@ -26,7 +26,6 @@ package io.github.astrapi69.collections.map;
 
 import static org.testng.AssertJUnit.assertEquals;
 import static org.testng.AssertJUnit.assertNotNull;
-import static org.testng.AssertJUnit.assertTrue;
 
 import java.util.Comparator;
 import java.util.HashMap;
@@ -135,7 +134,7 @@ public class MapFactoryTest
 		map.put("5", "value");
 		Map<String, String> concurrentHashMap = MapFactory.newConcurrentHashMap(map);
 		assertNotNull(concurrentHashMap);
-		assertTrue(concurrentHashMap.size() == 4);
+		assertEquals(4, concurrentHashMap.size());
 	}
 
 	/**
@@ -228,7 +227,7 @@ public class MapFactoryTest
 		keyValuePairs = KeyValuePair.toKeyValuePairs(map);
 		hashMap = MapFactory.newHashMap(keyValuePairs);
 		assertNotNull(hashMap);
-		assertTrue(hashMap.size() == 4);
+		assertEquals(4, hashMap.size());
 
 		keyValuePairs = ListFactory.newArrayList(
 			KeyValuePair.<String, String> builder().key("1").value("novalue").build(),
@@ -237,8 +236,7 @@ public class MapFactoryTest
 			KeyValuePair.<String, String> builder().key("5").value("value").build());
 		hashMap = MapFactory.newHashMap(keyValuePairs);
 		assertNotNull(hashMap);
-		assertTrue(hashMap.size() == 4);
-
+		assertEquals(4, hashMap.size());
 	}
 
 	/**
@@ -254,7 +252,7 @@ public class MapFactoryTest
 		map.put("5", "value");
 		Map<String, String> concurrentHashMap = MapFactory.newHashMap(map);
 		assertNotNull(concurrentHashMap);
-		assertTrue(concurrentHashMap.size() == 4);
+		assertEquals(4, concurrentHashMap.size());
 	}
 
 	/**
@@ -271,14 +269,14 @@ public class MapFactoryTest
 			KeyValuePair.<String, String> builder().key("3").value("othervalue").build(),
 			KeyValuePair.<String, String> builder().key("5").value("value").build());
 		assertNotNull(hashMap);
-		assertTrue(hashMap.size() == 4);
+		assertEquals(4, hashMap.size());
 	}
 
 	/**
 	 * Test for the Method {@link MapFactory#newInsertionOrderMap()}.
 	 */
 	@Test
-	public void testNewInsertionOrderMap() throws Exception
+	public void testNewInsertionOrderMap()
 	{
 		final Map<Integer, String> map = MapFactory.newInsertionOrderMap();
 		assertNotNull(map);
@@ -312,7 +310,7 @@ public class MapFactoryTest
 		keyValuePairs = KeyValuePair.toKeyValuePairs(map);
 		insertionOrderMap = MapFactory.newInsertionOrderMap(keyValuePairs);
 		assertNotNull(insertionOrderMap);
-		assertTrue(insertionOrderMap.size() == 4);
+		assertEquals(4, insertionOrderMap.size());
 
 		keyValuePairs = ListFactory.newArrayList(
 			KeyValuePair.<String, String> builder().key("1").value("novalue").build(),
@@ -321,7 +319,7 @@ public class MapFactoryTest
 			KeyValuePair.<String, String> builder().key("5").value("value").build());
 		insertionOrderMap = MapFactory.newInsertionOrderMap(keyValuePairs);
 		assertNotNull(insertionOrderMap);
-		assertTrue(insertionOrderMap.size() == 4);
+		assertEquals(4, insertionOrderMap.size());
 	}
 
 	/**
@@ -337,7 +335,7 @@ public class MapFactoryTest
 		map.put("5", "value");
 		Map<String, String> insertionOrderMap = MapFactory.newInsertionOrderMap(map);
 		assertNotNull(insertionOrderMap);
-		assertTrue(insertionOrderMap.size() == 4);
+		assertEquals(4, insertionOrderMap.size());
 	}
 
 	/**
@@ -354,7 +352,7 @@ public class MapFactoryTest
 			KeyValuePair.<String, String> builder().key("3").value("othervalue").build(),
 			KeyValuePair.<String, String> builder().key("5").value("value").build());
 		assertNotNull(insertionOrderMap);
-		assertTrue(insertionOrderMap.size() == 4);
+		assertEquals(4, insertionOrderMap.size());
 	}
 
 	/**
@@ -376,7 +374,7 @@ public class MapFactoryTest
 	 * Test for the Method {@link MapFactory#newLazyTreeMap()}.
 	 */
 	@Test
-	public void testNewLazyTreeMap() throws Exception
+	public void testNewLazyTreeMap()
 	{
 		final Map<Integer, String> treeMap = MapFactory.newLazyTreeMap();
 		assertNotNull(treeMap);
@@ -386,10 +384,9 @@ public class MapFactoryTest
 	 * Test for the Method {@link MapFactory#newLazyTreeMap(Comparator)}.
 	 */
 	@Test
-	public void testNewLazyTreeMapComparator() throws Exception
+	public void testNewLazyTreeMapComparator()
 	{
-		final Map<Integer, String> treeMap = MapFactory
-			.newLazyTreeMap((o1, o2) -> o1 - o2);
+		final Map<Integer, String> treeMap = MapFactory.newLazyTreeMap((o1, o2) -> o1 - o2);
 		assertNotNull(treeMap);
 	}
 
@@ -447,7 +444,7 @@ public class MapFactoryTest
 		keyValuePairs = KeyValuePair.toKeyValuePairs(map);
 		hashMap = MapFactory.newLinkedHashMap(keyValuePairs);
 		assertNotNull(hashMap);
-		assertTrue(hashMap.size() == 4);
+		assertEquals(4, hashMap.size());
 
 		keyValuePairs = ListFactory.newArrayList(
 			KeyValuePair.<String, String> builder().key("1").value("novalue").build(),
@@ -456,8 +453,7 @@ public class MapFactoryTest
 			KeyValuePair.<String, String> builder().key("5").value("value").build());
 		hashMap = MapFactory.newLinkedHashMap(keyValuePairs);
 		assertNotNull(hashMap);
-		assertTrue(hashMap.size() == 4);
-
+		assertEquals(4, hashMap.size());
 	}
 
 	/**
@@ -473,7 +469,7 @@ public class MapFactoryTest
 		map.put("5", "value");
 		Map<String, String> concurrentHashMap = MapFactory.newLinkedHashMap(map);
 		assertNotNull(concurrentHashMap);
-		assertTrue(concurrentHashMap.size() == 4);
+		assertEquals(4, concurrentHashMap.size());
 	}
 
 	/**
@@ -490,7 +486,7 @@ public class MapFactoryTest
 			KeyValuePair.<String, String> builder().key("3").value("othervalue").build(),
 			KeyValuePair.<String, String> builder().key("5").value("value").build());
 		assertNotNull(hashMap);
-		assertTrue(hashMap.size() == 4);
+		assertEquals(4, hashMap.size());
 	}
 
 	/**
@@ -549,8 +545,7 @@ public class MapFactoryTest
 	@Test
 	public void testNewTreeMapComparator()
 	{
-		final Map<Integer, String> treeMap = MapFactory
-			.newTreeMap((o1, o2) -> o1 - o2);
+		final Map<Integer, String> treeMap = MapFactory.newTreeMap((o1, o2) -> o1 - o2);
 		assertNotNull(treeMap);
 	}
 
@@ -574,7 +569,7 @@ public class MapFactoryTest
 		comparator = (o1, o2) -> o1 - o2;
 		treeMap = MapFactory.newTreeMap(comparator, keyValuePairs);
 		assertNotNull(treeMap);
-		assertTrue(treeMap.size() == 4);
+		assertEquals(4, treeMap.size());
 
 		keyValuePairs = ListFactory.newArrayList(
 			KeyValuePair.<Integer, String> builder().key(1).value("novalue").build(),
@@ -583,7 +578,7 @@ public class MapFactoryTest
 			KeyValuePair.<Integer, String> builder().key(5).value("value").build());
 		treeMap = MapFactory.newTreeMap(comparator, keyValuePairs);
 		assertNotNull(treeMap);
-		assertTrue(treeMap.size() == 4);
+		assertEquals(4, treeMap.size());
 	}
 
 	/**
@@ -599,7 +594,7 @@ public class MapFactoryTest
 		map.put("5", "value");
 		Map<String, String> concurrentHashMap = MapFactory.newTreeMap(map);
 		assertNotNull(concurrentHashMap);
-		assertTrue(concurrentHashMap.size() == 4);
+		assertEquals(4, concurrentHashMap.size());
 	}
 
 	/**
@@ -618,7 +613,7 @@ public class MapFactoryTest
 			KeyValuePair.<String, String> builder().key("3").value("othervalue").build(),
 			KeyValuePair.<String, String> builder().key("5").value("value").build());
 		assertNotNull(treeMap);
-		assertTrue(treeMap.size() == 4);
+		assertEquals(4, treeMap.size());
 	}
 
 	/**
