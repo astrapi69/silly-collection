@@ -1,0 +1,14 @@
+
+dependencies {
+    implementation("org.apache.commons:commons-collections4:$commonsCollections4Version")
+    implementation("io.github.astrapi69:jobj-core:$jobjCoreVersion")
+    implementation("io.github.astrapi69:jobj-compare:$jobjCompareVersion")
+    implementation("io.github.astrapi69:silly-beans:$sillyBeansVersion")
+    testImplementation("io.github.astrapi69:vintage-time:$vintageTimeVersion")
+    testImplementation("io.github.astrapi69:test-objects:$testObjectsVersion")
+    testImplementation("io.github.benas:random-beans:$randomBeansVersion")
+    testImplementation("org.openjdk.jmh:jmh-core:$jmhVersion")
+    testImplementation("org.openjdk.jmh:jmh-generator-annprocess:$jmhVersion")
+    testImplementation("org.meanbean:meanbean:$meanbeanVersion")
+    testImplementation("org.testng:testng:$testngVersion")
+}

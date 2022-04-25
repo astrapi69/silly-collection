@@ -396,6 +396,122 @@ public class MapExtensionsTest
 	}
 
 	/**
+	 * Test for the Method {@link MapExtensions#sortByKey(Map, Comparator)}
+	 */
+	@Test
+	public void testSortByKey()
+	{
+		Map<String, String> map;
+		Map<String, String> actual;
+		Map<String, String> expected;
+		// map with test data ...
+		map = new HashMap<>();
+		map.put("2", "21");
+		map.put("1", "5");
+		map.put("4", "13");
+		map.put("3", "23");
+		// new scenario...
+		actual = MapExtensions.sortByKey(map, Comparator.naturalOrder());
+		expected = MapFactory.newLinkedHashMap();
+		expected.put("1", "5");
+		expected.put("2", "21");
+		expected.put("3", "23");
+		expected.put("4", "13");
+		assertEquals(expected, actual);
+		// new scenario...
+		actual = MapExtensions.sortByKey(map, Comparator.reverseOrder());
+		expected = MapFactory.newLinkedHashMap();
+		expected.put("4", "13");
+		expected.put("3", "23");
+		expected.put("2", "21");
+		expected.put("1", "5");
+		assertEquals(expected, actual);
+	}
+
+	/**
+	 * Test for the Method {@link MapExtensions#sortByKey(Map, Comparator)}
+	 */
+	@Test
+	public void testSortByKeyWithInteger()
+	{
+		Map<Integer, String> map;
+		Map<Integer, String> actual;
+		Map<Integer, String> expected;
+		// map with test data ...
+		map = new HashMap<>();
+		map.put(2, "21");
+		map.put(1, "5");
+		map.put(4, "13");
+		map.put(3, "23");
+		// new scenario...
+		actual = MapExtensions.sortByKey(map, Comparator.naturalOrder());
+		expected = MapFactory.newLinkedHashMap();
+		expected.put(1, "5");
+		expected.put(2, "21");
+		expected.put(3, "23");
+		expected.put(4, "13");
+		assertEquals(expected, actual);
+		// new scenario...
+		actual = MapExtensions.sortByKey(map, Comparator.reverseOrder());
+		expected = MapFactory.newLinkedHashMap();
+		expected.put(4, "13");
+		expected.put(3, "23");
+		expected.put(2, "21");
+		expected.put(1, "5");
+		assertEquals(expected, actual);
+	}
+
+	/**
+	 * Test for the Method {@link MapExtensions#getMaxKey(Map, Comparator)}
+	 */
+	@Test
+	public void testGetMaxKeyByComparator()
+	{
+		Map<String, String> map;
+		String actual;
+		String expected;
+		// map with test data ...
+		map = new HashMap<>();
+		map.put("2", "21");
+		map.put("1", "5");
+		map.put("4", "13");
+		map.put("3", "23");
+		// new scenario...
+		actual = MapExtensions.getMaxKey(map, Comparator.naturalOrder());
+		expected = "4";
+		assertEquals(expected, actual);
+		// new scenario...
+		actual = MapExtensions.getMaxKey(map, Comparator.reverseOrder());
+		expected = "1";
+		assertEquals(expected, actual);
+	}
+
+	/**
+	 * Test for the Method {@link MapExtensions#getMaxKey(Map, Comparator)}
+	 */
+	@Test
+	public void testGetMaxKeyByComparatorWithInteger()
+	{
+		Map<Integer, String> map;
+		Integer actual;
+		Integer expected;
+		// map with test data ...
+		map = new HashMap<>();
+		map.put(2, "21");
+		map.put(1, "5");
+		map.put(4, "13");
+		map.put(3, "23");
+		// new scenario...
+		actual = MapExtensions.getMaxKey(map, Comparator.naturalOrder());
+		expected = 4;
+		assertEquals(expected, actual);
+		// new scenario...
+		actual = MapExtensions.getMaxKey(map, Comparator.reverseOrder());
+		expected = 1;
+		assertEquals(expected, actual);
+	}
+
+	/**
 	 * Test for the Method {@link MapExtensions#swap(Map)}
 	 */
 	@Test

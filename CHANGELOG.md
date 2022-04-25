@@ -4,7 +4,17 @@
 Version 18.2-SNAPSHOT
 -------------
 
+ADDED:
 
+- new method for sort a map with a given comparator
+- new method for get the maximum key from a given map with a given comparator that defines what is
+  the maximum key
+- extracted sections from build.gradle to its own gradle files for clearness
+
+CHANGED:
+
+- update of gradle-plugin dependency 'com.diffplug.spotless:spotless-plugin-gradle' to new minor
+  version 6.5.0
 
 Version 18.1
 -------------
