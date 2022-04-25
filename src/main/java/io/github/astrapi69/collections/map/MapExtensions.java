@@ -199,7 +199,7 @@ public final class MapExtensions
 	}
 
 	/**
-	 * Sort the given Map by its values and returns a sorted list by the values of the given Map
+	 * Sort the given Map by its values and returns a sorted Map by the values of the given Map
 	 *
 	 * @param <K>
 	 *            the generic type of the key
@@ -237,7 +237,7 @@ public final class MapExtensions
 	}
 
 	/**
-	 * Sort the given Map by its values and returns a sorted list by the values of the given Map
+	 * Sort the given Map by its values and returns a sorted Map by the values of the given Map
 	 *
 	 * @param <K>
 	 *            the generic type of the key
@@ -257,6 +257,51 @@ public final class MapExtensions
 		return map.entrySet().stream().sorted(Map.Entry.comparingByValue(comparator))
 			.collect(Collectors.toMap(Map.Entry::getKey, Map.Entry::getValue, (k, v) -> k,
 				LinkedHashMap::new));
+	}
+
+	/**
+	 * Sort the given Map by its keys and returns a sorted Map by the values of the given Map
+	 *
+	 * @param <K>
+	 *            the generic type of the key
+	 * @param <V>
+	 *            the generic type of the value
+	 * @param map
+	 *            the Map to sort
+	 * @param comparator
+	 *            the comparator to sort
+	 * @return a sorted Map by the values of the given Map
+	 */
+	public static <K, V extends Comparable<? super V>> Map<K, V> sortByKey(final Map<K, V> map,
+		final Comparator<? super K> comparator)
+	{
+		Argument.notNull(map, "map");
+		Argument.notNull(comparator, "comparator");
+		return map.entrySet().stream().sorted(Map.Entry.comparingByKey(comparator))
+			.collect(Collectors.toMap(Map.Entry::getKey, Map.Entry::getValue, (k, v) -> k,
+				LinkedHashMap::new));
+	}
+
+	/**
+	 * Gets the maximum key from the given Map with the given comparator that defines which is the
+	 * maximum key
+	 *
+	 * @param <K>
+	 *            the generic type of the key
+	 * @param <V>
+	 *            the generic type of the value
+	 * @param map
+	 *            the Map to sort
+	 * @param comparator
+	 *            the comparator to sort
+	 * @return the maximum key from the given Map
+	 */
+	public static <K, V extends Comparable<? super V>> K getMaxKey(final Map<K, V> map,
+		final Comparator<? super K> comparator)
+	{
+		Argument.notNull(map, "map");
+		Argument.notNull(comparator, "comparator");
+		return map.entrySet().stream().max(Map.Entry.comparingByKey(comparator)).get().getKey();
 	}
 
 	/**
