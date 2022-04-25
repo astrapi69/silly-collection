@@ -1,4 +1,3 @@
-
 license {
     ext.year = "$projectInceptionYear"
     ext.owner = "$projectLeaderName"

@@ -1,4 +1,3 @@
-
 dependencies {
     implementation("org.apache.commons:commons-collections4:$commonsCollections4Version")
     implementation("io.github.astrapi69:jobj-core:$jobjCoreVersion")
