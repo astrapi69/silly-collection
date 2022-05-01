@@ -348,13 +348,13 @@ public final class MapExtensions
 	}
 
 	/**
-	 * Converts a two dimensional Array to a Map.
+	 * Converts the given two-dimensional array to a {@link Map} object
 	 *
 	 * @param <T>
 	 *            the generic type
 	 * @param twoDimArray
-	 *            The two dimensional Array.
-	 * @return The map produced from the two dimensional Array.
+	 *            The two-dimensional array
+	 * @return The {@link Map} object produced from the given two-dimensional array
 	 */
 	public static <T> Map<T, T> toGenericMap(final T[][] twoDimArray)
 	{
@@ -379,6 +379,28 @@ public final class MapExtensions
 	public static Map<String, String> toMap(final String[][] twoDimArray)
 	{
 		return toGenericMap(twoDimArray);
+	}
+
+	/**
+	 * Converts the given two-dimensional array to a {@link Map} object
+	 *
+	 * @param <T>
+	 *            the generic type
+	 * @param twoDimArray
+	 *            The two-dimensional array
+	 * @return The {@link Map} object produced from the given two-dimensional array
+	 */
+	public static <T> Map<String, Object> toStringObjectMap(final Object[][] twoDimArray)
+	{
+		Argument.notNull(twoDimArray, "twoDimArray");
+		final Map<String, Object> map = new LinkedHashMap<>();
+		for (final Object[] element : twoDimArray)
+		{
+			final String key = (String)element[0];
+			final Object value = element[1];
+			map.put(key, value);
+		}
+		return map;
 	}
 
 	/**

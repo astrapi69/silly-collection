@@ -4,7 +4,17 @@
 Version 18.3-SNAPSHOT
 -------------
 
+ADDED:
 
+- new method that converts a generic map to a two-dimensional array where key an value are from the
+  same type
+- new method that converts a string(as key) and an object(as value) map to a two-dimensional array
+- new method that converts a a two-dimensional array to a string(as key) and an object(as value) map
+
+CHANGED:
+
+- update of gradle-plugin dependency 'com.diffplug.spotless:spotless-plugin-gradle' to new patch
+  version 6.5.1
 
 Version 18.2
 -------------

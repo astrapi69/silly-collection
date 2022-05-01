@@ -38,9 +38,11 @@ import java.util.Properties;
 import java.util.Set;
 
 import org.meanbean.test.BeanTester;
+import org.testng.Assert;
 import org.testng.annotations.Test;
 
 import io.github.astrapi69.collections.CollectionExtensions;
+import io.github.astrapi69.collections.array.ArrayExtensions;
 import io.github.astrapi69.collections.list.ListFactory;
 import io.github.astrapi69.collections.set.SetFactory;
 
@@ -149,8 +151,6 @@ public class MapExtensionsTest
 		}
 		// other scenario ...
 		mergedMap.clear();
-		minVolume = 1;
-		maxVolume = 10;
 		integerList = ListFactory.newRangeList(minVolume, maxVolume);
 		numberCounterMap = MapFactory.newCounterMap(integerList);
 		for (int i = minVolume; i <= maxVolume; i++)
@@ -215,8 +215,6 @@ public class MapExtensionsTest
 		}
 		// other scenario ...
 		mergedMap.clear();
-		minVolume = 1;
-		maxVolume = 10;
 		fullMerge = false;
 		integerList = ListFactory.newRangeList(minVolume, maxVolume);
 		numberCounterMap = MapFactory.newCounterMap(integerList);
@@ -657,6 +655,20 @@ public class MapExtensionsTest
 				{ "2", "value2" } };
 		final Map<String, String> map = MapExtensions.toMap(twoDimArray);
 		assertMapToArray(map, twoDimArray);
+	}
+
+	/**
+	 * Test for the Method {@link MapExtensions#toStringObjectMap(Object[][])}
+	 */
+	@Test
+	public void testToTwoDimensionalArrayStringObject()
+	{
+		final Object[][] twoDimArray = { { "1", Boolean.TRUE }, { "3", Boolean.FALSE },
+				{ "4", Boolean.TRUE }, { "2", Boolean.TRUE } };
+		final Map<String, Object> map = MapExtensions.toStringObjectMap(twoDimArray);
+
+		Object[][] toTwoDimensionalArray = ArrayExtensions.toTwoDimensionalArray(map);
+		Assert.assertEquals(toTwoDimensionalArray, twoDimArray);
 	}
 
 	/**

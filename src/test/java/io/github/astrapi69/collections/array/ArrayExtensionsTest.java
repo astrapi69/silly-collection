@@ -31,12 +31,18 @@ import static org.testng.internal.junit.ArrayAsserts.assertArrayEquals;
 
 import java.util.Arrays;
 import java.util.Iterator;
+import java.util.LinkedHashMap;
 import java.util.List;
+import java.util.Map;
 import java.util.Set;
 import java.util.stream.Stream;
 
 import org.meanbean.test.BeanTester;
+import org.testng.Assert;
 import org.testng.annotations.Test;
+
+import io.github.astrapi69.check.Argument;
+import io.github.astrapi69.collections.map.MapExtensions;
 
 /**
  * The unit test class for the class {@link ArrayExtensions}.
@@ -48,12 +54,47 @@ public class ArrayExtensionsTest
 {
 
 	/**
+	 * Converts the given two-dimensional array to a {@link Map} object
+	 *
+	 * @param <T>
+	 *            the generic type
+	 * @param twoDimArray
+	 *            The two-dimensional array
+	 * @return The {@link Map} object produced from the given two-dimensional array
+	 */
+	public static <T> Map<String, Object> toStringObjectMap(final Object[][] twoDimArray)
+	{
+		Argument.notNull(twoDimArray, "twoDimArray");
+		final Map<String, Object> map = new LinkedHashMap<>();
+		for (final Object[] element : twoDimArray)
+		{
+			final String key = (String)element[0];
+			final Object value = element[1];
+			map.put(key, value);
+		}
+		return map;
+	}
+
+	/**
+	 * Test for the Method {@link ArrayExtensions#toTwoDimensionalArray(Map, Class)}
+	 */
+	@Test
+	public void testToTwoDimensionalArray()
+	{
+		final String[][] twoDimArray = { { "1", "value1" }, { "3", "value3" }, { "4", "value4" },
+				{ "2", "value2" } };
+		final Map<String, String> map = MapExtensions.toGenericMap(twoDimArray);
+
+		String[][] toTwoDimensionalArray = ArrayExtensions.toTwoDimensionalArray(map, String.class);
+		Assert.assertEquals(toTwoDimensionalArray, twoDimArray);
+	}
+
+	/**
 	 * Test method for {@link ArrayExtensions#getLastIndex(Object[])}
 	 */
 	@Test
 	public void testGetLastIndexObjectArray()
 	{
-
 		int actual;
 		int expected;
 		Integer[] source;

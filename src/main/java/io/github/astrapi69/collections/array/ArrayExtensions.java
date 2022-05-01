@@ -24,8 +24,10 @@
  */
 package io.github.astrapi69.collections.array;
 
+import java.lang.reflect.Array;
 import java.util.Arrays;
 import java.util.List;
+import java.util.Map;
 import java.util.Set;
 import java.util.stream.Collectors;
 import java.util.stream.Stream;
@@ -772,6 +774,46 @@ public final class ArrayExtensions
 	public static <T> List<T> toList(final T[] array)
 	{
 		return asList(array);
+	}
+
+	/**
+	 * Converts the given {@link Map} object to a two-dimensional array
+	 *
+	 * @param <T>
+	 *            the generic type
+	 * @param map
+	 *            the map
+	 * @param cls
+	 *            the class
+	 * @return The two-dimensional array produced from the given {@link Map} object
+	 */
+	public static <T> T[][] toTwoDimensionalArray(final Map<T, T> map, Class<T> cls)
+	{
+		Argument.notNull(map, "map");
+		Argument.notNull(cls, "cls");
+		T[][] array = (T[][])Array.newInstance(cls, map.size(), 2);
+		int count = 0;
+		for (Map.Entry<T, T> entry : map.entrySet())
+		{
+			array[count][0] = entry.getKey();
+			array[count][1] = entry.getValue();
+			count++;
+		}
+		return array;
+	}
+
+	/**
+	 * Converts the given {@link Map} object to a two-dimensional array
+	 *
+	 * @param map
+	 *            the map
+	 * @return The two-dimensional array produced from the given {@link Map} object
+	 */
+	public static Object[][] toTwoDimensionalArray(Map<String, Object> map)
+	{
+		return map.entrySet().stream()
+			.map(entry -> new Object[] { entry.getKey(), entry.getValue() })
+			.toArray(Object[][]::new);
 	}
 
 }
