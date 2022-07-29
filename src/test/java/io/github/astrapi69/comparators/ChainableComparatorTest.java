@@ -30,6 +30,7 @@ import java.util.BitSet;
 import java.util.Comparator;
 import java.util.List;
 
+import io.github.astrapi69.comparator.BeanPropertyComparator;
 import org.testng.annotations.Test;
 
 import io.github.astrapi69.collections.list.ListFactory;

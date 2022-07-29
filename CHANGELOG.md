@@ -13,8 +13,10 @@ ADDED:
 
 CHANGED:
 
-- update of gradle-plugin dependency 'com.diffplug.spotless:spotless-plugin-gradle' to new patch
-  version 6.5.1
+- update of gradle-plugin dependency 'com.diffplug.spotless:spotless-plugin-gradle' to new minor version 6.9.0
+- update of dependency jobj-compare in new version 11
+- update of dependency jobj-core in new version 6
+- update of test dependency testng to new version 7.6.1
 
 Version 18.2
 -------------

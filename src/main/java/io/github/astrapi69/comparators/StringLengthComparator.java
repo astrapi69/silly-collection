@@ -24,6 +24,10 @@
  */
 package io.github.astrapi69.comparators;
 
+import io.github.astrapi69.comparator.NullCheckComparator;
+import io.github.astrapi69.comparator.SortOrder;
+import io.github.astrapi69.comparator.SortOrderComparator;
+
 import java.util.Comparator;
 
 /**

@@ -24,6 +24,9 @@
  */
 package io.github.astrapi69.comparators;
 
+import io.github.astrapi69.comparator.ComparatorExtensions;
+import io.github.astrapi69.comparator.SortOrder;
+
 import java.util.Comparator;
 import java.util.Date;
 

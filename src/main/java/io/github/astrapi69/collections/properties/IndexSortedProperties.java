@@ -33,7 +33,7 @@ import java.util.Set;
 
 import io.github.astrapi69.collections.CollectionExtensions;
 import io.github.astrapi69.collections.list.ListFactory;
-import io.github.astrapi69.comparators.NullCheckComparator;
+import io.github.astrapi69.comparator.NullCheckComparator;
 
 /**
  * The class {@link IndexSortedProperties} extends SortedProperties and holds an intern list with

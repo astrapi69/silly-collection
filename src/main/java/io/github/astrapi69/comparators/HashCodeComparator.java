@@ -24,6 +24,8 @@
  */
 package io.github.astrapi69.comparators;
 
+import io.github.astrapi69.comparator.ComparatorExtensions;
+
 import java.io.Serializable;
 import java.util.Comparator;
 

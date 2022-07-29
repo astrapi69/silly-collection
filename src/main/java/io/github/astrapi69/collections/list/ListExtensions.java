@@ -42,8 +42,8 @@ import io.github.astrapi69.collections.CollectionExtensions;
 import io.github.astrapi69.collections.array.ArrayFactory;
 import io.github.astrapi69.collections.map.MapFactory;
 import io.github.astrapi69.collections.modifications.ModifiedCollections;
-import io.github.astrapi69.comparators.BeanPropertyComparator;
-import io.github.astrapi69.comparators.SortOrderComparator;
+import io.github.astrapi69.comparator.BeanPropertyComparator;
+import io.github.astrapi69.comparator.SortOrderComparator;
 
 /**
  * Extensions class for use with {@link List} objects.

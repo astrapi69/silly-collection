@@ -33,7 +33,7 @@ import java.util.TreeSet;
 import java.util.Vector;
 
 import io.github.astrapi69.collections.list.VectorExtensions;
-import io.github.astrapi69.comparators.NullCheckComparator;
+import io.github.astrapi69.comparator.NullCheckComparator;
 
 /**
  * The class {@link SortedProperties} extends Properties and adds sort functionality for the keys.

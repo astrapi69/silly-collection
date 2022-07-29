@@ -24,6 +24,8 @@
  */
 package io.github.astrapi69.comparators;
 
+import io.github.astrapi69.comparator.NullCheckComparator;
+
 import java.util.Comparator;
 import java.util.Locale;
 
