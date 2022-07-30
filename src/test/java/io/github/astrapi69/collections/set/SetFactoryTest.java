@@ -35,12 +35,12 @@ import java.util.SortedSet;
 import java.util.function.Supplier;
 import java.util.stream.Collectors;
 
+import io.github.astrapi69.comparator.object.StringLengthComparator;
 import org.meanbean.test.BeanTester;
 import org.testng.annotations.Test;
 
 import io.github.astrapi69.collections.list.ListFactory;
 import io.github.astrapi69.comparator.SortOrder;
-import io.github.astrapi69.comparators.StringLengthComparator;
 
 /**
  * The unit test class for the class {@link SetFactory}.

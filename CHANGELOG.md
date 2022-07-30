@@ -19,6 +19,7 @@ CHANGED:
 - update of dependency jobj-compare in new version 11
 - update of dependency jobj-core in new version 6
 - update of test dependency testng to new version 7.6.1
+- update of dependency comparator-extensions to new minor version 1.1
 
 Version 18.2
 -------------
