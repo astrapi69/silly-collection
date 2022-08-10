@@ -3,20 +3,17 @@
 <suite name="Suite">
     <test name="Test">
         <classes>
-            <class name="io.github.astrapi69.collections.array.ArrayExtensionsTest"/>
-            <class name="io.github.astrapi69.collections.iterators.ArrayIteratorTest"/>
-            <class name="io.github.astrapi69.collections.iterators.EnumerationIteratorTest"/>
-            <class name="io.github.astrapi69.collections.list.ListExtensionsTest"/>
-            <class name="io.github.astrapi69.collections.list.VectorExtensionsTest"/>
-            <class name="io.github.astrapi69.collections.map.InsertionOrderMapTest"/>
-            <class name="io.github.astrapi69.collections.map.MapExtensionsTest"/>
-            <class name="io.github.astrapi69.collections.modifications.ModifiedCollectionsTest"/>
-            <class name="io.github.astrapi69.collections.modifications.ModifiedStateTest"/>
-            <class name="io.github.astrapi69.collections.set.InsertionOrderSetTest"/>
-            <class name="io.github.astrapi69.collections.set.SetExtensionsTest"/>
-            <class name="io.github.astrapi69.comparators.DateComparatorTest"/>
-            <class name="io.github.astrapi69.comparators.DescendingDateComparatorTest"/>
-            <class name="io.github.astrapi69.comparators.HashCodeComparatorTest"/>
+            <class name="io.github.astrapi69.collection.array.ArrayExtensionsTest"/>
+            <class name="io.github.astrapi69.collection.iterator.ArrayIteratorTest"/>
+            <class name="io.github.astrapi69.collection.iterator.EnumerationIteratorTest"/>
+            <class name="io.github.astrapi69.collection.list.ListExtensionsTest"/>
+            <class name="io.github.astrapi69.collection.list.VectorExtensionsTest"/>
+            <class name="io.github.astrapi69.collection.map.InsertionOrderMapTest"/>
+            <class name="io.github.astrapi69.collection.map.MapExtensionsTest"/>
+            <class name="io.github.astrapi69.collection.modification.ModifiedCollectionsTest"/>
+            <class name="io.github.astrapi69.collection.modification.ModifiedStateTest"/>
+            <class name="io.github.astrapi69.collection.set.InsertionOrderSetTest"/>
+            <class name="io.github.astrapi69.collection.set.SetExtensionsTest"/>
         </classes>
     </test> <!-- Test -->
 </suite> <!-- Suite -->
