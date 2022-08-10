@@ -1,6 +1,29 @@
 ## Change log
 ----------------------
 
+Version 19
+-------------
+
+ADDED:
+
+- new dependency comparator-extensions in new minor version 1.2
+- new method that converts a generic map to a two-dimensional array where key an value are from the
+  same type
+- new method that converts a string(as key) and an object(as value) map to a two-dimensional array
+- new method that converts a a two-dimensional array to a string(as key) and an object(as value) map
+
+CHANGED:
+
+- update to jdk version 11
+- update gradle to new version 7.5.1
+- update of gradle-plugin dependency 'com.diffplug.spotless:spotless-plugin-gradle' to new version
+  6.9.1
+- update of dependency jobj-compare in new version 11.1
+- update of dependency jobj-core in new version 6
+- update of test dependency testng to new version 7.6.1
+- update of dependency comparator-extensions to new minor version 1.1
+- rename all packages that had plural form to singular form
+
 Version 18.2
 -------------
 
