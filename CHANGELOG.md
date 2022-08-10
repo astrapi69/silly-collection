@@ -16,7 +16,7 @@ CHANGED:
 
 - update to jdk version 11
 - update gradle to new version 7.5.1
-- update of gradle-plugin dependency 'com.diffplug.spotless:spotless-plugin-gradle' to new minor version 6.9.0
+- update of gradle-plugin dependency 'com.diffplug.spotless:spotless-plugin-gradle' to new version 6.9.1
 - update of dependency jobj-compare in new version 11.1
 - update of dependency jobj-core in new version 6
 - update of test dependency testng to new version 7.6.1
