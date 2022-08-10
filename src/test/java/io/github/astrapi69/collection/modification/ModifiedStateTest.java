@@ -29,10 +29,11 @@ import static org.testng.AssertJUnit.assertTrue;
 import java.lang.reflect.InvocationTargetException;
 import java.util.List;
 
-import io.github.astrapi69.collection.list.ListFactory;
 import org.meanbean.test.BeanTestException;
 import org.meanbean.test.BeanTester;
 import org.testng.annotations.Test;
+
+import io.github.astrapi69.collection.list.ListFactory;
 
 /**
  * The unit test class for the class {@link ModifiedState}.

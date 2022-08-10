@@ -29,10 +29,11 @@ import static org.testng.AssertJUnit.assertTrue;
 import java.util.Arrays;
 import java.util.List;
 
+import org.testng.annotations.Test;
+
 import io.github.astrapi69.collection.CollectionExtensions;
 import io.github.astrapi69.collection.array.ArrayFactory;
 import io.github.astrapi69.collection.list.ListFactory;
-import org.testng.annotations.Test;
 
 /**
  * The unit test class for the class {@link ModifiedCollections}

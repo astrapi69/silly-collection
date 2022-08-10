@@ -37,12 +37,12 @@ import java.util.Map.Entry;
 import java.util.Properties;
 import java.util.Set;
 
-import io.github.astrapi69.collection.array.ArrayExtensions;
 import org.meanbean.test.BeanTester;
 import org.testng.Assert;
 import org.testng.annotations.Test;
 
 import io.github.astrapi69.collection.CollectionExtensions;
+import io.github.astrapi69.collection.array.ArrayExtensions;
 import io.github.astrapi69.collection.list.ListFactory;
 import io.github.astrapi69.collection.set.SetFactory;
 

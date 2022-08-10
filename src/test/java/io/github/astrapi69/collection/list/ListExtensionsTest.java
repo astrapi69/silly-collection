@@ -40,13 +40,13 @@ import java.util.List;
 import java.util.Map;
 import java.util.Set;
 
-import io.github.astrapi69.collection.array.ArrayFactory;
 import org.meanbean.test.BeanTester;
 import org.testng.annotations.AfterMethod;
 import org.testng.annotations.BeforeMethod;
 import org.testng.annotations.Test;
 
 import io.github.astrapi69.collection.CollectionExtensions;
+import io.github.astrapi69.collection.array.ArrayFactory;
 import io.github.astrapi69.collection.map.MapFactory;
 import io.github.astrapi69.collection.modification.ModifiedCollections;
 import io.github.astrapi69.collection.set.SetFactory;

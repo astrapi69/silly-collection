@@ -31,10 +31,11 @@ import java.util.Arrays;
 import java.util.Collection;
 import java.util.Set;
 
-import io.github.astrapi69.collection.array.ArrayFactory;
-import io.github.astrapi69.collection.list.ListFactory;
 import org.meanbean.test.BeanTester;
 import org.testng.annotations.Test;
+
+import io.github.astrapi69.collection.array.ArrayFactory;
+import io.github.astrapi69.collection.list.ListFactory;
 
 /**
  * The unit test class for the class {@link SetExtensionsTest}.
