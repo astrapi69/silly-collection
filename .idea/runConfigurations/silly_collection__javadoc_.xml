@@ -1,5 +1,5 @@
 <component name="ProjectRunConfigurationManager">
-  <configuration default="false" name="silly-collections [clean publishMavenJavaPublicationToMavenLocal publish tagRelease]" type="GradleRunConfiguration" factoryName="Gradle">
+  <configuration default="false" name="silly-collection [javadoc]" type="GradleRunConfiguration" factoryName="Gradle">
     <ExternalSystemSettings>
       <option name="executionName" />
       <option name="externalProjectPath" value="$PROJECT_DIR$" />
@@ -10,10 +10,7 @@
       </option>
       <option name="taskNames">
         <list>
-          <option value="clean" />
-          <option value="publishMavenJavaPublicationToMavenLocal" />
-          <option value="publish" />
-          <option value="tagRelease" />
+          <option value="javadoc" />
         </list>
       </option>
       <option name="vmOptions" value="" />
