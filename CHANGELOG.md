@@ -1,6 +1,14 @@
 ## Change log
 ----------------------
 
+Version 20
+-------------
+
+CHANGED:
+
+- rename of module and repository from plural-form silly-collections to singular-form
+  silly-collection
+
 Version 19
 -------------
 
