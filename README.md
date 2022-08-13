@@ -22,7 +22,8 @@ Utility library for collections, comparators and iterator classes.
 > Share this library with friends on Twitter and everywhere else you can
 >
 > If you love this
-> project [![donation](https://img.shields.io/badge/donate-❤-ff2244.svg)](https://www.paypal.com/cgi-bin/webscr?cmd=_s-xclick&hosted_button_id=GVBTWLRAZ7HB8)
+>
+project [![donation](https://img.shields.io/badge/donate-❤-ff2244.svg)](https://www.paypal.com/cgi-bin/webscr?cmd=_s-xclick&hosted_button_id=GVBTWLRAZ7HB8)
 
 ## Maven dependency
 
@@ -38,7 +39,7 @@ Than you can add the dependency to your dependencies:
     <properties>
             ...
         <!-- SILLY-COLLECTION version -->
-        <silly-collection.version>19</silly-collection.version>
+        <silly-collection.version>20</silly-collection.version>
             ...
     </properties>
             ...
@@ -62,7 +63,7 @@ define version in file gradle.properties
 
 ```
 
-sillyCollectionVersion=19
+sillyCollectionVersion=20
 ```
 
 or in build.gradle ext area
@@ -70,7 +71,7 @@ or in build.gradle ext area
 ```
 ext {
             ...
-    sillyCollectionVersion = "19"
+    sillyCollectionVersion = "0"
             ...
 }
 ```
