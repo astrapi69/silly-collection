@@ -2,11 +2,11 @@
 
 <div style="text-align: center">
 
-[![Java CI with Gradle](https://github.com/lightblueseas/silly-collections/actions/workflows/gradle.yml/badge.svg)](https://github.com/lightblueseas/silly-collections/actions/workflows/gradle.yml)
-[![Coverage Status](https://coveralls.io/repos/github/lightblueseas/silly-collections/badge.svg?branch=master)](https://coveralls.io/github/lightblueseas/silly-collections?branch=master)
-[![Open Issues](https://img.shields.io/github/issues/lightblueseas/silly-collections.svg?style=flat)](https://github.com/lightblueseas/silly-collections/issues)
-[![Maven Central](https://maven-badges.herokuapp.com/maven-central/io.github.astrapi69/silly-collections/badge.svg)](https://maven-badges.herokuapp.com/maven-central/io.github.astrapi69/silly-collections)
-[![Javadocs](http://www.javadoc.io/badge/io.github.astrapi69/silly-collections.svg)](http://www.javadoc.io/doc/io.github.astrapi69/silly-collections)
+[![Java CI with Gradle](https://github.com/lightblueseas/silly-collection/actions/workflows/gradle.yml/badge.svg)](https://github.com/lightblueseas/silly-collection/actions/workflows/gradle.yml)
+[![Coverage Status](https://coveralls.io/repos/github/lightblueseas/silly-collection/badge.svg?branch=master)](https://coveralls.io/github/lightblueseas/silly-collection?branch=master)
+[![Open Issues](https://img.shields.io/github/issues/lightblueseas/silly-collection.svg?style=flat)](https://github.com/lightblueseas/silly-collection/issues)
+[![Maven Central](https://maven-badges.herokuapp.com/maven-central/io.github.astrapi69/silly-collection/badge.svg)](https://maven-badges.herokuapp.com/maven-central/io.github.astrapi69/silly-collection)
+[![Javadocs](http://www.javadoc.io/badge/io.github.astrapi69/silly-collection.svg)](http://www.javadoc.io/doc/io.github.astrapi69/silly-collection)
 [![MIT license](http://img.shields.io/badge/license-MIT-brightgreen.svg?style=flat)](http://opensource.org/licenses/MIT)
 [![Donate](https://img.shields.io/badge/donate-❤-ff2244.svg)](https://www.paypal.com/cgi-bin/webscr?cmd=_s-xclick&hosted_button_id=GVBTWLRAZ7HB8)
 
@@ -16,7 +16,7 @@ Utility library for collections, comparators and iterator classes.
 
 > Please support this project by simply putting a
 > Github <!-- Place this tag where you want the button to render. -->
-<a class="github-button" href="https://github.com/lightblueseas/silly-collections" data-icon="octicon-star" aria-label="Star lightblueseas/silly-collections on GitHub">
+<a class="github-button" href="https://github.com/lightblueseas/silly-collection" data-icon="octicon-star" aria-label="Star lightblueseas/silly-collection on GitHub">
 > Star ⭐</a>
 >
 > Share this library with friends on Twitter and everywhere else you can
@@ -27,28 +27,28 @@ Utility library for collections, comparators and iterator classes.
 ## Maven dependency
 
 Maven dependency is now on sonatype. Check
-out [sonatype repository](https://oss.sonatype.org/index.html#nexus-search;gav~io.github.astrapi69~silly-collections~~~)
+out [sonatype repository](https://oss.sonatype.org/index.html#nexus-search;gav~io.github.astrapi69~silly-collection~~~)
 for latest snapshots and releases.
 
 Add the following maven dependency to your project `pom.xml` if you want to import the core
-functionality of silly-collections:
+functionality of silly-collection:
 
 Than you can add the dependency to your dependencies:
 
     <properties>
             ...
-        <!-- SILLY-COLLECTIONS version -->
-        <silly-collections.version>19</silly-collections.version>
+        <!-- SILLY-COLLECTION version -->
+        <silly-collection.version>19</silly-collection.version>
             ...
     </properties>
             ...
         <dependencies>
             ...
-            <!-- SILLY-COLLECTIONS DEPENDENCY -->
+            <!-- SILLY-COLLECTION DEPENDENCY -->
             <dependency>
                 <groupId>io.github.astrapi69</groupId>
-                <artifactId>silly-collections</artifactId>
-                <version>${silly-collections.version}</version>
+                <artifactId>silly-collection</artifactId>
+                <version>${silly-collection.version}</version>
             </dependency>
             ...
         </dependencies>
@@ -56,13 +56,13 @@ Than you can add the dependency to your dependencies:
 ## gradle dependency
 
 You can first define the version in the ext section and add than the following gradle dependency to
-your project `build.gradle` if you want to import the core functionality of silly-collections:
+your project `build.gradle` if you want to import the core functionality of silly-collection:
 
 define version in file gradle.properties
 
 ```
 
-sillyCollectionsVersion=19
+sillyCollectionVersion=19
 ```
 
 or in build.gradle ext area
@@ -70,7 +70,7 @@ or in build.gradle ext area
 ```
 ext {
             ...
-    sillyCollectionsVersion = "19"
+    sillyCollectionVersion = "19"
             ...
 }
 ```
@@ -80,7 +80,7 @@ then add the dependency to the dependencies area
 ```
 dependencies {
             ...
-    implementation("io.github.astrapi69:silly-collections:$sillyCollectionsVersion")
+    implementation("io.github.astrapi69:silly-collection:$sillyCollectionVersion")
             ...
 }
 ```
@@ -145,13 +145,13 @@ alt="Donation Monero Wallet" width="250"/>
 
 or over flattr:
 
-<a href="https://flattr.com/submit/auto?fid=r7vp62&url=https%3A%2F%2Fgithub.com%2Flightblueseas%2Fsilly-collections" target="_blank">
+<a href="https://flattr.com/submit/auto?fid=r7vp62&url=https%3A%2F%2Fgithub.com%2Flightblueseas%2Fsilly-collection" target="_blank">
 <img src="http://api.flattr.com/button/flattr-badge-large.png" alt="Flattr this" title="Flattr this" style="border: none" />
 </a>
 
 ## License
 
-The source code comes under the liberal MIT License, making silly-collections great for all types of
+The source code comes under the liberal MIT License, making silly-collection great for all types of
 applications.
 
 ## Note
@@ -160,7 +160,7 @@ No animals were harmed in the making of this library.
 
 ## Semantic Versioning
 
-The versions of silly-collections are maintained with the Simplified Semantic Versioning guidelines.
+The versions of silly-collection are maintained with the Simplified Semantic Versioning guidelines.
 
 Release version numbers will be incremented in the following format:
 
@@ -172,25 +172,25 @@ this [wiki page](https://github.com/lightblueseas/mvn-parent-projects/wiki/Simpl
 
 ## Want to Help and improve it? ###
 
-The source code for silly-collections are on GitHub. Please feel free to fork and send pull
+The source code for silly-collection are on GitHub. Please feel free to fork and send pull
 requests!
 
 Create your own fork
-of [lightblueseas/silly-collections/fork](https://github.com/lightblueseas/silly-collections/fork)
+of [lightblueseas/silly-collection/fork](https://github.com/lightblueseas/silly-collection/fork)
 
 To share your
-changes, [submit a pull request](https://github.com/lightblueseas/silly-collections/pull/new/develop)
+changes, [submit a pull request](https://github.com/lightblueseas/silly-collection/pull/new/develop)
 .
 
 Don't forget to add new units tests on your changes.
 
 ## Contacting the Developers
 
-Do not hesitate to contact the silly-collections developers with your questions, concerns, comments,
+Do not hesitate to contact the silly-collection developers with your questions, concerns, comments,
 bug reports, or feature requests.
 
 - Feature requests, questions and bug reports can be reported at
-  the [issues page](https://github.com/lightblueseas/silly-collections/issues).
+  the [issues page](https://github.com/lightblueseas/silly-collection/issues).
 
 ## Similar projects
 
@@ -206,18 +206,18 @@ Open Source:
 
 |**Nexus Sonatype repositories**|
 |     :---:      |
-|[![sonatype repository](https://img.shields.io/nexus/r/https/oss.sonatype.org/io.github.astrapi69/silly-collections.svg?style=for-the-badge)](https://oss.sonatype.org/index.html#nexus-search;gav~io.github.astrapi69~silly-collections~~~)|
+|[![sonatype repository](https://img.shields.io/nexus/r/https/oss.sonatype.org/io.github.astrapi69/silly-collection.svg?style=for-the-badge)](https://oss.sonatype.org/index.html#nexus-search;gav~io.github.astrapi69~silly-collection~~~)|
 |Special thanks to [sonatype repository](https://www.sonatype.com) for providing a free maven repository service for open source projects|
 |     <img width=1000/>     |
 
 |**coveralls.io**|
 |     :---:      |
-|[![Coverage Status](https://coveralls.io/repos/github/lightblueseas/silly-collections/badge.svg?branch=master)](https://coveralls.io/github/lightblueseas/silly-collections?branch=master)|
+|[![Coverage Status](https://coveralls.io/repos/github/lightblueseas/silly-collection/badge.svg?branch=master)](https://coveralls.io/github/lightblueseas/silly-collection?branch=master)|
 |Special thanks to [coveralls.io](https://coveralls.io) for providing a free code coverage for open source projects|
 |     <img width=1000/>     |
 
 |**javadoc.io**|
 |     :---:      |
-|[![Javadocs](http://www.javadoc.io/badge/io.github.astrapi69/silly-collections.svg)](http://www.javadoc.io/doc/io.github.astrapi69/silly-collections)|
+|[![Javadocs](http://www.javadoc.io/badge/io.github.astrapi69/silly-collection.svg)](http://www.javadoc.io/doc/io.github.astrapi69/silly-collection)|
 |Special thanks to [javadoc.io](http://www.javadoc.io) for providing a free javadoc documentation for open source projects|
 |     <img width=1000/>     |

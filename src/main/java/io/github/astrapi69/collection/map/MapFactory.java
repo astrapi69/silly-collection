@@ -38,7 +38,7 @@ import org.apache.commons.collections4.map.LazyMap;
 
 import io.github.astrapi69.check.Argument;
 import io.github.astrapi69.collection.list.ListFactory;
-import io.github.astrapi69.collections.pairs.KeyValuePair;
+import io.github.astrapi69.collection.pair.KeyValuePair;
 
 /**
  * The factory class {@link MapFactory} provides factory methods for create new {@link Map} objects

@@ -4,6 +4,10 @@
 Version 19.1-SNAPSHOT
 -------------
 
+CHANGED:
+
+- rename of module and repository from plural-form silly-collections to singular-form silly-collection
+
 Version 19
 -------------
 
