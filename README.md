@@ -3,6 +3,7 @@
 <div style="text-align: center">
 
 [![Java CI with Gradle](https://github.com/lightblueseas/silly-collection/actions/workflows/gradle.yml/badge.svg)](https://github.com/lightblueseas/silly-collection/actions/workflows/gradle.yml)
+[![Coverage Status](https://codecov.io/gh/lightblueseas/silly-collection/branch/develop/graph/badge.svg)](https://codecov.io/gh/lightblueseas/silly-collection)
 [![Coverage Status](https://coveralls.io/repos/github/lightblueseas/silly-collection/badge.svg?branch=master)](https://coveralls.io/github/lightblueseas/silly-collection?branch=master)
 [![Open Issues](https://img.shields.io/github/issues/lightblueseas/silly-collection.svg?style=flat)](https://github.com/lightblueseas/silly-collection/issues)
 [![Maven Central](https://maven-badges.herokuapp.com/maven-central/io.github.astrapi69/silly-collection/badge.svg)](https://maven-badges.herokuapp.com/maven-central/io.github.astrapi69/silly-collection)
@@ -209,12 +210,6 @@ Open Source:
 |     :---:      |
 |[![sonatype repository](https://img.shields.io/nexus/r/https/oss.sonatype.org/io.github.astrapi69/silly-collection.svg?style=for-the-badge)](https://oss.sonatype.org/index.html#nexus-search;gav~io.github.astrapi69~silly-collection~~~)|
 |Special thanks to [sonatype repository](https://www.sonatype.com) for providing a free maven repository service for open source projects|
-|     <img width=1000/>     |
-
-|**coveralls.io**|
-|     :---:      |
-|[![Coverage Status](https://coveralls.io/repos/github/lightblueseas/silly-collection/badge.svg?branch=master)](https://coveralls.io/github/lightblueseas/silly-collection?branch=master)|
-|Special thanks to [coveralls.io](https://coveralls.io) for providing a free code coverage for open source projects|
 |     <img width=1000/>     |
 
 |**javadoc.io**|
