@@ -4,7 +4,6 @@
 
 [![Java CI with Gradle](https://github.com/lightblueseas/silly-collection/actions/workflows/gradle.yml/badge.svg)](https://github.com/lightblueseas/silly-collection/actions/workflows/gradle.yml)
 [![Coverage Status](https://codecov.io/gh/lightblueseas/silly-collection/branch/develop/graph/badge.svg)](https://codecov.io/gh/lightblueseas/silly-collection)
-[![Coverage Status](https://coveralls.io/repos/github/lightblueseas/silly-collection/badge.svg?branch=master)](https://coveralls.io/github/lightblueseas/silly-collection?branch=master)
 [![Open Issues](https://img.shields.io/github/issues/lightblueseas/silly-collection.svg?style=flat)](https://github.com/lightblueseas/silly-collection/issues)
 [![Maven Central](https://maven-badges.herokuapp.com/maven-central/io.github.astrapi69/silly-collection/badge.svg)](https://maven-badges.herokuapp.com/maven-central/io.github.astrapi69/silly-collection)
 [![Javadocs](http://www.javadoc.io/badge/io.github.astrapi69/silly-collection.svg)](http://www.javadoc.io/doc/io.github.astrapi69/silly-collection)
