@@ -8,6 +8,14 @@ ADDED:
 
 - new method in SetFactory with collection to exclude
 
+
+CHANGED:
+
+- update of gradle-plugin dependency 'com.diffplug.spotless:spotless-plugin-gradle' to new version
+  6.10.0
+- update of dependency jobj-core in new version 6.1
+- update of test dependency test-object to new version 7.1
+
 Version 20
 -------------
 
