@@ -59,8 +59,8 @@ public final class SetFactory
 	 *            the elements to add in the new {@link HashSet}
 	 * @return the new {@link HashSet}
 	 */
-	@SafeVarargs public static <T> Set<T> newHashSet(final Collection<T> collection,
-		final T... elements)
+	@SafeVarargs
+	public static <T> Set<T> newHashSet(final Collection<T> collection, final T... elements)
 	{
 		final Set<T> set;
 		if (CollectionExtensions.isNotEmpty(collection))
@@ -85,13 +85,15 @@ public final class SetFactory
 	 *            the generic type of the elements
 	 * @param collection
 	 *            the optional collection that will be added to the new list
-	 * @param exclude the element that have to be excluded
+	 * @param exclude
+	 *            the element that have to be excluded
 	 * @param elements
 	 *            the elements to add in the new {@link HashSet}
 	 * @return the new {@link HashSet}
 	 */
-	@SafeVarargs public static <T> Set<T> newHashSet(final Collection<T> collection,
-		final Collection<T> exclude, final T... elements)
+	@SafeVarargs
+	public static <T> Set<T> newHashSet(final Collection<T> collection, final Collection<T> exclude,
+		final T... elements)
 	{
 		final Set<T> set = newHashSet(collection, elements);
 		set.removeAll(exclude);
@@ -107,7 +109,8 @@ public final class SetFactory
 	 *            the elements to add in the new {@link HashSet}
 	 * @return the new {@link HashSet}
 	 */
-	@SafeVarargs public static <T> Set<T> newHashSet(final T... elements)
+	@SafeVarargs
+	public static <T> Set<T> newHashSet(final T... elements)
 	{
 		return newHashSet(null, elements);
 	}
@@ -123,7 +126,8 @@ public final class SetFactory
 	 *            the elements to add in the new {@link InsertionOrderSet}
 	 * @return the new {@link InsertionOrderSet}
 	 */
-	@SafeVarargs public static <T> Set<T> newInsertionOrderSet(final Collection<T> collection,
+	@SafeVarargs
+	public static <T> Set<T> newInsertionOrderSet(final Collection<T> collection,
 		final T... elements)
 	{
 		final Set<T> set;
@@ -151,7 +155,8 @@ public final class SetFactory
 	 *            the elements to add in the new {@link InsertionOrderSet}
 	 * @return the new {@link InsertionOrderSet}
 	 */
-	@SafeVarargs public static <T> Set<T> newInsertionOrderSet(final T... elements)
+	@SafeVarargs
+	public static <T> Set<T> newInsertionOrderSet(final T... elements)
 	{
 		return newInsertionOrderSet(null, elements);
 	}
@@ -167,8 +172,8 @@ public final class SetFactory
 	 *            the elements to add in the new {@link LinkedHashSet}
 	 * @return the new {@link HashSet}
 	 */
-	@SafeVarargs public static <T> Set<T> newLinkedHashSet(final Collection<T> collection,
-		final T... elements)
+	@SafeVarargs
+	public static <T> Set<T> newLinkedHashSet(final Collection<T> collection, final T... elements)
 	{
 		final Set<T> set;
 		if (CollectionExtensions.isNotEmpty(collection))
@@ -195,7 +200,8 @@ public final class SetFactory
 	 *            the elements to add in the new {@link HashSet}
 	 * @return the new {@link LinkedHashSet}
 	 */
-	@SafeVarargs public static <T> Set<T> newLinkedHashSet(final T... elements)
+	@SafeVarargs
+	public static <T> Set<T> newLinkedHashSet(final T... elements)
 	{
 		return newLinkedHashSet(null, elements);
 	}
@@ -213,7 +219,8 @@ public final class SetFactory
 	 *            the elements to add in the new {@link TreeSet}
 	 * @return the new {@link TreeSet}
 	 */
-	@SafeVarargs public static <T> SortedSet<T> newTreeSet(final Collection<T> collection,
+	@SafeVarargs
+	public static <T> SortedSet<T> newTreeSet(final Collection<T> collection,
 		final Comparator<T> comparator, final T... elements)
 	{
 		final SortedSet<T> sortedSet;
@@ -247,8 +254,8 @@ public final class SetFactory
 	 *            the elements to add in the new {@link TreeSet}
 	 * @return the new {@link SortedSet}
 	 */
-	@SafeVarargs public static <T> SortedSet<T> newTreeSet(final Collection<T> collection,
-		final T... elements)
+	@SafeVarargs
+	public static <T> SortedSet<T> newTreeSet(final Collection<T> collection, final T... elements)
 	{
 		return newTreeSet(collection, null, elements);
 	}
@@ -264,8 +271,8 @@ public final class SetFactory
 	 *            the elements to add in the new {@link TreeSet}
 	 * @return the new {@link SortedSet}
 	 */
-	@SafeVarargs public static <T> SortedSet<T> newTreeSet(final Comparator<T> comparator,
-		final T... elements)
+	@SafeVarargs
+	public static <T> SortedSet<T> newTreeSet(final Comparator<T> comparator, final T... elements)
 	{
 		Argument.notNull(comparator, "comparator");
 		return newTreeSet(ListFactory.newArrayList(), comparator, elements);
@@ -280,7 +287,8 @@ public final class SetFactory
 	 *            the elements to add in the new {@link TreeSet}
 	 * @return the new {@link SortedSet}
 	 */
-	@SafeVarargs public static <T> SortedSet<T> newTreeSet(final T... elements)
+	@SafeVarargs
+	public static <T> SortedSet<T> newTreeSet(final T... elements)
 	{
 		return newTreeSet(ListFactory.newArrayList(), elements);
 	}

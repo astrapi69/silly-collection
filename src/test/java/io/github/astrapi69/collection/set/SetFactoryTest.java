@@ -99,12 +99,14 @@ public class SetFactoryTest
 		expected = 1;
 		assertEquals(actual, expected);
 
-		set = SetFactory.newHashSet((Collection<String>)ListFactory.newArrayList("foo", "fasel"), ListFactory.newArrayList("foo"), "foo", "bar", "foo");
+		set = SetFactory.newHashSet((Collection<String>)ListFactory.newArrayList("foo", "fasel"),
+			ListFactory.newArrayList("foo"), "foo", "bar", "foo");
 		actual = set.size();
 		expected = 2;
 		assertEquals(actual, expected);
 
-		set = SetFactory.newHashSet((Collection<String>)ListFactory.newArrayList("foo", "fasel"), ListFactory.newArrayList("foo", "fasel"));
+		set = SetFactory.newHashSet((Collection<String>)ListFactory.newArrayList("foo", "fasel"),
+			ListFactory.newArrayList("foo", "fasel"));
 		actual = set.size();
 		expected = 0;
 		assertEquals(actual, expected);
