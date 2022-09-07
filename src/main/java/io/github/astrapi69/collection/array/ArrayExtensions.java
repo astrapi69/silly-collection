@@ -126,7 +126,7 @@ public final class ArrayExtensions
 	}
 
 	/**
-	 * Returns <tt>true</tt> if and only if the given element is in the given array
+	 * Returns <code>true</code> if and only if the given element is in the given array
 	 *
 	 * @param <T>
 	 *            the generic type
@@ -134,8 +134,8 @@ public final class ArrayExtensions
 	 *            the array
 	 * @param element
 	 *            the element
-	 * @return <tt>true</tt> if and only if the given element is in the given array otherwise
-	 *         <tt>false</tt>
+	 * @return <code>true</code> if and only if the given element is in the given array otherwise
+	 *         <code>false</code>
 	 */
 	public static <T> boolean contains(final T[] array, final T element)
 	{
@@ -174,7 +174,7 @@ public final class ArrayExtensions
 	}
 
 	/**
-	 * Returns <tt>true</tt> if at least one of given elements is in the given array
+	 * Returns <code>true</code> if at least one of given elements is in the given array
 	 *
 	 * @param <T>
 	 *            the generic type
@@ -182,8 +182,8 @@ public final class ArrayExtensions
 	 *            the array
 	 * @param elements
 	 *            the elements to check if is containing in the given array
-	 * @return <tt>true</tt> if at least one of given elements is in the given array otherwise
-	 *         <tt>false</tt>
+	 * @return <code>true</code> if at least one of given elements is in the given array otherwise
+	 *         <code>false</code>
 	 */
 	@SafeVarargs
 	public static <T> boolean containsAtLeastOne(final T[] array, final T... elements)

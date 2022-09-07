@@ -7,7 +7,7 @@ Version 20.1-SNAPSHOT
 ADDED:
 
 - new method in SetFactory with collection to exclude
-  
+
 Version 20
 -------------
 

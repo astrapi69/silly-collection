@@ -46,8 +46,8 @@ public final class CollectionExtensions
 	}
 
 	/**
-	 * Returns <tt>true</tt> if the given {@link Collection} contains at least one object of the
-	 * given objects otherwise it returns <tt>false</tt>
+	 * Returns <code>true</code> if the given {@link Collection} contains at least one object of the
+	 * given objects otherwise it returns <code>false</code>
 	 *
 	 * @param <T>
 	 *            the generic type
@@ -55,8 +55,8 @@ public final class CollectionExtensions
 	 *            the collection
 	 * @param objects
 	 *            the objects for check if there are containing in the given collection
-	 * @return <tt>true</tt> if the given {@link Collection} contains at least one object of the
-	 *         given objects otherwise it returns <tt>false</tt>.
+	 * @return <code>true</code> if the given {@link Collection} contains at least one object of the
+	 *         given objects otherwise it returns <code>false</code>.
 	 */
 	@SafeVarargs
 	public static <T> boolean containsAtLeastOne(Collection<T> collection, T... objects)
