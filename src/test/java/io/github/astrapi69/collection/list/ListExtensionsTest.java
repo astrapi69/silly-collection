@@ -39,6 +39,7 @@ import java.util.Enumeration;
 import java.util.List;
 import java.util.Map;
 import java.util.Set;
+import java.util.function.Function;
 
 import org.meanbean.test.BeanTester;
 import org.testng.annotations.AfterMethod;
@@ -773,7 +774,7 @@ public class ListExtensionsTest
 	}
 
 	/**
-	 * Test the method {@link ListExtensions#sortByProperty(List, String, boolean)}
+	 * Test the method {@link ListExtensions#sortByProperty(List, Function, boolean)}
 	 */
 	@Test
 	public void testSortByProperty()
@@ -805,7 +806,7 @@ public class ListExtensionsTest
 		assertEquals("Index of person 'miraculix' should be <2> but was <"
 			+ persons.indexOf(miraculix) + ">.", 2, persons.indexOf(miraculix));
 
-		ListExtensions.sortByProperty(persons, "name", true);
+		ListExtensions.sortByProperty(persons, Person::getName, true);
 		// Sorted Persons by name in ascending order...
 		assertEquals(
 			"Index of person 'obelix' should be <0> but was <" + persons.indexOf(obelix) + ">.", 0,
@@ -816,7 +817,7 @@ public class ListExtensionsTest
 			"Index of person 'asterix' should be <2> but was <" + persons.indexOf(asterix) + ">.",
 			2, persons.indexOf(asterix));
 
-		ListExtensions.sortByProperty(persons, "name", false);
+		ListExtensions.sortByProperty(persons, Person::getName, false);
 		// Sorted Persons by name in descending order...
 		assertEquals(
 			"Index of person 'asterix' should be <0> but was <" + persons.indexOf(asterix) + ">.",
@@ -829,7 +830,7 @@ public class ListExtensionsTest
 		// set a null value...
 		asterix.setName(null);
 
-		ListExtensions.sortByProperty(persons, "name", true);
+		ListExtensions.sortByProperty(persons, Person::getName, true);
 		// Sorted Persons by name in ascending order with a null value...
 		assertEquals(
 			"Index of person 'obelix' should be <0> but was <" + persons.indexOf(obelix) + ">.", 0,

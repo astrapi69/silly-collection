@@ -153,6 +153,7 @@ public final class ArrayExtensions
 	 *            the element that will be concatenated
 	 * @return a new concatenated array from given arrays
 	 */
+	@SuppressWarnings("unchecked")
 	public static <T> T[] concatenate(T[] existingArray, T[] elements)
 	{
 		if (elements == null || elements.length == 0)
@@ -787,6 +788,7 @@ public final class ArrayExtensions
 	 *            the class
 	 * @return The two-dimensional array produced from the given {@link Map} object
 	 */
+	@SuppressWarnings("unchecked")
 	public static <T> T[][] toTwoDimensionalArray(final Map<T, T> map, Class<T> cls)
 	{
 		Argument.notNull(map, "map");
