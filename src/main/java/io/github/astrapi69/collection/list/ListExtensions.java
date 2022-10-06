@@ -532,6 +532,8 @@ public final class ListExtensions
 	 *
 	 * @param <T>
 	 *            the generic type of the list
+	 * @param <U>
+	 *            the type of the result of the function
 	 * @param list
 	 *            the list to sort.
 	 * @param beanPropertyFunction
