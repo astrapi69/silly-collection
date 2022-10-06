@@ -35,7 +35,6 @@ import java.util.Optional;
 import java.util.Set;
 import java.util.function.Function;
 
-import io.github.astrapi69.comparator.factory.ComparatorFactory;
 import org.apache.commons.collections4.ComparatorUtils;
 
 import io.github.astrapi69.check.Argument;

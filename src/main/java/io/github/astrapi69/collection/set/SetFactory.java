@@ -24,10 +24,6 @@
  */
 package io.github.astrapi69.collection.set;
 
-import io.github.astrapi69.check.Argument;
-import io.github.astrapi69.collection.CollectionExtensions;
-import io.github.astrapi69.collection.list.ListFactory;
-
 import java.util.Collection;
 import java.util.Collections;
 import java.util.Comparator;
@@ -37,6 +33,10 @@ import java.util.Set;
 import java.util.SortedSet;
 import java.util.TreeSet;
 import java.util.function.Supplier;
+
+import io.github.astrapi69.check.Argument;
+import io.github.astrapi69.collection.CollectionExtensions;
+import io.github.astrapi69.collection.list.ListFactory;
 
 /**
  * The factory class {@link SetFactory} provides factory methods for create new {@link Set} objects
