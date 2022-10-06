@@ -29,10 +29,10 @@ import java.util.LinkedHashSet;
 import java.util.Set;
 
 /**
- * The class {@link InsertionOrderSet} overwrites the add-method from the <tt>LinkedHashSet</tt>.
- * That inserts the value to the right order it was inserted in the Map. Note that the difference in
- * the LinkedHashMap is the order does not change if we put the same key with a new value. In this
- * class the order changes when we put a new value with the same key.
+ * The class {@link InsertionOrderSet} overwrites the add-method from the
+ * <code>LinkedHashSet</code>. That inserts the value to the right order it was inserted in the Map.
+ * Note that the difference in the LinkedHashMap is the order does not change if we put the same key
+ * with a new value. In this class the order changes when we put a new value with the same key.
  *
  * @author Asterios Raptis
  * @version 1.0
@@ -49,7 +49,7 @@ public class InsertionOrderSet<E> extends LinkedHashSet<E>
 	private static final long serialVersionUID = -2010420135340052455L;
 
 	/**
-	 * Constructs an empty insertion-ordered <tt>InsertionOrderSet</tt> instance with a default
+	 * Constructs an empty insertion-ordered <code>InsertionOrderSet</code> instance with a default
 	 * capacity (16) and load factor (0.75).
 	 */
 	public InsertionOrderSet()
@@ -72,8 +72,8 @@ public class InsertionOrderSet<E> extends LinkedHashSet<E>
 	}
 
 	/**
-	 * Constructs an empty insertion-ordered <tt>InsertionOrderSet</tt> instance with the specified
-	 * initial capacity and a default load factor (0.75).
+	 * Constructs an empty insertion-ordered <code>InsertionOrderSet</code> instance with the
+	 * specified initial capacity and a default load factor (0.75).
 	 *
 	 * @param initialCapacity
 	 *            the initial capacity.
@@ -86,8 +86,8 @@ public class InsertionOrderSet<E> extends LinkedHashSet<E>
 	}
 
 	/**
-	 * Constructs an empty insertion-ordered <tt>InsertionOrderMap</tt> instance with the specified
-	 * initial capacity and load factor.
+	 * Constructs an empty insertion-ordered <code>InsertionOrderMap</code> instance with the
+	 * specified initial capacity and load factor.
 	 *
 	 * @param initialCapacity
 	 *            the initial capacity.

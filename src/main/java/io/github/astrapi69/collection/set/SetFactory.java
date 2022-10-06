@@ -83,6 +83,28 @@ public final class SetFactory
 	 *
 	 * @param <T>
 	 *            the generic type of the elements
+	 * @param collection
+	 *            the optional collection that will be added to the new list
+	 * @param exclude
+	 *            the element that have to be excluded
+	 * @param elements
+	 *            the elements to add in the new {@link HashSet}
+	 * @return the new {@link HashSet}
+	 */
+	@SafeVarargs
+	public static <T> Set<T> newHashSet(final Collection<T> collection, final Collection<T> exclude,
+		final T... elements)
+	{
+		final Set<T> set = newHashSet(collection, elements);
+		set.removeAll(exclude);
+		return set;
+	}
+
+	/**
+	 * Factory method for create new {@link HashSet} and will be returned as {@link Set}
+	 *
+	 * @param <T>
+	 *            the generic type of the elements
 	 * @param elements
 	 *            the elements to add in the new {@link HashSet}
 	 * @return the new {@link HashSet}

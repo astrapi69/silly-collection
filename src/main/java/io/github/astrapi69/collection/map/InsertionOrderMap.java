@@ -28,10 +28,10 @@ import java.util.LinkedHashMap;
 import java.util.Map;
 
 /**
- * The class {@link InsertionOrderMap} overwrites the put-method from the <tt>LinkedHashMap</tt>.
- * That inserts the value to the right order it was inserted in the Map. Note that the difference in
- * the LinkedHashMap is the order does not change if we put the same key with a new value. In this
- * class the order changes when we put a new value with the same key.
+ * The class {@link InsertionOrderMap} overwrites the put-method from the
+ * <code>LinkedHashMap</code>. That inserts the value to the right order it was inserted in the Map.
+ * Note that the difference in the LinkedHashMap is the order does not change if we put the same key
+ * with a new value. In this class the order changes when we put a new value with the same key.
  * 
  * @author Asterios Raptis
  * @version 1.0
@@ -96,7 +96,7 @@ public class InsertionOrderMap<K, V> extends LinkedHashMap<K, V>
 	 * @param loadFactor
 	 *            the load factor.
 	 * @param accessOrder
-	 *            the ordering mode - <tt>true</tt> for access-order, <tt>false</tt> for
+	 *            the ordering mode - <code>true</code> for access-order, <code>false</code> for
 	 *            insertion-order.
 	 * @throws IllegalArgumentException
 	 *             if the initial capacity is negative or the load factor is nonpositive.
@@ -109,8 +109,9 @@ public class InsertionOrderMap<K, V> extends LinkedHashMap<K, V>
 
 	/**
 	 * Constructs an insertion-ordered {@link InsertionOrderMap} instance with the same mappings as
-	 * the specified map. The <tt>InsertionOrderMap</tt> instance is created with a a default load
-	 * factor (0.75) and an initial capacity sufficient to hold the mappings in the specified map.
+	 * the specified map. The <code>InsertionOrderMap</code> instance is created with a a default
+	 * load factor (0.75) and an initial capacity sufficient to hold the mappings in the specified
+	 * map.
 	 * 
 	 * @param m
 	 *            the map whose mappings are to be placed in this map.
@@ -134,9 +135,9 @@ public class InsertionOrderMap<K, V> extends LinkedHashMap<K, V>
 	 *            key with which the specified value is to be associated.
 	 * @param value
 	 *            value to be associated with the specified key.
-	 * @return previous value associated with specified key, or <tt>null</tt> if there was no
-	 *         mapping for key. A <tt>null</tt> return can also indicate that the HashMap previously
-	 *         associated <tt>null</tt> with the specified key.
+	 * @return previous value associated with specified key, or <code>null</code> if there was no
+	 *         mapping for key. A <code>null</code> return can also indicate that the HashMap
+	 *         previously associated <code>null</code> with the specified key.
 	 */
 	@Override
 	public V put(final K key, final V value)

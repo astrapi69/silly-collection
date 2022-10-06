@@ -126,7 +126,7 @@ public final class ArrayExtensions
 	}
 
 	/**
-	 * Returns <tt>true</tt> if and only if the given element is in the given array
+	 * Returns <code>true</code> if and only if the given element is in the given array
 	 *
 	 * @param <T>
 	 *            the generic type
@@ -134,8 +134,8 @@ public final class ArrayExtensions
 	 *            the array
 	 * @param element
 	 *            the element
-	 * @return <tt>true</tt> if and only if the given element is in the given array otherwise
-	 *         <tt>false</tt>
+	 * @return <code>true</code> if and only if the given element is in the given array otherwise
+	 *         <code>false</code>
 	 */
 	public static <T> boolean contains(final T[] array, final T element)
 	{
@@ -153,6 +153,7 @@ public final class ArrayExtensions
 	 *            the element that will be concatenated
 	 * @return a new concatenated array from given arrays
 	 */
+	@SuppressWarnings("unchecked")
 	public static <T> T[] concatenate(T[] existingArray, T[] elements)
 	{
 		if (elements == null || elements.length == 0)
@@ -174,7 +175,7 @@ public final class ArrayExtensions
 	}
 
 	/**
-	 * Returns <tt>true</tt> if at least one of given elements is in the given array
+	 * Returns <code>true</code> if at least one of given elements is in the given array
 	 *
 	 * @param <T>
 	 *            the generic type
@@ -182,8 +183,8 @@ public final class ArrayExtensions
 	 *            the array
 	 * @param elements
 	 *            the elements to check if is containing in the given array
-	 * @return <tt>true</tt> if at least one of given elements is in the given array otherwise
-	 *         <tt>false</tt>
+	 * @return <code>true</code> if at least one of given elements is in the given array otherwise
+	 *         <code>false</code>
 	 */
 	@SafeVarargs
 	public static <T> boolean containsAtLeastOne(final T[] array, final T... elements)
@@ -787,6 +788,7 @@ public final class ArrayExtensions
 	 *            the class
 	 * @return The two-dimensional array produced from the given {@link Map} object
 	 */
+	@SuppressWarnings("unchecked")
 	public static <T> T[][] toTwoDimensionalArray(final Map<T, T> map, Class<T> cls)
 	{
 		Argument.notNull(map, "map");

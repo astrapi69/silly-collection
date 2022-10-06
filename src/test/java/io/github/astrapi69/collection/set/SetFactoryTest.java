@@ -80,6 +80,39 @@ public class SetFactoryTest
 	}
 
 	/**
+	 * Test for method {@link SetFactory#newHashSet(java.util.Collection, Object...)}
+	 */
+	@Test
+	public void testNewHashSetCollectionExcludeObjects()
+	{
+		int actual;
+		int expected;
+		Set<String> set;
+
+		set = SetFactory.newHashSet();
+		actual = set.size();
+		expected = 0;
+		assertEquals(actual, expected);
+
+		set.add("foo");
+		actual = set.size();
+		expected = 1;
+		assertEquals(actual, expected);
+
+		set = SetFactory.newHashSet((Collection<String>)ListFactory.newArrayList("foo", "fasel"),
+			ListFactory.newArrayList("foo"), "foo", "bar", "foo");
+		actual = set.size();
+		expected = 2;
+		assertEquals(actual, expected);
+
+		set = SetFactory.newHashSet((Collection<String>)ListFactory.newArrayList("foo", "fasel"),
+			ListFactory.newArrayList("foo", "fasel"));
+		actual = set.size();
+		expected = 0;
+		assertEquals(actual, expected);
+	}
+
+	/**
 	 * Test for method {@link SetFactory#newHashSet(Object...)}
 	 */
 	@Test

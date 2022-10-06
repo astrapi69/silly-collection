@@ -33,6 +33,7 @@ import java.util.List;
 import java.util.Map;
 import java.util.Optional;
 import java.util.Set;
+import java.util.function.Function;
 
 import org.apache.commons.collections4.ComparatorUtils;
 
@@ -42,8 +43,6 @@ import io.github.astrapi69.collection.CollectionExtensions;
 import io.github.astrapi69.collection.array.ArrayFactory;
 import io.github.astrapi69.collection.map.MapFactory;
 import io.github.astrapi69.collection.modification.ModifiedCollections;
-import io.github.astrapi69.comparator.BeanPropertyComparator;
-import io.github.astrapi69.comparator.SortOrderComparator;
 
 /**
  * Extensions class for use with {@link List} objects.
@@ -532,18 +531,22 @@ public final class ListExtensions
 	 *
 	 * @param <T>
 	 *            the generic type of the list
+	 * @param <U>
+	 *            the type of the result of the function
 	 * @param list
 	 *            the list to sort.
-	 * @param property
-	 *            the property to sort.
+	 * @param beanPropertyFunction
+	 *            the function used to extract the bean property and create the {@link Comparator}
+	 *            to sort
 	 * @param ascending
-	 *            if true the sort will be ascending ohterwise descending.
+	 *            if true the sort will be ascending otherwise descending
 	 */
 	@SuppressWarnings({ "rawtypes", "unchecked" })
-	public static <T> void sortByProperty(final List<T> list, final String property,
-		final boolean ascending)
+	public static <T, U extends Comparable<? super U>> void sortByProperty(final List<T> list,
+		final Function<? super T, ? extends U> beanPropertyFunction, final boolean ascending)
 	{
-		Comparator comparator = new BeanPropertyComparator(property, SortOrderComparator.of());
+		Comparator comparator = Comparator.comparing(beanPropertyFunction,
+			Comparator.nullsFirst(Comparator.naturalOrder()));
 		if (ascending)
 		{
 			comparator = ComparatorUtils.reversedComparator(comparator);

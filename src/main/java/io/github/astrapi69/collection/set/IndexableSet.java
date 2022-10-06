@@ -47,7 +47,7 @@ public class IndexableSet<E> extends InsertionOrderSet<E>
 	 *            the index
 	 * @return the element of the given index or throws an <code>IndexOutOfBoundsException</code>
 	 * @throws IndexOutOfBoundsException
-	 *             if the index is out of range (<tt>index &lt; 0 || index &gt;= size()</tt>)
+	 *             if the index is out of range (<code>index &lt; 0 || index &gt;= size()</code>)
 	 */
 	public E get(int index)
 	{

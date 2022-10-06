@@ -2,7 +2,6 @@ dependencies {
     implementation("org.apache.commons:commons-collections4:$commonsCollections4Version")
     implementation("io.github.astrapi69:jobj-core:$jobjCoreVersion")
     implementation("io.github.astrapi69:comparator-extensions:$comparatorExtensionsVersion")
-    implementation("io.github.astrapi69:jobj-compare:$jobjCompareVersion")
     implementation("io.github.astrapi69:silly-bean:$sillyBeanVersion")
     testImplementation("io.github.astrapi69:vintage-time:$vintageTimeVersion")
     testImplementation("io.github.astrapi69:test-object:$testObjectVersion")
