@@ -4,7 +4,9 @@
 Version 20.2-SNAPSHOT
 -------------
 
+CHANGED:
 
+- rename of module name from silly.collection.main to silly.collection
 
 Version 20.1
 -------------

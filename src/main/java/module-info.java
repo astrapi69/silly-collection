@@ -22,7 +22,7 @@
  * OF CONTRACT, TORT OR OTHERWISE, ARISING FROM, OUT OF OR IN CONNECTION
  * WITH THE SOFTWARE OR THE USE OR OTHER DEALINGS IN THE SOFTWARE.
  */
-module silly.collection.main {
+module silly.collection {
 	requires jobj.core.main;
 	requires org.apache.commons.collections4;
 	requires comparator.extensions.main;
