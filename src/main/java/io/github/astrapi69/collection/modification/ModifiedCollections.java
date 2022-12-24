@@ -44,10 +44,18 @@ public class ModifiedCollections<T>
 	/** The removed elements. */
 	private final Collection<T> removedElements = ListFactory.newArrayList();
 
+	/**
+	 * The default constructor
+	 */
 	public ModifiedCollections()
 	{
 	}
 
+	/**
+	 * Gets the {@link Collection} with the elements that was added
+	 * 
+	 * @return the {@link Collection} with the elements that was added
+	 */
 	public Collection<T> getAddedElements()
 	{
 		return this.addedElements;
@@ -90,6 +98,11 @@ public class ModifiedCollections<T>
 		return this;
 	}
 
+	/**
+	 * Gets the {@link Collection} with the elements that was removed
+	 * 
+	 * @return the {@link Collection} with the elements that was removed
+	 */
 	public Collection<T> getRemovedElements()
 	{
 		return this.removedElements;

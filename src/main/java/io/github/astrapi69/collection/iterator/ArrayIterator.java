@@ -58,6 +58,11 @@ public class ArrayIterator<E> implements Iterator<E>
 		this.array = array;
 	}
 
+	/**
+	 * Gets the array
+	 * 
+	 * @return the array
+	 */
 	public E[] getArray()
 	{
 		return array;

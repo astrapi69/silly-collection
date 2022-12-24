@@ -7,6 +7,8 @@ Version 20.2-SNAPSHOT
 CHANGED:
 
 - rename of module name from silly.collection.main to silly.collection
+- remove of class OptionalListExtensions and move all method to class ListExtensions
+- javadoc optimized
 
 Version 20.1
 -------------

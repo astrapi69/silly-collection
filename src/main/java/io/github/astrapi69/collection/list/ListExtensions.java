@@ -190,39 +190,43 @@ public final class ListExtensions
 	}
 
 	/**
-	 * Gets the first object from the given List.
+	 * Returns an {@link Optional} with the first object from the given {@link List}
 	 *
 	 * @param <T>
-	 *            the generic type
+	 *            the generic type of the elements
 	 * @param list
-	 *            the List.
-	 * @return Returns the first object from the given List or null if the List is empty or null.
+	 *            the {@link List} object
+	 * @return an {@link Optional} with the first object from the given {@link List} or an empty
+	 *         {@link Optional} if the List is empty
 	 */
-	public static <T> T getFirst(final List<T> list)
+	public static <T> Optional<T> getFirst(final List<T> list)
 	{
+		Argument.notNull(list, "list");
 		if (CollectionExtensions.isNotEmpty(list))
 		{
-			return list.get(0);
+			return Optional.of(list.get(0));
 		}
-		return null;
+		return Optional.empty();
 	}
 
 	/**
-	 * Gets the last object from the given List.
+	 * Returns an {@link Optional} with the last object from the given {@link List}
 	 *
 	 * @param <T>
-	 *            the generic type
+	 *            the generic type of the elements
 	 * @param list
-	 *            the List.
-	 * @return Returns the last object from the given List or null if the List is empty or null.
+	 *            the {@link List} object
+	 * @return an {@link Optional} with the last object from the given {@link List} or an empty
+	 *         {@link Optional} if the List is empty
 	 */
-	public static <T> T getLast(final List<T> list)
+	public static <T> Optional<T> getLast(final List<T> list)
 	{
+		Argument.notNull(list, "list");
 		if (CollectionExtensions.isNotEmpty(list))
 		{
-			return list.get(list.size() - 1);
+			return Optional.of(list.get(list.size() - 1));
 		}
-		return null;
+		return Optional.empty();
 	}
 
 	/**
@@ -244,6 +248,29 @@ public final class ListExtensions
 	}
 
 	/**
+	 * Gets the next element from the given {@link List}. As start point is the given element
+	 *
+	 * @param <T>
+	 *            the generic type of elements
+	 * @param list
+	 *            the list
+	 * @param element
+	 *            the element
+	 * @return an {@link Optional} with the next element from the given {@link List} or an empty
+	 *         {@link Optional} if the {@link List} has no next element
+	 */
+	public static <T> Optional<T> getNext(final List<T> list, final T element)
+	{
+		Argument.notNull(list, "list");
+		if (ListExtensions.hasNext(list, element))
+		{
+			int nextIndex = list.indexOf(element) + 1;
+			return Optional.of(list.get(nextIndex));
+		}
+		return Optional.empty();
+	}
+
+	/**
 	 * Gets the partial list
 	 *
 	 * @param <T>
@@ -262,6 +289,30 @@ public final class ListExtensions
 			partialList.add(list.get(j));
 		}
 		return partialList;
+	}
+
+	/**
+	 * Gets the previous element from the given {@link List}. As start point is the given element
+	 *
+	 * @param <T>
+	 *            the generic type of elements
+	 * @param list
+	 *            the list
+	 * @param element
+	 *            the element
+	 * @return an {@link Optional} with the previous element from the given {@link List} or an empty
+	 *         {@link Optional} if the {@link List} has no previous element
+	 */
+	public static <T> Optional<T> getPrevious(final List<T> list, final T element)
+	{
+		Argument.notNull(list, "list");
+		final int indexOfElement = list.indexOf(element);
+		if (indexOfElement == -1 || indexOfElement == 0)
+		{
+			return Optional.empty();
+		}
+		int previousIndex = indexOfElement - 1;
+		return Optional.of(list.get(previousIndex));
 	}
 
 	/**
@@ -380,7 +431,7 @@ public final class ListExtensions
 	 */
 	public static <T> boolean isLast(final List<T> list, final T element)
 	{
-		Optional<T> optionalLast = OptionalListExtensions.getLast(list);
+		Optional<T> optionalLast = ListExtensions.getLast(list);
 		if (optionalLast.isPresent())
 		{
 			return optionalLast.get().equals(element);
@@ -418,41 +469,45 @@ public final class ListExtensions
 	}
 
 	/**
-	 * Removes the first object from the given List.
+	 * Returns an {@link Optional} with the first object if it was removed from the given
+	 * {@link List}
 	 *
 	 * @param <T>
-	 *            the generic type
+	 *            the generic type of the elements
 	 * @param list
-	 *            the List.
-	 * @return Removes and returns the first object from the given List or null if the List is empty
-	 *         or null.
+	 *            the {@link List} object
+	 * @return returns an {@link Optional} with the first object if it was removed from the given
+	 *         {@link List} or an empty {@link Optional} if the {@link List} is empty
 	 */
-	public static <T> T removeFirst(final List<T> list)
+	public static <T> Optional<T> removeFirst(final List<T> list)
 	{
-		if (!CollectionExtensions.isEmpty(list) && 0 < list.size())
+		Argument.notNull(list, "list");
+		if (!CollectionExtensions.isEmpty(list))
 		{
-			return list.remove(0);
+			return Optional.of(list.remove(0));
 		}
-		return null;
+		return Optional.empty();
 	}
 
 	/**
-	 * Removes the last object from the given List.
+	 * Returns an {@link Optional} with the last object if it was removed from the given
+	 * {@link List}
 	 *
 	 * @param <T>
-	 *            the generic type
+	 *            the generic type of the elements
 	 * @param list
-	 *            the List.
-	 * @return Removes and returns the last object from the given List or null if the List is empty
-	 *         or null.
+	 *            the {@link List} object
+	 * @return returns an {@link Optional} with the last object if it was removed from the given
+	 *         {@link List} or an empty {@link Optional} if the {@link List} is empty
 	 */
-	public static <T> T removeLast(final List<T> list)
+	public static <T> Optional<T> removeLast(final List<T> list)
 	{
-		if (!CollectionExtensions.isEmpty(list) && 0 < list.size())
+		Argument.notNull(list, "list");
+		if (!CollectionExtensions.isEmpty(list))
 		{
-			return list.remove(list.size() - 1);
+			return Optional.of(list.remove(list.size() - 1));
 		}
-		return null;
+		return Optional.empty();
 	}
 
 	/**
