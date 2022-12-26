@@ -26,11 +26,13 @@ package io.github.astrapi69.collection.list;
 
 import java.util.Arrays;
 import java.util.Collection;
+import java.util.Collections;
 import java.util.Comparator;
 import java.util.Enumeration;
 import java.util.Iterator;
 import java.util.List;
 import java.util.Map;
+import java.util.Objects;
 import java.util.Optional;
 import java.util.Set;
 import java.util.function.Function;
@@ -43,6 +45,7 @@ import io.github.astrapi69.collection.CollectionExtensions;
 import io.github.astrapi69.collection.array.ArrayFactory;
 import io.github.astrapi69.collection.map.MapFactory;
 import io.github.astrapi69.collection.modification.ModifiedCollections;
+import io.github.astrapi69.comparator.factory.ComparatorFactory;
 
 /**
  * Extensions class for use with {@link List} objects.
@@ -190,39 +193,43 @@ public final class ListExtensions
 	}
 
 	/**
-	 * Gets the first object from the given List.
+	 * Returns an {@link Optional} with the first object from the given {@link List}
 	 *
 	 * @param <T>
-	 *            the generic type
+	 *            the generic type of the elements
 	 * @param list
-	 *            the List.
-	 * @return Returns the first object from the given List or null if the List is empty or null.
+	 *            the {@link List} object
+	 * @return an {@link Optional} with the first object from the given {@link List} or an empty
+	 *         {@link Optional} if the List is empty
 	 */
-	public static <T> T getFirst(final List<T> list)
+	public static <T> Optional<T> getFirst(final List<T> list)
 	{
+		Argument.notNull(list, "list");
 		if (CollectionExtensions.isNotEmpty(list))
 		{
-			return list.get(0);
+			return Optional.of(list.get(0));
 		}
-		return null;
+		return Optional.empty();
 	}
 
 	/**
-	 * Gets the last object from the given List.
+	 * Returns an {@link Optional} with the last object from the given {@link List}
 	 *
 	 * @param <T>
-	 *            the generic type
+	 *            the generic type of the elements
 	 * @param list
-	 *            the List.
-	 * @return Returns the last object from the given List or null if the List is empty or null.
+	 *            the {@link List} object
+	 * @return an {@link Optional} with the last object from the given {@link List} or an empty
+	 *         {@link Optional} if the List is empty
 	 */
-	public static <T> T getLast(final List<T> list)
+	public static <T> Optional<T> getLast(final List<T> list)
 	{
+		Argument.notNull(list, "list");
 		if (CollectionExtensions.isNotEmpty(list))
 		{
-			return list.get(list.size() - 1);
+			return Optional.of(list.get(list.size() - 1));
 		}
-		return null;
+		return Optional.empty();
 	}
 
 	/**
@@ -244,6 +251,29 @@ public final class ListExtensions
 	}
 
 	/**
+	 * Gets the next element from the given {@link List}. As start point is the given element
+	 *
+	 * @param <T>
+	 *            the generic type of elements
+	 * @param list
+	 *            the list
+	 * @param element
+	 *            the element
+	 * @return an {@link Optional} with the next element from the given {@link List} or an empty
+	 *         {@link Optional} if the {@link List} has no next element
+	 */
+	public static <T> Optional<T> getNext(final List<T> list, final T element)
+	{
+		Argument.notNull(list, "list");
+		if (ListExtensions.hasNext(list, element))
+		{
+			int nextIndex = list.indexOf(element) + 1;
+			return Optional.of(list.get(nextIndex));
+		}
+		return Optional.empty();
+	}
+
+	/**
 	 * Gets the partial list
 	 *
 	 * @param <T>
@@ -262,6 +292,30 @@ public final class ListExtensions
 			partialList.add(list.get(j));
 		}
 		return partialList;
+	}
+
+	/**
+	 * Gets the previous element from the given {@link List}. As start point is the given element
+	 *
+	 * @param <T>
+	 *            the generic type of elements
+	 * @param list
+	 *            the list
+	 * @param element
+	 *            the element
+	 * @return an {@link Optional} with the previous element from the given {@link List} or an empty
+	 *         {@link Optional} if the {@link List} has no previous element
+	 */
+	public static <T> Optional<T> getPrevious(final List<T> list, final T element)
+	{
+		Argument.notNull(list, "list");
+		final int indexOfElement = list.indexOf(element);
+		if (indexOfElement == -1 || indexOfElement == 0)
+		{
+			return Optional.empty();
+		}
+		int previousIndex = indexOfElement - 1;
+		return Optional.of(list.get(previousIndex));
 	}
 
 	/**
@@ -380,12 +434,7 @@ public final class ListExtensions
 	 */
 	public static <T> boolean isLast(final List<T> list, final T element)
 	{
-		Optional<T> optionalLast = OptionalListExtensions.getLast(list);
-		if (optionalLast.isPresent())
-		{
-			return optionalLast.get().equals(element);
-		}
-		return false;
+		return ListExtensions.getLast(list).map(current -> current.equals(element)).orElse(false);
 	}
 
 	/**
@@ -418,41 +467,45 @@ public final class ListExtensions
 	}
 
 	/**
-	 * Removes the first object from the given List.
+	 * Returns an {@link Optional} with the first object if it was removed from the given
+	 * {@link List}
 	 *
 	 * @param <T>
-	 *            the generic type
+	 *            the generic type of the elements
 	 * @param list
-	 *            the List.
-	 * @return Removes and returns the first object from the given List or null if the List is empty
-	 *         or null.
+	 *            the {@link List} object
+	 * @return returns an {@link Optional} with the first object if it was removed from the given
+	 *         {@link List} or an empty {@link Optional} if the {@link List} is empty
 	 */
-	public static <T> T removeFirst(final List<T> list)
+	public static <T> Optional<T> removeFirst(final List<T> list)
 	{
-		if (!CollectionExtensions.isEmpty(list) && 0 < list.size())
+		Argument.notNull(list, "list");
+		if (!CollectionExtensions.isEmpty(list))
 		{
-			return list.remove(0);
+			return Optional.of(list.remove(0));
 		}
-		return null;
+		return Optional.empty();
 	}
 
 	/**
-	 * Removes the last object from the given List.
+	 * Returns an {@link Optional} with the last object if it was removed from the given
+	 * {@link List}
 	 *
 	 * @param <T>
-	 *            the generic type
+	 *            the generic type of the elements
 	 * @param list
-	 *            the List.
-	 * @return Removes and returns the last object from the given List or null if the List is empty
-	 *         or null.
+	 *            the {@link List} object
+	 * @return returns an {@link Optional} with the last object if it was removed from the given
+	 *         {@link List} or an empty {@link Optional} if the {@link List} is empty
 	 */
-	public static <T> T removeLast(final List<T> list)
+	public static <T> Optional<T> removeLast(final List<T> list)
 	{
-		if (!CollectionExtensions.isEmpty(list) && 0 < list.size())
+		Argument.notNull(list, "list");
+		if (!CollectionExtensions.isEmpty(list))
 		{
-			return list.remove(list.size() - 1);
+			return Optional.of(list.remove(list.size() - 1));
 		}
-		return null;
+		return Optional.empty();
 	}
 
 	/**
@@ -698,6 +751,85 @@ public final class ListExtensions
 		final Object[] decorator = new Object[elements.length];
 		System.arraycopy(elements, 0, decorator, 0, elements.length);
 		return decorator;
+	}
+
+
+	/**
+	 * Gets the index where to insert to another list which is still in construction and needs a
+	 * defined order
+	 *
+	 * @param <T>
+	 *            the generic type
+	 * @param sortedList
+	 *            the sorted list that is used for the defined order
+	 * @param newSortedList
+	 *            the new sorted list
+	 * @param elementToAdd
+	 *            the element for resolve the index to add
+	 * @return the index where to insert in the new sorted list
+	 */
+	public static <T> int getIndexToInsert(List<T> sortedList, List<T> newSortedList,
+		T elementToAdd)
+	{
+		List<T> listWithNewElement = ListFactory.newArrayList(newSortedList, elementToAdd);
+		listWithNewElement.sort(ComparatorFactory.newDefinedOrderComparator(sortedList));
+		return listWithNewElement.indexOf(elementToAdd);
+	}
+
+	/**
+	 * Checks if the second given element is before the first given element in the given list
+	 *
+	 * @param <T>
+	 *            the generic type
+	 * @param list
+	 *            the list
+	 * @param element
+	 *            the element
+	 * @param elementToCheck
+	 *            the element to check if it is before the first given element
+	 * @return true if the second given element is before the first given element in the given list
+	 *         otherwise false
+	 */
+	public static <T> boolean isBefore(final List<T> list, final T element, final T elementToCheck)
+	{
+		Objects.requireNonNull(list);
+		Objects.requireNonNull(element);
+		Objects.requireNonNull(elementToCheck);
+		if (list.contains(element) && list.contains(elementToCheck))
+		{
+			int indexOfElement = list.indexOf(element);
+			int indexOfElementToCheck = list.indexOf(elementToCheck);
+			return indexOfElementToCheck < indexOfElement;
+		}
+		return false;
+	}
+
+	/**
+	 * Checks if the second given element is after the first given element in the given list
+	 *
+	 * @param <T>
+	 *            the generic type
+	 * @param list
+	 *            the list
+	 * @param element
+	 *            the element
+	 * @param elementToCheck
+	 *            the element to check if it is after the first given element
+	 * @return true if the second given element is after the first given element in the given list
+	 *         otherwise false
+	 */
+	public static <T> boolean isAfter(final List<T> list, final T element, final T elementToCheck)
+	{
+		Objects.requireNonNull(list);
+		Objects.requireNonNull(element);
+		Objects.requireNonNull(elementToCheck);
+		if (list.contains(element) && list.contains(elementToCheck))
+		{
+			int indexOfElement = list.indexOf(element);
+			int indexOfElementToCheck = list.indexOf(elementToCheck);
+			return indexOfElement < indexOfElementToCheck;
+		}
+		return false;
 	}
 
 }

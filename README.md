@@ -2,9 +2,9 @@
 
 <div style="text-align: center">
 
-[![Java CI with Gradle](https://github.com/lightblueseas/silly-collection/actions/workflows/gradle.yml/badge.svg)](https://github.com/lightblueseas/silly-collection/actions/workflows/gradle.yml)
-[![Coverage Status](https://codecov.io/gh/lightblueseas/silly-collection/branch/develop/graph/badge.svg)](https://codecov.io/gh/lightblueseas/silly-collection)
-[![Open Issues](https://img.shields.io/github/issues/lightblueseas/silly-collection.svg?style=flat)](https://github.com/lightblueseas/silly-collection/issues)
+[![Java CI with Gradle](https://github.com/astrapi69/silly-collection/actions/workflows/gradle.yml/badge.svg)](https://github.com/astrapi69/silly-collection/actions/workflows/gradle.yml)
+[![Coverage Status](https://codecov.io/gh/astrapi69/silly-collection/branch/develop/graph/badge.svg)](https://codecov.io/gh/astrapi69/silly-collection)
+[![Open Issues](https://img.shields.io/github/issues/astrapi69/silly-collection.svg?style=flat)](https://github.com/astrapi69/silly-collection/issues)
 [![Maven Central](https://maven-badges.herokuapp.com/maven-central/io.github.astrapi69/silly-collection/badge.svg)](https://maven-badges.herokuapp.com/maven-central/io.github.astrapi69/silly-collection)
 [![Javadocs](http://www.javadoc.io/badge/io.github.astrapi69/silly-collection.svg)](http://www.javadoc.io/doc/io.github.astrapi69/silly-collection)
 [![MIT license](http://img.shields.io/badge/license-MIT-brightgreen.svg?style=flat)](http://opensource.org/licenses/MIT)
@@ -16,7 +16,7 @@ Utility library for collections, comparators and iterator classes.
 
 > Please support this project by simply putting a
 > Github <!-- Place this tag where you want the button to render. -->
-<a class="github-button" href="https://github.com/lightblueseas/silly-collection" data-icon="octicon-star" aria-label="Star lightblueseas/silly-collection on GitHub">
+<a class="github-button" href="https://github.com/astrapi69/silly-collection" data-icon="octicon-star" aria-label="Star astrapi69/silly-collection on GitHub">
 > Star ⭐</a>
 >
 > Share this library with friends on Twitter and everywhere else you can
@@ -39,7 +39,7 @@ Than you can add the dependency to your dependencies:
     <properties>
             ...
         <!-- SILLY-COLLECTION version -->
-        <silly-collection.version>20.1</silly-collection.version>
+        <silly-collection.version>20.2</silly-collection.version>
             ...
     </properties>
             ...
@@ -63,7 +63,7 @@ define version in file gradle.properties
 
 ```
 
-sillyCollectionVersion=20.1
+sillyCollectionVersion=20.2
 ```
 
 or in build.gradle ext area
@@ -71,7 +71,7 @@ or in build.gradle ext area
 ```
 ext {
             ...
-    sillyCollectionVersion = "20.1"
+    sillyCollectionVersion = "20.2"
             ...
 }
 ```
@@ -146,7 +146,7 @@ alt="Donation Monero Wallet" width="250"/>
 
 or over flattr:
 
-<a href="https://flattr.com/submit/auto?fid=r7vp62&url=https%3A%2F%2Fgithub.com%2Flightblueseas%2Fsilly-collection" target="_blank">
+<a href="https://flattr.com/submit/auto?fid=r7vp62&url=https%3A%2F%2Fgithub.com%2Fastrapi69%2Fsilly-collection" target="_blank">
 <img src="http://api.flattr.com/button/flattr-badge-large.png" alt="Flattr this" title="Flattr this" style="border: none" />
 </a>
 
@@ -177,10 +177,10 @@ The source code for silly-collection are on GitHub. Please feel free to fork and
 requests!
 
 Create your own fork
-of [lightblueseas/silly-collection/fork](https://github.com/lightblueseas/silly-collection/fork)
+of [astrapi69/silly-collection/fork](https://github.com/astrapi69/silly-collection/fork)
 
 To share your
-changes, [submit a pull request](https://github.com/lightblueseas/silly-collection/pull/new/develop)
+changes, [submit a pull request](https://github.com/astrapi69/silly-collection/pull/new/develop)
 .
 
 Don't forget to add new units tests on your changes.
@@ -191,7 +191,7 @@ Do not hesitate to contact the silly-collection developers with your questions, 
 bug reports, or feature requests.
 
 - Feature requests, questions and bug reports can be reported at
-  the [issues page](https://github.com/lightblueseas/silly-collection/issues).
+  the [issues page](https://github.com/astrapi69/silly-collection/issues).
 
 ## Similar projects
 

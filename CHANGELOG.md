@@ -1,6 +1,29 @@
 ## Change log
 ----------------------
 
+Version 20.2
+-------------
+
+ADDED:
+
+- new file importorder.properties that defines the order of the imports while formatting with spotless
+- new methods for check in list if an element is before or after a given element
+- new method that determines the index to insert to a list the is constructed and needs a specified order
+
+CHANGED:
+
+- update gradle to new version 7.6
+- update of gradle-plugin dependency 'com.diffplug.spotless:spotless-plugin-gradle' to new version
+  6.12.0
+- update of gradle-plugin com.github.ben-manes.versions.gradle.plugin to new version 0.44.0
+- update of dependency comparator-extensions in new version 1.5
+- update of test dependency test-object to new version 7.2
+- update of test dependency org.openjdk.jmh:jmh-core to new version 1.36
+- update of test dependency testng to new version 7.7.0
+- rename of module name from silly.collection.main to silly.collection
+- remove of class OptionalListExtensions and move all method to class ListExtensions
+- javadoc optimized
+
 Version 20.1
 -------------
 
@@ -8,7 +31,6 @@ ADDED:
 
 - new method in SetFactory with collection to exclude
 - module-info.java
-
 
 CHANGED:
 

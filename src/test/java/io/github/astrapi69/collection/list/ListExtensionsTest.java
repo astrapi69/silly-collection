@@ -27,18 +27,10 @@ package io.github.astrapi69.collection.list;
 import static org.testng.AssertJUnit.assertEquals;
 import static org.testng.AssertJUnit.assertFalse;
 import static org.testng.AssertJUnit.assertNotNull;
-import static org.testng.AssertJUnit.assertNull;
 import static org.testng.AssertJUnit.assertTrue;
 import static org.testng.internal.junit.ArrayAsserts.assertArrayEquals;
 
-import java.util.ArrayList;
-import java.util.Arrays;
-import java.util.Collection;
-import java.util.Collections;
-import java.util.Enumeration;
-import java.util.List;
-import java.util.Map;
-import java.util.Set;
+import java.util.*;
 import java.util.function.Function;
 
 import org.meanbean.test.BeanTester;
@@ -231,15 +223,15 @@ public class ListExtensionsTest
 	 * Test method for {@link ListExtensions#getFirst(List)}
 	 */
 	@Test
-	public void testGetFirst()
+	public final void testGetFirst()
 	{
-		String actual;
-		String expected;
+		Optional<String> expected;
+		Optional<String> actual;
 		List<String> search;
 
-		expected = "Leonidas";
+		expected = Optional.of("Leonidas");
 		search = ListFactory.newArrayList();
-		search.add(expected);
+		search.add(expected.get());
 		search.add("Berta");
 		search.add("Caesar");
 		search.add("Dora");
@@ -251,7 +243,7 @@ public class ListExtensionsTest
 
 		search = ListFactory.newArrayList();
 		actual = ListExtensions.getFirst(search);
-		expected = null;
+		expected = Optional.empty();
 		assertEquals(expected, actual);
 	}
 
@@ -259,20 +251,24 @@ public class ListExtensionsTest
 	 * Test method for {@link ListExtensions#getLast(List)}
 	 */
 	@Test
-	public void testGetLast()
+	public final void testGetLast()
 	{
-		final String expected = "Leonidas";
+		Optional<String> expected;
+		Optional<String> actual;
+
 		final List<String> search = ListFactory.newArrayList();
-		String compare = ListExtensions.getLast(search);
-		assertNull(compare);
+		actual = ListExtensions.getLast(search);
+		expected = Optional.empty();
+		assertEquals(expected, actual);
 		search.add("Anton");
 		search.add("Berta");
 		search.add("Caesar");
 		search.add("Dora");
 		search.add("Emil");
-		search.add(expected);
-		compare = ListExtensions.getLast(search);
-		assertEquals(compare, expected);
+		search.add("Leonidas");
+		actual = ListExtensions.getLast(search);
+		expected = Optional.of("Leonidas");
+		assertEquals(expected, actual);
 	}
 
 	/**
@@ -297,6 +293,96 @@ public class ListExtensionsTest
 			.getModifiedCollections(previousList, nextList);
 		assertEquals(result.getRemovedElements(), expectedRemovedList);
 		assertEquals(result.getAddedElements(), expectedAddedList);
+	}
+
+	/**
+	 * Test method for {@link ListExtensions#getNext(List, Object)}
+	 */
+	@Test
+	public final void testGetNext()
+	{
+		Optional<String> expected;
+		Optional<String> actual;
+		List<String> search;
+
+		String caeser = "Caesar";
+		String dora = "Dora";
+		String emil = "Emil";
+		String anton = "Anton";
+		search = ListFactory.newArrayList();
+		search.add(caeser);
+		search.add(dora);
+		search.add(emil);
+		search.add(anton);
+
+		actual = ListExtensions.getNext(search, "foo");
+		expected = Optional.empty();
+		assertEquals(expected, actual);
+
+		actual = ListExtensions.getNext(search, null);
+		expected = Optional.empty();
+		assertEquals(expected, actual);
+
+		actual = ListExtensions.getNext(search, anton);
+		expected = Optional.empty();
+		assertEquals(expected, actual);
+
+		actual = ListExtensions.getNext(search, emil);
+		expected = Optional.of(anton);
+		assertEquals(expected, actual);
+
+		actual = ListExtensions.getNext(search, dora);
+		expected = Optional.of(emil);
+		assertEquals(expected, actual);
+
+		actual = ListExtensions.getNext(search, caeser);
+		expected = Optional.of(dora);
+		assertEquals(expected, actual);
+	}
+
+	/**
+	 * Test method for {@link ListExtensions#getPrevious(List, Object)}
+	 */
+	@Test
+	public final void testGetPrevious()
+	{
+		Optional<String> expected;
+		Optional<String> actual;
+		List<String> search;
+
+		String caeser = "Caesar";
+		String dora = "Dora";
+		String emil = "Emil";
+		String anton = "Anton";
+		search = ListFactory.newArrayList();
+		search.add(caeser);
+		search.add(dora);
+		search.add(emil);
+		search.add(anton);
+
+		actual = ListExtensions.getPrevious(search, "foo");
+		expected = Optional.empty();
+		assertEquals(expected, actual);
+
+		actual = ListExtensions.getPrevious(search, null);
+		expected = Optional.empty();
+		assertEquals(expected, actual);
+
+		actual = ListExtensions.getPrevious(search, caeser);
+		expected = Optional.empty();
+		assertEquals(expected, actual);
+
+		actual = ListExtensions.getPrevious(search, dora);
+		expected = Optional.of(caeser);
+		assertEquals(expected, actual);
+
+		actual = ListExtensions.getPrevious(search, emil);
+		expected = Optional.of(dora);
+		assertEquals(expected, actual);
+
+		actual = ListExtensions.getPrevious(search, anton);
+		expected = Optional.of(emil);
+		assertEquals(expected, actual);
 	}
 
 	/**
@@ -509,6 +595,71 @@ public class ListExtensionsTest
 	}
 
 	/**
+	 * Test method for {@link ListExtensions#isAfter(List, Object, Object)}
+	 */
+	@Test
+	public void testIsAfter()
+	{
+		boolean actual;
+		boolean expected;
+		List<String> list;
+
+		String content = "Content";
+		String donate = "Donate";
+		String diagnostic = "Diagnostic";
+		String license = "License";
+		String info = "Info";
+		list = ListFactory.newArrayList();
+		list.add(content);
+		list.add(donate);
+		list.add(diagnostic);
+		list.add(license);
+		list.add(info);
+
+		actual = ListExtensions.isAfter(list, content, diagnostic);
+		expected = true;
+		assertEquals(expected, actual);
+		actual = ListExtensions.isAfter(list, diagnostic, content);
+		expected = false;
+		assertEquals(expected, actual);
+		actual = ListExtensions.isAfter(list, "foo", diagnostic);
+		assertEquals(expected, actual);
+	}
+
+	/**
+	 * Test method for {@link ListExtensions#isBefore(List, Object, Object)}
+	 */
+	@Test
+	public void testIsBefore()
+	{
+		boolean actual;
+		boolean expected;
+		List<String> list;
+
+		String content = "Content";
+		String donate = "Donate";
+		String diagnostic = "Diagnostic";
+		String license = "License";
+		String info = "Info";
+		list = ListFactory.newArrayList();
+		list.add(content);
+		list.add(donate);
+		list.add(diagnostic);
+		list.add(license);
+		list.add(info);
+
+		actual = ListExtensions.isBefore(list, content, diagnostic);
+		expected = false;
+		assertEquals(expected, actual);
+		actual = ListExtensions.isBefore(list, diagnostic, content);
+		expected = true;
+		assertEquals(expected, actual);
+		actual = ListExtensions.isBefore(list, "foo", diagnostic);
+		expected = false;
+		assertEquals(expected, actual);
+	}
+
+	/**
 	 * Test the method {@link ListExtensions#toArray(List)}
 	 */
 	@Test
@@ -551,7 +702,6 @@ public class ListExtensionsTest
 	{
 		Map<Integer, String> actual;
 		Map<Integer, String> expected;
-		List<Integer> numbers;
 		List<String> strings;
 		// new scenario...
 		strings = ListFactory.newArrayList("1", "2", "3");
@@ -612,23 +762,24 @@ public class ListExtensionsTest
 	 * Test method for {@link ListExtensions#removeFirst(List)}
 	 */
 	@Test
-	public void testRemoveFirst()
+	public final void testRemoveFirst()
 	{
-		String expected;
-		String actual;
+		Optional<String> expected;
+		Optional<String> actual;
 		String removed;
 		List<String> search;
-		expected = "Leonidas";
+		expected = Optional.of("Leonidas");
 		removed = "Berta";
 		search = ListFactory.newArrayList();
 		search.add(removed);
-		search.add(expected);
+		search.add(expected.get());
 		search.add("Caesar");
 		search.add("Dora");
 		search.add("Emil");
 		search.add("Anton");
+
 		actual = ListExtensions.removeFirst(search);
-		assertEquals(removed, actual);
+		assertTrue(removed.equals(actual.get()));
 
 		actual = ListExtensions.getFirst(search);
 		assertEquals(expected, actual);
@@ -636,7 +787,7 @@ public class ListExtensionsTest
 		search.clear();
 
 		actual = ListExtensions.removeFirst(search);
-		expected = null;
+		expected = Optional.empty();
 		assertEquals(expected, actual);
 	}
 
@@ -644,14 +795,13 @@ public class ListExtensionsTest
 	 * Test method for {@link ListExtensions#removeLast(List)}
 	 */
 	@Test
-	public void testRemoveLast()
+	public final void testRemoveLast()
 	{
-		String expected;
-		String actual;
+		Optional<String> expected;
+		Optional<String> actual;
 		String removed;
-		String compare;
 		List<String> search;
-		expected = "Leonidas";
+		expected = Optional.of("Leonidas");
 		removed = "Berta";
 		search = ListFactory.newArrayList();
 
@@ -659,18 +809,18 @@ public class ListExtensionsTest
 		search.add("Caesar");
 		search.add("Dora");
 		search.add("Emil");
-		search.add(expected);
+		search.add(expected.get());
 		search.add(removed);
-		compare = ListExtensions.removeLast(search);
-		assertEquals(removed, compare);
+		actual = ListExtensions.removeLast(search);
+		assertTrue("", removed.equals(actual.get()));
 
-		compare = ListExtensions.getLast(search);
-		assertEquals(expected, compare);
+		actual = ListExtensions.getLast(search);
+		assertEquals(expected, actual);
 
 		search.clear();
 
 		actual = ListExtensions.removeLast(search);
-		expected = null;
+		expected = Optional.empty();
 		assertEquals(expected, actual);
 	}
 
@@ -936,6 +1086,52 @@ public class ListExtensionsTest
 		}
 		actual = ListExtensions.toObjectArray();
 		assertEquals(actual.length, 0);
+	}
+
+	/**
+	 * Test method for {@link ListExtensions#getIndexToInsert(List, List, Object)}
+	 */
+	@Test
+	public final void testGetIndexToInsert()
+	{
+		List<String> helpMenu;
+		List<String> unsortedHelpMenu;
+
+		String content = "Content";
+		String donate = "Donate";
+		String diagnostic = "Diagnostic";
+		String license = "License";
+		String info = "Info";
+		helpMenu = ListFactory.newArrayList();
+		helpMenu.add(content);
+		helpMenu.add(donate);
+		helpMenu.add(diagnostic);
+		helpMenu.add(license);
+		helpMenu.add(info);
+
+		unsortedHelpMenu = ListFactory.newArrayList(helpMenu);
+
+		int iterationCount = 1000;
+
+		for (int i = 0; i < iterationCount; i++)
+		{
+			shuffleAndSort(helpMenu, unsortedHelpMenu);
+		}
+	}
+
+	private static void shuffleAndSort(List<String> helpMenu, List<String> unsortedHelpMenu)
+	{
+		List<String> newSortedHelpMenu;
+		Collections.shuffle(unsortedHelpMenu);
+		newSortedHelpMenu = ListFactory.newArrayList();
+		for (int i = 0; i < unsortedHelpMenu.size(); i++)
+		{
+			String currentUsortedHelpMenuItem = unsortedHelpMenu.get(i);
+			int indexToInsert = ListExtensions.getIndexToInsert(helpMenu, newSortedHelpMenu,
+				currentUsortedHelpMenuItem);
+			newSortedHelpMenu.add(indexToInsert, currentUsortedHelpMenuItem);
+		}
+		assertEquals(helpMenu, newSortedHelpMenu);
 	}
 
 	/**
