@@ -27,7 +27,6 @@ package io.github.astrapi69.collection.list;
 import static org.testng.AssertJUnit.assertEquals;
 import static org.testng.AssertJUnit.assertFalse;
 import static org.testng.AssertJUnit.assertNotNull;
-import static org.testng.AssertJUnit.assertNull;
 import static org.testng.AssertJUnit.assertTrue;
 import static org.testng.internal.junit.ArrayAsserts.assertArrayEquals;
 
@@ -596,6 +595,71 @@ public class ListExtensionsTest
 	}
 
 	/**
+	 * Test method for {@link ListExtensions#isAfter(List, Object, Object)}
+	 */
+	@Test
+	public void testIsAfter()
+	{
+		boolean actual;
+		boolean expected;
+		List<String> list;
+
+		String content = "Content";
+		String donate = "Donate";
+		String diagnostic = "Diagnostic";
+		String license = "License";
+		String info = "Info";
+		list = ListFactory.newArrayList();
+		list.add(content);
+		list.add(donate);
+		list.add(diagnostic);
+		list.add(license);
+		list.add(info);
+
+		actual = ListExtensions.isAfter(list, content, diagnostic);
+		expected = true;
+		assertEquals(expected, actual);
+		actual = ListExtensions.isAfter(list, diagnostic, content);
+		expected = false;
+		assertEquals(expected, actual);
+		actual = ListExtensions.isAfter(list, "foo", diagnostic);
+		assertEquals(expected, actual);
+	}
+
+	/**
+	 * Test method for {@link ListExtensions#isBefore(List, Object, Object)}
+	 */
+	@Test
+	public void testIsBefore()
+	{
+		boolean actual;
+		boolean expected;
+		List<String> list;
+
+		String content = "Content";
+		String donate = "Donate";
+		String diagnostic = "Diagnostic";
+		String license = "License";
+		String info = "Info";
+		list = ListFactory.newArrayList();
+		list.add(content);
+		list.add(donate);
+		list.add(diagnostic);
+		list.add(license);
+		list.add(info);
+
+		actual = ListExtensions.isBefore(list, content, diagnostic);
+		expected = false;
+		assertEquals(expected, actual);
+		actual = ListExtensions.isBefore(list, diagnostic, content);
+		expected = true;
+		assertEquals(expected, actual);
+		actual = ListExtensions.isBefore(list, "foo", diagnostic);
+		expected = false;
+		assertEquals(expected, actual);
+	}
+
+	/**
 	 * Test the method {@link ListExtensions#toArray(List)}
 	 */
 	@Test
@@ -1022,6 +1086,52 @@ public class ListExtensionsTest
 		}
 		actual = ListExtensions.toObjectArray();
 		assertEquals(actual.length, 0);
+	}
+
+	/**
+	 * Test method for {@link ListExtensions#getIndexToInsert(List, List, Object)}
+	 */
+	@Test
+	public final void testGetIndexToInsert()
+	{
+		List<String> helpMenu;
+		List<String> unsortedHelpMenu;
+
+		String content = "Content";
+		String donate = "Donate";
+		String diagnostic = "Diagnostic";
+		String license = "License";
+		String info = "Info";
+		helpMenu = ListFactory.newArrayList();
+		helpMenu.add(content);
+		helpMenu.add(donate);
+		helpMenu.add(diagnostic);
+		helpMenu.add(license);
+		helpMenu.add(info);
+
+		unsortedHelpMenu = ListFactory.newArrayList(helpMenu);
+
+		int iterationCount = 1000;
+
+		for (int i = 0; i < iterationCount; i++)
+		{
+			shuffleAndSort(helpMenu, unsortedHelpMenu);
+		}
+	}
+
+	private static void shuffleAndSort(List<String> helpMenu, List<String> unsortedHelpMenu)
+	{
+		List<String> newSortedHelpMenu;
+		Collections.shuffle(unsortedHelpMenu);
+		newSortedHelpMenu = ListFactory.newArrayList();
+		for (int i = 0; i < unsortedHelpMenu.size(); i++)
+		{
+			String currentUsortedHelpMenuItem = unsortedHelpMenu.get(i);
+			int indexToInsert = ListExtensions.getIndexToInsert(helpMenu, newSortedHelpMenu,
+				currentUsortedHelpMenuItem);
+			newSortedHelpMenu.add(indexToInsert, currentUsortedHelpMenuItem);
+		}
+		assertEquals(helpMenu, newSortedHelpMenu);
 	}
 
 	/**

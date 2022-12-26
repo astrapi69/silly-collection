@@ -26,11 +26,13 @@ package io.github.astrapi69.collection.list;
 
 import java.util.Arrays;
 import java.util.Collection;
+import java.util.Collections;
 import java.util.Comparator;
 import java.util.Enumeration;
 import java.util.Iterator;
 import java.util.List;
 import java.util.Map;
+import java.util.Objects;
 import java.util.Optional;
 import java.util.Set;
 import java.util.function.Function;
@@ -43,6 +45,7 @@ import io.github.astrapi69.collection.CollectionExtensions;
 import io.github.astrapi69.collection.array.ArrayFactory;
 import io.github.astrapi69.collection.map.MapFactory;
 import io.github.astrapi69.collection.modification.ModifiedCollections;
+import io.github.astrapi69.comparator.factory.ComparatorFactory;
 
 /**
  * Extensions class for use with {@link List} objects.
@@ -431,12 +434,7 @@ public final class ListExtensions
 	 */
 	public static <T> boolean isLast(final List<T> list, final T element)
 	{
-		Optional<T> optionalLast = ListExtensions.getLast(list);
-		if (optionalLast.isPresent())
-		{
-			return optionalLast.get().equals(element);
-		}
-		return false;
+		return ListExtensions.getLast(list).map(current -> current.equals(element)).orElse(false);
 	}
 
 	/**
@@ -753,6 +751,85 @@ public final class ListExtensions
 		final Object[] decorator = new Object[elements.length];
 		System.arraycopy(elements, 0, decorator, 0, elements.length);
 		return decorator;
+	}
+
+
+	/**
+	 * Gets the index where to insert to another list which is still in construction and needs a
+	 * defined order
+	 *
+	 * @param <T>
+	 *            the generic type
+	 * @param sortedList
+	 *            the sorted list that is used for the defined order
+	 * @param newSortedList
+	 *            the new sorted list
+	 * @param elementToAdd
+	 *            the element for resolve the index to add
+	 * @return the index where to insert in the new sorted list
+	 */
+	public static <T> int getIndexToInsert(List<T> sortedList, List<T> newSortedList,
+		T elementToAdd)
+	{
+		List<T> listWithNewElement = ListFactory.newArrayList(newSortedList, elementToAdd);
+		listWithNewElement.sort(ComparatorFactory.newDefinedOrderComparator(sortedList));
+		return listWithNewElement.indexOf(elementToAdd);
+	}
+
+	/**
+	 * Checks if the second given element is before the first given element in the given list
+	 *
+	 * @param <T>
+	 *            the generic type
+	 * @param list
+	 *            the list
+	 * @param element
+	 *            the element
+	 * @param elementToCheck
+	 *            the element to check if it is before the first given element
+	 * @return true if the second given element is before the first given element in the given list
+	 *         otherwise false
+	 */
+	public static <T> boolean isBefore(final List<T> list, final T element, final T elementToCheck)
+	{
+		Objects.requireNonNull(list);
+		Objects.requireNonNull(element);
+		Objects.requireNonNull(elementToCheck);
+		if (list.contains(element) && list.contains(elementToCheck))
+		{
+			int indexOfElement = list.indexOf(element);
+			int indexOfElementToCheck = list.indexOf(elementToCheck);
+			return indexOfElementToCheck < indexOfElement;
+		}
+		return false;
+	}
+
+	/**
+	 * Checks if the second given element is after the first given element in the given list
+	 *
+	 * @param <T>
+	 *            the generic type
+	 * @param list
+	 *            the list
+	 * @param element
+	 *            the element
+	 * @param elementToCheck
+	 *            the element to check if it is after the first given element
+	 * @return true if the second given element is after the first given element in the given list
+	 *         otherwise false
+	 */
+	public static <T> boolean isAfter(final List<T> list, final T element, final T elementToCheck)
+	{
+		Objects.requireNonNull(list);
+		Objects.requireNonNull(element);
+		Objects.requireNonNull(elementToCheck);
+		if (list.contains(element) && list.contains(elementToCheck))
+		{
+			int indexOfElement = list.indexOf(element);
+			int indexOfElementToCheck = list.indexOf(elementToCheck);
+			return indexOfElement < indexOfElementToCheck;
+		}
+		return false;
 	}
 
 }

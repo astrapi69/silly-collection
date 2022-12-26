@@ -30,8 +30,8 @@ import java.util.Comparator;
 import java.util.LinkedHashMap;
 import java.util.List;
 import java.util.Map;
-import java.util.Properties;
 import java.util.Map.Entry;
+import java.util.Properties;
 import java.util.stream.Collectors;
 import java.util.stream.Stream;
 
@@ -384,13 +384,11 @@ public final class MapExtensions
 	/**
 	 * Converts the given two-dimensional array to a {@link Map} object
 	 *
-	 * @param <T>
-	 *            the generic type
 	 * @param twoDimArray
 	 *            The two-dimensional array
 	 * @return The {@link Map} object produced from the given two-dimensional array
 	 */
-	public static <T> Map<String, Object> toStringObjectMap(final Object[][] twoDimArray)
+	public static Map<String, Object> toStringObjectMap(final Object[][] twoDimArray)
 	{
 		Argument.notNull(twoDimArray, "twoDimArray");
 		final Map<String, Object> map = new LinkedHashMap<>();
