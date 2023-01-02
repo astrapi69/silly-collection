@@ -36,7 +36,7 @@ import io.github.astrapi69.check.Argument;
 import io.github.astrapi69.collection.list.ListFactory;
 
 /**
- * The class {@link ArrayExtensions} is an extensions class for use with array objects.
+ * The class {@link ArrayExtensions} is an extensions class for use with array objects
  */
 public final class ArrayExtensions
 {
@@ -78,30 +78,30 @@ public final class ArrayExtensions
 	}
 
 	/**
-	 * Creates a new {@link List} from the given array. <br>
+	 * Creates a new {@link List} from the given array <br>
 	 * <br>
-	 * Note: This wraps only the method asList from {@link Arrays#asList(Object...)}.
+	 * Note: This wraps only the method asList from {@link Arrays#asList(Object...)}
 	 *
 	 * @param <T>
-	 *            the generic type of the objects in the array.
+	 *            the generic type of the objects in the array
 	 * @param array
 	 *            the array
-	 * @return the new {@link List} created from the given array.
+	 * @return the new {@link List} created from the given array
 	 */
 	public static <T> List<T> asList(final T[] array)
 	{
-		return ListFactory.newArrayList(array);
+		return Arrays.asList(array);
 	}
 
 	/**
-	 * Creates a new {@link Set} from the given array. <br>
+	 * Creates a new {@link Set} from the given array <br>
 	 * <br>
 	 *
 	 * @param <T>
-	 *            the generic type of the objects in the array.
+	 *            the generic type of the objects in the array
 	 * @param array
 	 *            the array
-	 * @return the new {@link Set} created from the given array.
+	 * @return the new {@link Set} created from the given array
 	 */
 	@SafeVarargs
 	public static <T> Set<T> asSet(T... array)
@@ -110,14 +110,14 @@ public final class ArrayExtensions
 	}
 
 	/**
-	 * Creates a new {@link Stream} from the given array. <br>
+	 * Creates a new {@link Stream} from the given array <br>
 	 * <br>
 	 *
 	 * @param <T>
-	 *            the generic type of the objects in the array.
+	 *            the generic type of the objects in the array
 	 * @param array
 	 *            the array
-	 * @return the new {@link Stream} created from the given array.
+	 * @return the new {@link Stream} created from the given array
 	 */
 	@SafeVarargs
 	public static <T> Stream<T> asStream(T... array)
@@ -182,7 +182,7 @@ public final class ArrayExtensions
 	 * @param array
 	 *            the array
 	 * @param elements
-	 *            the elements to check if is containing in the given array
+	 *            the elements to check if it is containing in the given array
 	 * @return <code>true</code> if at least one of given elements is in the given array otherwise
 	 *         <code>false</code>
 	 */
@@ -202,13 +202,13 @@ public final class ArrayExtensions
 	}
 
 	/**
-	 * Gets the first object from the given array.
+	 * Gets the first object from the given array
 	 *
 	 * @param <T>
 	 *            the generic type
 	 * @param array
-	 *            the array.
-	 * @return Returns the first object from the given array or null if the array is empty or null.
+	 *            the array
+	 * @return Returns the first object from the given array or null if the array is empty or null
 	 */
 	public static <T> T getFirst(final T[] array)
 	{
@@ -220,7 +220,7 @@ public final class ArrayExtensions
 	}
 
 	/**
-	 * Gets the index of the given element in the given array.
+	 * Gets the index of the given element in the given array
 	 *
 	 * @param <T>
 	 *            the generic type
@@ -236,13 +236,13 @@ public final class ArrayExtensions
 	}
 
 	/**
-	 * Gets the last object from the given array.
+	 * Gets the last object from the given array
 	 *
 	 * @param <T>
 	 *            the generic type
 	 * @param array
-	 *            the array.
-	 * @return Returns the last object from the given array or null if the array is empty or null.
+	 *            the array
+	 * @return Returns the last object from the given array or null if the array is empty or null
 	 */
 	public static <T> T getLast(final T[] array)
 	{
@@ -260,8 +260,8 @@ public final class ArrayExtensions
 	 * @param <T>
 	 *            the generic type
 	 * @param array
-	 *            the array.
-	 * @return Returns the last index from the given array or -1 if the array is null.
+	 *            the array
+	 * @return Returns the last index from the given array or -1 if the array is null
 	 */
 	public static <T> int getLastIndex(final T[] array)
 	{
@@ -273,15 +273,13 @@ public final class ArrayExtensions
 	}
 
 	/**
-	 * Gets the last index from the given array.
+	 * Gets the last index from the given array
 	 *
-	 * @param <T>
-	 *            the generic type
 	 * @param array
-	 *            the array.
-	 * @return Returns the last index from the given array or -1 if the array is null.
+	 *            the array
+	 * @return Returns the last index from the given array or -1 if the array is null
 	 */
-	public static <T> int getLastIndex(final boolean[] array)
+	public static int getLastIndex(final boolean[] array)
 	{
 		if (array == null)
 		{
@@ -291,15 +289,13 @@ public final class ArrayExtensions
 	}
 
 	/**
-	 * Gets the last index from the given array.
+	 * Gets the last index from the given array
 	 *
-	 * @param <T>
-	 *            the generic type
 	 * @param array
-	 *            the array.
-	 * @return Returns the last index from the given array or -1 if the array is null.
+	 *            the array
+	 * @return Returns the last index from the given array or -1 if the array is null
 	 */
-	public static <T> int getLastIndex(final byte[] array)
+	public static int getLastIndex(final byte[] array)
 	{
 		if (array == null)
 		{
@@ -309,15 +305,13 @@ public final class ArrayExtensions
 	}
 
 	/**
-	 * Gets the last index from the given array.
+	 * Gets the last index from the given array
 	 *
-	 * @param <T>
-	 *            the generic type
 	 * @param array
-	 *            the array.
-	 * @return Returns the last index from the given array or -1 if the array is null.
+	 *            the array
+	 * @return Returns the last index from the given array or -1 if the array is null
 	 */
-	public static <T> int getLastIndex(final char[] array)
+	public static int getLastIndex(final char[] array)
 	{
 		if (array == null)
 		{
@@ -327,15 +321,13 @@ public final class ArrayExtensions
 	}
 
 	/**
-	 * Gets the last index from the given array.
+	 * Gets the last index from the given array
 	 *
-	 * @param <T>
-	 *            the generic type
 	 * @param array
-	 *            the array.
-	 * @return Returns the last index from the given array or -1 if the array is null.
+	 *            the array
+	 * @return Returns the last index from the given array or -1 if the array is null
 	 */
-	public static <T> int getLastIndex(final float[] array)
+	public static int getLastIndex(final float[] array)
 	{
 		if (array == null)
 		{
@@ -345,15 +337,13 @@ public final class ArrayExtensions
 	}
 
 	/**
-	 * Gets the last index from the given array.
+	 * Gets the last index from the given array
 	 *
-	 * @param <T>
-	 *            the generic type
 	 * @param array
-	 *            the array.
-	 * @return Returns the last index from the given array or -1 if the array is null.
+	 *            the array
+	 * @return Returns the last index from the given array or -1 if the array is null
 	 */
-	public static <T> int getLastIndex(final long[] array)
+	public static int getLastIndex(final long[] array)
 	{
 		if (array == null)
 		{
@@ -363,15 +353,13 @@ public final class ArrayExtensions
 	}
 
 	/**
-	 * Gets the last index from the given array.
+	 * Gets the last index from the given array
 	 *
-	 * @param <T>
-	 *            the generic type
 	 * @param array
-	 *            the array.
-	 * @return Returns the last index from the given array or -1 if the array is null.
+	 *            the array
+	 * @return Returns the last index from the given array or -1 if the array is null
 	 */
-	public static <T> int getLastIndex(final short[] array)
+	public static int getLastIndex(final short[] array)
 	{
 		if (array == null)
 		{
@@ -381,15 +369,13 @@ public final class ArrayExtensions
 	}
 
 	/**
-	 * Gets the last index from the given array.
+	 * Gets the last index from the given array
 	 *
-	 * @param <T>
-	 *            the generic type
 	 * @param array
-	 *            the array.
-	 * @return Returns the last index from the given array or -1 if the array is null.
+	 *            the array
+	 * @return Returns the last index from the given array or -1 if the array is null
 	 */
-	public static <T> int getLastIndex(final double[] array)
+	public static int getLastIndex(final double[] array)
 	{
 		if (array == null)
 		{
@@ -399,15 +385,13 @@ public final class ArrayExtensions
 	}
 
 	/**
-	 * Gets the last index from the given array.
+	 * Gets the last index from the given array
 	 *
-	 * @param <T>
-	 *            the generic type
 	 * @param array
-	 *            the array.
-	 * @return Returns the last index from the given array or -1 if the array is null.
+	 *            the array
+	 * @return Returns the last index from the given array or -1 if the array is null
 	 */
-	public static <T> int getLastIndex(final int[] array)
+	public static int getLastIndex(final int[] array)
 	{
 		if (array == null)
 		{
@@ -417,7 +401,7 @@ public final class ArrayExtensions
 	}
 
 	/**
-	 * Gets the next index of the given array.
+	 * Gets the next index of the given array
 	 *
 	 * @param <T>
 	 *            the generic type
@@ -443,7 +427,7 @@ public final class ArrayExtensions
 	}
 
 	/**
-	 * Gets the next indexes from the given count of the given array.
+	 * Gets the next indexes from the given count of the given array
 	 *
 	 * @param <T>
 	 *            the generic type
@@ -453,7 +437,7 @@ public final class ArrayExtensions
 	 *            the element
 	 * @param count
 	 *            the count
-	 * @return the next indexes or null if there is no next indexes.
+	 * @return the next indexes or null if there is no next indexes
 	 */
 	public static <T> int[] getNextIndexes(final T[] array, final T element, final int count)
 	{
@@ -477,7 +461,7 @@ public final class ArrayExtensions
 	}
 
 	/**
-	 * Gets the previous index of the given array.
+	 * Gets the previous index of the given array
 	 *
 	 * @param <T>
 	 *            the generic type
@@ -503,7 +487,7 @@ public final class ArrayExtensions
 	}
 
 	/**
-	 * Gets the previous indexes from the given count of the given array.
+	 * Gets the previous indexes from the given count of the given array
 	 *
 	 * @param <T>
 	 *            the generic type
@@ -513,7 +497,7 @@ public final class ArrayExtensions
 	 *            the element
 	 * @param count
 	 *            the count
-	 * @return the previous indexes or null if there is no previous indexes.
+	 * @return the previous indexes or null if there is no previous indexes
 	 */
 	public static <T> int[] getPreviousIndexes(final T[] array, final T element, final int count)
 	{
@@ -537,7 +521,7 @@ public final class ArrayExtensions
 	}
 
 	/**
-	 * Gets the index of the given element in the given array.
+	 * Gets the index of the given element in the given array
 	 *
 	 * @param <T>
 	 *            the generic type
@@ -553,7 +537,7 @@ public final class ArrayExtensions
 	}
 
 	/**
-	 * Intersection of the given two arrays.
+	 * Intersection of the given two arrays
 	 *
 	 * @param <T>
 	 *            the generic type
@@ -580,7 +564,7 @@ public final class ArrayExtensions
 	}
 
 	/**
-	 * Checks if the given element is the first in the given array.
+	 * Checks if the given element is the first in the given array
 	 *
 	 * @param <T>
 	 *            the generic type
@@ -597,7 +581,7 @@ public final class ArrayExtensions
 	}
 
 	/**
-	 * Checks if the given element is the last in the given array.
+	 * Checks if the given element is the last in the given array
 	 *
 	 * @param <T>
 	 *            the generic type
@@ -615,7 +599,7 @@ public final class ArrayExtensions
 	}
 
 	/**
-	 * Removes the first element of the array.
+	 * Removes the first element of the array
 	 *
 	 * @param <T>
 	 *            the generic type of the objects in the array
@@ -640,7 +624,7 @@ public final class ArrayExtensions
 	}
 
 	/**
-	 * Removes the first element of the array.
+	 * Removes the first element of the array
 	 *
 	 * @param <T>
 	 *            the generic type of the objects in the array
@@ -668,7 +652,7 @@ public final class ArrayExtensions
 	 *            the generic type of the objects in the array
 	 * @param original
 	 *            the origin array
-	 * @return the new created array with out the first element
+	 * @return the new created array without the first element
 	 */
 	public static <T> T[] removeFirst(final T[] original)
 	{
@@ -727,7 +711,7 @@ public final class ArrayExtensions
 	 *            the generic type of the objects in the array
 	 * @param original
 	 *            the origin array
-	 * @return the new created array with out the first element
+	 * @return the new created array without the first element
 	 */
 	public static <T> T[] removeLast(final T[] original)
 	{
@@ -736,7 +720,7 @@ public final class ArrayExtensions
 	}
 
 	/**
-	 * Split the given byte array in to new arrays with the chunk size.
+	 * Split the given byte array in to new arrays with the chunk size
 	 *
 	 * @param bytes
 	 *            the bytes
@@ -762,15 +746,15 @@ public final class ArrayExtensions
 	}
 
 	/**
-	 * Creates a new {@link List} from the given array. <br>
+	 * Creates a new {@link List} from the given array <br>
 	 * <br>
-	 * Note: This wraps only the method asList from {@link Arrays#asList(Object...)}.
+	 * Note: This wraps only the method asList from {@link Arrays#asList(Object...)}
 	 *
 	 * @param <T>
-	 *            the generic type of the objects in the array.
+	 *            the generic type of the objects in the array
 	 * @param array
 	 *            the array
-	 * @return the new {@link List} created from the given array.
+	 * @return the new {@link List} created from the given array
 	 */
 	public static <T> List<T> toList(final T[] array)
 	{

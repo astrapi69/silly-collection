@@ -24,10 +24,7 @@
  */
 package io.github.astrapi69.collection.list;
 
-import static org.testng.AssertJUnit.assertEquals;
-import static org.testng.AssertJUnit.assertFalse;
-import static org.testng.AssertJUnit.assertNotNull;
-import static org.testng.AssertJUnit.assertTrue;
+import static org.testng.AssertJUnit.*;
 import static org.testng.internal.junit.ArrayAsserts.assertArrayEquals;
 
 import java.util.*;
@@ -68,6 +65,54 @@ public class ListExtensionsTest
 	@AfterMethod
 	protected void tearDown()
 	{
+	}
+
+	/**
+	 * Test method for {@link ListExtensions#getFirst(List)}
+	 */
+	@Test
+	public void testGetFirst()
+	{
+		String actual;
+		String expected;
+		List<String> search;
+
+		expected = "Leonidas";
+		search = ListFactory.newArrayList();
+		search.add(expected);
+		search.add("Berta");
+		search.add("Caesar");
+		search.add("Dora");
+		search.add("Emil");
+		search.add("Anton");
+
+		actual = ListExtensions.getFirst(search);
+		assertEquals(expected, actual);
+
+		search = ListFactory.newArrayList();
+		actual = ListExtensions.getFirst(search);
+		expected = null;
+		assertEquals(expected, actual);
+	}
+
+	/**
+	 * Test method for {@link ListExtensions#getLast(List)}
+	 */
+	@Test
+	public void testGetLast()
+	{
+		final String expected = "Leonidas";
+		final List<String> search = ListFactory.newArrayList();
+		String compare = ListExtensions.getLast(search);
+		assertNull(compare);
+		search.add("Anton");
+		search.add("Berta");
+		search.add("Caesar");
+		search.add("Dora");
+		search.add("Emil");
+		search.add(expected);
+		compare = ListExtensions.getLast(search);
+		assertEquals(compare, expected);
 	}
 
 	/**
@@ -220,10 +265,10 @@ public class ListExtensionsTest
 	}
 
 	/**
-	 * Test method for {@link ListExtensions#getFirst(List)}
+	 * Test method for {@link ListExtensions#getFirstElement(List)}
 	 */
 	@Test
-	public final void testGetFirst()
+	public final void testGetFirstElement()
 	{
 		Optional<String> expected;
 		Optional<String> actual;
@@ -238,26 +283,26 @@ public class ListExtensionsTest
 		search.add("Emil");
 		search.add("Anton");
 
-		actual = ListExtensions.getFirst(search);
+		actual = ListExtensions.getFirstElement(search);
 		assertEquals(expected, actual);
 
 		search = ListFactory.newArrayList();
-		actual = ListExtensions.getFirst(search);
+		actual = ListExtensions.getFirstElement(search);
 		expected = Optional.empty();
 		assertEquals(expected, actual);
 	}
 
 	/**
-	 * Test method for {@link ListExtensions#getLast(List)}
+	 * Test method for {@link ListExtensions#getLastElement(List)}
 	 */
 	@Test
-	public final void testGetLast()
+	public final void testGetLastElement()
 	{
 		Optional<String> expected;
 		Optional<String> actual;
 
 		final List<String> search = ListFactory.newArrayList();
-		actual = ListExtensions.getLast(search);
+		actual = ListExtensions.getLastElement(search);
 		expected = Optional.empty();
 		assertEquals(expected, actual);
 		search.add("Anton");
@@ -266,7 +311,7 @@ public class ListExtensionsTest
 		search.add("Dora");
 		search.add("Emil");
 		search.add("Leonidas");
-		actual = ListExtensions.getLast(search);
+		actual = ListExtensions.getLastElement(search);
 		expected = Optional.of("Leonidas");
 		assertEquals(expected, actual);
 	}
@@ -781,7 +826,7 @@ public class ListExtensionsTest
 		actual = ListExtensions.removeFirst(search);
 		assertTrue(removed.equals(actual.get()));
 
-		actual = ListExtensions.getFirst(search);
+		actual = ListExtensions.getFirstElement(search);
 		assertEquals(expected, actual);
 
 		search.clear();
@@ -814,7 +859,7 @@ public class ListExtensionsTest
 		actual = ListExtensions.removeLast(search);
 		assertTrue("", removed.equals(actual.get()));
 
-		actual = ListExtensions.getLast(search);
+		actual = ListExtensions.getLastElement(search);
 		assertEquals(expected, actual);
 
 		search.clear();

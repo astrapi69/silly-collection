@@ -59,6 +59,45 @@ public final class ListExtensions
 	{
 	}
 
+
+	/**
+	 * Gets the first object from the given List or null if it does not exist
+	 *
+	 * @param <T>
+	 *            the generic type
+	 * @param list
+	 *            the List.
+	 * @return Returns the first object from the given List or null if the List is empty or null.
+	 */
+	public static <T> T getFirst(final List<T> list)
+	{
+		Optional<T> firstOptional = getFirstElement(list);
+		if (firstOptional.isPresent())
+		{
+			return firstOptional.get();
+		}
+		return null;
+	}
+
+	/**
+	 * Gets the last object from the given List.
+	 *
+	 * @param <T>
+	 *            the generic type
+	 * @param list
+	 *            the List.
+	 * @return Returns the last object from the given List or null if the List is empty or null.
+	 */
+	public static <T> T getLast(final List<T> list)
+	{
+		Optional<T> lastOptional = getLastElement(list);
+		if (lastOptional.isPresent())
+		{
+			return lastOptional.get();
+		}
+		return null;
+	}
+
 	/**
 	 * Compute in recursive manner all combinations of the given arguments
 	 *
@@ -202,7 +241,7 @@ public final class ListExtensions
 	 * @return an {@link Optional} with the first object from the given {@link List} or an empty
 	 *         {@link Optional} if the List is empty
 	 */
-	public static <T> Optional<T> getFirst(final List<T> list)
+	public static <T> Optional<T> getFirstElement(final List<T> list)
 	{
 		Argument.notNull(list, "list");
 		if (CollectionExtensions.isNotEmpty(list))
@@ -222,7 +261,7 @@ public final class ListExtensions
 	 * @return an {@link Optional} with the last object from the given {@link List} or an empty
 	 *         {@link Optional} if the List is empty
 	 */
-	public static <T> Optional<T> getLast(final List<T> list)
+	public static <T> Optional<T> getLastElement(final List<T> list)
 	{
 		Argument.notNull(list, "list");
 		if (CollectionExtensions.isNotEmpty(list))
@@ -434,7 +473,8 @@ public final class ListExtensions
 	 */
 	public static <T> boolean isLast(final List<T> list, final T element)
 	{
-		return ListExtensions.getLast(list).map(current -> current.equals(element)).orElse(false);
+		return ListExtensions.getLastElement(list).map(current -> current.equals(element))
+			.orElse(false);
 	}
 
 	/**
