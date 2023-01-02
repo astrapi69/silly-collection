@@ -4,7 +4,15 @@
 Version 20.3-SNAPSHOT
 -------------
 
+ADDED:
 
+- new methods for get first and last from a list
+
+CHANGED:
+
+- update of gradle-plugin dependency 'com.diffplug.spotless:spotless-plugin-gradle' to new version
+  6.12.1
+- update of test dependency testng to new version 7.7.1
 
 Version 20.2
 -------------
