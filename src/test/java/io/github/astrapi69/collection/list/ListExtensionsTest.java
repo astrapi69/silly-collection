@@ -157,7 +157,7 @@ public class ListExtensionsTest
 	}
 
 	/**
-	 * Test the method {@link ListExtensions#containAtleastOneObject(List, List)}
+	 * Test the method {@link ListExtensions#containAtLeastOneObject(List, List)}
 	 */
 	@Test
 	public void testContainAtleastOneObject()
@@ -171,13 +171,13 @@ public class ListExtensionsTest
 		search.add("Dora");
 		search.add("Emil");
 		search.add("Franz");
-		final boolean isFalse = ListExtensions.containAtleastOneObject(toSearch, search);
+		final boolean isFalse = ListExtensions.containAtLeastOneObject(toSearch, search);
 		assertFalse(isFalse);
 		atLeastOneSameObject.add("Anton");
 		atLeastOneSameObject.add("Dora");
-		boolean isTrue = ListExtensions.containAtleastOneObject(toSearch, atLeastOneSameObject);
+		boolean isTrue = ListExtensions.containAtLeastOneObject(toSearch, atLeastOneSameObject);
 		assertTrue(isTrue);
-		isTrue = ListExtensions.containAtleastOneObject(search, atLeastOneSameObject);
+		isTrue = ListExtensions.containAtLeastOneObject(search, atLeastOneSameObject);
 		assertTrue(isTrue);
 	}
 
@@ -341,7 +341,7 @@ public class ListExtensionsTest
 	}
 
 	/**
-	 * Test method for {@link ListExtensions#getNext(List, Object)}
+	 * Test method for {@link ListExtensions#getNextElement(List, Object)}
 	 */
 	@Test
 	public final void testGetNext()
@@ -360,33 +360,33 @@ public class ListExtensionsTest
 		search.add(emil);
 		search.add(anton);
 
-		actual = ListExtensions.getNext(search, "foo");
+		actual = ListExtensions.getNextElement(search, "foo");
 		expected = Optional.empty();
 		assertEquals(expected, actual);
 
-		actual = ListExtensions.getNext(search, null);
+		actual = ListExtensions.getNextElement(search, null);
 		expected = Optional.empty();
 		assertEquals(expected, actual);
 
-		actual = ListExtensions.getNext(search, anton);
+		actual = ListExtensions.getNextElement(search, anton);
 		expected = Optional.empty();
 		assertEquals(expected, actual);
 
-		actual = ListExtensions.getNext(search, emil);
+		actual = ListExtensions.getNextElement(search, emil);
 		expected = Optional.of(anton);
 		assertEquals(expected, actual);
 
-		actual = ListExtensions.getNext(search, dora);
+		actual = ListExtensions.getNextElement(search, dora);
 		expected = Optional.of(emil);
 		assertEquals(expected, actual);
 
-		actual = ListExtensions.getNext(search, caeser);
+		actual = ListExtensions.getNextElement(search, caeser);
 		expected = Optional.of(dora);
 		assertEquals(expected, actual);
 	}
 
 	/**
-	 * Test method for {@link ListExtensions#getPrevious(List, Object)}
+	 * Test method for {@link ListExtensions#getPreviousElement(List, Object)}
 	 */
 	@Test
 	public final void testGetPrevious()
@@ -405,27 +405,27 @@ public class ListExtensionsTest
 		search.add(emil);
 		search.add(anton);
 
-		actual = ListExtensions.getPrevious(search, "foo");
+		actual = ListExtensions.getPreviousElement(search, "foo");
 		expected = Optional.empty();
 		assertEquals(expected, actual);
 
-		actual = ListExtensions.getPrevious(search, null);
+		actual = ListExtensions.getPreviousElement(search, null);
 		expected = Optional.empty();
 		assertEquals(expected, actual);
 
-		actual = ListExtensions.getPrevious(search, caeser);
+		actual = ListExtensions.getPreviousElement(search, caeser);
 		expected = Optional.empty();
 		assertEquals(expected, actual);
 
-		actual = ListExtensions.getPrevious(search, dora);
+		actual = ListExtensions.getPreviousElement(search, dora);
 		expected = Optional.of(caeser);
 		assertEquals(expected, actual);
 
-		actual = ListExtensions.getPrevious(search, emil);
+		actual = ListExtensions.getPreviousElement(search, emil);
 		expected = Optional.of(dora);
 		assertEquals(expected, actual);
 
-		actual = ListExtensions.getPrevious(search, anton);
+		actual = ListExtensions.getPreviousElement(search, anton);
 		expected = Optional.of(emil);
 		assertEquals(expected, actual);
 	}
@@ -769,7 +769,7 @@ public class ListExtensionsTest
 	}
 
 	/**
-	 * Test method for {@link ListExtensions#rearrange(Object, List, int)}
+	 * Test method for {@link ListExtensions#rearrange(List, Object, int)}
 	 */
 	@Test
 	public void testRearrange()
@@ -786,28 +786,28 @@ public class ListExtensionsTest
 		search.add("Emil");
 		search.add("Anton");
 
-		rearrangedList = ListExtensions.rearrange("Anton", search, 0);
+		rearrangedList = ListExtensions.rearrange(search, "Anton", 0);
 		index = rearrangedList.indexOf("Anton");
 		assertEquals(index, 0);
 
-		rearrangedList = ListExtensions.rearrange("Anton", search, 2);
+		rearrangedList = ListExtensions.rearrange(search, "Anton", 2);
 		index = rearrangedList.indexOf("Anton");
 		assertEquals(index, 2);
 
-		rearrangedList = ListExtensions.rearrange("Anton", search, 5);
+		rearrangedList = ListExtensions.rearrange(search, "Anton", 5);
 		index = rearrangedList.indexOf("Anton");
 		assertEquals(index, 5);
 
-		rearrangedList = ListExtensions.rearrange("Anton", search, 6);
+		rearrangedList = ListExtensions.rearrange(search, "Anton", 6);
 		index = rearrangedList.indexOf("Anton");
 		assertEquals(index, 5);
 	}
 
 	/**
-	 * Test method for {@link ListExtensions#removeFirst(List)}
+	 * Test method for {@link ListExtensions#removeFirstElement(List)}
 	 */
 	@Test
-	public final void testRemoveFirst()
+	public final void testRemoveFirstElement()
 	{
 		Optional<String> expected;
 		Optional<String> actual;
@@ -823,16 +823,81 @@ public class ListExtensionsTest
 		search.add("Emil");
 		search.add("Anton");
 
-		actual = ListExtensions.removeFirst(search);
-		assertTrue(removed.equals(actual.get()));
+		actual = ListExtensions.removeFirstElement(search);
+		assertEquals(removed, actual.get());
 
 		actual = ListExtensions.getFirstElement(search);
 		assertEquals(expected, actual);
 
 		search.clear();
 
-		actual = ListExtensions.removeFirst(search);
+		actual = ListExtensions.removeFirstElement(search);
 		expected = Optional.empty();
+		assertEquals(expected, actual);
+	}
+
+	/**
+	 * Test method for {@link ListExtensions#removeLastElement(List)}
+	 */
+	@Test
+	public final void testRemoveLastElement()
+	{
+		Optional<String> expected;
+		Optional<String> actual;
+		String removed;
+		List<String> search;
+		expected = Optional.of("Leonidas");
+		removed = "Berta";
+		search = ListFactory.newArrayList();
+
+		search.add("Anton");
+		search.add("Caesar");
+		search.add("Dora");
+		search.add("Emil");
+		search.add(expected.get());
+		search.add(removed);
+		actual = ListExtensions.removeLastElement(search);
+		assertEquals(removed, actual.get());
+
+		actual = ListExtensions.getLastElement(search);
+		assertEquals(expected, actual);
+
+		search.clear();
+
+		actual = ListExtensions.removeLastElement(search);
+		expected = Optional.empty();
+		assertEquals(expected, actual);
+	}
+
+	/**
+	 * Test method for {@link ListExtensions#removeFirst(List)}
+	 */
+	@Test
+	public void testRemoveFirst()
+	{
+		String expected;
+		String actual;
+		String removed;
+		List<String> search;
+		expected = "Leonidas";
+		removed = "Berta";
+		search = ListFactory.newArrayList();
+		search.add(removed);
+		search.add(expected);
+		search.add("Caesar");
+		search.add("Dora");
+		search.add("Emil");
+		search.add("Anton");
+		actual = ListExtensions.removeFirst(search);
+		assertEquals(removed, actual);
+
+		actual = ListExtensions.getFirst(search);
+		assertEquals(expected, actual);
+
+		search.clear();
+
+		actual = ListExtensions.removeFirst(search);
+		expected = null;
 		assertEquals(expected, actual);
 	}
 
@@ -840,13 +905,14 @@ public class ListExtensionsTest
 	 * Test method for {@link ListExtensions#removeLast(List)}
 	 */
 	@Test
-	public final void testRemoveLast()
+	public void testRemoveLast()
 	{
-		Optional<String> expected;
-		Optional<String> actual;
+		String expected;
+		String actual;
 		String removed;
+		String compare;
 		List<String> search;
-		expected = Optional.of("Leonidas");
+		expected = "Leonidas";
 		removed = "Berta";
 		search = ListFactory.newArrayList();
 
@@ -854,18 +920,18 @@ public class ListExtensionsTest
 		search.add("Caesar");
 		search.add("Dora");
 		search.add("Emil");
-		search.add(expected.get());
+		search.add(expected);
 		search.add(removed);
-		actual = ListExtensions.removeLast(search);
-		assertTrue("", removed.equals(actual.get()));
+		compare = ListExtensions.removeLast(search);
+		assertEquals(removed, compare);
 
-		actual = ListExtensions.getLastElement(search);
-		assertEquals(expected, actual);
+		compare = ListExtensions.getLast(search);
+		assertEquals(expected, compare);
 
 		search.clear();
 
 		actual = ListExtensions.removeLast(search);
-		expected = Optional.empty();
+		expected = null;
 		assertEquals(expected, actual);
 	}
 
@@ -896,7 +962,7 @@ public class ListExtensionsTest
 
 	/**
 	 * Test method for {@link ListExtensions#removeLastValues(List, int)} where the remove value is
-	 * greater then the size of the given list
+	 * greater than the size of the given list
 	 */
 	@Test(expectedExceptions = IllegalArgumentException.class)
 	public void testRemoveLastValuesException()
@@ -1042,7 +1108,7 @@ public class ListExtensionsTest
 	 */
 	@Test
 	@SuppressWarnings({ "rawtypes" })
-	public void testsplitToPartsInList()
+	public void testSplitToPartsInList()
 	{
 		final List<Integer> list = ListFactory.newArrayList();
 		for (int i = 0; i < 999; i++)
@@ -1171,10 +1237,10 @@ public class ListExtensionsTest
 		newSortedHelpMenu = ListFactory.newArrayList();
 		for (int i = 0; i < unsortedHelpMenu.size(); i++)
 		{
-			String currentUsortedHelpMenuItem = unsortedHelpMenu.get(i);
+			String currentUnsortedHelpMenuItem = unsortedHelpMenu.get(i);
 			int indexToInsert = ListExtensions.getIndexToInsert(helpMenu, newSortedHelpMenu,
-				currentUsortedHelpMenuItem);
-			newSortedHelpMenu.add(indexToInsert, currentUsortedHelpMenuItem);
+				currentUnsortedHelpMenuItem);
+			newSortedHelpMenu.add(indexToInsert, currentUnsortedHelpMenuItem);
 		}
 		assertEquals(helpMenu, newSortedHelpMenu);
 	}

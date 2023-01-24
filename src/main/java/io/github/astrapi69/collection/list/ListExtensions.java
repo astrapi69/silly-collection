@@ -26,7 +26,6 @@ package io.github.astrapi69.collection.list;
 
 import java.util.Arrays;
 import java.util.Collection;
-import java.util.Collections;
 import java.util.Comparator;
 import java.util.Enumeration;
 import java.util.Iterator;
@@ -71,12 +70,7 @@ public final class ListExtensions
 	 */
 	public static <T> T getFirst(final List<T> list)
 	{
-		Optional<T> firstOptional = getFirstElement(list);
-		if (firstOptional.isPresent())
-		{
-			return firstOptional.get();
-		}
-		return null;
+		return getFirstElement(list).orElse(null);
 	}
 
 	/**
@@ -90,12 +84,7 @@ public final class ListExtensions
 	 */
 	public static <T> T getLast(final List<T> list)
 	{
-		Optional<T> lastOptional = getLastElement(list);
-		if (lastOptional.isPresent())
-		{
-			return lastOptional.get();
-		}
-		return null;
+		return getLastElement(list).orElse(null);
 	}
 
 	/**
@@ -146,7 +135,7 @@ public final class ListExtensions
 	 *            The List to inspect.
 	 * @return Returns true if there is at least one Object equal from the two List otherwise false.
 	 */
-	public static <T> boolean containAtleastOneObject(final List<T> toSearch, final List<T> search)
+	public static <T> boolean containAtLeastOneObject(final List<T> toSearch, final List<T> search)
 	{
 		boolean contains = false;
 		final int size = toSearch.size();
@@ -281,7 +270,8 @@ public final class ListExtensions
 	 *            the previous collection i.e. the collection from database.
 	 * @param next
 	 *            the next collection i.e. the current collection in the view.
-	 * @return 's the ModifiedLists in which the lists are keeped.
+	 * @return 's the <code>ModifiedCollections</code> in which the <code>Collection</code> objects
+	 *         are stored
 	 */
 	public static <T> ModifiedCollections<T> getModifiedCollections(final Collection<T> previous,
 		final Collection<T> next)
@@ -301,7 +291,7 @@ public final class ListExtensions
 	 * @return an {@link Optional} with the next element from the given {@link List} or an empty
 	 *         {@link Optional} if the {@link List} has no next element
 	 */
-	public static <T> Optional<T> getNext(final List<T> list, final T element)
+	public static <T> Optional<T> getNextElement(final List<T> list, final T element)
 	{
 		Argument.notNull(list, "list");
 		if (ListExtensions.hasNext(list, element))
@@ -345,7 +335,7 @@ public final class ListExtensions
 	 * @return an {@link Optional} with the previous element from the given {@link List} or an empty
 	 *         {@link Optional} if the {@link List} has no previous element
 	 */
-	public static <T> Optional<T> getPrevious(final List<T> list, final T element)
+	public static <T> Optional<T> getPreviousElement(final List<T> list, final T element)
 	{
 		Argument.notNull(list, "list");
 		final int indexOfElement = list.indexOf(element);
@@ -487,10 +477,10 @@ public final class ListExtensions
 	 * @param element
 	 *            the element to rearrange
 	 * @param rearrangeToIndex
-	 *            the rearrange to index
+	 *            the index to rearrange
 	 * @return the rearranged {@link List}
 	 */
-	public static <T> List<T> rearrange(T element, List<T> listToResort, int rearrangeToIndex)
+	public static <T> List<T> rearrange(List<T> listToResort, T element, int rearrangeToIndex)
 	{
 		Argument.notNull(element, "element");
 		Argument.notNull(listToResort, "listToResort");
@@ -507,6 +497,26 @@ public final class ListExtensions
 	}
 
 	/**
+	 * Removes the first object from the given List.
+	 *
+	 * @param <T>
+	 *            the generic type
+	 * @param list
+	 *            the List.
+	 * @return Removes and returns the first object from the given List or null if the List is empty
+	 *         or null.
+	 */
+	public static <T> T removeFirst(final List<T> list)
+	{
+		Argument.notNull(list, "list");
+		if (!CollectionExtensions.isEmpty(list) && 0 < list.size())
+		{
+			return list.remove(0);
+		}
+		return null;
+	}
+
+	/**
 	 * Returns an {@link Optional} with the first object if it was removed from the given
 	 * {@link List}
 	 *
@@ -517,7 +527,7 @@ public final class ListExtensions
 	 * @return returns an {@link Optional} with the first object if it was removed from the given
 	 *         {@link List} or an empty {@link Optional} if the {@link List} is empty
 	 */
-	public static <T> Optional<T> removeFirst(final List<T> list)
+	public static <T> Optional<T> removeFirstElement(final List<T> list)
 	{
 		Argument.notNull(list, "list");
 		if (!CollectionExtensions.isEmpty(list))
@@ -525,6 +535,25 @@ public final class ListExtensions
 			return Optional.of(list.remove(0));
 		}
 		return Optional.empty();
+	}
+
+	/**
+	 * Removes the last object from the given List.
+	 *
+	 * @param <T>
+	 *            the generic type
+	 * @param list
+	 *            the List.
+	 * @return Removes and returns the last object from the given List or null if the List is empty
+	 *         or null.
+	 */
+	public static <T> T removeLast(final List<T> list)
+	{
+		if (!CollectionExtensions.isEmpty(list) && 0 < list.size())
+		{
+			return list.remove(list.size() - 1);
+		}
+		return null;
 	}
 
 	/**
@@ -538,7 +567,7 @@ public final class ListExtensions
 	 * @return returns an {@link Optional} with the last object if it was removed from the given
 	 *         {@link List} or an empty {@link Optional} if the {@link List} is empty
 	 */
-	public static <T> Optional<T> removeLast(final List<T> list)
+	public static <T> Optional<T> removeLastElement(final List<T> list)
 	{
 		Argument.notNull(list, "list");
 		if (!CollectionExtensions.isEmpty(list))
@@ -619,8 +648,7 @@ public final class ListExtensions
 	}
 
 	/**
-	 * Sort over the given property. Note: the property should be implement the Comparable
-	 * interface.
+	 * Sort over the given property. Note: the property should implement the Comparable interface.
 	 *
 	 * @param <T>
 	 *            the generic type of the list
@@ -656,8 +684,8 @@ public final class ListExtensions
 	 * @param collection
 	 *            The collection to split
 	 * @param size
-	 *            How to split.
-	 * @return a List with the splited Parts
+	 *            How to split
+	 * @return a List with the split Parts
 	 */
 	public static <T> List<List<T>> splitToParts(final Collection<T> collection, final int size)
 	{
@@ -742,21 +770,21 @@ public final class ListExtensions
 	}
 
 	/**
-	 * Converts the given enumaration to a Vector.
+	 * Converts the given enumeration to a Vector.
 	 *
 	 * @param <T>
 	 *            the generic type
-	 * @param enumaration
+	 * @param enumeration
 	 *            The Enumeration to convert.
 	 *
 	 * @return A new Vector with the content of the given Enumeration.
 	 */
-	public static <T> List<T> toList(final Enumeration<T> enumaration)
+	public static <T> List<T> toList(final Enumeration<T> enumeration)
 	{
 		final List<T> list = ListFactory.newArrayList();
-		while (enumaration.hasMoreElements())
+		while (enumeration.hasMoreElements())
 		{
-			list.add(enumaration.nextElement());
+			list.add(enumeration.nextElement());
 		}
 		return list;
 	}
@@ -832,9 +860,7 @@ public final class ListExtensions
 	 */
 	public static <T> boolean isBefore(final List<T> list, final T element, final T elementToCheck)
 	{
-		Objects.requireNonNull(list);
-		Objects.requireNonNull(element);
-		Objects.requireNonNull(elementToCheck);
+		nullChecks(list, element, elementToCheck);
 		if (list.contains(element) && list.contains(elementToCheck))
 		{
 			int indexOfElement = list.indexOf(element);
@@ -842,6 +868,13 @@ public final class ListExtensions
 			return indexOfElementToCheck < indexOfElement;
 		}
 		return false;
+	}
+
+	private static <T> void nullChecks(List<T> list, T element, T elementToCheck)
+	{
+		Objects.requireNonNull(list);
+		Objects.requireNonNull(element);
+		Objects.requireNonNull(elementToCheck);
 	}
 
 	/**

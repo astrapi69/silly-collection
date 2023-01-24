@@ -1,4 +1,7 @@
+import java.text.SimpleDateFormat
+
 jar {
+    dependsOn(test)
     manifest {
         attributes(
                 "Name": project.name,
@@ -8,7 +11,7 @@ jar {
                 "Implementation-Vendor": "$projectLeaderName",
                 "Created-By": "Gradle ${gradle.gradleVersion}",
                 "Built-By": "$projectLeaderName",
-                "Build-Timestamp": new java.text.SimpleDateFormat("yyyy-MM-dd'T'HH:mm:ss.SSSZ").format(new Date()),
+                "Build-Timestamp": new SimpleDateFormat("yyyy-MM-dd'T'HH:mm:ss.SSSZ").format(new Date()),
                 "Build-Jdk": "${System.properties['java.version']} (${System.properties['java.vendor']} ${System.properties['java.vm.version']})",
                 "Build-OS": "${System.properties['os.name']} ${System.properties['os.arch']} ${System.properties['os.version']}")
     }

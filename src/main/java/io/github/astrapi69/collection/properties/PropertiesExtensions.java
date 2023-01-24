@@ -323,20 +323,21 @@ public final class PropertiesExtensions
 		throws IOException
 	{
 		Properties properties = null;
-		InputStream inputStream;
 		if (propertiesFile.exists())
 		{
-			inputStream = propertiesFile.toURI().toURL().openStream();
-			if (inputStream != null)
+			try (InputStream inputStream = propertiesFile.toURI().toURL().openStream())
 			{
-				properties = new Properties();
-				if (loadFromXML)
+				if (inputStream != null)
 				{
-					properties.loadFromXML(inputStream);
-				}
-				else
-				{
-					properties.load(inputStream);
+					properties = new Properties();
+					if (loadFromXML)
+					{
+						properties.loadFromXML(inputStream);
+					}
+					else
+					{
+						properties.load(inputStream);
+					}
 				}
 			}
 		}
@@ -362,7 +363,11 @@ public final class PropertiesExtensions
 	public static void toProperties(final File properties, final File xml, final String comment)
 		throws IOException
 	{
-		toProperties(new FileOutputStream(properties), new FileInputStream(xml), comment);
+		try (FileOutputStream fileOutputStream = new FileOutputStream(properties);
+			FileInputStream fileInputStream = new FileInputStream(xml))
+		{
+			toProperties(fileOutputStream, fileInputStream, comment);
+		}
 	}
 
 	/**
@@ -443,7 +448,11 @@ public final class PropertiesExtensions
 	public static void toXml(final File properties, final File xml, final String comment,
 		final String encoding) throws IOException
 	{
-		toXml(new FileInputStream(properties), new FileOutputStream(xml), comment, encoding);
+		try (FileInputStream fileInputStream = new FileInputStream(properties);
+			FileOutputStream fileOutputStream = new FileOutputStream(xml))
+		{
+			toXml(fileInputStream, fileOutputStream, comment, encoding);
+		}
 	}
 
 	/**

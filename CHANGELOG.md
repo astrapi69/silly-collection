@@ -1,6 +1,18 @@
 ## Change log
 ----------------------
 
+Version 20.4
+-------------
+
+ADDED:
+
+- new list class UniqueArrayList that holds unique values
+
+CHANGED:
+
+- update of gradle-plugin dependency 'com.diffplug.spotless:spotless-plugin-gradle' to new version
+  6.13.0
+
 Version 20.3
 -------------
 

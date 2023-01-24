@@ -46,6 +46,7 @@ import org.meanbean.test.BeanTester;
 import org.testng.annotations.Test;
 
 import io.github.astrapi69.collection.list.ListFactory;
+import io.github.astrapi69.file.delete.DeleteFileExtensions;
 
 /**
  * The unit test class for the class {@link PropertiesExtensions}.
@@ -72,12 +73,14 @@ public class PropertiesExtensionsTest
 		final Properties properties = new Properties();
 		properties.setProperty("foo", "bar");
 		File propertiesFile = new File(".", "output2.properties");
-		OutputStream outputStream = new FileOutputStream(propertiesFile);
-		PropertiesExtensions.export(properties, outputStream, null, null, false, false);
+		try (OutputStream outputStream = new FileOutputStream(propertiesFile))
+		{
+			PropertiesExtensions.export(properties, outputStream, null, null, false, false);
+		}
 		final Properties propertiesOutput = PropertiesExtensions.loadProperties(propertiesFile);
 		assertNotNull(propertiesOutput);
 		assertEquals(properties, propertiesOutput);
-		propertiesFile.delete();
+		DeleteFileExtensions.delete(propertiesFile);
 	}
 
 	/**
@@ -94,8 +97,10 @@ public class PropertiesExtensionsTest
 		final Properties properties = new Properties();
 		properties.setProperty("foo", "bar");
 		File propertiesFile = new File(".", "output2.properties");
-		OutputStream outputStream = new FileOutputStream(propertiesFile);
-		PropertiesExtensions.export(properties, outputStream);
+		try (OutputStream outputStream = new FileOutputStream(propertiesFile))
+		{
+			PropertiesExtensions.export(properties, outputStream);
+		}
 		final Properties propertiesOutput = PropertiesExtensions.loadProperties(propertiesFile);
 		assertNotNull(propertiesOutput);
 		assertEquals(properties, propertiesOutput);
@@ -116,8 +121,10 @@ public class PropertiesExtensionsTest
 		final Properties properties = new Properties();
 		properties.setProperty("foo", "bar");
 		File propertiesFile = new File(".", "output2.properties");
-		OutputStream outputStream = new FileOutputStream(propertiesFile);
-		PropertiesExtensions.export(properties, outputStream, "Foo comment");
+		try (OutputStream outputStream = new FileOutputStream(propertiesFile))
+		{
+			PropertiesExtensions.export(properties, outputStream, "Foo comment");
+		}
 		final Properties propertiesOutput = PropertiesExtensions.loadProperties(propertiesFile);
 		assertNotNull(propertiesOutput);
 		assertEquals(properties, propertiesOutput);
@@ -141,13 +148,15 @@ public class PropertiesExtensionsTest
 		final Properties properties = new Properties();
 		properties.setProperty("foo", "bar");
 		File propertiesFile = new File(".", "output1.xml");
-		OutputStream outputStream = new FileOutputStream(propertiesFile);
-		PropertiesExtensions.export(properties, outputStream, null, null, true, true);
+		try (OutputStream outputStream = new FileOutputStream(propertiesFile))
+		{
+			PropertiesExtensions.export(properties, outputStream, null, null, true, true);
+		}
 		final Properties propertiesOutput = PropertiesExtensions.loadProperties(propertiesFile,
 			true);
 		assertNotNull(propertiesOutput);
 		assertEquals(properties, propertiesOutput);
-		propertiesFile.delete();
+		DeleteFileExtensions.delete(propertiesFile);
 	}
 
 	/**
@@ -168,8 +177,10 @@ public class PropertiesExtensionsTest
 		final Properties properties = new Properties();
 		properties.setProperty("foo", "bar");
 		File propertiesFile = new File(".", "output2.xml");
-		OutputStream outputStream = new FileOutputStream(propertiesFile);
-		PropertiesExtensions.export(properties, outputStream, null, null, false, true);
+		try (OutputStream outputStream = new FileOutputStream(propertiesFile))
+		{
+			PropertiesExtensions.export(properties, outputStream, null, null, false, true);
+		}
 		final Properties propertiesOutput = PropertiesExtensions.loadProperties(propertiesFile,
 			true);
 		assertNotNull(propertiesOutput);
@@ -326,15 +337,18 @@ public class PropertiesExtensionsTest
 	public void testToPropertiesFile() throws IOException
 	{
 		File propertiesFile = new File("output1.properties");
-		OutputStream outputStream = new FileOutputStream(propertiesFile);
-		final URL resource = getClass().getClassLoader().getResource("resources.properties");
-		final File propertiesInputFile = new File(resource.getFile());
-		PropertiesExtensions.toPropertiesFile(outputStream, resource.openStream(), null);
-		final Properties propertiesInput = PropertiesExtensions.loadProperties(propertiesInputFile);
-		assertNotNull(propertiesInput);
-		final Properties propertiesOutput = PropertiesExtensions.loadProperties(propertiesFile);
-		assertNotNull(propertiesOutput);
-		assertEquals(propertiesInput, propertiesOutput);
+		try (OutputStream outputStream = new FileOutputStream(propertiesFile);)
+		{
+			final URL resource = getClass().getClassLoader().getResource("resources.properties");
+			final File propertiesInputFile = new File(resource.getFile());
+			PropertiesExtensions.toPropertiesFile(outputStream, resource.openStream(), null);
+			final Properties propertiesInput = PropertiesExtensions
+				.loadProperties(propertiesInputFile);
+			assertNotNull(propertiesInput);
+			final Properties propertiesOutput = PropertiesExtensions.loadProperties(propertiesFile);
+			assertNotNull(propertiesOutput);
+			assertEquals(propertiesInput, propertiesOutput);
+		}
 		propertiesFile.delete();
 
 	}
@@ -387,9 +401,9 @@ public class PropertiesExtensionsTest
 		assertNotNull(properties);
 		assertTrue(properties.size() == 4);
 		// clean up...
-		xmlOutputFile.delete();
-		propertiesOutputFile.delete();
-		propertiesFile.delete();
+		DeleteFileExtensions.delete(xmlOutputFile);
+		DeleteFileExtensions.delete(propertiesOutputFile);
+		DeleteFileExtensions.delete(propertiesFile);
 	}
 
 	/**
