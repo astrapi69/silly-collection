@@ -1,7 +1,7 @@
 ## Change log
 ----------------------
 
-Version 20.4-SNAPSHOT
+Version 20.4
 -------------
 
 ADDED:
