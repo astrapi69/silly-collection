@@ -35,6 +35,7 @@ import org.testng.annotations.AfterMethod;
 import org.testng.annotations.BeforeMethod;
 import org.testng.annotations.Test;
 
+import io.github.astrapi69.check.Argument;
 import io.github.astrapi69.collection.CollectionExtensions;
 import io.github.astrapi69.collection.array.ArrayFactory;
 import io.github.astrapi69.collection.map.MapFactory;
@@ -801,6 +802,48 @@ public class ListExtensionsTest
 		rearrangedList = ListExtensions.rearrange(search, "Anton", 6);
 		index = rearrangedList.indexOf("Anton");
 		assertEquals(index, 5);
+	}
+
+	/**
+	 * Test method for {@link ListExtensions#relocate(List, Object, int)}
+	 */
+	@Test
+	public void testRelocate()
+	{
+		List<String> list;
+		int index;
+
+		list = ListFactory.newArrayList();
+		list.add("Leonidas");
+		list.add("Berta");
+		list.add("Caesar");
+		list.add("Dora");
+		list.add("Emil");
+		list.add("Anton");
+
+		ListExtensions.relocate(list, "Anton", 0);
+		index = list.indexOf("Anton");
+		assertEquals(index, 0);
+
+		ListExtensions.relocate(list, "Anton", 2);
+		index = list.indexOf("Anton");
+		assertEquals(index, 2);
+
+		ListExtensions.relocate(list, "Anton", 5);
+		index = list.indexOf("Anton");
+		assertEquals(index, 5);
+
+		ListExtensions.relocate(list, "Anton", 6);
+		index = list.indexOf("Anton");
+		assertEquals(index, 5);
+
+		ListExtensions.relocate(list, "Anton", 8);
+		index = list.indexOf("Anton");
+		assertEquals(index, 5);
+
+		ListExtensions.relocate(list, "foo", 1);
+		index = list.indexOf("foo");
+		assertEquals(index, -1);
 	}
 
 	/**

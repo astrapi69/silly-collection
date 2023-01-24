@@ -4,6 +4,9 @@
 Version 20.5-SNAPSHOT
 -------------
 
+ADDED:
+
+- new method relocate in extension class ListExtensions that relocated a given element to the new given index
 
 Version 20.4
 -------------
