@@ -9,6 +9,6 @@ dependencies {
     testImplementation("io.github.benas:random-beans:$randomBeansVersion")
     testImplementation("org.openjdk.jmh:jmh-core:$jmhVersion")
     testImplementation("org.openjdk.jmh:jmh-generator-annprocess:$jmhVersion")
-    testImplementation("org.meanbean:meanbean:$meanbeanVersion")
+    testImplementation("com.github.meanbeanlib:meanbean:$meanbeanVersion")
     testImplementation("org.testng:testng:$testngVersion")
 }

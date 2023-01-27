@@ -8,6 +8,10 @@ ADDED:
 
 - new method relocate in extension class ListExtensions that relocated a given element to the new given index
 
+CHANGED:
+
+- update of test dependency 'com.github.meanbeanlib:meanbean' to new version 3.0.0-M9
+
 Version 20.4
 -------------
 
