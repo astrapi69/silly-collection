@@ -857,7 +857,7 @@ public final class ListExtensions
 	 *            the element for resolve the index to add
 	 * @return the index where to insert in the new sorted list
 	 */
-	public static <T> int getIndexToInsert(List<T> sortedList, List<T> newSortedList,
+	public static <T> int getIndexToInsert(List<T> newSortedList, List<T> sortedList,
 		T elementToAdd)
 	{
 		List<T> listWithNewElement = ListFactory.newArrayList(newSortedList, elementToAdd);

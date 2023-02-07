@@ -35,7 +35,6 @@ import org.testng.annotations.AfterMethod;
 import org.testng.annotations.BeforeMethod;
 import org.testng.annotations.Test;
 
-import io.github.astrapi69.check.Argument;
 import io.github.astrapi69.collection.CollectionExtensions;
 import io.github.astrapi69.collection.array.ArrayFactory;
 import io.github.astrapi69.collection.map.MapFactory;
@@ -1281,7 +1280,7 @@ public class ListExtensionsTest
 		for (int i = 0; i < unsortedHelpMenu.size(); i++)
 		{
 			String currentUnsortedHelpMenuItem = unsortedHelpMenu.get(i);
-			int indexToInsert = ListExtensions.getIndexToInsert(helpMenu, newSortedHelpMenu,
+			int indexToInsert = ListExtensions.getIndexToInsert(newSortedHelpMenu, helpMenu,
 				currentUnsortedHelpMenuItem);
 			newSortedHelpMenu.add(indexToInsert, currentUnsortedHelpMenuItem);
 		}

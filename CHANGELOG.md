@@ -13,6 +13,7 @@ CHANGED:
 - update of gradle-plugin dependency 'com.diffplug.spotless:spotless-plugin-gradle' to new version
   6.14.0
 - update of test dependency 'com.github.meanbeanlib:meanbean' to new version 3.0.0-M9
+- replaced argument parameters of method getIndexToInsert for be extension method conform
 
 Version 20.4
 -------------
