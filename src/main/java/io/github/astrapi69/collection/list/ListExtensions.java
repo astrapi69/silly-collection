@@ -849,10 +849,10 @@ public final class ListExtensions
 	 *
 	 * @param <T>
 	 *            the generic type
-	 * @param sortedList
-	 *            the sorted list that is used for the defined order
 	 * @param newSortedList
 	 *            the new sorted list
+	 * @param sortedList
+	 *            the sorted list that is used for the defined order
 	 * @param elementToAdd
 	 *            the element for resolve the index to add
 	 * @return the index where to insert in the new sorted list
