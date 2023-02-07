@@ -36,8 +36,6 @@ import java.util.Optional;
 import java.util.Set;
 import java.util.function.Function;
 
-import org.apache.commons.collections4.ComparatorUtils;
-
 import io.github.astrapi69.check.Argument;
 import io.github.astrapi69.check.Check;
 import io.github.astrapi69.collection.CollectionExtensions;
@@ -693,7 +691,7 @@ public final class ListExtensions
 			Comparator.nullsFirst(Comparator.naturalOrder()));
 		if (ascending)
 		{
-			comparator = ComparatorUtils.reversedComparator(comparator);
+			comparator = comparator.reversed();
 		}
 		list.sort(comparator);
 	}
