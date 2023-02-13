@@ -1,17 +1,20 @@
 ## Change log
 ----------------------
 
-Version 20.5-SNAPSHOT
+Version 21-SNAPSHOT
 -------------
 
 ADDED:
 
+- new list class SortedArrayList that sorts the values with the given comparator
 - new method relocate in extension class ListExtensions that relocated a given element to the new given index
 
 CHANGED:
 
+- update gradle to new version 8.0
+- update of gradle-plugin com.github.ben-manes.versions.gradle.plugin to new version 0.45.0
 - update of gradle-plugin dependency 'com.diffplug.spotless:spotless-plugin-gradle' to new version
-  6.14.0
+  6.15.0
 - update of test dependency 'com.github.meanbeanlib:meanbean' to new version 3.0.0-M9
 - replaced argument parameters of method getIndexToInsert for be extension method conform
 
