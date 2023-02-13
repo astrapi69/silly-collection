@@ -14,16 +14,12 @@
 
 Utility library for collections, comparators and iterator classes.
 
-> Please support this project by simply putting a
-> Github <!-- Place this tag where you want the button to render. -->
-<a class="github-button" href="https://github.com/astrapi69/silly-collection" data-icon="octicon-star" aria-label="Star astrapi69/silly-collection on GitHub">
-> Star ⭐</a>
+> Please support this project by simply putting a Github <!-- Place this tag where you want the button to render. --><a class="github-button" href="https://github.com/astrapi69/silly-collection" data-icon="octicon-star" aria-label="Star astrapi69/silly-collection on GitHub">
+ Star ⭐</a>
 >
 > Share this library with friends on Twitter and everywhere else you can
 >
-> If you love this
->
-project [![donation](https://img.shields.io/badge/donate-❤-ff2244.svg)](https://www.paypal.com/cgi-bin/webscr?cmd=_s-xclick&hosted_button_id=GVBTWLRAZ7HB8)
+> If you love this project [![donation](https://img.shields.io/badge/donate-❤-ff2244.svg)](https://www.paypal.com/cgi-bin/webscr?cmd=_s-xclick&hosted_button_id=GVBTWLRAZ7HB8)
 
 ## Maven dependency
 
@@ -39,7 +35,7 @@ Than you can add the dependency to your dependencies:
     <properties>
             ...
         <!-- SILLY-COLLECTION version -->
-        <silly-collection.version>20.4</silly-collection.version>
+        <silly-collection.version>21</silly-collection.version>
             ...
     </properties>
             ...
@@ -63,7 +59,7 @@ define version in file gradle.properties
 
 ```
 
-sillyCollectionVersion=20.4
+sillyCollectionVersion=21
 ```
 
 or in build.gradle ext area
@@ -71,7 +67,7 @@ or in build.gradle ext area
 ```
 ext {
             ...
-    sillyCollectionVersion = "20.4"
+    sillyCollectionVersion = "21"
             ...
 }
 ```
