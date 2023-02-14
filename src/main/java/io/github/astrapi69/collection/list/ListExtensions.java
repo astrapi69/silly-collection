@@ -874,11 +874,11 @@ public final class ListExtensions
 	 *            the generic type
 	 * @param list
 	 *            the list
-	 * @param comparator
-	 *            the comparator
 	 * @param element
 	 *            the element for resolve the index to add
-	 * @return the index where to insert in the new sorted list
+	 * @param comparator
+	 *            the comparator
+	 * @return the index of the given element in the given list
 	 */
 	public static <T> int getIndexToInsert(List<? extends T> list, T element,
 		Comparator<? super T> comparator)
