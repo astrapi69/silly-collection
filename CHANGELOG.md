@@ -4,7 +4,9 @@
 Version 21.1-SNAPSHOT
 -------------
 
+ADDED:
 
+- new method that determines the index to insert to a given list with the binary search algorithm
 
 Version 21
 -------------

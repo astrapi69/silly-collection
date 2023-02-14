@@ -30,7 +30,6 @@ import static org.testng.internal.junit.ArrayAsserts.assertArrayEquals;
 import java.util.*;
 import java.util.function.Function;
 
-import io.github.astrapi69.comparator.factory.ComparatorFactory;
 import org.meanbean.test.BeanTester;
 import org.testng.annotations.AfterMethod;
 import org.testng.annotations.BeforeMethod;
@@ -41,6 +40,7 @@ import io.github.astrapi69.collection.array.ArrayFactory;
 import io.github.astrapi69.collection.map.MapFactory;
 import io.github.astrapi69.collection.modification.ModifiedCollections;
 import io.github.astrapi69.collection.set.SetFactory;
+import io.github.astrapi69.comparator.factory.ComparatorFactory;
 import io.github.astrapi69.test.object.Person;
 import io.github.astrapi69.test.object.enumtype.Gender;
 
@@ -1284,9 +1284,8 @@ public class ListExtensionsTest
 			int indexToInsert = ListExtensions.getIndexToInsert(newSortedHelpMenu, helpMenu,
 				currentUnsortedHelpMenuItem);
 
-			int insertIndex = Collections.binarySearch(newSortedHelpMenu,
-					currentUnsortedHelpMenuItem, ComparatorFactory.newDefinedOrderComparator(helpMenu));
-			insertIndex = -insertIndex - 1;
+			int insertIndex = ListExtensions.getIndexToInsert(newSortedHelpMenu,
+				currentUnsortedHelpMenuItem, ComparatorFactory.newDefinedOrderComparator(helpMenu));
 
 			assertEquals(indexToInsert, insertIndex);
 			newSortedHelpMenu.add(indexToInsert, currentUnsortedHelpMenuItem);

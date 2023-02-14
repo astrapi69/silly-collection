@@ -26,6 +26,7 @@ package io.github.astrapi69.collection.list;
 
 import java.util.Arrays;
 import java.util.Collection;
+import java.util.Collections;
 import java.util.Comparator;
 import java.util.Enumeration;
 import java.util.Iterator;
@@ -863,6 +864,31 @@ public final class ListExtensions
 		List<T> listWithNewElement = ListFactory.newArrayList(newSortedList, elementToAdd);
 		listWithNewElement.sort(ComparatorFactory.newDefinedOrderComparator(sortedList));
 		return listWithNewElement.indexOf(elementToAdd);
+	}
+
+	/**
+	 * Gets the index where the given element to insert to the given list with the order of the
+	 * given comparator
+	 *
+	 * @param <T>
+	 *            the generic type
+	 * @param list
+	 *            the list
+	 * @param comparator
+	 *            the comparator
+	 * @param element
+	 *            the element for resolve the index to add
+	 * @return the index where to insert in the new sorted list
+	 */
+	public static <T> int getIndexToInsert(List<? extends T> list, T element,
+		Comparator<? super T> comparator)
+	{
+		int indexToInsert = Collections.binarySearch(list, element, comparator);
+		if (!list.contains(element))
+		{
+			indexToInsert = -indexToInsert - 1;
+		}
+		return indexToInsert;
 	}
 
 	/**
