@@ -97,16 +97,9 @@ public class SortedArrayList<E> extends ArrayList<E>
 		{
 			return super.add(element);
 		}
-		int insertIndex = Collections.binarySearch(this, element, comparator);
-		if (-1 < insertIndex)
-		{
-			super.add(insertIndex, element);
-		}
-		else
-		{
-			super.add(-insertIndex - 1, element);
-
-		}
+		ListExtensions.getIndexToInsert(this, element, comparator);
+		int insertIndex = ListExtensions.getIndexToInsert(this, element, comparator);
+		super.add(insertIndex, element);
 		return this.size() != currentSize;
 	}
 
