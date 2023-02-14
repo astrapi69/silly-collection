@@ -30,6 +30,7 @@ import static org.testng.internal.junit.ArrayAsserts.assertArrayEquals;
 import java.util.*;
 import java.util.function.Function;
 
+import io.github.astrapi69.comparator.factory.ComparatorFactory;
 import org.meanbean.test.BeanTester;
 import org.testng.annotations.AfterMethod;
 import org.testng.annotations.BeforeMethod;
@@ -1282,6 +1283,12 @@ public class ListExtensionsTest
 			String currentUnsortedHelpMenuItem = unsortedHelpMenu.get(i);
 			int indexToInsert = ListExtensions.getIndexToInsert(newSortedHelpMenu, helpMenu,
 				currentUnsortedHelpMenuItem);
+
+			int insertIndex = Collections.binarySearch(newSortedHelpMenu,
+					currentUnsortedHelpMenuItem, ComparatorFactory.newDefinedOrderComparator(helpMenu));
+			insertIndex = -insertIndex - 1;
+
+			assertEquals(indexToInsert, insertIndex);
 			newSortedHelpMenu.add(indexToInsert, currentUnsortedHelpMenuItem);
 		}
 		assertEquals(helpMenu, newSortedHelpMenu);
