@@ -3,6 +3,7 @@ dependencies {
     implementation("io.github.astrapi69:jobj-core:$jobjCoreVersion")
     implementation("io.github.astrapi69:comparator-extensions:$comparatorExtensionsVersion")
     implementation("io.github.astrapi69:silly-bean:$sillyBeanVersion")
+    testImplementation("io.github.astrapi69:silly-io:$sillyIoVersion")
     testImplementation("io.github.astrapi69:file-worker:$fileWorkerVersion")
     testImplementation("io.github.astrapi69:vintage-time:$vintageTimeVersion")
     testImplementation("io.github.astrapi69:test-object:$testObjectVersion")

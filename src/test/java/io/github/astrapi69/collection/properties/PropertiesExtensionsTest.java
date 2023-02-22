@@ -47,6 +47,7 @@ import org.testng.annotations.Test;
 
 import io.github.astrapi69.collection.list.ListFactory;
 import io.github.astrapi69.file.delete.DeleteFileExtensions;
+import io.github.astrapi69.io.StringOutputStream;
 
 /**
  * The unit test class for the class {@link PropertiesExtensions}.
@@ -55,6 +56,32 @@ import io.github.astrapi69.file.delete.DeleteFileExtensions;
  */
 public class PropertiesExtensionsTest
 {
+
+
+	/**
+	 * Test method for
+	 * {@link PropertiesExtensions#export(Properties, OutputStream, InputStream, String, boolean, boolean)}
+	 * <br>
+	 * Scenario of export an existing {@link Properties} object to a given {@link OutputStream} as
+	 * string object where the flag loadFromXML and the flag storeToXML are both false. <br>
+	 *
+	 * @throws IOException
+	 *             Signals that an I/O exception has occurred.
+	 */
+	@Test
+	public void testExportToString() throws IOException
+	{
+		final Properties properties = new Properties();
+		properties.setProperty("foo", "bar");
+		String actual;
+		try (OutputStream outputStream = new StringOutputStream())
+		{
+			PropertiesExtensions.export(properties, outputStream, null, "foo", false, false);
+			actual = outputStream.toString();
+			assertNotNull(actual);
+			assertEquals(43, actual.length());
+		}
+	}
 
 
 	/**
