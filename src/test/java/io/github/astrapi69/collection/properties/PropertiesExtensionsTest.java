@@ -60,7 +60,7 @@ public class PropertiesExtensionsTest
 
 	/**
 	 * Test method for
-	 * {@link PropertiesExtensions#export(Properties, OutputStream, InputStream, String, boolean, boolean)}
+	 * {@link PropertiesExtensions#export(Properties, OutputStream)}
 	 * <br>
 	 * Scenario of export an existing {@link Properties} object to a given {@link OutputStream} as
 	 * string object where the flag loadFromXML and the flag storeToXML are both false. <br>
@@ -76,10 +76,10 @@ public class PropertiesExtensionsTest
 		String actual;
 		try (OutputStream outputStream = new StringOutputStream())
 		{
-			PropertiesExtensions.export(properties, outputStream, null, "foo", false, false);
+			PropertiesExtensions.export(properties, outputStream);
 			actual = outputStream.toString();
 			assertNotNull(actual);
-			assertEquals(43, actual.length());
+			assertEquals(38, actual.length());
 		}
 	}
 
