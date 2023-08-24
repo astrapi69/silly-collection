@@ -137,8 +137,7 @@ public class ModifiedStateTest
 	/**
 	 * Test method for {@link ModifiedState}
 	 */
-	@Test(expectedExceptions = { BeanTestException.class, InvocationTargetException.class,
-			UnsupportedOperationException.class })
+	@Test
 	public void testWithBeanTester()
 	{
 		final BeanTester beanTester = new BeanTester();

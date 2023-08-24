@@ -26,6 +26,7 @@ package io.github.astrapi69.collection.list;
 
 import java.util.Arrays;
 import java.util.Collection;
+import java.util.Collections;
 import java.util.Comparator;
 import java.util.Enumeration;
 import java.util.Iterator;
@@ -35,8 +36,6 @@ import java.util.Objects;
 import java.util.Optional;
 import java.util.Set;
 import java.util.function.Function;
-
-import org.apache.commons.collections4.ComparatorUtils;
 
 import io.github.astrapi69.check.Argument;
 import io.github.astrapi69.check.Check;
@@ -497,6 +496,38 @@ public final class ListExtensions
 	}
 
 	/**
+	 * Relocated the given element in the given {@link List} to the given index
+	 *
+	 * @param <T>
+	 *            the generic type of the elements
+	 * @param list
+	 *            the list that contains the element that have to be relocated
+	 * @param element
+	 *            the element to relocated
+	 * @param newIndex
+	 *            the new index to relocated
+	 */
+	public static <T> void relocate(List<T> list, T element, int newIndex)
+	{
+		Argument.notNull(element, "element");
+		Argument.notNull(list, "list");
+		int index = list.indexOf(element);
+		if (index < 0 || index == newIndex)
+		{
+			return;
+		}
+		list.remove(index);
+		if (list.size() <= newIndex)
+		{
+			list.add(element);
+		}
+		else
+		{
+			list.add(newIndex, element);
+		}
+	}
+
+	/**
 	 * Removes the first object from the given List.
 	 *
 	 * @param <T>
@@ -508,12 +539,7 @@ public final class ListExtensions
 	 */
 	public static <T> T removeFirst(final List<T> list)
 	{
-		Argument.notNull(list, "list");
-		if (!CollectionExtensions.isEmpty(list) && 0 < list.size())
-		{
-			return list.remove(0);
-		}
-		return null;
+		return removeFirstElement(list).orElse(null);
 	}
 
 	/**
@@ -549,11 +575,7 @@ public final class ListExtensions
 	 */
 	public static <T> T removeLast(final List<T> list)
 	{
-		if (!CollectionExtensions.isEmpty(list) && 0 < list.size())
-		{
-			return list.remove(list.size() - 1);
-		}
-		return null;
+		return removeLastElement(list).orElse(null);
 	}
 
 	/**
@@ -670,7 +692,7 @@ public final class ListExtensions
 			Comparator.nullsFirst(Comparator.naturalOrder()));
 		if (ascending)
 		{
-			comparator = ComparatorUtils.reversedComparator(comparator);
+			comparator = comparator.reversed();
 		}
 		list.sort(comparator);
 	}
@@ -828,20 +850,45 @@ public final class ListExtensions
 	 *
 	 * @param <T>
 	 *            the generic type
-	 * @param sortedList
-	 *            the sorted list that is used for the defined order
 	 * @param newSortedList
 	 *            the new sorted list
+	 * @param sortedList
+	 *            the sorted list that is used for the defined order
 	 * @param elementToAdd
 	 *            the element for resolve the index to add
 	 * @return the index where to insert in the new sorted list
 	 */
-	public static <T> int getIndexToInsert(List<T> sortedList, List<T> newSortedList,
+	public static <T> int getIndexToInsert(List<T> newSortedList, List<T> sortedList,
 		T elementToAdd)
 	{
 		List<T> listWithNewElement = ListFactory.newArrayList(newSortedList, elementToAdd);
 		listWithNewElement.sort(ComparatorFactory.newDefinedOrderComparator(sortedList));
 		return listWithNewElement.indexOf(elementToAdd);
+	}
+
+	/**
+	 * Gets the index where the given element to insert to the given list with the order of the
+	 * given comparator
+	 *
+	 * @param <T>
+	 *            the generic type
+	 * @param list
+	 *            the list
+	 * @param element
+	 *            the element for resolve the index to add
+	 * @param comparator
+	 *            the comparator
+	 * @return the index of the given element in the given list
+	 */
+	public static <T> int getIndexToInsert(List<? extends T> list, T element,
+		Comparator<? super T> comparator)
+	{
+		int indexToInsert = Collections.binarySearch(list, element, comparator);
+		if (!list.contains(element))
+		{
+			indexToInsert = -indexToInsert - 1;
+		}
+		return indexToInsert;
 	}
 
 	/**

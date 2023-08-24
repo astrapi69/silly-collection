@@ -24,10 +24,22 @@
  */
 package io.github.astrapi69.collection.list;
 
-import static org.testng.AssertJUnit.*;
+import static org.testng.AssertJUnit.assertEquals;
+import static org.testng.AssertJUnit.assertFalse;
+import static org.testng.AssertJUnit.assertNotNull;
+import static org.testng.AssertJUnit.assertNull;
+import static org.testng.AssertJUnit.assertTrue;
 import static org.testng.internal.junit.ArrayAsserts.assertArrayEquals;
 
-import java.util.*;
+import java.util.ArrayList;
+import java.util.Arrays;
+import java.util.Collection;
+import java.util.Collections;
+import java.util.Enumeration;
+import java.util.List;
+import java.util.Map;
+import java.util.Optional;
+import java.util.Set;
 import java.util.function.Function;
 
 import org.meanbean.test.BeanTester;
@@ -40,6 +52,7 @@ import io.github.astrapi69.collection.array.ArrayFactory;
 import io.github.astrapi69.collection.map.MapFactory;
 import io.github.astrapi69.collection.modification.ModifiedCollections;
 import io.github.astrapi69.collection.set.SetFactory;
+import io.github.astrapi69.comparator.factory.ComparatorFactory;
 import io.github.astrapi69.test.object.Person;
 import io.github.astrapi69.test.object.enumtype.Gender;
 
@@ -804,6 +817,48 @@ public class ListExtensionsTest
 	}
 
 	/**
+	 * Test method for {@link ListExtensions#relocate(List, Object, int)}
+	 */
+	@Test
+	public void testRelocate()
+	{
+		List<String> list;
+		int index;
+
+		list = ListFactory.newArrayList();
+		list.add("Leonidas");
+		list.add("Berta");
+		list.add("Caesar");
+		list.add("Dora");
+		list.add("Emil");
+		list.add("Anton");
+
+		ListExtensions.relocate(list, "Anton", 0);
+		index = list.indexOf("Anton");
+		assertEquals(index, 0);
+
+		ListExtensions.relocate(list, "Anton", 2);
+		index = list.indexOf("Anton");
+		assertEquals(index, 2);
+
+		ListExtensions.relocate(list, "Anton", 5);
+		index = list.indexOf("Anton");
+		assertEquals(index, 5);
+
+		ListExtensions.relocate(list, "Anton", 6);
+		index = list.indexOf("Anton");
+		assertEquals(index, 5);
+
+		ListExtensions.relocate(list, "Anton", 8);
+		index = list.indexOf("Anton");
+		assertEquals(index, 5);
+
+		ListExtensions.relocate(list, "foo", 1);
+		index = list.indexOf("foo");
+		assertEquals(index, -1);
+	}
+
+	/**
 	 * Test method for {@link ListExtensions#removeFirstElement(List)}
 	 */
 	@Test
@@ -1238,8 +1293,13 @@ public class ListExtensionsTest
 		for (int i = 0; i < unsortedHelpMenu.size(); i++)
 		{
 			String currentUnsortedHelpMenuItem = unsortedHelpMenu.get(i);
-			int indexToInsert = ListExtensions.getIndexToInsert(helpMenu, newSortedHelpMenu,
+			int indexToInsert = ListExtensions.getIndexToInsert(newSortedHelpMenu, helpMenu,
 				currentUnsortedHelpMenuItem);
+
+			int insertIndex = ListExtensions.getIndexToInsert(newSortedHelpMenu,
+				currentUnsortedHelpMenuItem, ComparatorFactory.newDefinedOrderComparator(helpMenu));
+
+			assertEquals(indexToInsert, insertIndex);
 			newSortedHelpMenu.add(indexToInsert, currentUnsortedHelpMenuItem);
 		}
 		assertEquals(helpMenu, newSortedHelpMenu);
