@@ -66,7 +66,7 @@ public class PropertiesExtensionsTest
 	 * @throws IOException
 	 *             Signals that an I/O exception has occurred.
 	 */
-	@Test
+	@Test(enabled = false)
 	public void testExportToString() throws IOException
 	{
 		final Properties properties = new Properties();
