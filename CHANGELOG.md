@@ -1,12 +1,22 @@
 ## Change log
 ----------------------
 
-Version 21.1-SNAPSHOT
+Version 27-SNAPSHOT
 -------------
 
 ADDED:
 
-- new extension method in class ListExtensions that determines the index to insert from a given list with a given element and searches with the 'binary search' algorithm
+- update to jdk version 17
+- update gradle to new version 8.3
+- update of com.github.ben-manes.versions.gradle.plugin to new version 0.47.0
+- update of gradle-plugin dependency 'org.ajoberstar.grgit:grgit-gradle' in version 5.2.0
+- update of gradle-plugin dependency 'com.diffplug.spotless:spotless-plugin-gradle' to new minor
+  version 6.20.0
+- new extension method in class ListExtensions that determines the index to insert from a given list with a given
+  element and searches with the 'binary search' algorithm
+- update of dependency jobj-core in new version 7.1
+- update of test dependency org.openjdk.jmh:jmh-core to new version 1.36
+- update of test dependency testng to new version 7.8.0
 
 Version 21
 -------------

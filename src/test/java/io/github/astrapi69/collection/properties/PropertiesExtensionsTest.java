@@ -77,7 +77,7 @@ public class PropertiesExtensionsTest
 			PropertiesExtensions.export(properties, outputStream);
 			actual = outputStream.toString();
 			assertNotNull(actual);
-			assertEquals(38, actual.length());
+			assertEquals(39, actual.length());
 		}
 	}
 
