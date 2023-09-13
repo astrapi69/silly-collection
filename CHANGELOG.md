@@ -4,10 +4,24 @@
 Version 27.1-SNAPSHOT
 -------------
 
+ADDED:
+
+- new method in class ArrayExtensions getFirstElement that returns the first element as Optional
+- new method in class ArrayExtensions getLastElement that returns the last element as Optional
+- new method in class ArrayExtensions getNextElement that returns the next element as Optional
+- new method in class ArrayExtensions getPreviousElement that returns the previous element as Optional
+- new method in class ArrayExtensions hasNext
+- new method in class ArrayExtensions hasPrevious
+
+CHANGED:
+
+- update of com.github.ben-manes.versions.gradle.plugin to new version 0.48.0
+- update of gradle-plugin dependency 'com.diffplug.spotless:spotless-plugin-gradle' to new minor version 6.21.0
+
 Version 27
 -------------
 
-ADDED:
+CHANGED:
 
 - update to jdk version 17
 - update gradle to new version 8.3

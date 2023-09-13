@@ -34,6 +34,7 @@ import java.util.Iterator;
 import java.util.LinkedHashMap;
 import java.util.List;
 import java.util.Map;
+import java.util.Optional;
 import java.util.Set;
 import java.util.stream.Stream;
 
@@ -42,6 +43,8 @@ import org.testng.Assert;
 import org.testng.annotations.Test;
 
 import io.github.astrapi69.check.Argument;
+import io.github.astrapi69.collection.list.ListExtensions;
+import io.github.astrapi69.collection.list.ListFactory;
 import io.github.astrapi69.collection.map.MapExtensions;
 
 /**
@@ -472,6 +475,35 @@ public class ArrayExtensionsTest
 	}
 
 	/**
+	 * Test method for {@link ArrayExtensions#hasNext(Object[], Object)}
+	 */
+	@Test
+	public void testHasNext()
+	{
+		boolean expected;
+		boolean actual;
+		String last;
+		String first;
+		String[] numbers;
+
+		last = "7";
+		first = "1";
+		numbers = ArrayFactory.newArray(first, "2", "3", "4", "5", "6", last);
+
+		expected = false;
+		actual = ArrayExtensions.hasNext(numbers, null);
+		assertEquals(expected, actual);
+
+		expected = true;
+		actual = ArrayExtensions.hasNext(numbers, "6");
+		assertEquals(expected, actual);
+
+		expected = false;
+		actual = ArrayExtensions.hasNext(numbers, last);
+		assertEquals(expected, actual);
+	}
+
+	/**
 	 * Test for method {@link ArrayExtensions#getNextIndex(Object[], Object)}
 	 */
 	@Test
@@ -479,10 +511,15 @@ public class ArrayExtensionsTest
 	{
 		int expected;
 		int actual;
+		String last;
+		String first;
+		String[] numbers;
+
+		last = "7";
+		first = "1";
+		numbers = ArrayFactory.newArray(first, "2", "3", "4", "5", "6", last);
 		expected = 0;
-		final String last = "7";
-		final String first = "1";
-		final String[] numbers = { first, "2", "3", "4", "5", "6", last };
+
 		// use case with last...
 		// Old vanilla java with static method...
 		actual = ArrayExtensions.getNextIndex(numbers, last);
@@ -507,13 +544,20 @@ public class ArrayExtensionsTest
 	@Test
 	public void testGetNextIndexes()
 	{
-		int[] expected = { 0, 1 };
-		final String last = "7";
-		final String first = "1";
-		final String[] numbers = { first, "2", "3", "4", "5", "6", last };
+		int[] actual;
+		int[] expected;
+		String last;
+		String first;
+		String[] numbers;
+
+		last = "7";
+		first = "1";
+		numbers = ArrayFactory.newArray(first, "2", "3", "4", "5", "6", last);
+
 		// use case with last...
 		// Old vanilla java with static method...
-		int[] actual = ArrayExtensions.getNextIndexes(numbers, last, 2);
+		actual = ArrayExtensions.getNextIndexes(numbers, last, 2);
+		expected = ArrayFactory.newIntArray(0, 1);
 		assertEquals(expected[0], actual[0]);
 		assertEquals(expected[1], actual[1]);
 		// use case with first...
@@ -533,6 +577,132 @@ public class ArrayExtensionsTest
 	}
 
 	/**
+	 * Test method for {@link ArrayExtensions#hasPrevious(Object[], Object)}
+	 */
+	@Test
+	public void testHasPrevious()
+	{
+		boolean expected;
+		boolean actual;
+		String last;
+		String first;
+		String[] numbers;
+		String[] empty;
+
+		last = "7";
+		first = "1";
+		numbers = ArrayFactory.newArray(first, "2", "3", "4", "5", "6", last);
+
+		expected = true;
+		// use case with last...
+		// Old vanilla java with static method...
+		actual = ArrayExtensions.hasPrevious(numbers, last);
+		assertEquals(expected, actual);
+		// use case with first...
+		expected = false;
+		actual = ArrayExtensions.hasPrevious(numbers, first);
+		assertEquals(expected, actual);
+		// scenarios of empty or null value...
+		empty = ArrayFactory.newArray();
+		expected = false;
+		actual = ArrayExtensions.hasPrevious(empty, last);
+		assertEquals(expected, actual);
+
+		actual = ArrayExtensions.hasPrevious(empty, null);
+		assertEquals(expected, actual);
+	}
+
+	/**
+	 * Test method for {@link ArrayExtensions#getNextElement(Object[], Object)}
+	 */
+	@Test
+	public final void testGetNextElement()
+	{
+		Optional<String> expected;
+		Optional<String> actual;
+		List<String> search;
+
+		String caeser = "Caesar";
+		String dora = "Dora";
+		String emil = "Emil";
+		String anton = "Anton";
+		search = ListFactory.newArrayList();
+		search.add(caeser);
+		search.add(dora);
+		search.add(emil);
+		search.add(anton);
+
+		actual = ArrayExtensions.getNextElement(ListExtensions.toArray(search), "foo");
+		expected = Optional.empty();
+		assertEquals(expected, actual);
+
+		actual = ArrayExtensions.getNextElement(ListExtensions.toArray(search), null);
+		expected = Optional.empty();
+		assertEquals(expected, actual);
+
+		actual = ArrayExtensions.getNextElement(ListExtensions.toArray(search), anton);
+		expected = Optional.empty();
+		assertEquals(expected, actual);
+
+		actual = ArrayExtensions.getNextElement(ListExtensions.toArray(search), emil);
+		expected = Optional.of(anton);
+		assertEquals(expected, actual);
+
+		actual = ArrayExtensions.getNextElement(ListExtensions.toArray(search), dora);
+		expected = Optional.of(emil);
+		assertEquals(expected, actual);
+
+		actual = ArrayExtensions.getNextElement(ListExtensions.toArray(search), caeser);
+		expected = Optional.of(dora);
+		assertEquals(expected, actual);
+	}
+
+	/**
+	 * Test for method {@link ArrayExtensions#getPreviousElement(Object[], Object)}
+	 */
+	@Test
+	public void testGetPreviousElement()
+	{
+		Optional<String> expected;
+		Optional<String> actual;
+		List<String> search;
+
+		String caeser = "Caesar";
+		String dora = "Dora";
+		String emil = "Emil";
+		String anton = "Anton";
+		search = ListFactory.newArrayList();
+		search.add(caeser);
+		search.add(dora);
+		search.add(emil);
+		search.add(anton);
+
+		actual = ArrayExtensions.getPreviousElement(ListExtensions.toArray(search), "foo");
+		expected = Optional.empty();
+		assertEquals(expected, actual);
+
+		actual = ArrayExtensions.getPreviousElement(ListExtensions.toArray(search), null);
+		expected = Optional.empty();
+		assertEquals(expected, actual);
+
+		actual = ArrayExtensions.getPreviousElement(ListExtensions.toArray(search), caeser);
+		expected = Optional.empty();
+		assertEquals(expected, actual);
+
+		actual = ArrayExtensions.getPreviousElement(ListExtensions.toArray(search), dora);
+		expected = Optional.of(caeser);
+		assertEquals(expected, actual);
+
+		actual = ArrayExtensions.getPreviousElement(ListExtensions.toArray(search), emil);
+		expected = Optional.of(dora);
+		assertEquals(expected, actual);
+
+		actual = ArrayExtensions.getPreviousElement(ListExtensions.toArray(search), anton);
+		expected = Optional.of(emil);
+		assertEquals(expected, actual);
+	}
+
+	/**
 	 * Test for method {@link ArrayExtensions#getPreviousIndex(Object[], Object)}
 	 */
 	@Test
@@ -540,10 +710,15 @@ public class ArrayExtensionsTest
 	{
 		int expected;
 		int actual;
+		String last;
+		String first;
+		String[] numbers;
+
+		last = "7";
+		first = "1";
+		numbers = ArrayFactory.newArray(first, "2", "3", "4", "5", "6", last);
+
 		expected = 5;
-		final String last = "7";
-		final String first = "1";
-		final String[] numbers = { first, "2", "3", "4", "5", "6", last };
 		// use case with last...
 		// Old vanilla java with static method...
 		actual = ArrayExtensions.getPreviousIndex(numbers, last);
