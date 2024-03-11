@@ -12,6 +12,7 @@ ADDED:
 - new method in class ArrayExtensions getPreviousElement that returns the previous element as Optional
 - new method in class ArrayExtensions hasNext
 - new method in class ArrayExtensions hasPrevious
+- new method in class MapFactory that creates a new hashmap with two given lists with keys and values
 
 CHANGED:
 

@@ -200,13 +200,35 @@ public class MapFactoryTest
 	}
 
 	/**
+	 * Test for the Method {@link MapFactory#newHashMap(List, List)}
+	 */
+	@Test
+	public void testNewHashMapFromLists()
+	{
+		final Map<Object, Object> hashMap = MapFactory.newHashMap();
+		assertNotNull(hashMap);
+	}
+
+	/**
 	 * Test for the Method {@link MapFactory#newHashMap(int))}.
 	 */
 	@Test
 	public void testNewHashMapInt()
 	{
-		final Map<Object, Object> hashMap = MapFactory.newHashMap(5);
-		assertNotNull(hashMap);
+		List<Integer> keys;
+		List<String> values;
+		Map<Integer, String> actual;
+		Map<Integer, String> expected;
+		expected = new HashMap<>();
+		expected.put(1, "one");
+		expected.put(2, "two");
+		expected.put(3, "three");
+		expected.put(4, "four");
+
+		keys = ListFactory.newArrayList(1, 2, 3, 4);
+		values = ListFactory.newArrayList("one", "two", "three", "four");
+		actual = MapFactory.newHashMap(keys, values);
+		assertEquals(expected, actual);
 	}
 
 	/**
