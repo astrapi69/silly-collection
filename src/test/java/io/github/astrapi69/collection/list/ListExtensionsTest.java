@@ -54,7 +54,7 @@ import io.github.astrapi69.collection.modification.ModifiedCollections;
 import io.github.astrapi69.collection.set.SetFactory;
 import io.github.astrapi69.comparator.factory.ComparatorFactory;
 import io.github.astrapi69.test.object.Person;
-import io.github.astrapi69.test.object.enumtype.Gender;
+import io.github.astrapi69.test.object.enumeration.Gender;
 
 /**
  * The unit test class for the class {@link ListExtensions}
