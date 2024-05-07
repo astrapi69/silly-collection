@@ -863,6 +863,25 @@ public final class ArrayExtensions
 	}
 
 	/**
+	 * Decorates the <code>Arrays#copyOfRange</code> method.
+	 * 
+	 * @see Arrays#copyOfRange(Object[], int, int)
+	 * @param <T>
+	 *            the type of elements in the array
+	 * @param original
+	 *            the original array
+	 * @param start
+	 *            the start index
+	 * @param end
+	 *            the end index
+	 * @return a new array from the specified start and end point
+	 */
+	public static <T> T[] subArray(T[] original, int start, int end)
+	{
+		return Arrays.copyOfRange(original, start, end);
+	}
+
+	/**
 	 * Creates a new {@link List} from the given array <br>
 	 * <br>
 	 * Note: This wraps only the method asList from {@link Arrays#asList(Object...)}

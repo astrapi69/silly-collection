@@ -24,6 +24,7 @@
  */
 package io.github.astrapi69.collection.array;
 
+import static org.testng.Assert.assertThrows;
 import static org.testng.AssertJUnit.assertEquals;
 import static org.testng.AssertJUnit.assertNull;
 import static org.testng.AssertJUnit.assertTrue;
@@ -55,6 +56,72 @@ import io.github.astrapi69.collection.map.MapExtensions;
  */
 public class ArrayExtensionsTest
 {
+
+	/**
+	 * Test for the Method {@link ArrayExtensions#subArray(Object[], int, int)}
+	 */
+	@Test
+	public void testSubArrayWithValidRange()
+	{
+		Integer[] original = { 1, 2, 3, 4, 5 };
+		Integer[] expected = { 2, 3, 4 };
+		assertArrayEquals(expected, ArrayExtensions.subArray(original, 1, 4));
+	}
+
+	/**
+	 * Test for the Method {@link ArrayExtensions#subArray(Object[], int, int)}
+	 */
+	@Test
+	public void testSubArrayWithFullRange()
+	{
+		Integer[] original = { 1, 2, 3, 4, 5 };
+		Integer[] expected = { 1, 2, 3, 4, 5 };
+		assertArrayEquals(expected, ArrayExtensions.subArray(original, 0, 5));
+	}
+
+	/**
+	 * Test for the Method {@link ArrayExtensions#subArray(Object[], int, int)}
+	 */
+	@Test
+	public void testSubArrayWithSingleElement()
+	{
+		Integer[] original = { 1, 2, 3, 4, 5 };
+		Integer[] expected = { 3 };
+		assertArrayEquals(expected, ArrayExtensions.subArray(original, 2, 3));
+	}
+
+	/**
+	 * Test for the Method {@link ArrayExtensions#subArray(Object[], int, int)}
+	 */
+	@Test
+	public void testSubArrayWithEmptyRange()
+	{
+		Integer[] original = { 1, 2, 3, 4, 5 };
+		Integer[] expected = { };
+		assertArrayEquals(expected, ArrayExtensions.subArray(original, 2, 2));
+	}
+
+	/**
+	 * Test for the Method {@link ArrayExtensions#subArray(Object[], int, int)}
+	 */
+	@Test
+	public void testSubArrayWithInvalidRange()
+	{
+		Integer[] original = { 1, 2, 3, 4, 5 };
+		assertThrows(ArrayIndexOutOfBoundsException.class,
+			() -> ArrayExtensions.subArray(original, -1, 3));
+	}
+
+	/**
+	 * Test for the Method {@link ArrayExtensions#subArray(Object[], int, int)}
+	 */
+	@Test
+	public void testSubArrayWithStartGreaterThanEnd()
+	{
+		Integer[] original = { 1, 2, 3, 4, 5 };
+		assertThrows(IllegalArgumentException.class,
+			() -> ArrayExtensions.subArray(original, 4, 3));
+	}
 
 	/**
 	 * Converts the given two-dimensional array to a {@link Map} object

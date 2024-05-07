@@ -6,6 +6,8 @@ Version 27.1-SNAPSHOT
 
 ADDED:
 
+- new method in class ListExtensions subList that returns a sub array from the specified start and end point
+- new method in class ArrayExtensions subArray that returns a sub array from the specified start and end point
 - new method in class ArrayExtensions getFirstElement that returns the first element as Optional
 - new method in class ArrayExtensions getLastElement that returns the last element as Optional
 - new method in class ArrayExtensions getNextElement that returns the next element as Optional
