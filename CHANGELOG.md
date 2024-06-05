@@ -15,13 +15,15 @@ ADDED:
 - new method in class ArrayExtensions hasNext
 - new method in class ArrayExtensions hasPrevious
 - new method in class MapFactory that creates a new hashmap with two given lists with keys and values
+- new package-info.java files to packages
+- new libs.versions.toml file for new automatic catalog versions update 
 
 CHANGED:
 
-- update gradle to new version 8.7
+- update gradle to new version 8.8
 - update of com.github.ben-manes.versions.gradle.plugin to new version 0.51.0
 - update of gradle-plugin dependency 'org.ajoberstar.grgit:grgit-gradle' in version 5.2.2
-- update of gradle-plugin dependency 'com.diffplug.spotless:spotless-plugin-gradle' to new minor version 6.25.0
+- update of gradle-plugin dependency 'com.diffplug.spotless:spotless-plugin-gradle' to new beta version 7.0.0.BETA1
 
 Version 27
 -------------

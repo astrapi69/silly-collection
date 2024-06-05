@@ -1,15 +1,15 @@
 dependencies {
-    implementation("org.apache.commons:commons-collections4:$commonsCollections4Version")
-    implementation("io.github.astrapi69:jobj-core:$jobjCoreVersion")
-    implementation("io.github.astrapi69:comparator-extensions:$comparatorExtensionsVersion")
-    implementation("io.github.astrapi69:silly-bean:$sillyBeanVersion")
-    testImplementation("io.github.astrapi69:silly-io:$sillyIoVersion")
-    testImplementation("io.github.astrapi69:file-worker:$fileWorkerVersion")
-    testImplementation("io.github.astrapi69:vintage-time:$vintageTimeVersion")
-    testImplementation("io.github.astrapi69:test-object:$testObjectVersion")
-    testImplementation("io.github.benas:random-beans:$randomBeansVersion")
-    testImplementation("org.openjdk.jmh:jmh-core:$jmhVersion")
-    testImplementation("org.openjdk.jmh:jmh-generator-annprocess:$jmhVersion")
-    testImplementation("com.github.meanbeanlib:meanbean:$meanbeanVersion")
-    testImplementation("org.testng:testng:$testngVersion")
+    implementation libs.commons.collections4
+    implementation libs.jobj.core
+    implementation libs.comparator.extensions
+    implementation libs.silly.bean
+    testImplementation libs.silly.io
+    testImplementation libs.file.worker
+    testImplementation libs.vintage.time
+    testImplementation libs.test.object
+    testImplementation libs.random.beans
+    testImplementation libs.jmh.core
+    testImplementation libs.jmh.generator.annprocess
+    // Note: use of bundles...
+    testImplementation libs.bundles.unit.testing
 }
