@@ -172,19 +172,18 @@ public class SortedArrayListTest
 		assertTrue(expected);
 
 		// test with the other constructor
-		list = new SortedArrayList<>(collection, comparator);
+		SortedArrayList<String> sortedArrayList = new SortedArrayList<>(collection, comparator);
 
-		expected = list.indexOf(alex) == 2;
+		expected = sortedArrayList.indexOf(alex) == 2;
 		assertTrue(expected);
-		expected = list.indexOf(bill) == 3;
+		expected = sortedArrayList.indexOf(bill) == 3;
 		assertTrue(expected);
-		expected = list.indexOf(leo) == 4;
+		expected = sortedArrayList.indexOf(leo) == 4;
 		assertTrue(expected);
-
-		assertEquals(comparator, ((SortedArrayList)list).getComparator());
+		assertEquals(comparator, sortedArrayList.getComparator());
 		comparator = StringComparator.of(true);
-		((SortedArrayList)list).setComparator(comparator);
-		assertEquals(comparator, ((SortedArrayList)list).getComparator());
+		sortedArrayList.setComparator(comparator);
+		assertEquals(comparator, sortedArrayList.getComparator());
 
 	}
 
