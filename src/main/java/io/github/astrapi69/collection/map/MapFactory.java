@@ -28,6 +28,7 @@ import java.util.Collection;
 import java.util.Comparator;
 import java.util.HashMap;
 import java.util.LinkedHashMap;
+import java.util.List;
 import java.util.Map;
 import java.util.Objects;
 import java.util.TreeMap;
@@ -299,6 +300,36 @@ public final class MapFactory
 	{
 		Argument.notNull(map, "map");
 		return new HashMap<>(map);
+	}
+
+	/**
+	 * Factory method for create a new {@link HashMap}
+	 *
+	 * @param <K>
+	 *            the generic type of the key
+	 * @param <V>
+	 *            the generic type of the value
+	 * @param keys
+	 *            the keys
+	 * @param values
+	 *            the values
+	 * @return The new {@link HashMap}
+	 */
+	public static <K, V> Map<K, V> newHashMap(final List<K> keys, final List<V> values)
+	{
+		Argument.notNull(keys, "keys");
+		Argument.notNull(values, "values");
+		if (keys.size() != values.size())
+		{
+			throw new IllegalArgumentException(
+				"The list of keys and values must have the same size");
+		}
+		Map<K, V> map = newHashMap();
+		for (int i = 0; i < keys.size(); i++)
+		{
+			map.put(keys.get(i), values.get(i));
+		}
+		return map;
 	}
 
 	/**

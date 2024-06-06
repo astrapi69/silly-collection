@@ -28,6 +28,7 @@ import java.lang.reflect.Array;
 import java.util.Arrays;
 import java.util.List;
 import java.util.Map;
+import java.util.Optional;
 import java.util.Set;
 import java.util.stream.Collectors;
 import java.util.stream.Stream;
@@ -205,18 +206,33 @@ public final class ArrayExtensions
 	 * Gets the first object from the given array
 	 *
 	 * @param <T>
-	 *            the generic type
+	 *            the generic type of the elements in the array
 	 * @param array
 	 *            the array
 	 * @return Returns the first object from the given array or null if the array is empty or null
 	 */
 	public static <T> T getFirst(final T[] array)
 	{
+		return getFirstElement(array).orElse(null);
+	}
+
+	/**
+	 * Returns an {@link Optional} with the first object from the given array
+	 *
+	 * @param <T>
+	 *            the generic type of the elements in the array
+	 * @param array
+	 *            the array
+	 * @return an {@link Optional} with the first object from the given array or an empty
+	 *         {@link Optional} if the array is null or empty
+	 */
+	public static <T> Optional<T> getFirstElement(final T[] array)
+	{
 		if (array != null && array.length != 0)
 		{
-			return array[0];
+			return Optional.of(array[0]);
 		}
-		return null;
+		return Optional.empty();
 	}
 
 	/**
@@ -246,12 +262,26 @@ public final class ArrayExtensions
 	 */
 	public static <T> T getLast(final T[] array)
 	{
+		return getLastElement(array).orElse(null);
+	}
+
+	/**
+	 * Returns an {@link Optional} with the last object from the given array
+	 *
+	 * @param <T>
+	 *            the generic type of the elements in the array
+	 * @param array
+	 *            the array
+	 * @return an {@link Optional} with the last object from the given array or an empty
+	 *         {@link Optional} if the array is null or empty
+	 */
+	public static <T> Optional<T> getLastElement(final T[] array)
+	{
 		if (array != null && array.length != 0)
 		{
-			final int lastIndex = getLastIndex(array);
-			return array[lastIndex];
+			return Optional.of(array[getLastIndex(array)]);
 		}
-		return null;
+		return Optional.empty();
 	}
 
 	/**
@@ -521,6 +551,93 @@ public final class ArrayExtensions
 	}
 
 	/**
+	 * Checks if the given array has a next element from the given element
+	 *
+	 * @param <T>
+	 *            the generic type
+	 * @param array
+	 *            the array
+	 * @param element
+	 *            the element
+	 * @return true, if successful
+	 */
+	public static <T> boolean hasNext(final T[] array, final T element)
+	{
+		Argument.notNull(array, "array");
+		final int indexOfElement = indexOf(array, element);
+		if (indexOfElement == -1)
+		{
+			return false;
+		}
+		return indexOfElement < array.length - 1;
+	}
+
+	/**
+	 * Checks if the given array has a next element from the given element
+	 *
+	 * @param <T>
+	 *            the generic type
+	 * @param array
+	 *            the array
+	 * @param element
+	 *            the element
+	 * @return true, if successful
+	 */
+	public static <T> boolean hasPrevious(final T[] array, final T element)
+	{
+		Argument.notNull(array, "array");
+		final int indexOfElement = indexOf(array, element);
+		return indexOfElement != -1 && indexOfElement != 0;
+	}
+
+	/**
+	 * Gets the previous element from the given array. As start point is the given element
+	 *
+	 * @param <T>
+	 *            the generic type of elements
+	 * @param array
+	 *            the array
+	 * @param element
+	 *            the element
+	 * @return an {@link Optional} with the previous element from the given array or an empty
+	 *         {@link Optional} if the array has no previous element
+	 */
+	public static <T> Optional<T> getPreviousElement(final T[] array, final T element)
+	{
+		Argument.notNull(array, "array");
+		final int indexOfElement = indexOf(array, element);
+		if (indexOfElement == -1 || indexOfElement == 0)
+		{
+			return Optional.empty();
+		}
+		int previousIndex = indexOfElement - 1;
+		return Optional.of(array[previousIndex]);
+	}
+
+	/**
+	 * Gets the next element from the given array. As start point is the given element
+	 *
+	 * @param <T>
+	 *            the generic type of elements
+	 * @param array
+	 *            the array
+	 * @param element
+	 *            the element
+	 * @return an {@link Optional} with the next element from the given array or an empty
+	 *         {@link Optional} if the array has no next element
+	 */
+	public static <T> Optional<T> getNextElement(final T[] array, final T element)
+	{
+		Argument.notNull(array, "array");
+		if (ArrayExtensions.hasNext(array, element))
+		{
+			int nextIndex = getNextIndex(array, element);
+			return Optional.of(array[nextIndex]);
+		}
+		return Optional.empty();
+	}
+
+	/**
 	 * Gets the index of the given element in the given array
 	 *
 	 * @param <T>
@@ -743,6 +860,25 @@ public final class ArrayExtensions
 			count--;
 		}
 		return dataChunks;
+	}
+
+	/**
+	 * Decorates the <code>Arrays#copyOfRange</code> method.
+	 * 
+	 * @see Arrays#copyOfRange(Object[], int, int)
+	 * @param <T>
+	 *            the type of elements in the array
+	 * @param original
+	 *            the original array
+	 * @param start
+	 *            the start index
+	 * @param end
+	 *            the end index
+	 * @return a new array from the specified start and end point
+	 */
+	public static <T> T[] subArray(T[] original, int start, int end)
+	{
+		return Arrays.copyOfRange(original, start, end);
 	}
 
 	/**

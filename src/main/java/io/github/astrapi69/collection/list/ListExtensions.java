@@ -670,6 +670,40 @@ public final class ListExtensions
 	}
 
 	/**
+	 * Extracts a portion of a list between the specified {@code fromIndex}, inclusive, and
+	 * {@code toIndex}, exclusive. This method provides a safe way to get a sublist, ensuring that
+	 * indices are within the bounds of the original list. If the indices are out of bounds or
+	 * {@code fromIndex} is not less than {@code toIndex}, it returns an empty list.
+	 *
+	 * @param <T>
+	 *            the type of elements in the list
+	 * @param list
+	 *            the original list from which to extract the sublist
+	 * @param fromIndex
+	 *            the start index(inclusive), inclusive, adjusted to zero if it is negative
+	 * @param toIndex
+	 *            the end index(exclusive), exclusive, adjusted to the size of the list if it
+	 *            exceeds
+	 * @return a view of the specified range within the original list, or an empty list if indices
+	 *         are invalid
+	 * @throws IndexOutOfBoundsException
+	 *             if the specified indices are out of bounds (though this method handles typical
+	 *             out-of-bounds issues by returning an empty list)
+	 * @throws NullPointerException
+	 *             if the original list is null
+	 */
+	public static <T> List<T> subList(List<T> list, int fromIndex, int toIndex)
+	{
+		if (fromIndex >= list.size() || toIndex <= 0 || fromIndex >= toIndex)
+		{
+			return ListFactory.newArrayList();
+		}
+		fromIndex = Math.max(0, fromIndex);
+		toIndex = Math.min(list.size(), toIndex);
+		return list.subList(fromIndex, toIndex);
+	}
+
+	/**
 	 * Sort over the given property. Note: the property should implement the Comparable interface.
 	 *
 	 * @param <T>

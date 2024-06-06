@@ -9,9 +9,9 @@ name: Java CI with Gradle
 
 on:
   push:
-    branches: [ develop ]
+    branches: [ master, develop ]
   pull_request:
-    branches: [ develop ]
+    branches: [ master, develop ]
 
 jobs:
   build:
@@ -19,19 +19,20 @@ jobs:
     runs-on: ubuntu-latest
 
     steps:
-      - uses: actions/checkout@v3
-      - name: Set up JDK 17
-        uses: actions/setup-java@v3
+      - name: Checkout sources
+        uses: actions/checkout@v4
+      - name: Setup Java
+        uses: actions/setup-java@v4
         with:
           java-version: '17'
           distribution: 'temurin'
-      - name: Build with Gradle
-        uses: gradle/gradle-build-action@bc3340afc5e3cc44f2321809ac090d731c13c514
-        with:
-          arguments: build
+      - name: Setup Gradle
+        uses: gradle/actions/setup-gradle@v3
+      - name: Execute Gradle build
+        run: ./gradlew build
         env:
           ossrhUsername: ${{secrets.OSSRHUSERNAME}}
           ossrhPassword: ${{secrets.OSSRHPASSWORD}}
-      - uses: codecov/codecov-action@v2
+      - uses: codecov/codecov-action@v4
         with:
           token: ${{ secrets.CODECOV_TOKEN }} # not required for public repos

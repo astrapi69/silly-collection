@@ -25,7 +25,9 @@ Utility library for collections, comparators and iterator classes.
 
 Maven dependency is now on sonatype. Check
 out [sonatype repository](https://oss.sonatype.org/index.html#nexus-search;gav~io.github.astrapi69~silly-collection~~~)
-for latest snapshots and releases.
+for all snapshots and releases.
+
+Replace the variable ${latestVersion} with the current latest version: [![Maven Central](https://maven-badges.herokuapp.com/maven-central/io.github.astrapi69/silly-collection/badge.svg)](https://maven-badges.herokuapp.com/maven-central/io.github.astrapi69/silly-collection)
 
 Add the following maven dependency to your project `pom.xml` if you want to import the core
 functionality of silly-collection:
@@ -35,7 +37,7 @@ Than you can add the dependency to your dependencies:
     <properties>
             ...
         <!-- SILLY-COLLECTION version -->
-        <silly-collection.version>27</silly-collection.version>
+        <silly-collection.version>${latestVersion}</silly-collection.version>
             ...
     </properties>
             ...
@@ -58,8 +60,7 @@ your project `build.gradle` if you want to import the core functionality of sill
 define version in file gradle.properties
 
 ```
-
-sillyCollectionVersion=27
+sillyCollectionVersion=${latestVersion}
 ```
 
 or in build.gradle ext area
@@ -67,7 +68,7 @@ or in build.gradle ext area
 ```
 ext {
             ...
-    sillyCollectionVersion = "27"
+    sillyCollectionVersion = "${latestVersion}"
             ...
 }
 ```

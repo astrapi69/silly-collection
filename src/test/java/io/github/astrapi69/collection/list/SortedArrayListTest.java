@@ -28,6 +28,7 @@ import static org.testng.Assert.assertEquals;
 import static org.testng.AssertJUnit.assertTrue;
 
 import java.util.ArrayList;
+import java.util.Collection;
 import java.util.Comparator;
 import java.util.List;
 
@@ -118,6 +119,7 @@ public class SortedArrayListTest
 	public void testCompare()
 	{
 		Comparator<String> comparator;
+		Collection<String> collection;
 		int actual;
 		boolean expected;
 		List<String> list;
@@ -133,6 +135,7 @@ public class SortedArrayListTest
 		list.add(bill);
 		list.add(null);
 		list.add(null);
+		collection = ListFactory.newArrayList(list);
 
 		expected = list.indexOf(leo) == 0;
 		assertTrue(expected);
@@ -167,6 +170,20 @@ public class SortedArrayListTest
 		assertTrue(expected);
 		expected = list.indexOf(leo) == 4;
 		assertTrue(expected);
+
+		// test with the other constructor
+		SortedArrayList<String> sortedArrayList = new SortedArrayList<>(collection, comparator);
+
+		expected = sortedArrayList.indexOf(alex) == 2;
+		assertTrue(expected);
+		expected = sortedArrayList.indexOf(bill) == 3;
+		assertTrue(expected);
+		expected = sortedArrayList.indexOf(leo) == 4;
+		assertTrue(expected);
+		assertEquals(comparator, sortedArrayList.getComparator());
+		comparator = StringComparator.of(true);
+		sortedArrayList.setComparator(comparator);
+		assertEquals(comparator, sortedArrayList.getComparator());
 
 	}
 

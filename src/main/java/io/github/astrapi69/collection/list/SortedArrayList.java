@@ -40,6 +40,9 @@ import java.util.Comparator;
 public class SortedArrayList<E> extends ArrayList<E>
 {
 
+	/**
+	 * the comparator for sort this list object
+	 */
 	private Comparator<? super E> comparator;
 
 	/**

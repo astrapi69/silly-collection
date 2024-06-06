@@ -1,0 +1,50 @@
+[versions]
+commons-collections4-version = "4.5.0-M1"
+comparator-extensions-version = "1.5"
+file-worker-version = "17.1"
+gradle-plugin-version-catalog-update-version = "0.8.4"
+gradle-versions-plugin-version = "0.51.0"
+grgit-gradle-version = "5.2.2"
+jmh-core-version = "1.37"
+jmh-generator-annprocess-version = "1.37"
+jobj-core-version = "8.2"
+license-gradle-plugin-version = "0.16.1"
+meanbean-version = "3.0.0-M9"
+mockito-core-version = "5.12.0"
+random-beans-version = "3.9.0"
+silly-bean-version = "2"
+silly-io-version = "3"
+spotless-plugin-gradle-version = "7.0.0.BETA1"
+test-object-version = "8.2"
+testng-version = "7.10.2"
+vintage-time-version = "6"
+
+[libraries]
+commons-collections4 = { module = "org.apache.commons:commons-collections4", version.ref = "commons-collections4-version" }
+comparator-extensions = { module = "io.github.astrapi69:comparator-extensions", version.ref = "comparator-extensions-version" }
+file-worker = { module = "io.github.astrapi69:file-worker", version.ref = "file-worker-version" }
+jmh-core = { module = "org.openjdk.jmh:jmh-core", version.ref = "jmh-core-version" }
+jmh-generator-annprocess = { module = "org.openjdk.jmh:jmh-generator-annprocess", version.ref = "jmh-generator-annprocess-version" }
+jobj-core = { module = "io.github.astrapi69:jobj-core", version.ref = "jobj-core-version" }
+meanbean = { module = "com.github.meanbeanlib:meanbean", version.ref = "meanbean-version" }
+mockito-core = { module = "org.mockito:mockito-core", version.ref = "mockito-core-version" }
+random-beans = { module = "io.github.benas:random-beans", version.ref = "random-beans-version" }
+silly-bean = { module = "io.github.astrapi69:silly-bean", version.ref = "silly-bean-version" }
+silly-io = { module = "io.github.astrapi69:silly-io", version.ref = "silly-io-version" }
+test-object = { module = "io.github.astrapi69:test-object", version.ref = "test-object-version" }
+testng = { module = "org.testng:testng", version.ref = "testng-version" }
+vintage-time = { module = "io.github.astrapi69:vintage-time", version.ref = "vintage-time-version" }
+
+[bundles]
+unit-testing = [
+    "meanbean",
+    "mockito-core",
+    "testng",
+]
+
+[plugins]
+gradle-versions-plugin = { id = "com.github.ben-manes.versions", version.ref = "gradle-versions-plugin-version" }
+grgit-gradle = { id = "org.ajoberstar.grgit", version.ref = "grgit-gradle-version" }
+license-gradle-plugin = { id = "com.github.hierynomus.license", version.ref = "license-gradle-plugin-version" }
+spotless-plugin-gradle = { id = "com.diffplug.spotless", version.ref = "spotless-plugin-gradle-version" }
+versionCatalogUpdate = { id = "nl.littlerobots.version-catalog-update", version.ref = "gradle-plugin-version-catalog-update-version" }

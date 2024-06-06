@@ -24,6 +24,7 @@
  */
 package io.github.astrapi69.collection.map;
 
+import static org.testng.Assert.assertThrows;
 import static org.testng.AssertJUnit.assertEquals;
 import static org.testng.AssertJUnit.assertNotNull;
 
@@ -200,13 +201,72 @@ public class MapFactoryTest
 	}
 
 	/**
-	 * Test for the Method {@link MapFactory#newHashMap(int))}.
+	 * Test for the Method {@link MapFactory#newHashMap(int)}
 	 */
 	@Test
-	public void testNewHashMapInt()
+	public void testNewHashMapWithInitialCapacity()
 	{
-		final Map<Object, Object> hashMap = MapFactory.newHashMap(5);
+		int initialCapacity;
+		initialCapacity = 10;
+		final Map<Object, Object> hashMap = MapFactory.newHashMap(initialCapacity);
 		assertNotNull(hashMap);
+	}
+
+	/**
+	 * Test for the Method {@link MapFactory#newHashMap(List, List)}
+	 */
+	@Test
+	public void testNewHashMapFromLists()
+	{
+		final Map<Object, Object> hashMap = MapFactory.newHashMap();
+		assertNotNull(hashMap);
+	}
+
+	/**
+	 * Test for the Method {@link MapFactory#newHashMap(List, List)}
+	 */
+	@Test
+	public void testNewHashMapWithKeyValueLists()
+	{
+		List<Integer> keys;
+		List<String> values;
+		Map<Integer, String> actual;
+		Map<Integer, String> expected;
+		expected = new HashMap<>();
+		expected.put(1, "one");
+		expected.put(2, "two");
+		expected.put(3, "three");
+		expected.put(4, "four");
+
+		keys = ListFactory.newArrayList(1, 2, 3, 4);
+		values = ListFactory.newArrayList("one", "two", "three", "four");
+		actual = MapFactory.newHashMap(keys, values);
+		assertEquals(expected, actual);
+	}
+
+	/**
+	 * Test for the Method {@link MapFactory#newHashMap(List, List)}
+	 */
+	@Test
+	public void testNewHashMapWithKeyValueLists_ThrowsIllegalArgumentException_WhenKeysAndValuesDifferentSize()
+	{
+		List<Integer> keys;
+		List<String> values;
+		Map<Integer, String> actual;
+		Map<Integer, String> expected;
+		expected = new HashMap<>();
+		expected.put(1, "one");
+		expected.put(2, "two");
+		expected.put(3, "three");
+		expected.put(4, "four");
+
+		keys = ListFactory.newArrayList(1, 2, 3, 4);
+		values = ListFactory.newArrayList("one", "two", "three");
+
+		// Act & Assert
+		assertThrows(IllegalArgumentException.class, () -> {
+			MapFactory.newHashMap(keys, values);
+		});
 	}
 
 	/**

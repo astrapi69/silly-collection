@@ -24,6 +24,7 @@
  */
 package io.github.astrapi69.collection.list;
 
+import static org.testng.Assert.assertThrows;
 import static org.testng.AssertJUnit.assertEquals;
 import static org.testng.AssertJUnit.assertFalse;
 import static org.testng.AssertJUnit.assertNotNull;
@@ -54,7 +55,7 @@ import io.github.astrapi69.collection.modification.ModifiedCollections;
 import io.github.astrapi69.collection.set.SetFactory;
 import io.github.astrapi69.comparator.factory.ComparatorFactory;
 import io.github.astrapi69.test.object.Person;
-import io.github.astrapi69.test.object.enumtype.Gender;
+import io.github.astrapi69.test.object.enumeration.Gender;
 
 /**
  * The unit test class for the class {@link ListExtensions}
@@ -78,6 +79,70 @@ public class ListExtensionsTest
 	@AfterMethod
 	protected void tearDown()
 	{
+	}
+
+	/**
+	 * Test method for {@link ListExtensions#subList(List, int, int)}
+	 */
+	@Test
+	public void testSubListNormalRange()
+	{
+		List<Integer> original = Arrays.asList(1, 2, 3, 4, 5);
+		List<Integer> expected = Arrays.asList(2, 3, 4);
+		List<Integer> result = ListExtensions.subList(original, 1, 4);
+		assertEquals(expected, result);
+	}
+
+	/**
+	 * Test method for {@link ListExtensions#subList(List, int, int)}
+	 */
+	@Test
+	public void testSubListFullRange()
+	{
+		List<Integer> original = Arrays.asList(1, 2, 3, 4, 5);
+		List<Integer> expected = original;
+		List<Integer> result = ListExtensions.subList(original, 0, 5);
+		assertEquals(expected, result);
+	}
+
+	/**
+	 * Test method for {@link ListExtensions#subList(List, int, int)}
+	 */
+	@Test
+	public void testSubListEmptyResultFromIndexOutOfBounds()
+	{
+		List<Integer> original = Arrays.asList(1, 2, 3, 4, 5);
+		assertTrue(ListExtensions.subList(original, 5, 7).isEmpty());
+	}
+
+	/**
+	 * Test method for {@link ListExtensions#subList(List, int, int)}
+	 */
+	@Test
+	public void testSubListEmptyResultToIndexOutOfBounds()
+	{
+		List<Integer> original = Arrays.asList(1, 2, 3, 4, 5);
+		assertTrue(ListExtensions.subList(original, -1, 0).isEmpty());
+	}
+
+	/**
+	 * Test method for {@link ListExtensions#subList(List, int, int)}
+	 */
+	@Test
+	public void testSubListEmptyResultFromIndexEqualsToIndex()
+	{
+		List<Integer> original = Arrays.asList(1, 2, 3, 4, 5);
+		assertTrue(ListExtensions.subList(original, 3, 3).isEmpty());
+	}
+
+	/**
+	 * Test method for {@link ListExtensions#subList(List, int, int)}
+	 */
+	@Test
+	public void testSubListEmptyResultFromIndexGreaterThanToIndex()
+	{
+		List<Integer> original = Arrays.asList(1, 2, 3, 4, 5);
+		assertTrue(ListExtensions.subList(original, 4, 2).isEmpty());
 	}
 
 	/**

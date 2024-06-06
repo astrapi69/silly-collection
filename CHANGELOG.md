@@ -1,10 +1,34 @@
 ## Change log
 ----------------------
 
-Version 27
+Version 27.1
 -------------
 
 ADDED:
+
+- new method in class ListExtensions subList that returns a sub array from the specified start and end point
+- new method in class ArrayExtensions subArray that returns a sub array from the specified start and end point
+- new method in class ArrayExtensions getFirstElement that returns the first element as Optional
+- new method in class ArrayExtensions getLastElement that returns the last element as Optional
+- new method in class ArrayExtensions getNextElement that returns the next element as Optional
+- new method in class ArrayExtensions getPreviousElement that returns the previous element as Optional
+- new method in class ArrayExtensions hasNext
+- new method in class ArrayExtensions hasPrevious
+- new method in class MapFactory that creates a new hashmap with two given lists with keys and values
+- new package-info.java files to packages
+- new libs.versions.toml file for new automatic catalog versions update
+
+CHANGED:
+
+- update gradle to new version 8.8
+- update of com.github.ben-manes.versions.gradle.plugin to new version 0.51.0
+- update of gradle-plugin dependency 'org.ajoberstar.grgit:grgit-gradle' in version 5.2.2
+- update of gradle-plugin dependency 'com.diffplug.spotless:spotless-plugin-gradle' to new beta version 7.0.0.BETA1
+
+Version 27
+-------------
+
+CHANGED:
 
 - update to jdk version 17
 - update gradle to new version 8.3
