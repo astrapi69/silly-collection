@@ -16,7 +16,7 @@ ADDED:
 - new method in class ArrayExtensions hasPrevious
 - new method in class MapFactory that creates a new hashmap with two given lists with keys and values
 - new package-info.java files to packages
-- new libs.versions.toml file for new automatic catalog versions update 
+- new libs.versions.toml file for new automatic catalog versions update
 
 CHANGED:
 
