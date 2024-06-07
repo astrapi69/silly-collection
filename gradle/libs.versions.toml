@@ -2,19 +2,19 @@
 commons-collections4-version = "4.5.0-M1"
 comparator-extensions-version = "1.5"
 file-worker-version = "17.1"
+gradle-plugin-grgit-version = "5.2.2"
+gradle-plugin-license-version = "0.16.1"
+gradle-plugin-spotless-version = "7.0.0.BETA1"
 gradle-plugin-version-catalog-update-version = "0.8.4"
-gradle-versions-plugin-version = "0.51.0"
-grgit-gradle-version = "5.2.2"
+gradle-plugin-versions-version = "0.51.0"
 jmh-core-version = "1.37"
 jmh-generator-annprocess-version = "1.37"
 jobj-core-version = "8.2"
-license-gradle-plugin-version = "0.16.1"
 meanbean-version = "3.0.0-M9"
 mockito-core-version = "5.12.0"
 random-beans-version = "3.9.0"
 silly-bean-version = "2"
 silly-io-version = "3"
-spotless-plugin-gradle-version = "7.0.0.BETA1"
 test-object-version = "8.2"
 testng-version = "7.10.2"
 vintage-time-version = "6"
@@ -43,8 +43,8 @@ unit-testing = [
 ]
 
 [plugins]
-gradle-versions-plugin = { id = "com.github.ben-manes.versions", version.ref = "gradle-versions-plugin-version" }
-grgit-gradle = { id = "org.ajoberstar.grgit", version.ref = "grgit-gradle-version" }
-license-gradle-plugin = { id = "com.github.hierynomus.license", version.ref = "license-gradle-plugin-version" }
-spotless-plugin-gradle = { id = "com.diffplug.spotless", version.ref = "spotless-plugin-gradle-version" }
+gradle-versions-plugin = { id = "com.github.ben-manes.versions", version.ref = "gradle-plugin-versions-version" }
+grgit-gradle = { id = "org.ajoberstar.grgit", version.ref = "gradle-plugin-grgit-version" }
+license-gradle-plugin = { id = "com.github.hierynomus.license", version.ref = "gradle-plugin-license-version" }
+spotless-plugin-gradle = { id = "com.diffplug.spotless", version.ref = "gradle-plugin-spotless-version" }
 versionCatalogUpdate = { id = "nl.littlerobots.version-catalog-update", version.ref = "gradle-plugin-version-catalog-update-version" }
