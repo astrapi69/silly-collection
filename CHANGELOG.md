@@ -22,6 +22,7 @@ ADDED:
 - new method in class MapFactory that creates a new hashmap with two given lists with keys and values
 - new package-info.java files to packages
 - new libs.versions.toml file for new automatic catalog versions update
+- replaced obsolete package.html with package-info.java files
 
 CHANGED:
 
