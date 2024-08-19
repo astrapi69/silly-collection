@@ -4,7 +4,9 @@
 Version 27.2-SNAPSHOT
 -------------
 
+CHANGED:
 
+- method toArray from SetExtensions returns now an empty array
 
 Version 27.1
 -------------

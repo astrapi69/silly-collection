@@ -64,10 +64,12 @@ public class SetExtensionsTest
 	 * Test the method {@link SetExtensions#toArray(Set)} that throws an
 	 * <code>IllegalArgumentException</code>
 	 */
-	@Test(expectedExceptions = IllegalArgumentException.class)
+	@Test
 	public void testToArrayWithException()
 	{
-		SetExtensions.toArray(SetFactory.newTreeSet());
+		Object[] array = SetExtensions.toArray(SetFactory.newTreeSet());
+		assertNotNull(array);
+		assertTrue(array.length == 0);
 	}
 
 	/**
