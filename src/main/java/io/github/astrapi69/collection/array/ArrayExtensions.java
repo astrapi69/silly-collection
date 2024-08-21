@@ -35,6 +35,7 @@ import java.util.stream.Stream;
 
 import io.github.astrapi69.check.Argument;
 import io.github.astrapi69.collection.list.ListFactory;
+import io.github.astrapi69.collection.set.SetFactory;
 
 /**
  * The class {@link ArrayExtensions} is an extensions class for use with array objects
@@ -895,6 +896,22 @@ public final class ArrayExtensions
 	public static <T> List<T> toList(final T[] array)
 	{
 		return asList(array);
+	}
+
+	/**
+	 * Creates a new {@link Set} from the given array <br>
+	 * <br>
+	 * Note: This wraps only the method asList from {@link SetFactory#newLinkedHashSet(Object...)}
+	 *
+	 * @param <T>
+	 *            the generic type of the objects in the array
+	 * @param array
+	 *            the array
+	 * @return the new {@link Set} created from the given array
+	 */
+	public static <T> Set<T> toSet(final T[] array)
+	{
+		return SetFactory.newLinkedHashSet(array);
 	}
 
 	/**

@@ -4,6 +4,10 @@
 Version 27.2-SNAPSHOT
 -------------
 
+ADDED:
+
+- new method in class ArrayExtensions that creates a Set object from a given array
+
 CHANGED:
 
 - method toArray from SetExtensions returns now an empty array
