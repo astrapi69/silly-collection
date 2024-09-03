@@ -24,18 +24,20 @@
  */
 package io.github.astrapi69.collection.iterator;
 
-import static org.testng.AssertJUnit.assertEquals;
-import static org.testng.AssertJUnit.assertNotNull;
-import static org.testng.AssertJUnit.assertTrue;
+import static org.junit.jupiter.api.Assertions.assertEquals;
+import static org.junit.jupiter.api.Assertions.assertNotNull;
+import static org.junit.jupiter.api.Assertions.assertTrue;
 
 import java.util.ArrayList;
 import java.util.Collections;
 import java.util.Enumeration;
 import java.util.List;
+import java.util.NoSuchElementException;
 
-import org.testng.annotations.AfterMethod;
-import org.testng.annotations.BeforeMethod;
-import org.testng.annotations.Test;
+import org.junit.jupiter.api.AfterEach;
+import org.junit.jupiter.api.Assertions;
+import org.junit.jupiter.api.BeforeEach;
+import org.junit.jupiter.api.Test;
 
 import io.github.astrapi69.collection.list.ListFactory;
 
@@ -72,7 +74,7 @@ public class EnumerationIteratorTest
 	 * @throws Exception
 	 *             is thrown if an exception occurs
 	 */
-	@BeforeMethod
+	@BeforeEach
 	protected void setUp() throws Exception
 	{
 		final Enumeration<String> elem = Collections.enumeration(list);
@@ -85,7 +87,7 @@ public class EnumerationIteratorTest
 	 * @throws Exception
 	 *             is thrown if an exception occurs
 	 */
-	@AfterMethod
+	@AfterEach
 	protected void tearDown() throws Exception
 	{
 	}
@@ -103,8 +105,8 @@ public class EnumerationIteratorTest
 			System.out.println(stringNumber);
 			iteratorLength++;
 		}
-		assertTrue("The length from the array should be equal with "
-			+ "the length from the enumerationIterator.", list.size() == iteratorLength);
+		assertTrue(list.size() == iteratorLength, "The length from the array should be equal with "
+			+ "the length from the enumerationIterator.");
 	}
 
 	/**
@@ -113,7 +115,7 @@ public class EnumerationIteratorTest
 	 * @throws Exception
 	 *             the exception
 	 */
-	@Test(enabled = true)
+	@Test
 	public void testEnumerationIteratorConstructor() throws Exception
 	{
 		final Enumeration<String> elem = Collections.enumeration(list);
@@ -128,7 +130,7 @@ public class EnumerationIteratorTest
 	 * @throws Exception
 	 *             the exception
 	 */
-	@Test(enabled = true)
+	@Test
 	public void testHasNextWithContainingOneObject() throws Exception
 	{
 		final Enumeration<String> elemements = Collections.enumeration(new ArrayList<String>()
@@ -155,7 +157,7 @@ public class EnumerationIteratorTest
 	 * @throws Exception
 	 *             the exception
 	 */
-	@Test(enabled = true)
+	@Test
 	public void testHasNextWithEmptyEnumeration() throws Exception
 	{
 		final Enumeration<String> elemements = Collections.enumeration(new ArrayList<String>());
@@ -173,7 +175,7 @@ public class EnumerationIteratorTest
 	 * @throws Exception
 	 *             the exception
 	 */
-	@Test(enabled = true)
+	@Test
 	public void testNextContainingOneObject() throws Exception
 	{
 		final String expected = "foo";
@@ -203,7 +205,7 @@ public class EnumerationIteratorTest
 	 * @throws Exception
 	 *             the exception
 	 */
-	@Test(enabled = true)
+	@Test
 	public void testNextContainingThreeObject() throws Exception
 	{
 		final String expected = "foo";
@@ -247,7 +249,7 @@ public class EnumerationIteratorTest
 	 * @throws Exception
 	 *             the exception
 	 */
-	@Test(enabled = true)
+	@Test
 	public void testNextContainingTwoObject() throws Exception
 	{
 		final String expected = "foo";
@@ -284,27 +286,30 @@ public class EnumerationIteratorTest
 	 * @throws Exception
 	 *             the exception
 	 */
-	@Test(enabled = true, expectedExceptions = java.util.NoSuchElementException.class)
+	@Test
 	public void testNextWithEmptyEnumeration() throws Exception
 	{
 		final Enumeration<String> elemements = Collections.enumeration(new ArrayList<String>());
 		final EnumerationIterator<String> enumerationIterator = new EnumerationIterator<>(
 			elemements);
-
-		enumerationIterator.next();
+		Assertions.assertThrows(NoSuchElementException.class, () -> {
+			enumerationIterator.next();
+		});
 	}
 
 	/**
 	 * Test for method {@link EnumerationIterator#remove()}
 	 */
-	@Test(enabled = true, expectedExceptions = UnsupportedOperationException.class)
+	@Test
 	public void testRemove()
 	{
 		final Enumeration<String> elemements = Collections
 			.enumeration(ListFactory.newArrayList("1", "2"));
 		final EnumerationIterator<String> enumerationIterator = new EnumerationIterator<>(
 			elemements);
-		enumerationIterator.remove();
+		Assertions.assertThrows(UnsupportedOperationException.class, () -> {
+			enumerationIterator.remove();
+		});
 	}
 
 }

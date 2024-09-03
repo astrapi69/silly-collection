@@ -24,9 +24,10 @@
  */
 package io.github.astrapi69.collection.set;
 
-import static org.testng.AssertJUnit.assertEquals;
+import static org.junit.jupiter.api.Assertions.assertEquals;
 
-import org.testng.annotations.Test;
+import org.junit.jupiter.api.Assertions;
+import org.junit.jupiter.api.Test;
 
 /**
  * The unit test class for the class {@link IndexableSet}
@@ -112,7 +113,7 @@ public class IndexableSetTest
 	/**
 	 * Test method for {@link IndexableSet#get(int)} with index over the maximum
 	 */
-	@Test(expectedExceptions = IndexOutOfBoundsException.class)
+	@Test
 	public void testGetThrowIndexOutOfBoundsExceptionOverMaximun()
 	{
 		IndexableSet<String> set;
@@ -124,13 +125,15 @@ public class IndexableSetTest
 		set.add("value4");
 		// test
 		// new scenario..
-		set.get(5);
+		Assertions.assertThrows(IndexOutOfBoundsException.class, () -> {
+			set.get(5);
+		});
 	}
 
 	/**
 	 * Test method for {@link IndexableSet#get(int)} with index over the minimum
 	 */
-	@Test(expectedExceptions = IndexOutOfBoundsException.class)
+	@Test
 	public void testGetThrowIndexOutOfBoundsExceptionOverMinimum()
 	{
 		IndexableSet<String> set;
@@ -141,22 +144,24 @@ public class IndexableSetTest
 		set.add("value3");
 		set.add("value4");
 		// test
-		// new scenario..
-		set.get(-1);
+		Assertions.assertThrows(IndexOutOfBoundsException.class, () -> {
+			set.get(-1);
+		});
 	}
 
 	/**
 	 * Test method for {@link IndexableSet#get(int)} with index over the minimum
 	 */
-	@Test(expectedExceptions = IndexOutOfBoundsException.class)
+	@Test
 	public void testGetThrowIndexOutOfBoundsExceptionWithEmptySet()
 	{
 		IndexableSet<String> set;
 		// init test data
 		set = new IndexableSet<>();
 		// test
-		// new scenario..
-		set.get(0);
+		Assertions.assertThrows(IndexOutOfBoundsException.class, () -> {
+			set.get(0);
+		});
 	}
 
 }

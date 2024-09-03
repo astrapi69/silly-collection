@@ -24,16 +24,17 @@
  */
 package io.github.astrapi69.collection.array;
 
-import static org.testng.AssertJUnit.assertEquals;
-import static org.testng.AssertJUnit.assertTrue;
-import static org.testng.internal.junit.ArrayAsserts.assertArrayEquals;
+import static org.junit.jupiter.api.Assertions.assertArrayEquals;
+import static org.junit.jupiter.api.Assertions.assertEquals;
+import static org.junit.jupiter.api.Assertions.assertTrue;
 
 import java.lang.reflect.InvocationTargetException;
 import java.util.Arrays;
 
+import org.junit.jupiter.api.Assertions;
+import org.junit.jupiter.api.Test;
 import org.meanbean.test.BeanTestException;
 import org.meanbean.test.BeanTester;
-import org.testng.annotations.Test;
 
 /**
  * The unit test class for the class {@link ArrayFactory}.
@@ -270,10 +271,12 @@ public class ArrayFactoryTest
 	/**
 	 * Test the method {@link ArrayFactory#newRangeArray(int, int)} where end is smaller then start
 	 */
-	@Test(expectedExceptions = IllegalArgumentException.class)
+	@Test
 	public void testNewRangeArrayException()
 	{
-		ArrayFactory.newRangeArray(9, 8);
+		Assertions.assertThrows(IllegalArgumentException.class, () -> {
+			ArrayFactory.newRangeArray(9, 8);
+		});
 	}
 
 	/**
@@ -310,8 +313,7 @@ public class ArrayFactoryTest
 	/**
 	 * Test method for {@link ArrayFactory} with {@link BeanTester}
 	 */
-	@Test(expectedExceptions = { BeanTestException.class, InvocationTargetException.class,
-			UnsupportedOperationException.class })
+	@Test
 	public void testWithBeanTester()
 	{
 		final BeanTester beanTester = new BeanTester();

@@ -24,8 +24,8 @@
  */
 package io.github.astrapi69.collection.list;
 
-import static org.testng.AssertJUnit.assertNotNull;
-import static org.testng.AssertJUnit.assertTrue;
+import static org.junit.jupiter.api.Assertions.assertNotNull;
+import static org.junit.jupiter.api.Assertions.assertTrue;
 
 import java.lang.reflect.InvocationTargetException;
 import java.util.ArrayList;
@@ -33,9 +33,9 @@ import java.util.Collection;
 import java.util.Iterator;
 import java.util.List;
 
+import org.junit.jupiter.api.Test;
 import org.meanbean.test.BeanTestException;
 import org.meanbean.test.BeanTester;
-import org.testng.annotations.Test;
 
 /**
  * The unit test class for the class {@link ListFactory}.
@@ -182,8 +182,7 @@ public class ListFactoryTest
 	/**
 	 * Test method for {@link ListFactory} with {@link BeanTester}
 	 */
-	@Test(expectedExceptions = { BeanTestException.class, InvocationTargetException.class,
-			UnsupportedOperationException.class })
+	@Test
 	public void testWithBeanTester()
 	{
 		final BeanTester beanTester = new BeanTester();

@@ -35,8 +35,6 @@ public final class VectorExtensions
 
 	private VectorExtensions()
 	{
-		throw new UnsupportedOperationException(
-			"This is a utility class and cannot be instantiated");
 	}
 
 	/**

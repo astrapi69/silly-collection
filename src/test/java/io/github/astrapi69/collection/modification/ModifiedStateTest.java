@@ -24,14 +24,15 @@
  */
 package io.github.astrapi69.collection.modification;
 
-import static org.testng.AssertJUnit.assertTrue;
+import static org.junit.jupiter.api.Assertions.assertTrue;
 
 import java.lang.reflect.InvocationTargetException;
 import java.util.List;
 
+import org.junit.jupiter.api.Assertions;
+import org.junit.jupiter.api.Test;
 import org.meanbean.test.BeanTestException;
 import org.meanbean.test.BeanTester;
-import org.testng.annotations.Test;
 
 import io.github.astrapi69.collection.list.ListFactory;
 
@@ -52,86 +53,86 @@ public class ModifiedStateTest
 		final List<String> next = ListFactory.newArrayList();
 		// Get the current modified state...
 		ModifiedState state = ModifiedState.isModified(previous, next);
-		assertTrue(
+		assertTrue(state.equals(ModifiedState.UNMODIFIED),
 			"ModifiedState should have state <ModifiedState.UNMODIFIED> but was <ModifiedState."
-				+ state.name() + ">",
-			state.equals(ModifiedState.UNMODIFIED));
+				+ state.name() + ">");
 		// Add an initial entry...
 		next.add("one");
 		// And get the current modified state...
 		state = ModifiedState.isModified(previous, next);
-		assertTrue(
+		assertTrue(state.equals(ModifiedState.FIRST_MATCH),
 			"ModifiedState should have state <ModifiedState.FIRST_MATCH> but was <ModifiedState."
-				+ state.name() + ">",
-			state.equals(ModifiedState.FIRST_MATCH));
+				+ state.name() + ">");
 		// Set the two lists to equal entries so the state gets to
 		// 'unmodified'...
 		previous.add("one");
 		// And get the current modified state...
 		state = ModifiedState.isModified(previous, next);
-		assertTrue(
+		assertTrue(state.equals(ModifiedState.UNMODIFIED),
 			"ModifiedState should have state <ModifiedState.UNMODIFIED> but was <ModifiedState."
-				+ state.name() + ">",
-			state.equals(ModifiedState.UNMODIFIED));
+				+ state.name() + ">");
 		// Add a new entry to the existing entries...
 		next.add("two");
 		// And get the current modified state...
 		state = ModifiedState.isModified(previous, next);
-		assertTrue(
+		assertTrue(state.equals(ModifiedState.NEW_MATCH),
 			"ModifiedState should have state <ModifiedState.NEW_MATCH> but was <ModifiedState."
-				+ state.name() + ">",
-			state.equals(ModifiedState.NEW_MATCH));
+				+ state.name() + ">");
 		// Set the two lists to equal entries so the state gets to
 		// 'unmodified'...
 		previous.add("two");
 		// And get the current modified state...
 		state = ModifiedState.isModified(previous, next);
-		assertTrue(
+		assertTrue(state.equals(ModifiedState.UNMODIFIED),
 			"ModifiedState should have state <ModifiedState.UNMODIFIED> but was <ModifiedState."
-				+ state.name() + ">",
-			state.equals(ModifiedState.UNMODIFIED));
+				+ state.name() + ">");
 		// Remove existing value...
 		next.remove("two");
 		// And put another value so the state gets to 'new match'...
 		next.add("three");
 		// And get the current modified state...
 		state = ModifiedState.isModified(previous, next);
-		assertTrue(
+		assertTrue(state.equals(ModifiedState.NEW_MATCH),
 			"ModifiedState should have state <ModifiedState.NEW_MATCH> but was <ModifiedState."
-				+ state.name() + ">",
-			state.equals(ModifiedState.NEW_MATCH));
+				+ state.name() + ">");
 		// Now remove an existing entry...
 		next.remove("three");
 		// And get the current modified state...
 		state = ModifiedState.isModified(previous, next);
-		assertTrue("ModifiedState should have state <ModifiedState.REMOVED> but was <ModifiedState."
-			+ state.name() + ">", state.equals(ModifiedState.REMOVED));
+		assertTrue(state.equals(ModifiedState.REMOVED),
+			"ModifiedState should have state <ModifiedState.REMOVED> but was <ModifiedState."
+				+ state.name() + ">");
 		// Clear now the next list...
 		next.clear();
 		// And get the current modified state...
 		state = ModifiedState.isModified(previous, next);
-		assertTrue("ModifiedState should have state <ModifiedState.CLEAR> but was <ModifiedState."
-			+ state.name() + ">", state.equals(ModifiedState.CLEARED));
+		assertTrue(state.equals(ModifiedState.CLEARED),
+			"ModifiedState should have state <ModifiedState.CLEAR> but was <ModifiedState."
+				+ state.name() + ">");
 	}
 
 	/**
 	 * Test for method {@link ModifiedState#isModified(java.util.Collection, java.util.Collection)}
 	 * with null value for next
 	 */
-	@Test(expectedExceptions = IllegalArgumentException.class)
+	@Test
 	public void testIsModifiedNextNull()
 	{
-		ModifiedState.isModified(ListFactory.newArrayList(), null);
+		Assertions.assertThrows(IllegalArgumentException.class, () -> {
+			ModifiedState.isModified(ListFactory.newArrayList(), null);
+		});
 	}
 
 	/**
 	 * Test for method {@link ModifiedState#isModified(java.util.Collection, java.util.Collection)}
 	 * with null value for previous
 	 */
-	@Test(expectedExceptions = IllegalArgumentException.class)
+	@Test
 	public void testIsModifiedPreviousNull()
 	{
-		ModifiedState.isModified(null, ListFactory.newArrayList());
+		Assertions.assertThrows(IllegalArgumentException.class, () -> {
+			ModifiedState.isModified(null, ListFactory.newArrayList());
+		});
 	}
 
 	/**

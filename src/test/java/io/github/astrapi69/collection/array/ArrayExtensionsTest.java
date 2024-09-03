@@ -24,11 +24,11 @@
  */
 package io.github.astrapi69.collection.array;
 
-import static org.testng.Assert.assertThrows;
-import static org.testng.AssertJUnit.assertEquals;
-import static org.testng.AssertJUnit.assertNull;
-import static org.testng.AssertJUnit.assertTrue;
-import static org.testng.internal.junit.ArrayAsserts.assertArrayEquals;
+import static org.junit.jupiter.api.Assertions.assertArrayEquals;
+import static org.junit.jupiter.api.Assertions.assertEquals;
+import static org.junit.jupiter.api.Assertions.assertNull;
+import static org.junit.jupiter.api.Assertions.assertThrows;
+import static org.junit.jupiter.api.Assertions.assertTrue;
 
 import java.util.Arrays;
 import java.util.Iterator;
@@ -39,9 +39,8 @@ import java.util.Optional;
 import java.util.Set;
 import java.util.stream.Stream;
 
+import org.junit.jupiter.api.Test;
 import org.meanbean.test.BeanTester;
-import org.testng.Assert;
-import org.testng.annotations.Test;
 
 import io.github.astrapi69.check.Argument;
 import io.github.astrapi69.collection.list.ListExtensions;
@@ -156,7 +155,7 @@ public class ArrayExtensionsTest
 		final Map<String, String> map = MapExtensions.toGenericMap(twoDimArray);
 
 		String[][] toTwoDimensionalArray = ArrayExtensions.toTwoDimensionalArray(map, String.class);
-		Assert.assertEquals(toTwoDimensionalArray, twoDimArray);
+		assertArrayEquals(toTwoDimensionalArray, twoDimArray);
 	}
 
 	/**

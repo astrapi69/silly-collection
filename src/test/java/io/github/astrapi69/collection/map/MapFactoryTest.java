@@ -24,9 +24,9 @@
  */
 package io.github.astrapi69.collection.map;
 
-import static org.testng.Assert.assertThrows;
-import static org.testng.AssertJUnit.assertEquals;
-import static org.testng.AssertJUnit.assertNotNull;
+import static org.junit.jupiter.api.Assertions.assertEquals;
+import static org.junit.jupiter.api.Assertions.assertNotNull;
+import static org.junit.jupiter.api.Assertions.assertThrows;
 
 import java.util.Comparator;
 import java.util.HashMap;
@@ -36,8 +36,8 @@ import java.util.Random;
 import java.util.TreeMap;
 import java.util.concurrent.ConcurrentHashMap;
 
+import org.junit.jupiter.api.Test;
 import org.meanbean.test.BeanTester;
-import org.testng.annotations.Test;
 
 import io.github.astrapi69.collection.list.ListFactory;
 import io.github.astrapi69.collection.pair.KeyValuePair;

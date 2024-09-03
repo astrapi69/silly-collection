@@ -26,44 +26,66 @@ package io.github.astrapi69.collection.list;
 
 import java.util.ArrayList;
 import java.util.Collection;
+import java.util.Collections;
+import java.util.Comparator;
 
 /**
- * The class {@link UniqueArrayList} extends the {@link ArrayList} and overwrites all add-methods
- * that checks if the element already exists in the list
+ * The class {@link SortedList} extends the {@link ArrayList} and overwrites all add-methods that
+ * sorts the elements with the given comparator.
  *
  * @param <E>
  *            the generic type of values
- * @see java.util.ArrayList
+ * @see ArrayList
  */
-public class UniqueArrayList<E> extends ArrayList<E>
+public class SortedList<E> extends ArrayList<E>
 {
 
 	/**
-	 * Constructs an empty {@link UniqueArrayList} instance with the specified initial capacity
+	 * the comparator for sort this list object
+	 */
+	private Comparator<? super E> comparator;
+
+	/**
+	 * Constructs an empty {@link SortedList} instance with the specified initial capacity
 	 *
 	 * @param initialCapacity
 	 *            the initial capacity
 	 */
-	public UniqueArrayList(int initialCapacity)
+	public SortedList(int initialCapacity)
 	{
 		super(initialCapacity);
 	}
 
 	/**
-	 * Constructs an empty {@link UniqueArrayList} instance with an initial capacity of ten
+	 * Constructs an empty {@link SortedList} instance with an initial capacity of ten
 	 */
-	public UniqueArrayList()
+	public SortedList()
 	{
 	}
 
 	/**
-	 * Constructs a {@link UniqueArrayList} instance containing the elements of the given collection
+	 * Constructs a {@link SortedList} instance and set the given comparator
+	 *
+	 * @param comparator
+	 *            the comparator
+	 */
+	public SortedList(Comparator<? super E> comparator)
+	{
+		this.comparator = comparator;
+	}
+
+	/**
+	 * Constructs a {@link SortedList} instance containing the elements of the given collection and
+	 * set the given comparator
 	 *
 	 * @param collection
 	 *            the collection
+	 * @param comparator
+	 *            the comparator
 	 */
-	public UniqueArrayList(Collection<? extends E> collection)
+	public SortedList(Collection<? extends E> collection, Comparator<? super E> comparator)
 	{
+		this(comparator);
 		addAll(collection);
 	}
 
@@ -73,11 +95,15 @@ public class UniqueArrayList<E> extends ArrayList<E>
 	@Override
 	public boolean add(E element)
 	{
-		if (!contains(element))
+		int currentSize = this.size();
+		if (comparator == null)
 		{
 			return super.add(element);
 		}
-		return false;
+		ListExtensions.getIndexToInsert(this, element, comparator);
+		int insertIndex = ListExtensions.getIndexToInsert(this, element, comparator);
+		super.add(insertIndex, element);
+		return this.size() != currentSize;
 	}
 
 	/**
@@ -86,17 +112,7 @@ public class UniqueArrayList<E> extends ArrayList<E>
 	@Override
 	public void add(int index, E element)
 	{
-		if (contains(element))
-		{
-			if (remove(element))
-			{
-				super.add(index, element);
-			}
-		}
-		else
-		{
-			super.add(index, element);
-		}
+		add(element);
 	}
 
 	/**
@@ -105,15 +121,12 @@ public class UniqueArrayList<E> extends ArrayList<E>
 	@Override
 	public boolean addAll(Collection<? extends E> collection)
 	{
-		if (collection.size() == 0)
-		{
-			return false;
-		}
+		boolean result = false;
 		for (E element : collection)
 		{
-			this.add(element);
+			result |= add(element);
 		}
-		return true;
+		return result;
 	}
 
 	/**
@@ -122,23 +135,28 @@ public class UniqueArrayList<E> extends ArrayList<E>
 	@Override
 	public boolean addAll(int index, Collection<? extends E> collection)
 	{
-		if (collection.size() == 0)
-		{
-			return false;
-		}
-		int currentIndex = index;
-		for (E element : collection)
-		{
-			if (currentIndex >= size())
-			{
-				this.add(element);
-			}
-			else
-			{
-				this.add(currentIndex, element);
-			}
-			currentIndex++;
-		}
-		return true;
+		return addAll(collection);
+	}
+
+	/**
+	 * Gets the comparator of this list
+	 * 
+	 * @return the comparator of this list
+	 */
+	public Comparator<? super E> getComparator()
+	{
+		return comparator;
+	}
+
+	/**
+	 * Sets the comparator of this list
+	 * 
+	 * @param comparator
+	 *            the new comparator of this list
+	 */
+	public void setComparator(Comparator<? super E> comparator)
+	{
+		this.comparator = comparator;
+		Collections.sort(this, comparator);
 	}
 }

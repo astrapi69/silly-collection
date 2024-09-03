@@ -24,14 +24,14 @@
  */
 package io.github.astrapi69.collection.properties;
 
-import static org.testng.AssertJUnit.assertEquals;
-import static org.testng.AssertJUnit.assertNotNull;
+import static org.junit.jupiter.api.Assertions.assertEquals;
+import static org.junit.jupiter.api.Assertions.assertNotNull;
 
 import java.util.Comparator;
 import java.util.Enumeration;
 import java.util.Properties;
 
-import org.testng.annotations.Test;
+import org.junit.jupiter.api.Test;
 
 import io.github.astrapi69.comparator.NullCheckComparator;
 
@@ -290,7 +290,7 @@ public class IndexSortedPropertiesTest
 	/**
 	 * Test for method {@link IndexSortedProperties#getProperty(int)}
 	 */
-	@Test(enabled = true)
+	@Test
 	public void testGetPropertyInt()
 	{
 		final Properties unsortedProperties = new Properties();
@@ -341,7 +341,7 @@ public class IndexSortedPropertiesTest
 	/**
 	 * Test for method {@link IndexSortedProperties#putAll(java.util.Map)}
 	 */
-	@Test(enabled = true)
+	@Test
 	public void testPutAllMapOfQextendsObjectQextendsObject()
 	{
 		final Properties unsortedProperties = new Properties();
@@ -367,7 +367,7 @@ public class IndexSortedPropertiesTest
 	/**
 	 * Test for method {@link IndexSortedProperties#remove(int)}
 	 */
-	@Test(enabled = true)
+	@Test
 	public void testRemoveInt()
 	{
 		final Properties unsortedProperties = new Properties();
@@ -417,7 +417,7 @@ public class IndexSortedPropertiesTest
 	/**
 	 * Test for method {@link IndexSortedProperties#remove(Object)}
 	 */
-	@Test(enabled = true)
+	@Test
 	public void testRemoveObject()
 	{
 		final Properties unsortedProperties = new Properties();
@@ -467,7 +467,7 @@ public class IndexSortedPropertiesTest
 	/**
 	 * Test for method {@link IndexSortedProperties#remove(Object, Object)}
 	 */
-	@Test(enabled = true)
+	@Test
 	public void testRemoveObjectObject()
 	{
 		final Properties unsortedProperties = new Properties();

@@ -12,4 +12,5 @@ dependencies {
     testImplementation libs.jmh.generator.annprocess
     // Note: use of bundles...
     testImplementation libs.bundles.unit.testing
+    testRuntimeOnly libs.junit.platform.launcher
 }

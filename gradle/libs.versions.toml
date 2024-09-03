@@ -16,7 +16,9 @@ random-beans-version = "3.9.0"
 silly-bean-version = "2"
 silly-io-version = "3"
 test-object-version = "8.2"
-testng-version = "7.10.2"
+junit-jupiter-params-version = "5.11.0"
+junit-jupiter-version = "5.11.0"
+junit-platform-launcher-version = "1.11.0"
 vintage-time-version = "6"
 
 [libraries]
@@ -32,14 +34,17 @@ random-beans = { module = "io.github.benas:random-beans", version.ref = "random-
 silly-bean = { module = "io.github.astrapi69:silly-bean", version.ref = "silly-bean-version" }
 silly-io = { module = "io.github.astrapi69:silly-io", version.ref = "silly-io-version" }
 test-object = { module = "io.github.astrapi69:test-object", version.ref = "test-object-version" }
-testng = { module = "org.testng:testng", version.ref = "testng-version" }
+junit-jupiter = { module = "org.junit.jupiter:junit-jupiter", version.ref = "junit-jupiter-version" }
+junit-jupiter-params = { module = "org.junit.jupiter:junit-jupiter-params", version.ref = "junit-jupiter-params-version" }
+junit-platform-launcher = { module = "org.junit.platform:junit-platform-launcher", version.ref = "junit-platform-launcher-version" }
 vintage-time = { module = "io.github.astrapi69:vintage-time", version.ref = "vintage-time-version" }
 
 [bundles]
 unit-testing = [
+    "junit-jupiter",
+    "junit-jupiter-params",
     "meanbean",
     "mockito-core",
-    "testng",
 ]
 
 [plugins]

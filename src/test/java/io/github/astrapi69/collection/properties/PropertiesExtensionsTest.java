@@ -24,10 +24,10 @@
  */
 package io.github.astrapi69.collection.properties;
 
-import static org.testng.AssertJUnit.assertEquals;
-import static org.testng.AssertJUnit.assertFalse;
-import static org.testng.AssertJUnit.assertNotNull;
-import static org.testng.AssertJUnit.assertTrue;
+import static org.junit.jupiter.api.Assertions.assertEquals;
+import static org.junit.jupiter.api.Assertions.assertFalse;
+import static org.junit.jupiter.api.Assertions.assertNotNull;
+import static org.junit.jupiter.api.Assertions.assertTrue;
 
 import java.io.File;
 import java.io.FileNotFoundException;
@@ -42,8 +42,9 @@ import java.util.Map;
 import java.util.Optional;
 import java.util.Properties;
 
+import org.junit.jupiter.api.Assertions;
+import org.junit.jupiter.api.Test;
 import org.meanbean.test.BeanTester;
-import org.testng.annotations.Test;
 
 import io.github.astrapi69.collection.list.ListFactory;
 import io.github.astrapi69.file.delete.DeleteFileExtensions;
@@ -216,7 +217,7 @@ public class PropertiesExtensionsTest
 	/**
 	 * Test for method {@link PropertiesExtensions#findRedundantValues(Properties)}
 	 */
-	@Test(enabled = true)
+	@Test
 	public void testFindRedundantValues()
 	{
 		final Properties properties = new Properties();
@@ -293,7 +294,7 @@ public class PropertiesExtensionsTest
 	/**
 	 * Test for method {@link PropertiesExtensions#getMatchedPrefixLists(Properties)}.
 	 */
-	@Test(enabled = true)
+	@Test
 	public void testGetMatchedPrefixLists()
 	{
 		final Properties properties = new Properties();
@@ -345,10 +346,12 @@ public class PropertiesExtensionsTest
 	 * @throws IOException
 	 *             Signals that an I/O exception has occurred.
 	 */
-	@Test(expectedExceptions = FileNotFoundException.class)
+	@Test
 	public void testLoadPropertiesNotFound() throws IOException
 	{
-		PropertiesExtensions.loadProperties(new File("foo.properties"));
+		Assertions.assertThrows(FileNotFoundException.class, () -> {
+			PropertiesExtensions.loadProperties(new File("foo.properties"));
+		});
 	}
 
 	/**
@@ -358,7 +361,7 @@ public class PropertiesExtensionsTest
 	 * @throws IOException
 	 *             Signals that an I/O exception has occurred.
 	 */
-	@Test(enabled = true)
+	@Test
 	public void testToPropertiesFile() throws IOException
 	{
 		File propertiesFile = new File("output1.properties");

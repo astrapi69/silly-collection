@@ -24,33 +24,32 @@
  */
 package io.github.astrapi69.collection.list;
 
-import static org.testng.Assert.assertEquals;
-import static org.testng.AssertJUnit.assertTrue;
+import static org.junit.jupiter.api.Assertions.assertEquals;
+import static org.junit.jupiter.api.Assertions.assertTrue;
 
-import java.util.ArrayList;
 import java.util.Collection;
 import java.util.Comparator;
 import java.util.List;
 
-import org.testng.annotations.Test;
+import org.junit.jupiter.api.Test;
 
 import io.github.astrapi69.comparator.object.StringComparator;
 
 /**
- * The unit test class for the class {@link SortedArrayList}
+ * The unit test class for the class {@link SortedList}
  */
-public class SortedArrayListTest
+public class SortedListTest
 {
 
 	/**
-	 * Test the method {@link SortedArrayList#add(Object)}
+	 * Test the method {@link SortedList#add(Object)}
 	 */
 	@Test
 	public void testAdd()
 	{
 		List<String> list;
 
-		list = new SortedArrayList<>(6);
+		list = new SortedList<>(6);
 		list.add("Leonidas");
 		assertEquals(list.size(), 1);
 		list.add("Berta");
@@ -66,14 +65,14 @@ public class SortedArrayListTest
 	}
 
 	/**
-	 * Test the method {@link SortedArrayList#add(Object)}
+	 * Test the method {@link SortedList#add(Object)}
 	 */
 	@Test
 	public void testAddWithIndex()
 	{
 		List<String> list;
 
-		list = new SortedArrayList<>();
+		list = new SortedList<>();
 		list.add(0, "Leonidas");
 		assertEquals(list.size(), 1);
 		list.add(0, "Berta");
@@ -89,7 +88,7 @@ public class SortedArrayListTest
 	}
 
 	/**
-	 * Test the method {@link SortedArrayList#add(Object)}
+	 * Test the method {@link SortedList#add(Object)}
 	 */
 	@Test
 	public void testAddAll()
@@ -98,14 +97,14 @@ public class SortedArrayListTest
 		List<String> addition;
 
 		addition = ListFactory.newArrayList("", "Emil", "Anton", "Anton", "Anton", "Emil", "");
-		list = new SortedArrayList<>(new StringComparator());
+		list = new SortedList<>(new StringComparator());
 		list.add("Emil");
 		list.add("Caesar");
 		list.addAll(addition);
 		assertEquals(list.size(), 9);
 
 		addition = ListFactory.newArrayList();
-		list = new SortedArrayList<>();
+		list = new SortedList<>();
 		list.add("Emil");
 		list.add("Caesar");
 		list.addAll(addition);
@@ -129,7 +128,7 @@ public class SortedArrayListTest
 		String leo = "Leon";
 
 		// Now lets see a demo on a list...
-		list = new SortedArrayList<>();
+		list = new SortedList<>();
 		list.add(leo);
 		list.add(alex);
 		list.add(bill);
@@ -147,7 +146,7 @@ public class SortedArrayListTest
 		comparator = StringComparator.of(true);
 
 		// Now lets see a demo on a list...
-		list = new SortedArrayList<>(comparator);
+		list = new SortedList<>(comparator);
 		list.add(leo);
 		list.add(alex);
 		list.add(bill);
@@ -172,7 +171,7 @@ public class SortedArrayListTest
 		assertTrue(expected);
 
 		// test with the other constructor
-		SortedArrayList<String> sortedArrayList = new SortedArrayList<>(collection, comparator);
+		SortedList<String> sortedArrayList = new SortedList<>(collection, comparator);
 
 		expected = sortedArrayList.indexOf(alex) == 2;
 		assertTrue(expected);
@@ -188,7 +187,7 @@ public class SortedArrayListTest
 	}
 
 	/**
-	 * Test the method {@link SortedArrayList#add(Object)}
+	 * Test the method {@link SortedList#add(Object)}
 	 */
 	@Test
 	public void testAddAllWithIndex()
@@ -197,14 +196,14 @@ public class SortedArrayListTest
 		List<String> addition;
 
 		addition = ListFactory.newArrayList("", "Emil", "Anton", "Anton", "Anton", "Emil", "");
-		list = new SortedArrayList<>();
+		list = new SortedList<>();
 		list.add("Emil");
 		list.add("Caesar");
 		list.addAll(1, addition);
 		assertEquals(list.size(), 9);
 
 		addition = ListFactory.newArrayList();
-		list = new SortedArrayList<>();
+		list = new SortedList<>();
 		list.add("Emil");
 		list.add("Caesar");
 		list.addAll(1, addition);

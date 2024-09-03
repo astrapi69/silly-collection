@@ -24,14 +24,14 @@
  */
 package io.github.astrapi69.collection.set;
 
-import static org.testng.AssertJUnit.assertTrue;
+import static org.junit.jupiter.api.Assertions.assertTrue;
 
 import java.util.Arrays;
 import java.util.Set;
 
-import org.testng.annotations.AfterMethod;
-import org.testng.annotations.BeforeMethod;
-import org.testng.annotations.Test;
+import org.junit.jupiter.api.AfterEach;
+import org.junit.jupiter.api.BeforeEach;
+import org.junit.jupiter.api.Test;
 
 /**
  * The unit test class for the class {@link InsertionOrderSet}
@@ -47,7 +47,7 @@ public class InsertionOrderSetTest
 	 * @throws Exception
 	 *             is thrown if an exception occurs
 	 */
-	@BeforeMethod
+	@BeforeEach
 	protected void setUp() throws Exception
 	{
 	}
@@ -58,7 +58,7 @@ public class InsertionOrderSetTest
 	 * @throws Exception
 	 *             is thrown if an exception occurs
 	 */
-	@AfterMethod
+	@AfterEach
 	protected void tearDown() throws Exception
 	{
 	}

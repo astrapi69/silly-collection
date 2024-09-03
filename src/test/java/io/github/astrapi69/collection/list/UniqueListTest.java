@@ -24,27 +24,27 @@
  */
 package io.github.astrapi69.collection.list;
 
-import static org.testng.Assert.*;
+import static org.junit.jupiter.api.Assertions.*;
 
 import java.util.List;
 
-import org.testng.annotations.Test;
+import org.junit.jupiter.api.Test;
 
 /**
- * The unit test class for the class {@link UniqueArrayList}
+ * The unit test class for the class {@link UniqueList}
  */
-public class UniqueArrayListTest
+public class UniqueListTest
 {
 
 	/**
-	 * Test the method {@link UniqueArrayList#add(Object)}
+	 * Test the method {@link UniqueList#add(Object)}
 	 */
 	@Test
 	public void testAdd()
 	{
 		List<String> list;
 
-		list = new UniqueArrayList<>(6);
+		list = new UniqueList<>(6);
 		list.add("Leonidas");
 		list.add("Leonidas");
 		assertEquals(list.size(), 1);
@@ -66,14 +66,14 @@ public class UniqueArrayListTest
 	}
 
 	/**
-	 * Test the method {@link UniqueArrayList#add(Object)}
+	 * Test the method {@link UniqueList#add(Object)}
 	 */
 	@Test
 	public void testAddWithIndex()
 	{
 		List<String> list;
 
-		list = new UniqueArrayList<>();
+		list = new UniqueList<>();
 		list.add(0, "Leonidas");
 		list.add(0, "Leonidas");
 		assertEquals(list.size(), 1);
@@ -95,7 +95,7 @@ public class UniqueArrayListTest
 	}
 
 	/**
-	 * Test the method {@link UniqueArrayList#add(Object)}
+	 * Test the method {@link UniqueList#add(Object)}
 	 */
 	@Test
 	public void testAddAll()
@@ -104,14 +104,14 @@ public class UniqueArrayListTest
 		List<String> addition;
 
 		addition = ListFactory.newArrayList("", "Emil", "Anton", "Anton", "Anton", "Emil", "");
-		list = new UniqueArrayList<>(ListFactory.newArrayList());
+		list = new UniqueList<>(ListFactory.newArrayList());
 		list.add("Emil");
 		list.add("Caesar");
 		list.addAll(addition);
 		assertEquals(list.size(), 4);
 
 		addition = ListFactory.newArrayList();
-		list = new UniqueArrayList<>();
+		list = new UniqueList<>();
 		list.add("Emil");
 		list.add("Caesar");
 		list.addAll(addition);
@@ -119,7 +119,7 @@ public class UniqueArrayListTest
 	}
 
 	/**
-	 * Test the method {@link UniqueArrayList#add(Object)}
+	 * Test the method {@link UniqueList#add(Object)}
 	 */
 	@Test
 	public void testAddAllWithIndex()
@@ -128,14 +128,14 @@ public class UniqueArrayListTest
 		List<String> addition;
 
 		addition = ListFactory.newArrayList("", "Emil", "Anton", "Anton", "Anton", "Emil", "");
-		list = new UniqueArrayList<>();
+		list = new UniqueList<>();
 		list.add("Emil");
 		list.add("Caesar");
 		list.addAll(1, addition);
 		assertEquals(list.size(), 4);
 
 		addition = ListFactory.newArrayList();
-		list = new UniqueArrayList<>();
+		list = new UniqueList<>();
 		list.add("Emil");
 		list.add("Caesar");
 		list.addAll(1, addition);
