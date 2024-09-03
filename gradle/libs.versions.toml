@@ -1,24 +1,24 @@
 [versions]
-commons-collections4-version = "4.5.0-M1"
+commons-collections4-version = "4.5.0-M2"
 comparator-extensions-version = "1.5"
-file-worker-version = "17.1"
+file-worker-version = "17.4"
 gradle-plugin-grgit-version = "5.2.2"
 gradle-plugin-license-version = "0.16.1"
-gradle-plugin-spotless-version = "7.0.0.BETA1"
+gradle-plugin-spotless-version = "7.0.0.BETA2"
 gradle-plugin-version-catalog-update-version = "0.8.4"
 gradle-plugin-versions-version = "0.51.0"
 jmh-core-version = "1.37"
 jmh-generator-annprocess-version = "1.37"
-jobj-core-version = "8.2"
-meanbean-version = "3.0.0-M9"
-mockito-core-version = "5.12.0"
-random-beans-version = "3.9.0"
-silly-bean-version = "2"
-silly-io-version = "3"
-test-object-version = "8.2"
+jobj-core-version = "8.4"
 junit-jupiter-params-version = "5.11.0"
 junit-jupiter-version = "5.11.0"
 junit-platform-launcher-version = "1.11.0"
+meanbean-version = "3.0.0-M9"
+mockito-core-version = "5.13.0"
+random-beans-version = "3.9.0"
+silly-bean-version = "2"
+silly-io-version = "3.1"
+test-object-version = "8.2"
 vintage-time-version = "6"
 
 [libraries]
@@ -28,15 +28,15 @@ file-worker = { module = "io.github.astrapi69:file-worker", version.ref = "file-
 jmh-core = { module = "org.openjdk.jmh:jmh-core", version.ref = "jmh-core-version" }
 jmh-generator-annprocess = { module = "org.openjdk.jmh:jmh-generator-annprocess", version.ref = "jmh-generator-annprocess-version" }
 jobj-core = { module = "io.github.astrapi69:jobj-core", version.ref = "jobj-core-version" }
+junit-jupiter = { module = "org.junit.jupiter:junit-jupiter", version.ref = "junit-jupiter-version" }
+junit-jupiter-params = { module = "org.junit.jupiter:junit-jupiter-params", version.ref = "junit-jupiter-params-version" }
+junit-platform-launcher = { module = "org.junit.platform:junit-platform-launcher", version.ref = "junit-platform-launcher-version" }
 meanbean = { module = "com.github.meanbeanlib:meanbean", version.ref = "meanbean-version" }
 mockito-core = { module = "org.mockito:mockito-core", version.ref = "mockito-core-version" }
 random-beans = { module = "io.github.benas:random-beans", version.ref = "random-beans-version" }
 silly-bean = { module = "io.github.astrapi69:silly-bean", version.ref = "silly-bean-version" }
 silly-io = { module = "io.github.astrapi69:silly-io", version.ref = "silly-io-version" }
 test-object = { module = "io.github.astrapi69:test-object", version.ref = "test-object-version" }
-junit-jupiter = { module = "org.junit.jupiter:junit-jupiter", version.ref = "junit-jupiter-version" }
-junit-jupiter-params = { module = "org.junit.jupiter:junit-jupiter-params", version.ref = "junit-jupiter-params-version" }
-junit-platform-launcher = { module = "org.junit.platform:junit-platform-launcher", version.ref = "junit-platform-launcher-version" }
 vintage-time = { module = "io.github.astrapi69:vintage-time", version.ref = "vintage-time-version" }
 
 [bundles]
@@ -52,4 +52,4 @@ gradle-versions-plugin = { id = "com.github.ben-manes.versions", version.ref = "
 grgit-gradle = { id = "org.ajoberstar.grgit", version.ref = "gradle-plugin-grgit-version" }
 license-gradle-plugin = { id = "com.github.hierynomus.license", version.ref = "gradle-plugin-license-version" }
 spotless-plugin-gradle = { id = "com.diffplug.spotless", version.ref = "gradle-plugin-spotless-version" }
-versionCatalogUpdate = { id = "nl.littlerobots.version-catalog-update", version.ref = "gradle-plugin-version-catalog-update-version" }
+version-catalog-update = { id = "nl.littlerobots.version-catalog-update", version.ref = "gradle-plugin-version-catalog-update-version" }

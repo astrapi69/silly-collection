@@ -88,7 +88,7 @@ public class SortedListTest
 	}
 
 	/**
-	 * Test the method {@link SortedList#add(Object)}
+	 * Test the method {@link SortedList#addAll(Collection)}
 	 */
 	@Test
 	public void testAddAll()
