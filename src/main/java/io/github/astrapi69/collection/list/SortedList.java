@@ -25,6 +25,7 @@
 package io.github.astrapi69.collection.list;
 
 import java.util.ArrayList;
+import java.util.Arrays;
 import java.util.Collection;
 import java.util.Collections;
 import java.util.Comparator;
@@ -72,6 +73,17 @@ public class SortedList<E> extends ArrayList<E>
 	public SortedList(Comparator<? super E> comparator)
 	{
 		this.comparator = comparator;
+	}
+
+	/**
+	 * Constructs a {@link SortedList} instance containing the elements of the given collection
+	 *
+	 * @param collection
+	 *            the collection
+	 */
+	public SortedList(Collection<? extends E> collection)
+	{
+		addAll(collection);
 	}
 
 	/**

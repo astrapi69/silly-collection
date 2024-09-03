@@ -4,6 +4,9 @@
 Version 27.3-SNAPSHOT
 -------------
 
+ADDED:
+
+- new factory methods for the classes SortedList, UniqueList and SortedUniqueList in class ListFactory
 
 Version 27.2
 -------------

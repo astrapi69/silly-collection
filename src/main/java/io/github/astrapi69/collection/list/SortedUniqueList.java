@@ -75,6 +75,18 @@ public class SortedUniqueList<E> extends ArrayList<E>
 
 	/**
 	 * Constructs a {@link SortedUniqueList} instance containing the elements of the given
+	 * collection
+	 *
+	 * @param collection
+	 *            the collection
+	 */
+	public SortedUniqueList(Collection<? extends E> collection)
+	{
+		addAll(collection);
+	}
+
+	/**
+	 * Constructs a {@link SortedUniqueList} instance containing the elements of the given
 	 * collection and sets the given comparator
 	 *
 	 * @param collection
