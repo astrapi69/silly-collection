@@ -46,6 +46,7 @@ import io.github.astrapi69.check.Argument;
 import io.github.astrapi69.collection.list.ListExtensions;
 import io.github.astrapi69.collection.list.ListFactory;
 import io.github.astrapi69.collection.map.MapExtensions;
+import io.github.astrapi69.collection.set.SetFactory;
 
 /**
  * The unit test class for the class {@link ArrayExtensions}.
@@ -55,6 +56,20 @@ import io.github.astrapi69.collection.map.MapExtensions;
  */
 public class ArrayExtensionsTest
 {
+
+	/**
+	 * Test for the Method {@link ArrayExtensions#toSet(Object[])}
+	 */
+	@Test
+	public void testToSet()
+	{
+		Set<Integer> actual;
+		Set<Integer> expected;
+		Integer[] original = { 1, 2, 3, 4, 5 };
+		actual = ArrayExtensions.toSet(original);
+		expected = SetFactory.newLinkedHashSet(original);
+		assertEquals(expected, actual);
+	}
 
 	/**
 	 * Test for the Method {@link ArrayExtensions#subArray(Object[], int, int)}
