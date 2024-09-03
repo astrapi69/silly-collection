@@ -56,7 +56,7 @@ public final class SetExtensions
 		Argument.notNull(set, "set");
 		if (set.isEmpty())
 		{
-			throw new IllegalArgumentException("set is empty");
+			return (T[])new Object[0];
 		}
 		T[] newArray = (T[])ArrayFactory.newArray(set.iterator().next().getClass(), set.size());
 		return set.toArray(newArray);

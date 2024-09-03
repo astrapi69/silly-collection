@@ -48,8 +48,6 @@ public final class ListFactory
 
 	private ListFactory()
 	{
-		throw new UnsupportedOperationException(
-			"This is a utility class and cannot be instantiated");
 	}
 
 	/**

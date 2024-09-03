@@ -24,8 +24,9 @@
  */
 package io.github.astrapi69.collection.map;
 
-import static org.testng.Assert.assertEquals;
-import static org.testng.AssertJUnit.assertTrue;
+import static org.junit.jupiter.api.Assertions.assertArrayEquals;
+import static org.junit.jupiter.api.Assertions.assertEquals;
+import static org.junit.jupiter.api.Assertions.assertTrue;
 
 import java.util.AbstractMap;
 import java.util.Collection;
@@ -37,9 +38,8 @@ import java.util.Map.Entry;
 import java.util.Properties;
 import java.util.Set;
 
+import org.junit.jupiter.api.Test;
 import org.meanbean.test.BeanTester;
-import org.testng.Assert;
-import org.testng.annotations.Test;
 
 import io.github.astrapi69.collection.CollectionExtensions;
 import io.github.astrapi69.collection.array.ArrayExtensions;
@@ -111,7 +111,7 @@ public class MapExtensionsTest
 		final Collection<String> foundedKeys = MapExtensions.getKeysFromValue(map, value);
 		for (final String key : foundedKeys)
 		{
-			assertTrue("Key should be in the expected List.", expected.contains(key));
+			assertTrue(expected.contains(key), "Key should be in the expected List.");
 
 		}
 	}
@@ -668,7 +668,7 @@ public class MapExtensionsTest
 		final Map<String, Object> map = MapExtensions.toStringObjectMap(twoDimArray);
 
 		Object[][] toTwoDimensionalArray = ArrayExtensions.toTwoDimensionalArray(map);
-		Assert.assertEquals(toTwoDimensionalArray, twoDimArray);
+		assertArrayEquals(toTwoDimensionalArray, twoDimArray);
 	}
 
 	/**

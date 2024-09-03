@@ -24,13 +24,13 @@
  */
 package io.github.astrapi69.collection.list;
 
-import static org.testng.Assert.assertThrows;
-import static org.testng.AssertJUnit.assertEquals;
-import static org.testng.AssertJUnit.assertFalse;
-import static org.testng.AssertJUnit.assertNotNull;
-import static org.testng.AssertJUnit.assertNull;
-import static org.testng.AssertJUnit.assertTrue;
-import static org.testng.internal.junit.ArrayAsserts.assertArrayEquals;
+import static org.junit.jupiter.api.Assertions.assertArrayEquals;
+import static org.junit.jupiter.api.Assertions.assertEquals;
+import static org.junit.jupiter.api.Assertions.assertFalse;
+import static org.junit.jupiter.api.Assertions.assertNotNull;
+import static org.junit.jupiter.api.Assertions.assertNull;
+import static org.junit.jupiter.api.Assertions.assertThrows;
+import static org.junit.jupiter.api.Assertions.assertTrue;
 
 import java.util.ArrayList;
 import java.util.Arrays;
@@ -43,10 +43,12 @@ import java.util.Optional;
 import java.util.Set;
 import java.util.function.Function;
 
+import org.junit.jupiter.api.AfterEach;
+import org.junit.jupiter.api.Assertions;
+import org.junit.jupiter.api.BeforeEach;
+import org.junit.jupiter.api.Disabled;
+import org.junit.jupiter.api.Test;
 import org.meanbean.test.BeanTester;
-import org.testng.annotations.AfterMethod;
-import org.testng.annotations.BeforeMethod;
-import org.testng.annotations.Test;
 
 import io.github.astrapi69.collection.CollectionExtensions;
 import io.github.astrapi69.collection.array.ArrayFactory;
@@ -68,7 +70,7 @@ public class ListExtensionsTest
 	/**
 	 * Sets up method will be invoked before every unit test method
 	 */
-	@BeforeMethod
+	@BeforeEach
 	protected void setUp()
 	{
 	}
@@ -76,7 +78,7 @@ public class ListExtensionsTest
 	/**
 	 * Tear down method will be invoked after every unit test method
 	 */
-	@AfterMethod
+	@AfterEach
 	protected void tearDown()
 	{
 	}
@@ -196,7 +198,8 @@ public class ListExtensionsTest
 	/**
 	 * Test method for the combination methods
 	 */
-	@Test(enabled = false)
+	@Test
+	@Disabled
 	public void testBenchmarkCombinations()
 	{
 
@@ -539,7 +542,7 @@ public class ListExtensionsTest
 
 		}
 		final List<String> empty = ListExtensions.getSameElementsFromLists(toSearch, search);
-		assertTrue("List should be empty.", empty.isEmpty());
+		assertTrue(empty.isEmpty(), "List should be empty.");
 	}
 
 	/**
@@ -685,7 +688,7 @@ public class ListExtensionsTest
 		search.add("Emil");
 		search.add("Anton");
 		final boolean actual = ListExtensions.isFirst(search, expected);
-		assertTrue("", actual);
+		assertTrue(actual);
 	}
 
 	/**
@@ -840,10 +843,12 @@ public class ListExtensionsTest
 	 * Test the method {@link ListExtensions#toArray(List)} that throws an
 	 * <code>IllegalArgumentException</code>
 	 */
-	@Test(expectedExceptions = IllegalArgumentException.class)
+	@Test
 	public void testListToArrayWithException()
 	{
-		ListExtensions.toArray(ListFactory.newArrayList());
+		Assertions.assertThrows(IllegalArgumentException.class, () -> {
+			ListExtensions.toArray(ListFactory.newArrayList());
+		});
 	}
 
 	/**
@@ -1084,7 +1089,7 @@ public class ListExtensionsTest
 	 * Test method for {@link ListExtensions#removeLastValues(List, int)} where the remove value is
 	 * greater than the size of the given list
 	 */
-	@Test(expectedExceptions = IllegalArgumentException.class)
+	@Test
 	public void testRemoveLastValuesException()
 	{
 		final String expected = "Leonidas";
@@ -1096,8 +1101,10 @@ public class ListExtensionsTest
 		search.add("Emil");
 		search.add(expected);
 		search.add(removed);
-		final List<String> removedLastValues = ListExtensions.removeLastValues(search, 7);
-		assertEquals(4, removedLastValues.size());
+		Assertions.assertThrows(IllegalArgumentException.class, () -> {
+			final List<String> removedLastValues = ListExtensions.removeLastValues(search, 7);
+			assertEquals(4, removedLastValues.size());
+		});
 	}
 
 	/**
@@ -1178,49 +1185,45 @@ public class ListExtensionsTest
 		persons.add(miraculix);
 
 		// Unsorted Persons...
-		assertEquals(
-			"Index of person 'obelix' should be <0> but was <" + persons.indexOf(obelix) + ">.", 0,
-			persons.indexOf(obelix));
-		assertEquals(
-			"Index of person 'asterix' should be <1> but was <" + persons.indexOf(asterix) + ">.",
-			1, persons.indexOf(asterix));
-		assertEquals("Index of person 'miraculix' should be <2> but was <"
-			+ persons.indexOf(miraculix) + ">.", 2, persons.indexOf(miraculix));
+		assertEquals(0, persons.indexOf(obelix),
+			"Index of person 'obelix' should be <0> but was <" + persons.indexOf(obelix) + ">.");
+		assertEquals(1, persons.indexOf(asterix),
+			"Index of person 'asterix' should be <1> but was <" + persons.indexOf(asterix) + ">.");
+		assertEquals(2, persons.indexOf(miraculix),
+			"Index of person 'miraculix' should be <2> but was <" + persons.indexOf(miraculix)
+				+ ">.");
 
 		ListExtensions.sortByProperty(persons, Person::getName, true);
 		// Sorted Persons by name in ascending order...
-		assertEquals(
-			"Index of person 'obelix' should be <0> but was <" + persons.indexOf(obelix) + ">.", 0,
-			persons.indexOf(obelix));
-		assertEquals("Index of person 'miraculix' should be <1> but was <"
-			+ persons.indexOf(miraculix) + ">.", 1, persons.indexOf(miraculix));
-		assertEquals(
-			"Index of person 'asterix' should be <2> but was <" + persons.indexOf(asterix) + ">.",
-			2, persons.indexOf(asterix));
+		assertEquals(0, persons.indexOf(obelix),
+			"Index of person 'obelix' should be <0> but was <" + persons.indexOf(obelix) + ">.");
+		assertEquals(1, persons.indexOf(miraculix),
+			"Index of person 'miraculix' should be <1> but was <" + persons.indexOf(miraculix)
+				+ ">.");
+		assertEquals(2, persons.indexOf(asterix),
+			"Index of person 'asterix' should be <2> but was <" + persons.indexOf(asterix) + ">.");
 
 		ListExtensions.sortByProperty(persons, Person::getName, false);
 		// Sorted Persons by name in descending order...
-		assertEquals(
-			"Index of person 'asterix' should be <0> but was <" + persons.indexOf(asterix) + ">.",
-			0, persons.indexOf(asterix));
-		assertEquals("Index of person 'miraculix' should be <1> but was <"
-			+ persons.indexOf(miraculix) + ">.", 1, persons.indexOf(miraculix));
-		assertEquals(
-			"Index of person 'obelix' should be <2> but was <" + persons.indexOf(obelix) + ">.", 2,
-			persons.indexOf(obelix));
+		assertEquals(0, persons.indexOf(asterix),
+			"Index of person 'asterix' should be <0> but was <" + persons.indexOf(asterix) + ">.");
+		assertEquals(1, persons.indexOf(miraculix),
+			"Index of person 'miraculix' should be <1> but was <" + persons.indexOf(miraculix)
+				+ ">.");
+		assertEquals(2, persons.indexOf(obelix),
+			"Index of person 'obelix' should be <2> but was <" + persons.indexOf(obelix) + ">.");
 		// set a null value...
 		asterix.setName(null);
 
 		ListExtensions.sortByProperty(persons, Person::getName, true);
 		// Sorted Persons by name in ascending order with a null value...
-		assertEquals(
-			"Index of person 'obelix' should be <0> but was <" + persons.indexOf(obelix) + ">.", 0,
-			persons.indexOf(obelix));
-		assertEquals("Index of person 'miraculix' should be <1> but was <"
-			+ persons.indexOf(miraculix) + ">.", 1, persons.indexOf(miraculix));
-		assertEquals(
-			"Index of person 'asterix' should be <2> but was <" + persons.indexOf(asterix) + ">.",
-			2, persons.indexOf(asterix));
+		assertEquals(0, persons.indexOf(obelix),
+			"Index of person 'obelix' should be <0> but was <" + persons.indexOf(obelix) + ">.");
+		assertEquals(1, persons.indexOf(miraculix),
+			"Index of person 'miraculix' should be <1> but was <" + persons.indexOf(miraculix)
+				+ ">.");
+		assertEquals(2, persons.indexOf(asterix),
+			"Index of person 'asterix' should be <2> but was <" + persons.indexOf(asterix) + ">.");
 	}
 
 	/**

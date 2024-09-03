@@ -24,72 +24,78 @@
  */
 package io.github.astrapi69.collection.list;
 
-import static org.testng.Assert.assertEquals;
-import static org.testng.AssertJUnit.assertTrue;
+import static org.junit.jupiter.api.Assertions.*;
 
-import java.util.ArrayList;
-import java.util.Collection;
-import java.util.Comparator;
 import java.util.List;
 
-import org.testng.annotations.Test;
-
-import io.github.astrapi69.comparator.object.StringComparator;
+import org.junit.jupiter.api.Test;
 
 /**
- * The unit test class for the class {@link SortedArrayList}
+ * The unit test class for the class {@link UniqueList}
  */
-public class SortedArrayListTest
+public class UniqueListTest
 {
 
 	/**
-	 * Test the method {@link SortedArrayList#add(Object)}
+	 * Test the method {@link UniqueList#add(Object)}
 	 */
 	@Test
 	public void testAdd()
 	{
 		List<String> list;
 
-		list = new SortedArrayList<>(6);
+		list = new UniqueList<>(6);
+		list.add("Leonidas");
 		list.add("Leonidas");
 		assertEquals(list.size(), 1);
 		list.add("Berta");
+		list.add("Berta");
 		assertEquals(list.size(), 2);
+		list.add("Caesar");
 		list.add("Caesar");
 		assertEquals(list.size(), 3);
 		list.add("Dora");
+		list.add("Dora");
 		assertEquals(list.size(), 4);
 		list.add("Emil");
+		list.add("Emil");
 		assertEquals(list.size(), 5);
+		list.add("Anton");
 		list.add("Anton");
 		assertEquals(list.size(), 6);
 	}
 
 	/**
-	 * Test the method {@link SortedArrayList#add(Object)}
+	 * Test the method {@link UniqueList#add(Object)}
 	 */
 	@Test
 	public void testAddWithIndex()
 	{
 		List<String> list;
 
-		list = new SortedArrayList<>();
+		list = new UniqueList<>();
+		list.add(0, "Leonidas");
 		list.add(0, "Leonidas");
 		assertEquals(list.size(), 1);
 		list.add(0, "Berta");
+		list.add(0, "Berta");
 		assertEquals(list.size(), 2);
+		list.add(0, "Caesar");
 		list.add(0, "Caesar");
 		assertEquals(list.size(), 3);
 		list.add(0, "Dora");
+		list.add(0, "Dora");
 		assertEquals(list.size(), 4);
 		list.add(0, "Emil");
+		list.add(0, "Emil");
 		assertEquals(list.size(), 5);
+		list.add(0, "Anton");
 		list.add(0, "Anton");
 		assertEquals(list.size(), 6);
 	}
 
 	/**
-	 * Test the method {@link SortedArrayList#add(Object)}
+	 * Test the method {@link UniqueList#add(Object)}
 	 */
 	@Test
 	public void testAddAll()
@@ -98,14 +104,14 @@ public class SortedArrayListTest
 		List<String> addition;
 
 		addition = ListFactory.newArrayList("", "Emil", "Anton", "Anton", "Anton", "Emil", "");
-		list = new SortedArrayList<>(new StringComparator());
+		list = new UniqueList<>(ListFactory.newArrayList());
 		list.add("Emil");
 		list.add("Caesar");
 		list.addAll(addition);
-		assertEquals(list.size(), 9);
+		assertEquals(list.size(), 4);
 
 		addition = ListFactory.newArrayList();
-		list = new SortedArrayList<>();
+		list = new UniqueList<>();
 		list.add("Emil");
 		list.add("Caesar");
 		list.addAll(addition);
@@ -113,82 +119,7 @@ public class SortedArrayListTest
 	}
 
 	/**
-	 * Test method for {@link StringComparator#compare(String, String)} with null smaller.
-	 */
-	@Test
-	public void testCompare()
-	{
-		Comparator<String> comparator;
-		Collection<String> collection;
-		int actual;
-		boolean expected;
-		List<String> list;
-
-		String alex = "Alex";
-		String bill = "Billy";
-		String leo = "Leon";
-
-		// Now lets see a demo on a list...
-		list = new SortedArrayList<>();
-		list.add(leo);
-		list.add(alex);
-		list.add(bill);
-		list.add(null);
-		list.add(null);
-		collection = ListFactory.newArrayList(list);
-
-		expected = list.indexOf(leo) == 0;
-		assertTrue(expected);
-		expected = list.indexOf(alex) == 1;
-		assertTrue(expected);
-		expected = list.indexOf(bill) == 2;
-		assertTrue(expected);
-
-		comparator = StringComparator.of(true);
-
-		// Now lets see a demo on a list...
-		list = new SortedArrayList<>(comparator);
-		list.add(leo);
-		list.add(alex);
-		list.add(bill);
-		list.add(null);
-		list.add(null);
-
-		expected = list.indexOf(leo) == 2;
-		assertTrue(expected);
-		expected = list.indexOf(alex) == 0;
-		assertTrue(expected);
-		expected = list.indexOf(bill) == 1;
-		assertTrue(expected);
-
-		comparator = StringComparator.of(false);
-		list.sort(comparator);
-
-		expected = list.indexOf(alex) == 2;
-		assertTrue(expected);
-		expected = list.indexOf(bill) == 3;
-		assertTrue(expected);
-		expected = list.indexOf(leo) == 4;
-		assertTrue(expected);
-
-		// test with the other constructor
-		SortedArrayList<String> sortedArrayList = new SortedArrayList<>(collection, comparator);
-
-		expected = sortedArrayList.indexOf(alex) == 2;
-		assertTrue(expected);
-		expected = sortedArrayList.indexOf(bill) == 3;
-		assertTrue(expected);
-		expected = sortedArrayList.indexOf(leo) == 4;
-		assertTrue(expected);
-		assertEquals(comparator, sortedArrayList.getComparator());
-		comparator = StringComparator.of(true);
-		sortedArrayList.setComparator(comparator);
-		assertEquals(comparator, sortedArrayList.getComparator());
-
-	}
-
-	/**
-	 * Test the method {@link SortedArrayList#add(Object)}
+	 * Test the method {@link UniqueList#add(Object)}
 	 */
 	@Test
 	public void testAddAllWithIndex()
@@ -197,14 +128,14 @@ public class SortedArrayListTest
 		List<String> addition;
 
 		addition = ListFactory.newArrayList("", "Emil", "Anton", "Anton", "Anton", "Emil", "");
-		list = new SortedArrayList<>();
+		list = new UniqueList<>();
 		list.add("Emil");
 		list.add("Caesar");
 		list.addAll(1, addition);
-		assertEquals(list.size(), 9);
+		assertEquals(list.size(), 4);
 
 		addition = ListFactory.newArrayList();
-		list = new SortedArrayList<>();
+		list = new UniqueList<>();
 		list.add("Emil");
 		list.add("Caesar");
 		list.addAll(1, addition);

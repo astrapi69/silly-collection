@@ -24,15 +24,14 @@
  */
 package io.github.astrapi69.collection.properties;
 
-import static org.testng.AssertJUnit.assertNotNull;
+import static org.junit.jupiter.api.Assertions.*;
 
 import java.util.Comparator;
 import java.util.Enumeration;
 import java.util.Properties;
 import java.util.Set;
 
-import org.testng.AssertJUnit;
-import org.testng.annotations.Test;
+import org.junit.jupiter.api.Test;
 
 import io.github.astrapi69.comparator.NullCheckComparator;
 
@@ -65,19 +64,19 @@ public class SortedPropertiesTest
 			final Object key = keys.nextElement();
 			if (count == 1)
 			{
-				AssertJUnit.assertEquals(key, "A");
+				assertEquals(key, "A");
 			}
 			if (count == 2)
 			{
-				AssertJUnit.assertEquals(key, "B");
+				assertEquals(key, "B");
 			}
 			if (count == 3)
 			{
-				AssertJUnit.assertEquals(key, "C");
+				assertEquals(key, "C");
 			}
 			if (count == 4)
 			{
-				AssertJUnit.assertEquals(key, "D");
+				assertEquals(key, "D");
 			}
 			count++;
 		}
@@ -108,19 +107,19 @@ public class SortedPropertiesTest
 			final Object key = keys.nextElement();
 			if (count == 1)
 			{
-				AssertJUnit.assertEquals(key, "D");
+				assertEquals(key, "D");
 			}
 			if (count == 2)
 			{
-				AssertJUnit.assertEquals(key, "C");
+				assertEquals(key, "C");
 			}
 			if (count == 3)
 			{
-				AssertJUnit.assertEquals(key, "B");
+				assertEquals(key, "B");
 			}
 			if (count == 4)
 			{
-				AssertJUnit.assertEquals(key, "A");
+				assertEquals(key, "A");
 			}
 			count++;
 		}
@@ -144,19 +143,19 @@ public class SortedPropertiesTest
 			final Object key = keys.nextElement();
 			if (count == 1)
 			{
-				AssertJUnit.assertEquals(key, "A");
+				assertEquals(key, "A");
 			}
 			if (count == 2)
 			{
-				AssertJUnit.assertEquals(key, "B");
+				assertEquals(key, "B");
 			}
 			if (count == 3)
 			{
-				AssertJUnit.assertEquals(key, "C");
+				assertEquals(key, "C");
 			}
 			if (count == 4)
 			{
-				AssertJUnit.assertEquals(key, "D");
+				assertEquals(key, "D");
 			}
 			count++;
 		}
@@ -191,19 +190,19 @@ public class SortedPropertiesTest
 			final Object key = keys.nextElement();
 			if (count == 1)
 			{
-				AssertJUnit.assertEquals(key, "D");
+				assertEquals(key, "D");
 			}
 			if (count == 2)
 			{
-				AssertJUnit.assertEquals(key, "C");
+				assertEquals(key, "C");
 			}
 			if (count == 3)
 			{
-				AssertJUnit.assertEquals(key, "B");
+				assertEquals(key, "B");
 			}
 			if (count == 4)
 			{
-				AssertJUnit.assertEquals(key, "A");
+				assertEquals(key, "A");
 			}
 			count++;
 		}
@@ -226,19 +225,19 @@ public class SortedPropertiesTest
 		{
 			if (count == 1)
 			{
-				AssertJUnit.assertEquals(key, "A");
+				assertEquals(key, "A");
 			}
 			if (count == 2)
 			{
-				AssertJUnit.assertEquals(key, "B");
+				assertEquals(key, "B");
 			}
 			if (count == 3)
 			{
-				AssertJUnit.assertEquals(key, "C");
+				assertEquals(key, "C");
 			}
 			if (count == 4)
 			{
-				AssertJUnit.assertEquals(key, "D");
+				assertEquals(key, "D");
 			}
 			count++;
 		}
@@ -272,19 +271,19 @@ public class SortedPropertiesTest
 		{
 			if (count == 1)
 			{
-				AssertJUnit.assertEquals(key, "D");
+				assertEquals(key, "D");
 			}
 			if (count == 2)
 			{
-				AssertJUnit.assertEquals(key, "C");
+				assertEquals(key, "C");
 			}
 			if (count == 3)
 			{
-				AssertJUnit.assertEquals(key, "B");
+				assertEquals(key, "B");
 			}
 			if (count == 4)
 			{
-				AssertJUnit.assertEquals(key, "A");
+				assertEquals(key, "A");
 			}
 			count++;
 		}
@@ -345,19 +344,19 @@ public class SortedPropertiesTest
 			final Object key = propertyNames.nextElement();
 			if (count == 1)
 			{
-				AssertJUnit.assertEquals(key, "D");
+				assertEquals(key, "D");
 			}
 			if (count == 2)
 			{
-				AssertJUnit.assertEquals(key, "C");
+				assertEquals(key, "C");
 			}
 			if (count == 3)
 			{
-				AssertJUnit.assertEquals(key, "B");
+				assertEquals(key, "B");
 			}
 			if (count == 4)
 			{
-				AssertJUnit.assertEquals(key, "A");
+				assertEquals(key, "A");
 			}
 			count++;
 		}
@@ -381,19 +380,19 @@ public class SortedPropertiesTest
 			final Object key = propertyNames.nextElement();
 			if (count == 1)
 			{
-				AssertJUnit.assertEquals(key, "A");
+				assertEquals(key, "A");
 			}
 			if (count == 2)
 			{
-				AssertJUnit.assertEquals(key, "B");
+				assertEquals(key, "B");
 			}
 			if (count == 3)
 			{
-				AssertJUnit.assertEquals(key, "C");
+				assertEquals(key, "C");
 			}
 			if (count == 4)
 			{
-				AssertJUnit.assertEquals(key, "D");
+				assertEquals(key, "D");
 			}
 			count++;
 		}
@@ -428,19 +427,19 @@ public class SortedPropertiesTest
 			final Object key = propertyNames.nextElement();
 			if (count == 1)
 			{
-				AssertJUnit.assertEquals(key, "D");
+				assertEquals(key, "D");
 			}
 			if (count == 2)
 			{
-				AssertJUnit.assertEquals(key, "C");
+				assertEquals(key, "C");
 			}
 			if (count == 3)
 			{
-				AssertJUnit.assertEquals(key, "B");
+				assertEquals(key, "B");
 			}
 			if (count == 4)
 			{
-				AssertJUnit.assertEquals(key, "A");
+				assertEquals(key, "A");
 			}
 			count++;
 		}

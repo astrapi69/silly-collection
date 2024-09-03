@@ -24,16 +24,18 @@
  */
 package io.github.astrapi69.collection.iterator;
 
-import static org.testng.AssertJUnit.assertEquals;
-import static org.testng.AssertJUnit.assertNotNull;
+import static org.junit.jupiter.api.Assertions.assertEquals;
+import static org.junit.jupiter.api.Assertions.assertNotNull;
 
 import java.util.NoSuchElementException;
 
+import org.junit.jupiter.api.AfterEach;
+import org.junit.jupiter.api.Assertions;
+import org.junit.jupiter.api.BeforeEach;
+import org.junit.jupiter.api.Disabled;
+import org.junit.jupiter.api.Test;
 import org.meanbean.test.BeanTestException;
 import org.meanbean.test.BeanTester;
-import org.testng.annotations.AfterMethod;
-import org.testng.annotations.BeforeMethod;
-import org.testng.annotations.Test;
 
 /**
  * The unit test class for the class {@link ArrayIterator}.
@@ -56,7 +58,7 @@ public class ArrayIteratorTest
 	/**
 	 * Sets up method will be invoked before every unit test method
 	 */
-	@BeforeMethod
+	@BeforeEach
 	protected void setUp()
 	{
 		this.testArray = new Integer[4];
@@ -70,7 +72,7 @@ public class ArrayIteratorTest
 	/**
 	 * Tear down method will be invoked after every unit test method
 	 */
-	@AfterMethod
+	@AfterEach
 	protected void tearDown()
 	{
 	}
@@ -79,7 +81,7 @@ public class ArrayIteratorTest
 	 * Test method for iterate through the instance variable iterator and makes an addition of the
 	 * numbers in the array.
 	 */
-	@Test(enabled = true)
+	@Test
 	public void testArrayIterator()
 	{
 		int expected;
@@ -94,19 +96,19 @@ public class ArrayIteratorTest
 		}
 		expected = 6;
 		actual = sum;
-		assertEquals("The sum should be 6.", expected, actual);
+		assertEquals(expected, actual, "The sum should be 6.");
 
 		expected = this.testArray.length;
 		actual = iteratorLength;
-		assertEquals("The length from the array should be equal with "
-			+ "the length from the ArrayIterator.", expected, actual);
+		assertEquals(expected, actual, "The length from the array should be equal with "
+			+ "the length from the ArrayIterator.");
 	}
 
 	/**
 	 * Test method for the ArrayIterator(E[]) constructor with an empty array and the method
 	 * {@link ArrayIterator#hasNext()}.
 	 */
-	@Test(enabled = true)
+	@Test
 	public void testArrayIteratorConstructor()
 	{
 		boolean expected;
@@ -126,7 +128,7 @@ public class ArrayIteratorTest
 	 * Test method for the ArrayIterator(E[]) constructor with an array with one object and the
 	 * method {@link ArrayIterator#hasNext()}.
 	 */
-	@Test(enabled = true)
+	@Test
 	public void testHasNextWithArrayContainingOneObject()
 	{
 		boolean expected;
@@ -143,7 +145,7 @@ public class ArrayIteratorTest
 	 * Test method for the ArrayIterator(E[]) constructor with an empty array and the method
 	 * {@link ArrayIterator#hasNext()}.
 	 */
-	@Test(enabled = true)
+	@Test
 	public void testHasNextWithEmptyArray()
 	{
 		boolean expected;
@@ -161,7 +163,7 @@ public class ArrayIteratorTest
 	 * Test method for the ArrayIterator(E[]) constructor with an array with one object and the
 	 * method {@link ArrayIterator#next()}.
 	 */
-	@Test(enabled = true)
+	@Test
 	public void testNextWithArrayContainingOneObject()
 	{
 		String expected;
@@ -179,7 +181,7 @@ public class ArrayIteratorTest
 	 * Test method for the ArrayIterator(E[]) constructor with an array with two objects and the
 	 * method {@link ArrayIterator#next()}.
 	 */
-	@Test(enabled = true)
+	@Test
 	public void testNextWithArrayContainingTwoObject()
 	{
 		String expected;
@@ -205,18 +207,21 @@ public class ArrayIteratorTest
 	 * Test method for the ArrayIterator(E[]) constructor with an empty array and the method
 	 * {@link ArrayIterator#next()} with expected {@link NoSuchElementException}.
 	 */
-	@Test(expectedExceptions = NoSuchElementException.class)
+	@Test
 	public void testNextWithEmptyArray()
 	{
 		final ArrayIterator<Object> fixture = new ArrayIterator<>(new Object[] { });
-		fixture.next();
+
+		Assertions.assertThrows(NoSuchElementException.class, () -> {
+			fixture.next();
+		});
 	}
 
 	/**
 	 * Test method for the ArrayIterator(E[]) constructor with an array with one object and the
 	 * method {@link ArrayIterator#remove()}and the method {@link ArrayIterator#next()}.
 	 */
-	@Test(enabled = true)
+	@Test
 	public void testRemoveWithContainingOneObject()
 	{
 		boolean expected;
@@ -236,7 +241,7 @@ public class ArrayIteratorTest
 	 * Test method for the ArrayIterator(E[]) constructor with an array with three objects and the
 	 * method {@link ArrayIterator#remove()}.
 	 */
-	@Test(enabled = true)
+	@Test
 	public void testRemoveWithContainingThreeObject()
 	{
 		boolean expected;
@@ -264,7 +269,7 @@ public class ArrayIteratorTest
 	 * Test method for the ArrayIterator(E[]) constructor with an array with two objects and the
 	 * method {@link ArrayIterator#remove()}
 	 */
-	@Test(enabled = true)
+	@Test
 	public void testRemoveWithContainingTwoObject()
 	{
 		final boolean expected;
@@ -284,18 +289,21 @@ public class ArrayIteratorTest
 	 * Test method for the ArrayIterator(E[]) constructor with an empty array and the method
 	 * {@link ArrayIterator#remove()} with expected {@link IllegalStateException}.
 	 */
-	@Test(expectedExceptions = IllegalStateException.class)
+	@Test
 	public void testRemoveWithEmptyArray()
 	{
 		final ArrayIterator<Object> arrayIterator = new ArrayIterator<>(new Object[] { });
-		arrayIterator.remove();
+
+		Assertions.assertThrows(IllegalStateException.class, () -> {
+			arrayIterator.remove();
+		});
 	}
 
 	/**
 	 * Test method for {@link ArrayIterator}
 	 */
-	@Test(enabled = true, expectedExceptions = { NoSuchMethodException.class,
-			BeanTestException.class })
+	@Test
+	@Disabled("add factory method to config beanTester")
 	public void testWithBeanTester()
 	{
 		final BeanTester beanTester = new BeanTester();

@@ -24,15 +24,15 @@
  */
 package io.github.astrapi69.collection.set;
 
-import static org.testng.AssertJUnit.assertNotNull;
-import static org.testng.AssertJUnit.assertTrue;
+import static org.junit.jupiter.api.Assertions.assertNotNull;
+import static org.junit.jupiter.api.Assertions.assertTrue;
 
 import java.util.Arrays;
 import java.util.Collection;
 import java.util.Set;
 
+import org.junit.jupiter.api.Test;
 import org.meanbean.test.BeanTester;
-import org.testng.annotations.Test;
 
 import io.github.astrapi69.collection.array.ArrayFactory;
 import io.github.astrapi69.collection.list.ListFactory;
@@ -64,10 +64,12 @@ public class SetExtensionsTest
 	 * Test the method {@link SetExtensions#toArray(Set)} that throws an
 	 * <code>IllegalArgumentException</code>
 	 */
-	@Test(expectedExceptions = IllegalArgumentException.class)
+	@Test
 	public void testToArrayWithException()
 	{
-		SetExtensions.toArray(SetFactory.newTreeSet());
+		Object[] array = SetExtensions.toArray(SetFactory.newTreeSet());
+		assertNotNull(array);
+		assertTrue(array.length == 0);
 	}
 
 	/**

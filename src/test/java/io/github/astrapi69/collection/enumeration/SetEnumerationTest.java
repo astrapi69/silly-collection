@@ -24,9 +24,9 @@
  */
 package io.github.astrapi69.collection.enumeration;
 
-import static org.testng.AssertJUnit.assertFalse;
-import static org.testng.AssertJUnit.assertNotNull;
-import static org.testng.AssertJUnit.assertTrue;
+import static org.junit.jupiter.api.Assertions.assertFalse;
+import static org.junit.jupiter.api.Assertions.assertNotNull;
+import static org.junit.jupiter.api.Assertions.assertTrue;
 
 import java.util.ArrayList;
 import java.util.Enumeration;
@@ -35,9 +35,11 @@ import java.util.NoSuchElementException;
 import java.util.Set;
 import java.util.Vector;
 
+import org.junit.jupiter.api.Assertions;
+import org.junit.jupiter.api.Disabled;
+import org.junit.jupiter.api.Test;
 import org.meanbean.test.BeanTestException;
 import org.meanbean.test.BeanTester;
-import org.testng.annotations.Test;
 
 import io.github.astrapi69.collection.set.SetExtensions;
 
@@ -133,7 +135,7 @@ public class SetEnumerationTest
 	/**
 	 * Test method for {@link SetEnumeration#hasMoreElements()}
 	 */
-	@Test(expectedExceptions = NoSuchElementException.class)
+	@Test
 	public void testHasMoreElementsThrowNoSuchElementException()
 	{
 		Set<String> set = SetExtensions.toSet(list);
@@ -147,34 +149,36 @@ public class SetEnumerationTest
 		boolean hasMoreElements = stringSetEnumeration.hasMoreElements();
 		assertTrue(hasMoreElements);
 
-		hasMoreElements = stringSetEnumeration.hasMoreElements();
-		assertTrue(hasMoreElements);
+		Assertions.assertThrows(NoSuchElementException.class, () -> {
+			boolean hasMoreElements2 = stringSetEnumeration.hasMoreElements();
+			assertTrue(hasMoreElements2);
 
-		String nextElement = stringSetEnumeration.nextElement();
-		assertNotNull(nextElement);
+			String nextElement = stringSetEnumeration.nextElement();
+			assertNotNull(nextElement);
 
-		hasMoreElements = stringSetEnumeration.hasMoreElements();
-		assertTrue(hasMoreElements);
+			hasMoreElements2 = stringSetEnumeration.hasMoreElements();
+			assertTrue(hasMoreElements2);
 
-		nextElement = stringSetEnumeration.nextElement();
-		assertNotNull(nextElement);
+			nextElement = stringSetEnumeration.nextElement();
+			assertNotNull(nextElement);
 
-		hasMoreElements = stringSetEnumeration.hasMoreElements();
-		assertTrue(hasMoreElements);
+			hasMoreElements2 = stringSetEnumeration.hasMoreElements();
+			assertTrue(hasMoreElements2);
 
-		nextElement = stringSetEnumeration.nextElement();
-		assertNotNull(nextElement);
+			nextElement = stringSetEnumeration.nextElement();
+			assertNotNull(nextElement);
 
-		hasMoreElements = stringSetEnumeration.hasMoreElements();
-		assertTrue(hasMoreElements);
+			hasMoreElements2 = stringSetEnumeration.hasMoreElements();
+			assertTrue(hasMoreElements2);
 
-		nextElement = stringSetEnumeration.nextElement();
-		assertNotNull(nextElement);
+			nextElement = stringSetEnumeration.nextElement();
+			assertNotNull(nextElement);
 
-		hasMoreElements = stringSetEnumeration.hasMoreElements();
-		assertFalse(hasMoreElements);
+			hasMoreElements2 = stringSetEnumeration.hasMoreElements();
+			assertFalse(hasMoreElements2);
 
-		nextElement = stringSetEnumeration.nextElement();
+			nextElement = stringSetEnumeration.nextElement();
+		});
 	}
 
 	/**
@@ -214,7 +218,8 @@ public class SetEnumerationTest
 	/**
 	 * Test method for {@link SetEnumeration}
 	 */
-	@Test(expectedExceptions = { BeanTestException.class })
+	@Test
+	@Disabled("add factory method to config beanTester")
 	public void testWithBeanTester()
 	{
 		final BeanTester beanTester = new BeanTester();

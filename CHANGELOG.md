@@ -1,6 +1,29 @@
 ## Change log
 ----------------------
 
+Version 27.2
+-------------
+
+ADDED:
+
+- new test dependency junit-jupiter in version 5.11.0
+- new class SortedUniqueList that is sorted and holds unique elements
+- new method in class ArrayExtensions that creates a Set object from a given array
+
+CHANGED:
+
+- update gradle to new version 8.10
+- update of gradle-plugin dependency 'com.diffplug.spotless:spotless-plugin-gradle' to new beta version 7.0.0.BETA2
+- method toArray from SetExtensions returns now an empty array
+- rename of class SortedArrayList to SortedList
+- rename of class UniqueArrayList to UniqueList
+- removed test dependency testng
+- update of dependency commons-collections4 to new version to 4.5.0-M2
+- update of dependency jobj-core in new version 8.4
+- update of test dependency file-worker to new version 17.4
+- update of test dependency silly-io to new version 3.1
+- update of test dependency mockito-core to new version 5.13.0
+
 Version 27.1
 -------------
 
@@ -17,6 +40,7 @@ ADDED:
 - new method in class MapFactory that creates a new hashmap with two given lists with keys and values
 - new package-info.java files to packages
 - new libs.versions.toml file for new automatic catalog versions update
+- replaced obsolete package.html with package-info.java files
 
 CHANGED:
 
