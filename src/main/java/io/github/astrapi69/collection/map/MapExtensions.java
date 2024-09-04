@@ -47,6 +47,9 @@ import io.github.astrapi69.collection.list.ListFactory;
 public final class MapExtensions
 {
 
+	/**
+	 * Private constructor to prevent instantiation
+	 */
 	private MapExtensions()
 	{
 	}

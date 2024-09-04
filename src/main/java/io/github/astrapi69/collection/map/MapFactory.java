@@ -50,6 +50,9 @@ import io.github.astrapi69.collection.pair.KeyValuePair;
 public final class MapFactory
 {
 
+	/**
+	 * Private constructor to prevent instantiation
+	 */
 	private MapFactory()
 	{
 	}

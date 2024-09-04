@@ -66,6 +66,9 @@ public final class PropertiesExtensions
 	 */
 	public static final String SEARCH_FILE_PATTERN = "([^\\s]+(\\.(?i)(java|html|htm))$)";
 
+	/**
+	 * Private constructor to prevent instantiation
+	 */
 	private PropertiesExtensions()
 	{
 	}

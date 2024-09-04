@@ -226,20 +226,6 @@ public class ListFactoryTest
 	}
 
 	/**
-	 * Test the method {@link ListFactory#newUniqueList(Collection, Object...)}
-	 */
-	@Test
-	public void testNewUniqueListCollectionObjects()
-	{
-		List<String> strings = ListFactory.newUniqueList((Collection<String>)null, "foo", "bar",
-			"foo");
-		assertNotNull(strings);
-		assertTrue(strings.size() == 2);
-		assertTrue(strings.get(0).equals("foo"));
-		assertTrue(strings.get(1).equals("bar"));
-	}
-
-	/**
 	 * Test the method {@link ListFactory#newSortedList(Collection, Comparator, Object...)} with an
 	 * empty array
 	 */
@@ -251,6 +237,34 @@ public class ListFactoryTest
 			stringComparator, new String[0]);
 		assertNotNull(strings);
 		assertTrue(strings.isEmpty());
+	}
+
+	/**
+	 * Test the method {@link ListFactory#newSortedUniqueList(Collection, Object[])}
+	 */
+	@Test
+	public void testNewSortedUniqueListCollectionObjects()
+	{
+		List<String> actual;
+		List<String> addition;
+
+		addition = ListFactory.newArrayList("", "Emil", "Anton", "Anton", "Anton", "Emil", "");
+		actual = ListFactory.newSortedUniqueList(addition, "foo");
+		assertNotNull(actual);
+		assertTrue(actual.size() == 4);
+		assertTrue(actual.get(3).equals("foo"));
+
+		addition = ListFactory.newArrayList("", "Emil", "Anton", "Anton", "Anton", "Emil", "");
+		actual = ListFactory.newSortedUniqueList(addition, "foo");
+		assertNotNull(actual);
+		assertTrue(actual.size() == 4);
+		assertTrue(actual.get(3).equals("foo"));
+
+		addition = null;
+		actual = ListFactory.newSortedUniqueList(addition, "foo");
+		assertNotNull(actual);
+		assertTrue(actual.size() == 1);
+		assertTrue(actual.get(0).equals("foo"));
 	}
 
 	/**
@@ -283,43 +297,7 @@ public class ListFactoryTest
 		assertNotNull(actual);
 		assertTrue(actual.size() == 1);
 		assertTrue(actual.get(0).equals("foo"));
-	}
 
-	/**
-	 * Test the method {@link ListFactory#newSortedUniqueList(Collection, Object[])}
-	 */
-	@Test
-	public void testNnewSortedUniqueListCollectionObjects()
-	{
-		List<String> actual;
-		List<String> addition;
-
-		addition = ListFactory.newArrayList("", "Emil", "Anton", "Anton", "Anton", "Emil", "");
-		actual = ListFactory.newSortedUniqueList(addition, "foo");
-		assertNotNull(actual);
-		assertTrue(actual.size() == 4);
-		assertTrue(actual.get(3).equals("foo"));
-
-		addition = ListFactory.newArrayList("", "Emil", "Anton", "Anton", "Anton", "Emil", "");
-		actual = ListFactory.newSortedUniqueList(addition, "foo");
-		assertNotNull(actual);
-		assertTrue(actual.size() == 4);
-		assertTrue(actual.get(3).equals("foo"));
-
-		addition = null;
-		actual = ListFactory.newSortedUniqueList(addition, "foo");
-		assertNotNull(actual);
-		assertTrue(actual.size() == 1);
-		assertTrue(actual.get(0).equals("foo"));
-	}
-
-	/**
-	 * Test the method {@link ListFactory#newSortedUniqueList(Object[])}
-	 */
-	@Test
-	public void testNnewSortedUniqueListObjects2()
-	{
-		List<String> actual;
 
 		actual = ListFactory.newSortedUniqueList("foo", "", "Emil", "Anton", "Anton", "Anton",
 			"Emil", "");
@@ -337,44 +315,11 @@ public class ListFactoryTest
 		assertTrue(actual.size() == 0);
 	}
 
-
-	/**
-	 * Test the method {@link ListFactory#newSortedList(Collection, Comparator, Object[])}
-	 */
-	@Test
-	public void testNewSortedListObjects()
-	{
-		List<String> actual;
-		List<String> addition;
-		Comparator<String> reverseOrderStringComparator;
-
-		reverseOrderStringComparator = Collections.reverseOrder();
-		addition = ListFactory.newArrayList("", "Emil", "Anton", "Anton", "Anton", "Emil", "");
-		actual = ListFactory.newSortedList(addition, reverseOrderStringComparator, "foo");
-		assertNotNull(actual);
-		assertTrue(actual.size() == 8);
-		assertTrue(actual.get(0).equals("foo"));
-
-		reverseOrderStringComparator = null;
-		addition = ListFactory.newArrayList("", "Emil", "Anton", "Anton", "Anton", "Emil", "");
-		actual = ListFactory.newSortedList(addition, reverseOrderStringComparator, "foo");
-		assertNotNull(actual);
-		assertTrue(actual.size() == 8);
-		assertTrue(actual.get(7).equals("foo"));
-
-		reverseOrderStringComparator = null;
-		addition = null;
-		actual = ListFactory.newSortedList(addition, reverseOrderStringComparator, "foo");
-		assertNotNull(actual);
-		assertTrue(actual.size() == 1);
-		assertTrue(actual.get(0).equals("foo"));
-	}
-
 	/**
 	 * Test the method {@link ListFactory#newSortedList(Collection, Object[])}
 	 */
 	@Test
-	public void testNnewSortedListCollectionObjects()
+	public void testNewSortedListCollectionObjects()
 	{
 		List<String> actual;
 		List<String> addition;
@@ -402,7 +347,7 @@ public class ListFactoryTest
 	 * Test the method {@link ListFactory#newSortedList(Object[])}
 	 */
 	@Test
-	public void testNnewSortedListObjects2()
+	public void testNewSortedListObjects()
 	{
 		List<String> actual;
 
@@ -420,14 +365,44 @@ public class ListFactoryTest
 		actual = ListFactory.newSortedList();
 		assertNotNull(actual);
 		assertTrue(actual.size() == 0);
+
+		List<String> addition;
+		Comparator<String> reverseOrderStringComparator;
+
+		reverseOrderStringComparator = Collections.reverseOrder();
+		addition = ListFactory.newArrayList("", "Emil", "Anton", "Anton", "Anton", "Emil", "");
+		actual = ListFactory.newSortedList(addition, reverseOrderStringComparator, "foo");
+		assertNotNull(actual);
+		assertTrue(actual.size() == 8);
+		assertTrue(actual.get(0).equals("foo"));
+
+		reverseOrderStringComparator = null;
+		addition = ListFactory.newArrayList("", "Emil", "Anton", "Anton", "Anton", "Emil", "");
+		actual = ListFactory.newSortedList(addition, reverseOrderStringComparator, "foo");
+		assertNotNull(actual);
+		assertTrue(actual.size() == 8);
+		assertTrue(actual.get(7).equals("foo"));
+
+		reverseOrderStringComparator = null;
+		addition = null;
+		actual = ListFactory.newSortedList(addition, reverseOrderStringComparator, "foo");
+		assertNotNull(actual);
+		assertTrue(actual.size() == 1);
+		assertTrue(actual.get(0).equals("foo"));
 	}
 
 	/**
-	 * Test the method {@link ListFactory#newUniqueList(Collection, Object[])}
+	 * Test the method {@link ListFactory#newUniqueList(Collection, Object...)}
 	 */
 	@Test
-	public void testNewUniqueListCollectionObjects2()
+	public void testNewUniqueListCollectionObjects()
 	{
+		List<String> strings = ListFactory.newUniqueList((Collection<String>)null, "foo", "bar",
+			"foo");
+		assertNotNull(strings);
+		assertTrue(strings.size() == 2);
+		assertTrue(strings.get(0).equals("foo"));
+		assertTrue(strings.get(1).equals("bar"));
 		List<String> actual;
 		List<String> addition;
 
@@ -454,7 +429,7 @@ public class ListFactoryTest
 	 * Test the method {@link ListFactory#newUniqueList(Object[])}
 	 */
 	@Test
-	public void testNnewUniqueListObjects2()
+	public void testNewUniqueListObjects()
 	{
 		List<String> actual;
 
@@ -474,5 +449,49 @@ public class ListFactoryTest
 		assertTrue(actual.size() == 0);
 	}
 
+	/**
+	 * Test the method {@link ListFactory#newVector(Collection, Object[])}
+	 */
+	@Test
+	public void testNewVectorCollectionObjects()
+	{
+		List<String> actual;
+		List<String> addition;
+
+		addition = ListFactory.newArrayList("", "Emil", "Anton", "Anton", "Anton", "Emil", "");
+		actual = ListFactory.newVector(addition, "foo");
+		assertNotNull(actual);
+		assertTrue(actual.size() == 8);
+		assertTrue(actual.get(7).equals("foo"));
+
+		addition = null;
+		actual = ListFactory.newVector(addition, "foo");
+		assertNotNull(actual);
+		assertTrue(actual.size() == 1);
+		assertTrue(actual.get(0).equals("foo"));
+	}
+
+	/**
+	 * Test the method {@link ListFactory#newVector(Object[])}
+	 */
+	@Test
+	public void testNewVectorObjects()
+	{
+		List<String> actual;
+
+		actual = ListFactory.newVector("foo", "", "Emil", "Anton", "Anton", "Anton", "Emil", "");
+		assertNotNull(actual);
+		assertTrue(actual.size() == 8);
+		assertTrue(actual.get(0).equals("foo"));
+
+		actual = ListFactory.newVector("foo");
+		assertNotNull(actual);
+		assertTrue(actual.size() == 1);
+		assertTrue(actual.get(0).equals("foo"));
+
+		actual = ListFactory.newVector();
+		assertNotNull(actual);
+		assertTrue(actual.size() == 0);
+	}
 
 }

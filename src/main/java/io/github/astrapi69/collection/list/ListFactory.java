@@ -33,6 +33,7 @@ import java.util.Iterator;
 import java.util.LinkedList;
 import java.util.List;
 import java.util.Map;
+import java.util.Vector;
 import java.util.stream.Collectors;
 
 import io.github.astrapi69.collection.CollectionExtensions;
@@ -47,8 +48,56 @@ import io.github.astrapi69.collection.array.ArrayFactory;
 public final class ListFactory
 {
 
+	/**
+	 * Private constructor to prevent instantiation
+	 */
 	private ListFactory()
 	{
+	}
+
+	/**
+	 * Factory method for create new {@link Vector} from the given optional collection and the given
+	 * optional elements.
+	 *
+	 * @param <T>
+	 *            the generic type of the elements
+	 * @param collection
+	 *            the optional collection that will be added to the new list
+	 * @param elements
+	 *            the optional elements to be added in the new {@link Vector}.
+	 * @return the new {@link Vector} as {@link List}.
+	 */
+	@SafeVarargs
+	public static <T> List<T> newVector(final Collection<T> collection, final T... elements)
+	{
+		final List<T> list;
+		if (CollectionExtensions.isNotEmpty(collection))
+		{
+			list = new Vector<>(collection);
+			Collections.addAll(list, elements);
+		}
+		else
+		{
+			list = new Vector<>();
+			Collections.addAll(list, elements);
+		}
+		return list;
+	}
+
+	/**
+	 * Factory method for create new {@link Vector} from the given optional collection and the given
+	 * optional elements.
+	 *
+	 * @param <T>
+	 *            the generic type of the elements
+	 * @param elements
+	 *            the optional elements to be added in the new {@link Vector}.
+	 * @return the new {@link Vector} as {@link List}.
+	 */
+	@SafeVarargs
+	public static <T> List<T> newVector(final T... elements)
+	{
+		return newVector(null, elements);
 	}
 
 	/**

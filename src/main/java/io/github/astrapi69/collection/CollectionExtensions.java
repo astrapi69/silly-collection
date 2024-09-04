@@ -41,6 +41,9 @@ import org.apache.commons.collections4.CollectionUtils;
 public final class CollectionExtensions
 {
 
+	/**
+	 * Private constructor to prevent instantiation
+	 */
 	private CollectionExtensions()
 	{
 	}

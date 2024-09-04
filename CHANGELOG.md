@@ -6,7 +6,10 @@ Version 27.3-SNAPSHOT
 
 ADDED:
 
-- new factory methods for the classes SortedList, UniqueList and SortedUniqueList in class ListFactory
+- new factory method in class ListFactory for generate SortedList objects
+- new factory method in class ListFactory for generate SortedUniqueList objects
+- new factory method in class ListFactory for generate UniqueList objects
+- new factory method in class ListFactory for generate Vector objects
 
 Version 27.2
 -------------

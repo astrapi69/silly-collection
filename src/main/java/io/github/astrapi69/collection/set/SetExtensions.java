@@ -37,6 +37,9 @@ import io.github.astrapi69.collection.array.ArrayFactory;
 public final class SetExtensions
 {
 
+	/**
+	 * Private constructor to prevent instantiation
+	 */
 	private SetExtensions()
 	{
 	}
