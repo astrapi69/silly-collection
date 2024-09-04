@@ -35,6 +35,9 @@ import io.github.astrapi69.check.Argument;
 public final class ArrayFactory
 {
 
+	/**
+	 * Private constructor to prevent instantiation
+	 */
 	private ArrayFactory()
 	{
 	}

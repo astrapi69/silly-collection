@@ -44,6 +44,9 @@ import io.github.astrapi69.collection.list.ListFactory;
 public final class SetFactory
 {
 
+	/**
+	 * Private constructor to prevent instantiation
+	 */
 	private SetFactory()
 	{
 	}

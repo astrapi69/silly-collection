@@ -28,10 +28,12 @@ import java.util.ArrayList;
 import java.util.Arrays;
 import java.util.Collection;
 import java.util.Collections;
+import java.util.Comparator;
 import java.util.Iterator;
 import java.util.LinkedList;
 import java.util.List;
 import java.util.Map;
+import java.util.Vector;
 import java.util.stream.Collectors;
 
 import io.github.astrapi69.collection.CollectionExtensions;
@@ -46,8 +48,263 @@ import io.github.astrapi69.collection.array.ArrayFactory;
 public final class ListFactory
 {
 
+	/**
+	 * Private constructor to prevent instantiation
+	 */
 	private ListFactory()
 	{
+	}
+
+	/**
+	 * Factory method for create new {@link Vector} from the given optional collection and the given
+	 * optional elements.
+	 *
+	 * @param <T>
+	 *            the generic type of the elements
+	 * @param collection
+	 *            the optional collection that will be added to the new list
+	 * @param elements
+	 *            the optional elements to be added in the new {@link Vector}.
+	 * @return the new {@link Vector} as {@link List}.
+	 */
+	@SafeVarargs
+	public static <T> List<T> newVector(final Collection<T> collection, final T... elements)
+	{
+		final List<T> list;
+		if (CollectionExtensions.isNotEmpty(collection))
+		{
+			list = new Vector<>(collection);
+			Collections.addAll(list, elements);
+		}
+		else
+		{
+			list = new Vector<>();
+			Collections.addAll(list, elements);
+		}
+		return list;
+	}
+
+	/**
+	 * Factory method for create new {@link Vector} from the given optional collection and the given
+	 * optional elements.
+	 *
+	 * @param <T>
+	 *            the generic type of the elements
+	 * @param elements
+	 *            the optional elements to be added in the new {@link Vector}.
+	 * @return the new {@link Vector} as {@link List}.
+	 */
+	@SafeVarargs
+	public static <T> List<T> newVector(final T... elements)
+	{
+		return newVector(null, elements);
+	}
+
+	/**
+	 * Factory method for create new {@link UniqueList} from the given optional collection and the
+	 * given optional elements.
+	 *
+	 * @param <T>
+	 *            the generic type of the elements
+	 * @param collection
+	 *            the optional collection that will be added to the new list
+	 * @param elements
+	 *            the optional elements to be added in the new {@link UniqueList}.
+	 * @return the new {@link UniqueList} as {@link List}.
+	 */
+	@SafeVarargs
+	public static <T> List<T> newUniqueList(final Collection<T> collection, final T... elements)
+	{
+		final List<T> list;
+		if (CollectionExtensions.isNotEmpty(collection))
+		{
+			list = new SortedUniqueList<>(collection);
+			Collections.addAll(list, elements);
+		}
+		else
+		{
+			list = new SortedUniqueList<>();
+			Collections.addAll(list, elements);
+		}
+		return list;
+	}
+
+	/**
+	 * Factory method for create new {@link UniqueList} from the given optional collection and the
+	 * given optional elements.
+	 *
+	 * @param <T>
+	 *            the generic type of the elements
+	 * @param elements
+	 *            the optional elements to be added in the new {@link UniqueList}.
+	 * @return the new {@link UniqueList} as {@link List}.
+	 */
+	@SafeVarargs
+	public static <T> List<T> newUniqueList(final T... elements)
+	{
+		return newUniqueList(null, elements);
+	}
+
+	/**
+	 * Factory method for create new {@link SortedUniqueList} from the given optional collection and
+	 * the given optional elements.
+	 *
+	 * @param <T>
+	 *            the generic type of the elements
+	 * @param collection
+	 *            the optional collection that will be added to the new list
+	 * @param comparator
+	 *            the comparator
+	 * @param elements
+	 *            the optional elements to be added in the new {@link SortedUniqueList}.
+	 * @return the new {@link SortedUniqueList} as {@link List}.
+	 */
+	@SafeVarargs
+	public static <T> List<T> newSortedUniqueList(final Collection<T> collection,
+		Comparator<? super T> comparator, final T... elements)
+	{
+		final List<T> list;
+		if (CollectionExtensions.isNotEmpty(collection))
+		{
+			if (comparator != null)
+			{
+				list = new SortedUniqueList<>(collection, comparator);
+			}
+			else
+			{
+				list = new SortedUniqueList<>(collection);
+			}
+			Collections.addAll(list, elements);
+		}
+		else
+		{
+			if (comparator != null)
+			{
+				list = new SortedUniqueList<>(comparator);
+			}
+			else
+			{
+				list = new SortedUniqueList<>();
+			}
+			Collections.addAll(list, elements);
+		}
+		return list;
+	}
+
+	/**
+	 * Factory method for create new {@link SortedUniqueList} from the given optional collection and
+	 * the given optional elements.
+	 *
+	 * @param <T>
+	 *            the generic type of the elements
+	 * @param collection
+	 *            the optional collection that will be added to the new list
+	 * @param elements
+	 *            the optional elements to be added in the new {@link SortedUniqueList}.
+	 * @return the new {@link SortedUniqueList} as {@link List}.
+	 */
+	@SafeVarargs
+	public static <T> List<T> newSortedUniqueList(final Collection<T> collection,
+		final T... elements)
+	{
+		return newSortedUniqueList(collection, null, elements);
+	}
+
+	/**
+	 * Factory method for create new {@link SortedUniqueList} from the given optional collection and
+	 * the given optional elements.
+	 *
+	 * @param <T>
+	 *            the generic type of the elements
+	 * @param elements
+	 *            the optional elements to be added in the new {@link SortedUniqueList}.
+	 * @return the new {@link SortedUniqueList} as {@link List}.
+	 */
+	@SafeVarargs
+	public static <T> List<T> newSortedUniqueList(final T... elements)
+	{
+		return newSortedUniqueList(null, elements);
+	}
+
+	/**
+	 * Factory method for create new {@link SortedList} from the given optional collection and the
+	 * given optional elements.
+	 *
+	 * @param <T>
+	 *            the generic type of the elements
+	 * @param collection
+	 *            the optional collection that will be added to the new list
+	 * @param comparator
+	 *            the comparator
+	 * @param elements
+	 *            the optional elements to be added in the new {@link SortedList}.
+	 * @return the new {@link SortedList} as {@link List}.
+	 */
+	@SafeVarargs
+	public static <T> List<T> newSortedList(final Collection<T> collection,
+		Comparator<? super T> comparator, final T... elements)
+	{
+		final List<T> list;
+		if (CollectionExtensions.isNotEmpty(collection))
+		{
+			if (comparator != null)
+			{
+				list = new SortedList<>(collection, comparator);
+			}
+			else
+			{
+				list = new SortedList<>(collection);
+			}
+			Collections.addAll(list, elements);
+		}
+		else
+		{
+			if (comparator != null)
+			{
+				list = new SortedList<>(comparator);
+			}
+			else
+			{
+				list = new SortedList<>();
+			}
+			Collections.addAll(list, elements);
+		}
+		return list;
+	}
+
+	/**
+	 * Factory method for create new {@link SortedList} from the given optional collection and the
+	 * given optional elements.
+	 *
+	 * @param <T>
+	 *            the generic type of the elements
+	 * @param collection
+	 *            the optional collection that will be added to the new list
+	 * @param elements
+	 *            the optional elements to be added in the new {@link SortedList}.
+	 * @return the new {@link SortedList} as {@link List}.
+	 */
+	@SafeVarargs
+	public static <T> List<T> newSortedList(final Collection<T> collection, final T... elements)
+	{
+		return newSortedList(collection, null, elements);
+	}
+
+
+	/**
+	 * Factory method for create new {@link SortedList} from the given optional collection and the
+	 * given optional elements.
+	 *
+	 * @param <T>
+	 *            the generic type of the elements
+	 * @param elements
+	 *            the optional elements to be added in the new {@link SortedList}.
+	 * @return the new {@link SortedList} as {@link List}.
+	 */
+	@SafeVarargs
+	public static <T> List<T> newSortedList(final T... elements)
+	{
+		return newSortedList(null, elements);
 	}
 
 	/**

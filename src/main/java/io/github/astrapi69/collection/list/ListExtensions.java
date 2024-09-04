@@ -53,10 +53,13 @@ import io.github.astrapi69.comparator.factory.ComparatorFactory;
  */
 public final class ListExtensions
 {
+
+	/**
+	 * Private constructor to prevent instantiation
+	 */
 	private ListExtensions()
 	{
 	}
-
 
 	/**
 	 * Gets the first object from the given List or null if it does not exist

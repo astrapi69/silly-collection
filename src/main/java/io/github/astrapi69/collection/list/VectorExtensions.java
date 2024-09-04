@@ -33,6 +33,9 @@ import java.util.Vector;
 public final class VectorExtensions
 {
 
+	/**
+	 * Private constructor to prevent instantiation
+	 */
 	private VectorExtensions()
 	{
 	}
