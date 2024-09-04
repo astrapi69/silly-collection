@@ -1,7 +1,7 @@
 ## Change log
 ----------------------
 
-Version 27.3-SNAPSHOT
+Version 28-SNAPSHOT
 -------------
 
 ADDED:
@@ -10,6 +10,12 @@ ADDED:
 - new factory method in class ListFactory for generate SortedUniqueList objects
 - new factory method in class ListFactory for generate UniqueList objects
 - new factory method in class ListFactory for generate Vector objects
+
+CHANGED:
+
+- rename of module to new name 'io.github.astrapisixtynine.silly.collection'
+- major version to 28.*
+- update of dependency jobj-core in new major version 9
 
 Version 27.2
 -------------
