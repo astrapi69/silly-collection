@@ -4,6 +4,9 @@
 Version 28.1-SNAPSHOT
 -------------
 
+ADDED:
+
+- new method in class PropertiesExtensions that exports a Properties object to the given file object
 
 Version 28
 -------------

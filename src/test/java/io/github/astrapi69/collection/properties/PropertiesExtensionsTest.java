@@ -82,6 +82,26 @@ public class PropertiesExtensionsTest
 		}
 	}
 
+	/**
+	 * Test method for {@link PropertiesExtensions#export(Properties, File)}
+	 * 
+	 * @throws IOException
+	 *             Signals that an I/O exception has occurred.
+	 */
+	@Test
+	public void testExportToFile() throws IOException
+	{
+		final Properties properties = new Properties();
+		properties.setProperty("foo", "bar");
+		File propertiesFile = new File(".", "output3.properties");
+		PropertiesExtensions.export(properties, propertiesFile);
+
+		final Properties propertiesOutput = PropertiesExtensions.loadProperties(propertiesFile);
+		assertNotNull(propertiesOutput);
+		assertEquals(properties, propertiesOutput);
+		DeleteFileExtensions.delete(propertiesFile);
+	}
+
 
 	/**
 	 * Test method for
