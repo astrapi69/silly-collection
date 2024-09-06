@@ -8,6 +8,10 @@ ADDED:
 
 - new method in class PropertiesExtensions that exports a Properties object to the given file object
 
+CHANGED:
+
+- update of dependency comparator-extensions in new major version 2
+
 Version 28
 -------------
 

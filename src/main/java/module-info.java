@@ -20,9 +20,9 @@
  */
 module io.github.astrapisixtynine.silly.collection
 {
+	requires io.github.astrapisixtynine.comparator.extensions;
 	requires io.github.astrapisixtynine.jobj.core;
 	requires org.apache.commons.collections4;
-	requires comparator.extensions.main;
 	requires silly.bean.main;
 
 	exports io.github.astrapi69.collection;
