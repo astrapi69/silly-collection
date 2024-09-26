@@ -22,8 +22,8 @@ module io.github.astrapisixtynine.silly.collection
 {
 	requires io.github.astrapisixtynine.comparator.extensions;
 	requires io.github.astrapisixtynine.jobj.core;
+	requires io.github.astrapisixtynine.silly.bean;
 	requires org.apache.commons.collections4;
-	requires silly.bean.main;
 
 	exports io.github.astrapi69.collection;
 	exports io.github.astrapi69.collection.array;

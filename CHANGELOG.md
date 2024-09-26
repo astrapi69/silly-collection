@@ -10,7 +10,12 @@ ADDED:
 
 CHANGED:
 
-- update of dependency comparator-extensions in new major version 2
+- update gradle to new version 8.10.2
+- update of dependency silly-bean in to new major version 3.0
+- update of dependency comparator-extensions to new major version 2
+- update of test dependency test-object to new major version 9
+- update of test dependency junit-jupiter to new patch version 5.11.1
+- update of test dependency junit-platform-launcher to new version 1.11.1
 
 Version 28
 -------------
@@ -45,7 +50,7 @@ CHANGED:
 - rename of class SortedArrayList to SortedList
 - rename of class UniqueArrayList to UniqueList
 - removed test dependency testng
-- update of dependency commons-collections4 to new version to 4.5.0-M2
+- update of dependency commons-collections4 to new version 4.5.0-M2
 - update of dependency jobj-core in new version 8.4
 - update of test dependency file-worker to new version 17.4
 - update of test dependency silly-io to new version 3.1
