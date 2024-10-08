@@ -74,6 +74,26 @@ public final class PropertiesExtensions
 	}
 
 	/**
+	 * Exports the given {@link Properties} to the given {@link File} that represents the output
+	 * file
+	 *
+	 * @param properties
+	 *            the properties to store
+	 *
+	 * @param fileToExport
+	 *            The file from the file to write the properties
+	 * @throws IOException
+	 *             Signals that an I/O exception has occurred
+	 */
+	public static void export(Properties properties, File fileToExport) throws IOException
+	{
+		try (FileOutputStream fos = new FileOutputStream(fileToExport))
+		{
+			PropertiesExtensions.export(properties, fos);
+		}
+	}
+
+	/**
 	 * Exports the given {@link InputStream} that represents a properties file to the given
 	 * properties {@link OutputStream} that represents the output file. The flag xmlFile tells if
 	 * the output shell be an xml file or a properties file.

@@ -38,7 +38,6 @@ import java.util.Vector;
 import org.junit.jupiter.api.Assertions;
 import org.junit.jupiter.api.Disabled;
 import org.junit.jupiter.api.Test;
-import org.meanbean.test.BeanTestException;
 import org.meanbean.test.BeanTester;
 
 import io.github.astrapi69.collection.set.SetExtensions;
