@@ -4,6 +4,9 @@
 Version 28.2-SNAPSHOT
 -------------
 
+ADDED:
+
+- new method in class ArrayExtensions that joins two arrays of the same type into a single array
 
 Version 28.1
 -------------

@@ -26,6 +26,7 @@ package io.github.astrapi69.collection.array;
 
 import static org.junit.jupiter.api.Assertions.assertArrayEquals;
 import static org.junit.jupiter.api.Assertions.assertEquals;
+import static org.junit.jupiter.api.Assertions.assertNotNull;
 import static org.junit.jupiter.api.Assertions.assertNull;
 import static org.junit.jupiter.api.Assertions.assertThrows;
 import static org.junit.jupiter.api.Assertions.assertTrue;
@@ -56,6 +57,81 @@ import io.github.astrapi69.collection.set.SetFactory;
  */
 public class ArrayExtensionsTest
 {
+
+
+	/**
+	 * Test joining two non-null arrays. Verifies that the result contains all elements of both
+	 * input arrays.
+	 */
+	@Test
+	void testJoinWithBothArraysNotNull()
+	{
+		String[] array1 = { "A", "B", "C" };
+		String[] array2 = { "D", "E" };
+		String[] result = ArrayExtensions.join(array1, array2);
+
+		assertNotNull(result, "The resulting array should not be null.");
+		assertArrayEquals(new String[] { "A", "B", "C", "D", "E" }, result,
+			"The arrays should be joined correctly.");
+	}
+
+	/**
+	 * Test joining when the first array is null. Verifies that the second array is returned.
+	 */
+	@Test
+	void testJoinWithFirstArrayNull()
+	{
+		String[] array1 = null;
+		String[] array2 = { "D", "E" };
+		String[] result = ArrayExtensions.join(array1, array2);
+
+		assertNotNull(result, "The resulting array should not be null.");
+		assertArrayEquals(array2, result,
+			"The result should be the second array when the first is null.");
+	}
+
+	/**
+	 * Test joining when the second array is null. Verifies that the first array is returned.
+	 */
+	@Test
+	void testJoinWithSecondArrayNull()
+	{
+		String[] array1 = { "A", "B", "C" };
+		String[] array2 = null;
+		String[] result = ArrayExtensions.join(array1, array2);
+
+		assertNotNull(result, "The resulting array should not be null.");
+		assertArrayEquals(array1, result,
+			"The result should be the first array when the second is null.");
+	}
+
+	/**
+	 * Test joining when both arrays are null. Verifies that the result is null.
+	 */
+	@Test
+	void testJoinWithBothArraysNull()
+	{
+		String[] array1 = null;
+		String[] array2 = null;
+		String[] result = ArrayExtensions.join(array1, array2);
+
+		assertNull(result, "The result should be null when both arrays are null.");
+	}
+
+	/**
+	 * Test joining two arrays with incompatible types. Verifies that an
+	 * {@link IllegalArgumentException} is thrown when trying to join arrays of incompatible types.
+	 */
+	@Test
+	void testJoinWithIncompatibleTypes()
+	{
+		Integer[] array1 = { 1, 2, 3 };
+		String[] array2 = { "A", "B" };
+
+		assertThrows(IllegalArgumentException.class, () -> {
+			ArrayExtensions.join(array1, array2);
+		}, "An IllegalArgumentException should be thrown for incompatible types.");
+	}
 
 	/**
 	 * Test for the Method {@link ArrayExtensions#toSet(Object[])}

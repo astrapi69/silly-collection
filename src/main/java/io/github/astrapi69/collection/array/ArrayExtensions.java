@@ -720,6 +720,54 @@ public final class ArrayExtensions
 	}
 
 	/**
+	 * Joins two arrays of the same type into a single array.
+	 * <p>
+	 * This method combines the elements of the two input arrays {@code array1} and {@code array2}
+	 * into a new array. If either of the arrays is {@code null}, the other array is returned. If
+	 * both arrays are {@code null}, the result is {@code null}. The resulting array is of the same
+	 * component type as the first array, and it contains all elements from both input arrays.
+	 * </p>
+	 *
+	 * @param <T>
+	 *            the component type of the arrays
+	 * @param array1
+	 *            the first array, may be {@code null}
+	 * @param array2
+	 *            the second array, may be {@code null}
+	 * @return a new array containing all elements of {@code array1} and {@code array2}, or one of
+	 *         the arrays if the other is {@code null}
+	 * @throws IllegalArgumentException
+	 *             if the component types of the two arrays are incompatible
+	 * @throws ArrayStoreException
+	 *             if an incompatible element is found when copying the arrays
+	 */
+	@SafeVarargs
+	public static <T> T[] join(final T[] array1, final T... array2)
+	{
+		if (array1 == null)
+		{
+			return array2;
+		}
+		if (array2 == null)
+		{
+			return array1;
+		}
+		final Class<?> type1 = array1.getClass().getComponentType();
+		final Class<?> type2 = array2.getClass().getComponentType();
+		if (!type1.isAssignableFrom(type2))
+		{
+			throw new IllegalArgumentException(
+				"Cannot store " + type2.getName() + " in an array of " + type1.getName());
+		}
+		@SuppressWarnings("unchecked") // OK, because array is of type T
+		final T[] joinedArray = (T[])Array.newInstance(type1, array1.length + array2.length);
+		System.arraycopy(array1, 0, joinedArray, 0, array1.length);
+		System.arraycopy(array2, 0, joinedArray, array1.length, array2.length);
+		return joinedArray;
+	}
+
+
+	/**
 	 * Removes the first element of the array
 	 *
 	 * @param <T>
