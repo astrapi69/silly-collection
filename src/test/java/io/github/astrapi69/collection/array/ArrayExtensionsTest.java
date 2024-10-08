@@ -58,7 +58,6 @@ import io.github.astrapi69.collection.set.SetFactory;
 public class ArrayExtensionsTest
 {
 
-
 	/**
 	 * Test joining two non-null arrays. Verifies that the result contains all elements of both
 	 * input arrays.
