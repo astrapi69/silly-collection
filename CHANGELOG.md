@@ -1,7 +1,7 @@
 ## Change log
 ----------------------
 
-Version 28.1-SNAPSHOT
+Version 28.1
 -------------
 
 ADDED:
