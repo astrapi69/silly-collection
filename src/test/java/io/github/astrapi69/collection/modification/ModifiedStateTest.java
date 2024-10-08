@@ -26,12 +26,10 @@ package io.github.astrapi69.collection.modification;
 
 import static org.junit.jupiter.api.Assertions.assertTrue;
 
-import java.lang.reflect.InvocationTargetException;
 import java.util.List;
 
 import org.junit.jupiter.api.Assertions;
 import org.junit.jupiter.api.Test;
-import org.meanbean.test.BeanTestException;
 import org.meanbean.test.BeanTester;
 
 import io.github.astrapi69.collection.list.ListFactory;

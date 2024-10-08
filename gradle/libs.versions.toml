@@ -2,7 +2,7 @@
 commons-collections4-version = "4.5.0-M2"
 comparator-extensions-version = "2"
 file-worker-version = "17.4"
-gradle-plugin-grgit-version = "5.2.2"
+gradle-plugin-grgit-version = "5.3.0"
 gradle-plugin-license-version = "0.16.1"
 gradle-plugin-spotless-version = "7.0.0.BETA2"
 gradle-plugin-version-catalog-update-version = "0.8.4"
@@ -10,11 +10,10 @@ gradle-plugin-versions-version = "0.51.0"
 jmh-core-version = "1.37"
 jmh-generator-annprocess-version = "1.37"
 jobj-core-version = "9"
-junit-jupiter-params-version = "5.11.1"
-junit-jupiter-version = "5.11.1"
-junit-platform-launcher-version = "1.11.1"
+junit-jupiter-params-version = "5.11.2"
+junit-jupiter-version = "5.11.2"
 meanbean-version = "3.0.0-M9"
-mockito-core-version = "5.13.0"
+mockito-core-version = "5.14.1"
 random-beans-version = "3.9.0"
 silly-bean-version = "3.0"
 silly-io-version = "3.1"
@@ -30,7 +29,7 @@ jmh-generator-annprocess = { module = "org.openjdk.jmh:jmh-generator-annprocess"
 jobj-core = { module = "io.github.astrapi69:jobj-core", version.ref = "jobj-core-version" }
 junit-jupiter = { module = "org.junit.jupiter:junit-jupiter", version.ref = "junit-jupiter-version" }
 junit-jupiter-params = { module = "org.junit.jupiter:junit-jupiter-params", version.ref = "junit-jupiter-params-version" }
-junit-platform-launcher = { module = "org.junit.platform:junit-platform-launcher", version.ref = "junit-platform-launcher-version" }
+junit-platform-launcher = { module = "org.junit.platform:junit-platform-launcher" }
 meanbean = { module = "com.github.meanbeanlib:meanbean", version.ref = "meanbean-version" }
 mockito-core = { module = "org.mockito:mockito-core", version.ref = "mockito-core-version" }
 random-beans = { module = "io.github.benas:random-beans", version.ref = "random-beans-version" }
@@ -40,11 +39,30 @@ test-object = { module = "io.github.astrapi69:test-object", version.ref = "test-
 vintage-time = { module = "io.github.astrapi69:vintage-time", version.ref = "vintage-time-version" }
 
 [bundles]
+# The core dependencies
+core-dependencies = [
+    "commons-collections4",
+    "comparator-extensions",
+    "jobj-core",
+    "silly-bean",
+]
+# Dependencies required only at test runtime, such as test execution platforms
+test-runtime-only = [
+    "junit-platform-launcher",
+]
+# Dependencies required for unit testing
 unit-testing = [
+    "file-worker",
+    "jmh-core",
+    "jmh-generator-annprocess",
     "junit-jupiter",
     "junit-jupiter-params",
     "meanbean",
     "mockito-core",
+    "random-beans",
+    "silly-io",
+    "test-object",
+    "vintage-time",
 ]
 
 [plugins]

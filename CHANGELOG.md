@@ -11,11 +11,12 @@ ADDED:
 CHANGED:
 
 - update gradle to new version 8.10.2
+- update of gradle-plugin dependency 'org.ajoberstar.grgit:grgit-gradle' in version 5.3.0
 - update of dependency silly-bean in to new major version 3.0
 - update of dependency comparator-extensions to new major version 2
 - update of test dependency test-object to new major version 9
-- update of test dependency junit-jupiter to new patch version 5.11.1
-- update of test dependency junit-platform-launcher to new version 1.11.1
+- update of test dependency junit-jupiter to new patch version 5.11.2
+- dependencies are structured now over bundles
 
 Version 28
 -------------

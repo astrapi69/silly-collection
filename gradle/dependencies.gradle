@@ -1,18 +1,6 @@
 dependencies {
-
-    implementation libs.commons.collections4
-    implementation libs.jobj.core
-    implementation libs.comparator.extensions
-    implementation libs.silly.bean
-
-    testImplementation libs.silly.io
-    testImplementation libs.file.worker
-    testImplementation libs.vintage.time
-    testImplementation libs.test.object
-    testImplementation libs.random.beans
-    testImplementation libs.jmh.core
-    testImplementation libs.jmh.generator.annprocess
     // Note: use of bundles...
+    implementation libs.bundles.core.dependencies
     testImplementation libs.bundles.unit.testing
-    testRuntimeOnly libs.junit.platform.launcher
+    testRuntimeOnly libs.bundles.test.runtime.only
 }

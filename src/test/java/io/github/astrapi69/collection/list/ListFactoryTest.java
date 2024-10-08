@@ -27,7 +27,6 @@ package io.github.astrapi69.collection.list;
 import static org.junit.jupiter.api.Assertions.assertNotNull;
 import static org.junit.jupiter.api.Assertions.assertTrue;
 
-import java.lang.reflect.InvocationTargetException;
 import java.util.ArrayList;
 import java.util.Collection;
 import java.util.Collections;
@@ -36,10 +35,8 @@ import java.util.Iterator;
 import java.util.List;
 
 import org.junit.jupiter.api.Test;
-import org.meanbean.test.BeanTestException;
 import org.meanbean.test.BeanTester;
 
-import io.github.astrapi69.comparator.object.StringComparator;
 
 /**
  * The unit test class for the class {@link ListFactory}.
