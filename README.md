@@ -1,3 +1,5 @@
+
+
 # Overview
 
 <div style="text-align: center">
@@ -32,7 +34,7 @@ Replace the variable ${latestVersion} with the current latest version: [![Maven 
 Add the following maven dependency to your project `pom.xml` if you want to import the core
 functionality of silly-collection:
 
-Than you can add the dependency to your dependencies:
+Then you can add the dependency to your dependencies:
 
     <properties>
             ...
