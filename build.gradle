@@ -13,10 +13,8 @@ plugins {
     id 'maven-publish'
     id 'signing'
     alias(libs.plugins.gradle.versions.plugin)
-    alias(libs.plugins.grgit.gradle)
-    alias(libs.plugins.license.gradle.plugin)
     alias(libs.plugins.spotless.plugin.gradle)
-    alias(libs.plugins.version.catalog.update)
+    alias(libs.plugins.versionCatalogUpdate)
 }
 
 group = "$groupPackage" as Object
