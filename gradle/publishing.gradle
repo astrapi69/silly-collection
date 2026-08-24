@@ -14,13 +14,25 @@ task javadocJar(type: Jar) {
 }
 
 javadoc {
-    failOnError = false
-    if (JavaVersion.current().isJava9Compatible()) {
+    if(JavaVersion.current().isJava9Compatible()) {
         options.addBooleanOption("html5", true)
     }
+    failOnError = false
 }
 
 publishing {
+    repositories {
+        maven {
+            name = "central"
+            def releasesRepoUrl = "$projectRepositoriesReleasesRepoUrl"
+            def snapshotsRepoUrl = "$projectRepositoriesSnapshotsRepoUrl"
+            url = releaseVersion ? releasesRepoUrl : snapshotsRepoUrl
+            credentials {
+                username = System.getenv("CENTRAL_USERNAME") ?: (project.findProperty("centralUsername") ?: "")
+                password = System.getenv("CENTRAL_PASSWORD") ?: (project.findProperty("centralPassword") ?: "")
+            }
+        }
+    }
     publications {
         mavenJava(MavenPublication) {
             artifactId = "$rootProject.name"
@@ -30,14 +42,14 @@ publishing {
             pom {
                 name = "$rootProject.name"
                 description = "$projectDescription"
-                url = "$projectScmProviderUrl" + "$projectHolderUsername" + "$slash" + "$rootProject.name"
+                url = "$projectScmProviderUrl"+"$projectHolderUsername"+"$slash"+"$rootProject.name"
                 organization {
                     name = "$projectOrganizationName"
                     url = "$projectOrganizationUrl"
                 }
                 issueManagement {
                     system = "$projectIssueManagementSystem"
-                    url = "$projectScmProviderUrl" + "$projectHolderUsername" + "$slash" + "$rootProject.name" + "$issuesPath"
+                    url = "$projectScmProviderUrl"+"$projectHolderUsername"+"$slash"+"$rootProject.name"+"$issuesPath"
                 }
                 licenses {
                     license {
@@ -60,21 +72,19 @@ publishing {
             }
         }
     }
-    repositories {
-        maven {
-            credentials {
-                username System.getenv("$projectRepositoriesUserNameKey") ?: project.property("$projectRepositoriesUserNameKey")
-                password System.getenv("$projectRepositoriesPasswordKey") ?: project.property("$projectRepositoriesPasswordKey")
-            }
-            def releasesRepoUrl = "$projectRepositoriesReleasesRepoUrl"
-            def snapshotsRepoUrl = "$projectRepositoriesSnapshotsRepoUrl"
-            url = releaseVersion ? releasesRepoUrl : snapshotsRepoUrl
-        }
-    }
 }
 
 signing {
     if (releaseVersion) {
+        def signingKey = System.getenv("GPG_PRIVATE_KEY")
+        def signingPassphrase = System.getenv("GPG_PASSPHRASE")
+        if (signingKey && signingPassphrase) {
+            useInMemoryPgpKeys(signingKey, signingPassphrase)
+        }
+        else if (!project.hasProperty("signing.keyId")) {
+            // fall back to the local gpg command with the key from signing.gnupg.keyName
+            useGpgCmd()
+        }
         sign publishing.publications.mavenJava
     }
 }

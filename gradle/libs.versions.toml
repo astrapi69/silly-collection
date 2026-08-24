@@ -2,11 +2,9 @@
 commons-collections4-version = "4.5.0-M2"
 comparator-extensions-version = "2"
 file-worker-version = "18.0"
-gradle-plugin-grgit-version = "5.3.0"
-gradle-plugin-license-version = "0.16.1"
-gradle-plugin-spotless-version = "7.0.0.BETA3"
-gradle-plugin-version-catalog-update-version = "0.8.4"
-gradle-plugin-versions-version = "0.51.0"
+gradle-plugin-spotless-version = "8.10.0"
+gradle-plugin-version-catalog-update-version = "1.1.1"
+gradle-plugin-versions-version = "0.61.0"
 jmh-core-version = "1.37"
 jmh-generator-annprocess-version = "1.37"
 jobj-core-version = "9.1"
@@ -67,7 +65,5 @@ unit-testing = [
 
 [plugins]
 gradle-versions-plugin = { id = "com.github.ben-manes.versions", version.ref = "gradle-plugin-versions-version" }
-grgit-gradle = { id = "org.ajoberstar.grgit", version.ref = "gradle-plugin-grgit-version" }
-license-gradle-plugin = { id = "com.github.hierynomus.license", version.ref = "gradle-plugin-license-version" }
 spotless-plugin-gradle = { id = "com.diffplug.spotless", version.ref = "gradle-plugin-spotless-version" }
-version-catalog-update = { id = "nl.littlerobots.version-catalog-update", version.ref = "gradle-plugin-version-catalog-update-version" }
+versionCatalogUpdate = { id = "nl.littlerobots.version-catalog-update", version.ref = "gradle-plugin-version-catalog-update-version" }

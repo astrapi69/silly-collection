@@ -1,0 +1,46 @@
+# Publishes the artifact to Maven Central via the Central Portal.
+# Triggered by pushing a release tag (RELEASE-*) or manually via workflow_dispatch.
+# Required repository secrets:
+#   CENTRAL_PORTAL_TOKEN_USERNAME / CENTRAL_PORTAL_TOKEN_PASSWORD - Central Portal user token
+#   GPG_PRIVATE_KEY / GPG_PASSPHRASE    - ascii-armored signing key and its passphrase
+
+name: Publish to Maven Central
+
+on:
+  push:
+    tags: [ 'RELEASE-*' ]
+  workflow_dispatch:
+
+jobs:
+  publish:
+
+    runs-on: ubuntu-latest
+
+    steps:
+      - name: Checkout sources
+        uses: actions/checkout@v4
+      - name: Setup Java
+        uses: actions/setup-java@v4
+        with:
+          java-version: '17'
+          distribution: 'temurin'
+      - name: Setup Gradle
+        uses: gradle/actions/setup-gradle@v4
+      - name: Build
+        run: ./gradlew build
+      - name: Publish
+        run: ./gradlew publish
+        env:
+          CENTRAL_USERNAME: ${{ secrets.CENTRAL_PORTAL_TOKEN_USERNAME }}
+          CENTRAL_PASSWORD: ${{ secrets.CENTRAL_PORTAL_TOKEN_PASSWORD }}
+          GPG_PRIVATE_KEY: ${{ secrets.GPG_PRIVATE_KEY }}
+          GPG_PASSPHRASE: ${{ secrets.GPG_PASSPHRASE }}
+      # The OSSRH staging api leaves the deployment in an open staging repository that is
+      # invisible in the Central Portal. This step moves it to the Portal, where it can be
+      # reviewed and published (publishing_type=user_managed) or published automatically
+      # (publishing_type=automatic).
+      - name: Upload staging repository to the Central Portal
+        run: make central-upload
+        env:
+          CENTRAL_USERNAME: ${{ secrets.CENTRAL_PORTAL_TOKEN_USERNAME }}
+          CENTRAL_PASSWORD: ${{ secrets.CENTRAL_PORTAL_TOKEN_PASSWORD }}
