@@ -1,0 +1,12 @@
+pitest {
+    junit5PluginVersion = libs.versions.pitest.junit5.plugin.version.get()
+    pitestVersion = libs.versions.pitest.version.get()
+    targetClasses = ["io.github.astrapi69.collection.*"]
+    threads = 4
+    // The mutator set, named so a reader of the score knows it: DEFAULTS is what
+    // PIT runs when nothing is said.
+    mutators = ["DEFAULTS"]
+    // XML is what the mutation-context step in .github/workflows/gradle.yml reads.
+    outputFormats = ["HTML", "XML"]
+    timestampedReports = false
+}
