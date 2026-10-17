@@ -33,6 +33,34 @@ jobs:
         env:
           ossrhUsername: ${{secrets.OSSRHUSERNAME}}
           ossrhPassword: ${{secrets.OSSRHPASSWORD}}
+      - name: Mutation testing (PIT, fails below mutationThreshold in build.gradle)
+        run: |
+          ./gradlew pitest
+      - name: Mutation context (awesome-well-tested docs/mutation-context.md)
+        # The context that makes the score comparable: tool and version, mutator set,
+        # scope, the full result breakdown, the tool's score and the strict score. The
+        # converter is pinned to a commit of the list that defines the schema. Runs on
+        # a red PIT step too, so a regression carries its numbers; without a report
+        # (the build failed earlier) there is nothing to convert.
+        if: always()
+        run: |
+          if [ ! -f build/reports/pitest/mutations.xml ]; then
+            echo "no PIT report, nothing to convert"; exit 0
+          fi
+          curl -fsSL -o /tmp/mutation_context.py \
+            https://raw.githubusercontent.com/awesome-references/awesome-well-tested/3d1258db8b54a1ad239229869eec9d57c527991c/scripts/mutation_context.py
+          python3 /tmp/mutation_context.py --pit build/reports/pitest/mutations.xml \
+            --tool-version "$(grep -oP '^pitest-version = "\K[^"]+' gradle/libs.versions.toml)" \
+            --mutators DEFAULTS --target 'io.github.astrapi69.collection.*' \
+            --out build/reports/pitest/mutation-context.json
+          cat build/reports/pitest/mutation-context.json
+      - name: Keep the mutation context
+        if: always()
+        uses: actions/upload-artifact@v7
+        with:
+          name: mutation-context
+          path: build/reports/pitest/mutation-context.json
+          if-no-files-found: ignore
       - uses: codecov/codecov-action@v4
         with:
           token: ${{ secrets.CODECOV_TOKEN }} # not required for public repos

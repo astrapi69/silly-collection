@@ -2,6 +2,7 @@
 commons-collections4-version = "4.5.0-M2"
 comparator-extensions-version = "2"
 file-worker-version = "18.0"
+gradle-plugin-pitest-version = "1.19.0"
 gradle-plugin-spotless-version = "8.10.0"
 gradle-plugin-version-catalog-update-version = "1.1.1"
 gradle-plugin-versions-version = "0.61.0"
@@ -12,6 +13,8 @@ junit-jupiter-params-version = "5.11.3"
 junit-jupiter-version = "5.11.3"
 meanbean-version = "3.0.0-M9"
 mockito-core-version = "5.14.2"
+pitest-junit5-plugin-version = "1.2.3"
+pitest-version = "1.30.0"
 random-beans-version = "3.9.0"
 silly-bean-version = "3.0"
 silly-io-version = "3.2"
@@ -65,5 +68,6 @@ unit-testing = [
 
 [plugins]
 gradle-versions-plugin = { id = "com.github.ben-manes.versions", version.ref = "gradle-plugin-versions-version" }
+pitest-gradle-plugin = { id = "info.solidsoft.pitest", version.ref = "gradle-plugin-pitest-version" }
 spotless-plugin-gradle = { id = "com.diffplug.spotless", version.ref = "gradle-plugin-spotless-version" }
 versionCatalogUpdate = { id = "nl.littlerobots.version-catalog-update", version.ref = "gradle-plugin-version-catalog-update-version" }
