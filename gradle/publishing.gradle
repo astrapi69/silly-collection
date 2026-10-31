@@ -14,25 +14,13 @@ task javadocJar(type: Jar) {
 }
 
 javadoc {
+    failOnError = false
     if(JavaVersion.current().isJava9Compatible()) {
         options.addBooleanOption("html5", true)
     }
-    failOnError = false
 }
 
 publishing {
-    repositories {
-        maven {
-            name = "central"
-            def releasesRepoUrl = "$projectRepositoriesReleasesRepoUrl"
-            def snapshotsRepoUrl = "$projectRepositoriesSnapshotsRepoUrl"
-            url = releaseVersion ? releasesRepoUrl : snapshotsRepoUrl
-            credentials {
-                username = System.getenv("CENTRAL_USERNAME") ?: (project.findProperty("centralUsername") ?: "")
-                password = System.getenv("CENTRAL_PASSWORD") ?: (project.findProperty("centralPassword") ?: "")
-            }
-        }
-    }
     publications {
         mavenJava(MavenPublication) {
             artifactId = "$rootProject.name"
@@ -74,17 +62,92 @@ publishing {
     }
 }
 
+// Signing follows the KEY, not the version form, so a manual snapshot run of publish.yml
+// rehearses the release signature (#31, as astrapi69/roboter#11, astrapi69/randomizer#9, astrapi69/resourcebundle-core#31
+// and astrapi69/checksum-up#8 and #11):
+//
+//   release  + key      sign
+//   snapshot + key      sign, so the rehearsal covers the last step too
+//   snapshot, no key    skip - a local build needs no signature
+//   release,  no key    the upload task REFUSES; publishing a release unsigned is worse than
+//                       not publishing it
+def signingKey = System.getenv("GPG_PRIVATE_KEY")
+def signingPassphrase = System.getenv("GPG_PASSPHRASE")
+// The signing subkey's short id, its last 8 hex digits, when GPG_PRIVATE_KEY is an export of that
+// subkey alone and the primary key stays offline (astrapi69/lethenon, docs/launch/release-key.md;
+// #31). Without it Gradle takes the primary key, which such an export holds only as a stub, and
+// fails; Gradle 9.7.1 refused the 16-digit form (astrapi69/lethenon#155). Unset, the call is the one
+// for a full key, as before.
+def signingKeyId = System.getenv("GPG_KEY_ID")
+def hasInMemoryKey = signingKey && signingPassphrase
+def hasLocalKey = ["signing.keyId", "signing.gnupg.keyName", "signing.secretKeyRingFile"]
+    .any { project.hasProperty(it) }
+
 signing {
-    if (releaseVersion) {
-        def signingKey = System.getenv("GPG_PRIVATE_KEY")
-        def signingPassphrase = System.getenv("GPG_PASSPHRASE")
-        if (signingKey && signingPassphrase) {
+    if (hasInMemoryKey) {
+        if (signingKeyId) {
+            useInMemoryPgpKeys(signingKeyId, signingKey, signingPassphrase)
+        } else {
             useInMemoryPgpKeys(signingKey, signingPassphrase)
         }
-        else if (!project.hasProperty("signing.keyId")) {
-            // fall back to the local gpg command with the key from signing.gnupg.keyName
-            useGpgCmd()
-        }
         sign publishing.publications.mavenJava
+    }
+    else if (hasLocalKey) {
+        // the local gpg command with the key from signing.gnupg.keyName
+        useGpgCmd()
+        sign publishing.publications.mavenJava
+    }
+}
+
+// The tasks that upload. This build publishes through the nmcp SETTINGS plugin, which gives the
+// Central Portal credentials to the aggregation alone, so a release goes up through
+// nmcpPublishAggregationToCentralPortal (publishAggregationToCentralPortal in gradle.yml and
+// publish.yml). The per-project nmcpPublishAllPublicationsToCentralPortal, which the single-project
+// builds of the family guard, is matched as well; the prefixes take in the ...Snapshots tasks, which
+// a snapshot version never trips.
+def centralPortalUploadTasks = ["nmcpPublishAggregationToCentralPortal",
+                                "nmcpPublishAllPublicationsToCentralPortal"]
+
+// Half a key is a misconfiguration, not "no key": GPG_PRIVATE_KEY with an empty GPG_PASSPHRASE (a secret
+// created without a value), or the reverse, signs nothing, and a snapshot went up without its .asc files
+// while CI was green (astrapi69/crypt-data#105, astrapi69/randomizer#25; #31 here). Every upload refuses it. Read now, not when
+// the task runs: Task.project at execution time is deprecated and Gradle 10 removes it.
+def halfKeyVersion = version.toString()
+def halfKey = (signingKey && !signingPassphrase) ? "GPG_PASSPHRASE is empty"
+    : (!signingKey && signingPassphrase) ? "GPG_PRIVATE_KEY is empty" : null
+tasks.matching { task -> centralPortalUploadTasks.any { task.name.startsWith(it) } }.configureEach {
+    doFirst {
+        if (halfKey) {
+            throw new GradleException("GPG_PRIVATE_KEY and GPG_PASSPHRASE must be set together: ${halfKey}, "
+                + "so ${halfKeyVersion} would go up unsigned. Set the missing secret, or neither.")
+        }
+        if (releaseVersion && !hasInMemoryKey && !hasLocalKey) {
+            throw new GradleException("Refusing to publish ${halfKeyVersion} unsigned. "
+                + "Set GPG_PRIVATE_KEY and GPG_PASSPHRASE, or a local signing.keyId / "
+                + "signing.gnupg.keyName / signing.secretKeyRingFile property.")
+        }
+    }
+}
+
+// An upload to the Central Portal leaves only from CI: publish.yml on a RELEASE-* tag for a release, a manual
+// run of publish.yml for a snapshot. Never from a local tree: test-object 9.1 was released from a clone whose
+// commits never reached the repository (astrapi69/test-object#19, #21), as roboter 2.1 did (astrapi69/roboter#7; #31 here). Read now, not when the task runs, for the
+// configuration cache. The match is the tasks that send to the Central Portal, releases and snapshots; the
+// nmcpPublish...ToMavenLocal task of the same plugin writes to the local repository and stays allowed.
+def uploadInCi = System.getenv("GITHUB_ACTIONS") == "true"
+def uploadRef = System.getenv("GITHUB_REF") ?: ""
+def uploadVersion = version.toString()
+def uploadIsRelease = !uploadVersion.endsWith("SNAPSHOT")
+tasks.matching { it.name.startsWith("nmcpPublish") && it.name.contains("ToCentralPortal") }.configureEach {
+    doFirst {
+        if (!uploadInCi) {
+            throw new GradleException("Uploads to the Central Portal run only in CI: a RELEASE-* tag runs "
+                + "publish.yml for a release, and a manual run of publish.yml publishes a snapshot. This is a "
+                + "local build (GITHUB_ACTIONS is not set), so ${uploadVersion} is not uploaded.")
+        }
+        if (uploadIsRelease && !uploadRef.startsWith("refs/tags/RELEASE-")) {
+            throw new GradleException("A release uploads only from a RELEASE-* tag. This run builds "
+                + "${uploadRef ?: 'no ref'}, so ${uploadVersion} is not uploaded.")
+        }
     }
 }
