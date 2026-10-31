@@ -30,9 +30,6 @@ jobs:
         uses: gradle/actions/setup-gradle@v3
       - name: Execute Gradle build
         run: ./gradlew build
-        env:
-          ossrhUsername: ${{secrets.OSSRHUSERNAME}}
-          ossrhPassword: ${{secrets.OSSRHPASSWORD}}
       - name: Mutation testing (PIT, fails below mutationThreshold in build.gradle)
         run: |
           ./gradlew pitest

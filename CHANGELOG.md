@@ -4,6 +4,12 @@
 Version 28.2-SNAPSHOT
 -------------
 
+CHANGED:
+
+- publishing as in the rest of the family (#31): the Central Portal through the nmcp settings plugin, a release
+  waiting for the maintainer (USER_MANAGED), the signing subkey through GPG_KEY_ID, a refused upload when only half
+  of the key is set, and uploads only from CI, a release only from its RELEASE-* tag
+
 ADDED:
 
 - new method in class ArrayExtensions that joins two arrays of the same type into a single array

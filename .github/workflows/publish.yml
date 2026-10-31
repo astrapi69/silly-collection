@@ -1,8 +1,11 @@
-# Publishes the artifact to Maven Central via the Central Portal.
-# Triggered by pushing a release tag (RELEASE-*) or manually via workflow_dispatch.
+# Publishes the artifact to Maven Central via the Central Portal (nmcp settings plugin).
+# Triggered by pushing a release tag (RELEASE-*), which always targets the release repository, or
+# manually via workflow_dispatch, which asks where to publish (as astrapi69/randomizer#11, #31 here).
 # Required repository secrets:
 #   CENTRAL_PORTAL_TOKEN_USERNAME / CENTRAL_PORTAL_TOKEN_PASSWORD - Central Portal user token
 #   GPG_PRIVATE_KEY / GPG_PASSPHRASE    - ascii-armored signing key and its passphrase
+#   GPG_KEY_ID (optional)               - the signing subkey's last 8 hex digits, when GPG_PRIVATE_KEY
+#                                         holds that subkey alone (astrapi69/lethenon, docs/launch/release-key.md)
 
 name: Publish to Maven Central
 
@@ -10,11 +13,25 @@ on:
   push:
     tags: [ 'RELEASE-*' ]
   workflow_dispatch:
+    inputs:
+      target:
+        description: 'Where to publish (a tag push always publishes a release)'
+        required: true
+        default: snapshot
+        type: choice
+        options:
+          - snapshot
+          - release
 
 jobs:
   publish:
 
     runs-on: ubuntu-latest
+
+    env:
+      # a tag push publishes a release; a manual run publishes what it was asked for. This build
+      # publishes through the settings plugin, so the tasks are the aggregation's.
+      PUBLISH_TASK: ${{ (github.event_name == 'workflow_dispatch' && inputs.target == 'snapshot') && 'nmcpPublishAggregationToCentralPortalSnapshots' || 'nmcpPublishAggregationToCentralPortal' }}
 
     steps:
       - name: Checkout sources
@@ -28,19 +45,15 @@ jobs:
         uses: gradle/actions/setup-gradle@v4
       - name: Build
         run: ./gradlew build
-      - name: Publish
-        run: ./gradlew publish
+      # nmcp uploads and validates the bundle directly - no separate manual staging-upload step
+      # needed (unlike the plain maven-publish + OSSRH-staging-api repos in this family).
+      - name: Publish to the Central Portal
+        run: |
+          echo "publishing with $PUBLISH_TASK"
+          ./gradlew "$PUBLISH_TASK"
         env:
-          CENTRAL_USERNAME: ${{ secrets.CENTRAL_PORTAL_TOKEN_USERNAME }}
-          CENTRAL_PASSWORD: ${{ secrets.CENTRAL_PORTAL_TOKEN_PASSWORD }}
+          CENTRAL_PORTAL_TOKEN_USERNAME: ${{ secrets.CENTRAL_PORTAL_TOKEN_USERNAME }}
+          CENTRAL_PORTAL_TOKEN_PASSWORD: ${{ secrets.CENTRAL_PORTAL_TOKEN_PASSWORD }}
           GPG_PRIVATE_KEY: ${{ secrets.GPG_PRIVATE_KEY }}
           GPG_PASSPHRASE: ${{ secrets.GPG_PASSPHRASE }}
-      # The OSSRH staging api leaves the deployment in an open staging repository that is
-      # invisible in the Central Portal. This step moves it to the Portal, where it can be
-      # reviewed and published (publishing_type=user_managed) or published automatically
-      # (publishing_type=automatic).
-      - name: Upload staging repository to the Central Portal
-        run: make central-upload
-        env:
-          CENTRAL_USERNAME: ${{ secrets.CENTRAL_PORTAL_TOKEN_USERNAME }}
-          CENTRAL_PASSWORD: ${{ secrets.CENTRAL_PORTAL_TOKEN_PASSWORD }}
+          GPG_KEY_ID: ${{ secrets.GPG_KEY_ID }}
