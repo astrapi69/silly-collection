@@ -7,7 +7,7 @@
 [![Java CI with Gradle](https://github.com/astrapi69/silly-collection/actions/workflows/gradle.yml/badge.svg)](https://github.com/astrapi69/silly-collection/actions/workflows/gradle.yml)
 [![Coverage Status](https://codecov.io/gh/astrapi69/silly-collection/branch/develop/graph/badge.svg)](https://codecov.io/gh/astrapi69/silly-collection)
 [![Open Issues](https://img.shields.io/github/issues/astrapi69/silly-collection.svg?style=flat)](https://github.com/astrapi69/silly-collection/issues)
-[![Maven Central](https://maven-badges.herokuapp.com/maven-central/io.github.astrapi69/silly-collection/badge.svg)](https://maven-badges.herokuapp.com/maven-central/io.github.astrapi69/silly-collection)
+[![Maven Central](https://img.shields.io/maven-central/v/io.github.astrapi69/silly-collection)](https://central.sonatype.com/artifact/io.github.astrapi69/silly-collection)
 [![Javadocs](http://www.javadoc.io/badge/io.github.astrapi69/silly-collection.svg)](http://www.javadoc.io/doc/io.github.astrapi69/silly-collection)
 [![MIT license](http://img.shields.io/badge/license-MIT-brightgreen.svg?style=flat)](http://opensource.org/licenses/MIT)
 [![Donate](https://img.shields.io/badge/donate-❤-ff2244.svg)](https://www.paypal.com/cgi-bin/webscr?cmd=_s-xclick&hosted_button_id=GVBTWLRAZ7HB8)
@@ -25,11 +25,9 @@ Utility library for collections, comparators and iterator classes.
 
 ## Maven dependency
 
-Maven dependency is now on sonatype. Check
-out [sonatype repository](https://oss.sonatype.org/index.html#nexus-search;gav~io.github.astrapi69~silly-collection~~~)
-for all snapshots and releases.
+The library is on Maven Central. Check out [Maven Central](https://central.sonatype.com/artifact/io.github.astrapi69/silly-collection) for the latest release.
 
-Replace the variable ${latestVersion} with the current latest version: [![Maven Central](https://maven-badges.herokuapp.com/maven-central/io.github.astrapi69/silly-collection/badge.svg)](https://maven-badges.herokuapp.com/maven-central/io.github.astrapi69/silly-collection)
+Replace the variable ${latestVersion} with the current latest version: [![Maven Central](https://img.shields.io/maven-central/v/io.github.astrapi69/silly-collection)](https://central.sonatype.com/artifact/io.github.astrapi69/silly-collection)
 
 Add the following maven dependency to your project `pom.xml` if you want to import the core
 functionality of silly-collection:
@@ -148,9 +146,9 @@ Open Source:
 
 ## Credits
 
-|**Nexus Sonatype repositories**|
+|**Maven Central**|
 |     :---:      |
-|[![sonatype repository](https://img.shields.io/nexus/r/https/oss.sonatype.org/io.github.astrapi69/silly-collection.svg?style=for-the-badge)](https://oss.sonatype.org/index.html#nexus-search;gav~io.github.astrapi69~silly-collection~~~)|
+|[![Maven Central](https://img.shields.io/maven-central/v/io.github.astrapi69/silly-collection?style=for-the-badge)](https://central.sonatype.com/artifact/io.github.astrapi69/silly-collection)|
 |Special thanks to [sonatype repository](https://www.sonatype.com) for providing a free maven repository service for open source projects|
 |     <img width=1000/>     |
 
