@@ -47,9 +47,9 @@ import java.util.function.UnaryOperator;
  * {@link #subList(int, int)} reads and removes, and refuses to set, add, replace or sort.
  * {@link #setComparator(Comparator)} changes the order.
  * <p>
- * A list without a comparator has no order to keep: its add methods append at the end, and set and
- * replaceAll replace in place, as in {@link ArrayList}, with the same checks for an element the
- * list holds.
+ * A list without a comparator has no order to keep: its add methods append at the end, replaceAll
+ * replaces in place, as in {@link ArrayList}, with the same check for equal values, and set swaps
+ * an element the list holds at another index, as {@link UniqueList#set(int, Object)} does.
  *
  * @param <E>
  *            the generic type of values
@@ -230,33 +230,36 @@ public class SortedUniqueList<E> extends ArrayList<E>
 
 	/**
 	 * Replaces the element at the given index with the given element so that this list holds each
-	 * element once and stays in the order of its comparator: the element at the index is removed,
-	 * and the given one is added as {@link #add(Object)} adds it, at its place in that order, which
-	 * need not be the given index; {@code [a, c, e]} becomes {@code [c, d, e]} with
-	 * {@code set(0, d)}. A sorted list cannot hold an element at an index of the caller's choice.
+	 * element once afterwards too, and, if it has a comparator, stays in the order of the
+	 * comparator.
 	 * <p>
-	 * If this list holds the given element at another index, compared with equals as
-	 * {@link #add(Object)} compares, this method throws an {@link IllegalArgumentException}, and
-	 * this list does not change: it would hold the element twice. {@link UniqueList} swaps the two
-	 * elements instead, which a sorted list cannot, as the order and not the index decides where an
-	 * element goes; a list without a comparator refuses as well, so that set keeps its rules when
-	 * {@link #setComparator(Comparator)} gives the list an order. An element equal to the one at
-	 * the index itself replaces that one.
+	 * <b>With a comparator</b> the element at the index is removed, and the given one is added as
+	 * {@link #add(Object)} adds it, at its place in that order, which need not be the given index;
+	 * {@code [a, c, e]} becomes {@code [c, d, e]} with {@code set(0, d)}. A sorted list cannot hold
+	 * an element at an index of the caller's choice. If this list holds the given element at
+	 * another index, compared with equals as {@link #add(Object)} compares, this method throws an
+	 * {@link IllegalArgumentException}, and this list does not change: it would hold the element
+	 * twice, and a swap, as {@link UniqueList} does, cannot help where the order and not the index
+	 * decides where an element goes. {@link Collections#swap(List, int, int)},
+	 * {@link Collections#reverse(List)}, {@link Collections#shuffle(List, java.util.Random)} and
+	 * {@link Collections#rotate(List, int)} call set with an element this list holds at another
+	 * index, so on a list with a comparator they throw that exception before it changes; a swap of
+	 * an index with itself works. If the comparator throws, as the natural order does for null, the
+	 * removed element is put back at the index, and this list is as it was. As the element can
+	 * move, set with a comparator is a structural modification: an iterator that runs over this
+	 * list throws a {@link ConcurrentModificationException} at its next step.
 	 * <p>
-	 * {@link Collections#swap(List, int, int)}, {@link Collections#reverse(List)},
-	 * {@link Collections#shuffle(List, java.util.Random)} and {@link Collections#rotate(List, int)}
-	 * call set with an element this list holds at another index, so they throw that exception
-	 * before this list changes; a swap of an index with itself works.
+	 * <b>Without a comparator</b> this list has no order to keep, and set works as
+	 * {@link UniqueList#set(int, Object)}: if this list holds the given element at another index,
+	 * the two elements swap, the given element goes to the given index and the element that was
+	 * there goes to the index the given element was at; {@code [a, b, c]} becomes {@code [c, b, a]}
+	 * with {@code set(0, c)}. Otherwise the element at the index is replaced, as in
+	 * {@link ArrayList#set(int, Object)}. Neither case is a structural modification, and the
+	 * algorithms of {@link Collections} above work as on a {@link UniqueList}.
 	 * <p>
-	 * The index is checked first, as {@link ArrayList#set(int, Object)} checks it, before this list
-	 * changes and for an element this list holds too. If the comparator throws, as the natural
-	 * order does for null, the removed element is put back at the index, and this list is as it
-	 * was. As the element can move, set with a comparator is a structural modification: an iterator
-	 * that runs over this list throws a {@link ConcurrentModificationException} at its next step.
-	 * <p>
-	 * Without a comparator this list has no order to keep: after the same checks, the element at
-	 * the index is replaced, as in {@link ArrayList#set(int, Object)}, which is no structural
-	 * modification.
+	 * In both cases an element equal to the one at the index itself replaces that one, and the
+	 * index is checked first, as {@link ArrayList#set(int, Object)} checks it, before this list
+	 * changes and for an element this list holds too.
 	 *
 	 * @param index
 	 *            the index of the element to replace
@@ -268,21 +271,27 @@ public class SortedUniqueList<E> extends ArrayList<E>
 	 *             if the index is out of range ({@code index < 0 || index >= size()}), with the
 	 *             message of {@link ArrayList#set(int, Object)}
 	 * @throws IllegalArgumentException
-	 *             if this list holds the given element at another index
+	 *             if this list has a comparator and holds the given element at another index
 	 */
 	@Override
 	public E set(int index, E element)
 	{
 		Objects.checkIndex(index, size());
 		int heldAt = indexOf(element);
-		if (heldAt >= 0 && heldAt != index)
+		boolean heldAtAnotherIndex = heldAt >= 0 && heldAt != index;
+		if (comparator == null)
+		{
+			E previous = super.set(index, element);
+			if (heldAtAnotherIndex)
+			{
+				super.set(heldAt, previous);
+			}
+			return previous;
+		}
+		if (heldAtAnotherIndex)
 		{
 			throw new IllegalArgumentException("This list holds the element " + element
 				+ " at the index " + heldAt + ", it cannot hold it at the index " + index + " too");
-		}
-		if (comparator == null)
-		{
-			return super.set(index, element);
 		}
 		E previous = super.remove(index);
 		try
