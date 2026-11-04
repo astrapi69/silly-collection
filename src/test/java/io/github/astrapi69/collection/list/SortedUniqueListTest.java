@@ -467,21 +467,118 @@ public class SortedUniqueListTest
 
 	/**
 	 * Test the method {@link SortedUniqueList#set(int, Object)} with a comparator and an element
-	 * the list holds at another index, in front of and behind the given one: it throws an
-	 * IllegalArgumentException, and the list does not change; set(0, c) and set(2, a) of [a, b, c]
-	 * (#77)
+	 * the list holds at another index, in front of and behind the given one: it throws the
+	 * UnsupportedOperationException, with the message of addFirst, as for any arguments, and the
+	 * list does not change; set(0, c) and set(2, a) of [a, b, c] (#77, #78)
 	 */
 	@Test
 	public void testSetWithElementHeldAtAnotherIndex()
 	{
 		List<String> list = new SortedUniqueList<>(Arrays.asList("a", "b", "c"),
 			Comparator.naturalOrder());
-		IllegalArgumentException exception = assertThrows(IllegalArgumentException.class,
+		UnsupportedOperationException exception = assertThrows(UnsupportedOperationException.class,
 			() -> list.set(0, "c"));
-		assertEquals("This list holds the element c at the index 2, it cannot hold it at the index"
-			+ " 0 too", exception.getMessage());
-		assertThrows(IllegalArgumentException.class, () -> list.set(2, "a"));
+		assertEquals(
+			"The comparator of a SortedUniqueList determines the position of its elements, so"
+				+ " explicit positioning is not supported",
+			exception.getMessage());
+		assertThrows(UnsupportedOperationException.class, () -> list.set(2, "a"));
 		assertEquals(Arrays.asList("a", "b", "c"), list);
+	}
+
+	/**
+	 * Test the method {@link SortedUniqueList#set(int, Object)} with a comparator and an element
+	 * the list holds at another index, where it would keep the order: set(1, a) and set(1, c) of
+	 * [a, b, c] throw the UnsupportedOperationException as well, and the list does not change (#78,
+	 * decided on #91)
+	 */
+	@Test
+	public void testSetWithElementHeldAtAnotherIndexThatKeepsTheOrder()
+	{
+		List<String> list = new SortedUniqueList<>(Arrays.asList("a", "b", "c"),
+			Comparator.naturalOrder());
+
+		assertThrows(UnsupportedOperationException.class, () -> list.set(1, "a"));
+		assertThrows(UnsupportedOperationException.class, () -> list.set(1, "c"));
+		assertEquals(Arrays.asList("a", "b", "c"), list);
+	}
+
+	/**
+	 * Test the method {@link SortedUniqueList#set(int, Object)} with a comparator and elements the
+	 * list does not hold that would keep the order at the index, at the first, a middle and the
+	 * last index, set(0, a), set(0, c), set(1, c), set(1, e), set(2, e) and set(2, z) of [b, d, f],
+	 * and on a list of one element: each throws the UnsupportedOperationException, and the list
+	 * does not change (#78, decided on #91)
+	 */
+	@Test
+	public void testSetWithComparatorAndElementThatKeepsTheOrder()
+	{
+		List<String> elements = Arrays.asList("b", "d", "f");
+
+		assertSetThrows(elements, 0, "a");
+		assertSetThrows(elements, 0, "c");
+		assertSetThrows(elements, 1, "c");
+		assertSetThrows(elements, 1, "e");
+		assertSetThrows(elements, 2, "e");
+		assertSetThrows(elements, 2, "z");
+		assertSetThrows(Arrays.asList("m"), 0, "z");
+	}
+
+	/**
+	 * Calls set with the given index and element on a {@link SortedUniqueList} of the given
+	 * elements in their natural order, and asserts that it throws an UnsupportedOperationException
+	 * and that the list does not change
+	 *
+	 * @param elements
+	 *            the elements of the list, in their natural order
+	 * @param index
+	 *            the index to set
+	 * @param element
+	 *            the element to set
+	 */
+	private static void assertSetThrows(List<String> elements, int index, String element)
+	{
+		List<String> list = new SortedUniqueList<>(elements, Comparator.naturalOrder());
+		assertThrows(UnsupportedOperationException.class, () -> list.set(index, element));
+		assertEquals(elements, list);
+	}
+
+	/**
+	 * Test the method {@link SortedUniqueList#set(int, Object)} with a comparator inconsistent with
+	 * equals and elements it holds equal to a neighbour of the index, which equals does not: with
+	 * {@link String#CASE_INSENSITIVE_ORDER}, set(1, B) and set(1, F) of [b, d, f] throw the
+	 * UnsupportedOperationException, and the list stays [b, d, f] (#78, decided on #91)
+	 */
+	@Test
+	public void testSetWithComparatorInconsistentWithEquals()
+	{
+		List<String> list = new SortedUniqueList<>(Arrays.asList("b", "d", "f"),
+			String.CASE_INSENSITIVE_ORDER);
+
+		assertThrows(UnsupportedOperationException.class, () -> list.set(1, "B"));
+		assertThrows(UnsupportedOperationException.class, () -> list.set(1, "F"));
+		assertEquals(Arrays.asList("b", "d", "f"), list);
+	}
+
+	/**
+	 * Test the method {@link SortedUniqueList#set(int, Object)} with a comparator while an iterator
+	 * runs over the list: set(1, d) of [a, c, e] after the first next() throws the
+	 * UnsupportedOperationException, the list stays [a, c, e], and the iterator goes on with c and
+	 * e (#78, decided on #91)
+	 */
+	@Test
+	public void testSetWithComparatorWhileAnIteratorRuns()
+	{
+		List<String> list = new SortedUniqueList<>(Arrays.asList("a", "c", "e"),
+			Comparator.naturalOrder());
+		Iterator<String> iterator = list.iterator();
+		assertEquals("a", iterator.next());
+
+		assertThrows(UnsupportedOperationException.class, () -> list.set(1, "d"));
+		assertEquals(Arrays.asList("a", "c", "e"), list);
+		assertEquals("c", iterator.next());
+		assertEquals("e", iterator.next());
+		assertFalse(iterator.hasNext());
 	}
 
 	/**
@@ -523,29 +620,34 @@ public class SortedUniqueListTest
 	}
 
 	/**
-	 * Test the method {@link SortedUniqueList#set(int, Object)} with a comparator and an element
-	 * the list does not hold: it removes the element at the index and sorts the given one in,
-	 * behind and in front of the index; [a, c, e] with set(0, d) returns a and gives [c, d, e], and
-	 * with set(2, b) returns e and gives [a, b, c] (#77)
+	 * Test the method {@link SortedUniqueList#set(int, Object)} with a comparator and elements the
+	 * list does not hold: it throws an UnsupportedOperationException whatever its arguments, with
+	 * the message of addFirst, as TreeSet.addFirst does, for elements that break the order at the
+	 * index, set(0, d) and set(2, b) of [a, c, e], and for one that keeps it, set(1, d), and the
+	 * list stays [a, c, e] (#78, decided on #91)
 	 */
 	@Test
 	public void testSetWithComparator()
 	{
 		List<String> list = new SortedUniqueList<>(Arrays.asList("a", "c", "e"),
 			Comparator.naturalOrder());
-		assertEquals("a", list.set(0, "d"));
-		assertEquals(Arrays.asList("c", "d", "e"), list);
 
-		list = new SortedUniqueList<>(Arrays.asList("a", "c", "e"), Comparator.naturalOrder());
-		assertEquals("e", list.set(2, "b"));
-		assertEquals(Arrays.asList("a", "b", "c"), list);
+		UnsupportedOperationException exception = assertThrows(UnsupportedOperationException.class,
+			() -> list.set(0, "d"));
+		assertEquals(
+			"The comparator of a SortedUniqueList determines the position of its elements, so"
+				+ " explicit positioning is not supported",
+			exception.getMessage());
+		assertThrows(UnsupportedOperationException.class, () -> list.set(2, "b"));
+		assertThrows(UnsupportedOperationException.class, () -> list.set(1, "d"));
+		assertEquals(Arrays.asList("a", "c", "e"), list);
 	}
 
 	/**
 	 * Test the method {@link SortedUniqueList#set(int, Object)} with an element equal to the one at
-	 * the index, with and without a comparator: the given instance replaces the one at the index,
-	 * the method returns the previous one, and the list keeps its order; before and after the fix
-	 * of #77
+	 * the index: with a comparator it throws the UnsupportedOperationException, and the list keeps
+	 * the instance it holds; without a comparator the given instance replaces the one at the index,
+	 * and the method returns the previous one (#77, #78)
 	 */
 	@Test
 	public void testSetWithElementHeldAtTheIndex()
@@ -554,16 +656,16 @@ public class SortedUniqueListTest
 			Comparator.naturalOrder());
 		String previous = list.get(1);
 		String equal = new String("b");
-		assertSame(previous, list.set(1, equal));
-		assertSame(equal, list.get(1));
+		assertThrows(UnsupportedOperationException.class, () -> list.set(1, equal));
+		assertSame(previous, list.get(1));
 		assertEquals(Arrays.asList("a", "b", "c"), list);
 
-		list = new SortedUniqueList<>(Arrays.asList("b", "a"));
-		previous = list.get(0);
-		equal = new String("b");
-		assertSame(previous, list.set(0, equal));
-		assertSame(equal, list.get(0));
-		assertEquals(Arrays.asList("b", "a"), list);
+		List<String> withoutComparator = new SortedUniqueList<>(Arrays.asList("b", "a"));
+		previous = withoutComparator.get(0);
+		String other = new String("b");
+		assertSame(previous, withoutComparator.set(0, other));
+		assertSame(other, withoutComparator.get(0));
+		assertEquals(Arrays.asList("b", "a"), withoutComparator);
 	}
 
 	/**
@@ -582,34 +684,34 @@ public class SortedUniqueListTest
 	}
 
 	/**
-	 * Test the method {@link SortedUniqueList#set(int, Object)} with an index out of range, with
-	 * and without a comparator: it throws an IndexOutOfBoundsException with the message of
-	 * ArrayList, for an element the list holds too, and the list does not change; before and after
-	 * the fix of #77
+	 * Test the method {@link SortedUniqueList#set(int, Object)} with an index out of range: with a
+	 * comparator it throws the UnsupportedOperationException, as it does for any arguments, and
+	 * without a comparator an IndexOutOfBoundsException with the message of ArrayList, for an
+	 * element the list holds too; the list does not change (#77, #78)
 	 */
 	@Test
 	public void testSetWithIndexOutOfRange()
 	{
 		List<String> list = new SortedUniqueList<>(Arrays.asList("a", "b"),
 			Comparator.naturalOrder());
-		IndexOutOfBoundsException exception = assertThrows(IndexOutOfBoundsException.class,
-			() -> list.set(2, "a"));
-		assertEquals("Index 2 out of bounds for length 2", exception.getMessage());
-		exception = assertThrows(IndexOutOfBoundsException.class, () -> list.set(-1, "b"));
-		assertEquals("Index -1 out of bounds for length 2", exception.getMessage());
+		assertThrows(UnsupportedOperationException.class, () -> list.set(2, "a"));
+		assertThrows(UnsupportedOperationException.class, () -> list.set(-1, "b"));
 		assertEquals(Arrays.asList("a", "b"), list);
 
 		List<String> withoutComparator = new SortedUniqueList<>(Arrays.asList("b", "a"));
-		exception = assertThrows(IndexOutOfBoundsException.class,
+		IndexOutOfBoundsException exception = assertThrows(IndexOutOfBoundsException.class,
 			() -> withoutComparator.set(2, "a"));
 		assertEquals("Index 2 out of bounds for length 2", exception.getMessage());
+		exception = assertThrows(IndexOutOfBoundsException.class,
+			() -> withoutComparator.set(-1, "b"));
+		assertEquals("Index -1 out of bounds for length 2", exception.getMessage());
 		assertEquals(Arrays.asList("b", "a"), withoutComparator);
 	}
 
 	/**
-	 * Test the method {@link SortedUniqueList#set(int, Object)} with an element the comparator
-	 * cannot compare, null for the natural order: the comparator throws a NullPointerException, the
-	 * removed element is put back at its index, and the list stays [a, c] (#77)
+	 * Test the method {@link SortedUniqueList#set(int, Object)} with a comparator and an element it
+	 * cannot compare, null for the natural order: the comparator is not called, set throws the
+	 * UnsupportedOperationException, and the list stays [a, c] (#77, #78)
 	 */
 	@Test
 	public void testSetWithElementTheComparatorCannotCompare()
@@ -617,7 +719,7 @@ public class SortedUniqueListTest
 		List<String> list = new SortedUniqueList<>(Arrays.asList("a", "c"),
 			Comparator.naturalOrder());
 
-		assertThrows(NullPointerException.class, () -> list.set(0, null));
+		assertThrows(UnsupportedOperationException.class, () -> list.set(0, null));
 		assertEquals(Arrays.asList("a", "c"), list);
 	}
 
@@ -645,21 +747,30 @@ public class SortedUniqueListTest
 
 	/**
 	 * Test the method {@link SortedUniqueList#replaceAll(UnaryOperator)} with a comparator and
-	 * distinct values: the values are sorted in, the operator that gives f for a gives [c, e, f]
-	 * for [a, c, e]; a value may equal an element it does not replace, the one that gives b for a,
-	 * c for b and a for c leaves [a, b, c] as it is (#77)
+	 * distinct values that break the order, each at the index of the element it replaces: the
+	 * operator that gives f for a gives [f, c, e] for [a, c, e], and the one that gives b for a, c
+	 * for b and a for c gives [b, c, a] for [a, b, c]; replaceAll throws an
+	 * UnsupportedOperationException, with the first value that breaks the order and its index in
+	 * the message, and no element is replaced (#78)
 	 */
 	@Test
 	public void testReplaceAllWithComparator()
 	{
 		List<String> list = new SortedUniqueList<>(Arrays.asList("a", "c", "e"),
 			Comparator.naturalOrder());
-		list.replaceAll(element -> "a".equals(element) ? "f" : element);
-		assertEquals(Arrays.asList("c", "e", "f"), list);
+		UnsupportedOperationException exception = assertThrows(UnsupportedOperationException.class,
+			() -> list.replaceAll(element -> "a".equals(element) ? "f" : element));
+		assertEquals(
+			"The comparator of a SortedUniqueList determines the position of its elements, so"
+				+ " explicit positioning is not supported: the value c at the index 1 would break its order",
+			exception.getMessage());
+		assertEquals(Arrays.asList("a", "c", "e"), list);
 
-		list = new SortedUniqueList<>(Arrays.asList("a", "b", "c"), Comparator.naturalOrder());
-		list.replaceAll(element -> element.equals("a") ? "b" : element.equals("b") ? "c" : "a");
-		assertEquals(Arrays.asList("a", "b", "c"), list);
+		List<String> other = new SortedUniqueList<>(Arrays.asList("a", "b", "c"),
+			Comparator.naturalOrder());
+		assertThrows(UnsupportedOperationException.class, () -> other
+			.replaceAll(element -> element.equals("a") ? "b" : element.equals("b") ? "c" : "a"));
+		assertEquals(Arrays.asList("a", "b", "c"), other);
 	}
 
 	/**
@@ -724,6 +835,76 @@ public class SortedUniqueListTest
 	}
 
 	/**
+	 * Test the method {@link SortedUniqueList#replaceAll(UnaryOperator)} with a comparator and
+	 * distinct values that keep the order, each at the index of the element it replaces: [a, c, e]
+	 * gives [aa, cc, ee] with the operator that doubles each element, and [b, c, d] with the one
+	 * that gives the next letter, values the list holds at another index; with
+	 * {@link String#CASE_INSENSITIVE_ORDER} [a, b, c] gives [B, b, c] with the operator that gives
+	 * B for a, a value equal to its neighbour by the comparator but not by equals; before and after
+	 * the change for #78
+	 */
+	@Test
+	public void testReplaceAllWithComparatorAndValuesThatKeepTheOrder()
+	{
+		List<String> list = new SortedUniqueList<>(Arrays.asList("a", "c", "e"),
+			Comparator.naturalOrder());
+		list.replaceAll(element -> element + element);
+		assertEquals(Arrays.asList("aa", "cc", "ee"), list);
+
+		list = new SortedUniqueList<>(Arrays.asList("a", "b", "c"), Comparator.naturalOrder());
+		list.replaceAll(element -> String.valueOf((char)(element.charAt(0) + 1)));
+		assertEquals(Arrays.asList("b", "c", "d"), list);
+
+		list = new SortedUniqueList<>(Arrays.asList("a", "b", "c"), String.CASE_INSENSITIVE_ORDER);
+		list.replaceAll(element -> "a".equals(element) ? "B" : element);
+		assertEquals(Arrays.asList("B", "b", "c"), list);
+	}
+
+	/**
+	 * Test the method {@link SortedUniqueList#replaceAll(UnaryOperator)} with a comparator and
+	 * values that are equal and out of order, c, b and c for [a, b, c]: the equal values throw the
+	 * IllegalArgumentException, and the list stays [a, b, c]; before and after the change for #78
+	 */
+	@Test
+	public void testReplaceAllWithEqualValuesOutOfOrder()
+	{
+		List<String> list = new SortedUniqueList<>(Arrays.asList("a", "b", "c"),
+			Comparator.naturalOrder());
+
+		IllegalArgumentException exception = assertThrows(IllegalArgumentException.class,
+			() -> list.replaceAll(element -> "b".equals(element) ? "b" : "c"));
+		assertEquals("The operator gives the value c for two elements of this list",
+			exception.getMessage());
+		assertEquals(Arrays.asList("a", "b", "c"), list);
+	}
+
+	/**
+	 * Test the method {@link SortedUniqueList#replaceAll(UnaryOperator)} with an operator that
+	 * throws for the second element, with and without a comparator: the exception goes to the
+	 * caller, and no element is replaced, [a, b, c] stays as it is, as all values are computed
+	 * before the first is stored; before and after the change for #78
+	 */
+	@Test
+	public void testReplaceAllWithOperatorThatThrows()
+	{
+		UnaryOperator<String> operator = element -> {
+			if ("b".equals(element))
+			{
+				throw new IllegalStateException("no value for b");
+			}
+			return element.toUpperCase();
+		};
+		List<String> list = new SortedUniqueList<>(Arrays.asList("a", "b", "c"),
+			Comparator.naturalOrder());
+		assertThrows(IllegalStateException.class, () -> list.replaceAll(operator));
+		assertEquals(Arrays.asList("a", "b", "c"), list);
+
+		List<String> withoutComparator = new SortedUniqueList<>(Arrays.asList("a", "b", "c"));
+		assertThrows(IllegalStateException.class, () -> withoutComparator.replaceAll(operator));
+		assertEquals(Arrays.asList("a", "b", "c"), withoutComparator);
+	}
+
+	/**
 	 * Test the method {@link SortedUniqueList#sort(Comparator)}: it throws an
 	 * UnsupportedOperationException for every argument, another comparator, null and the comparator
 	 * of the list, also on a list without a comparator, and the list does not change (#77)
@@ -765,8 +946,11 @@ public class SortedUniqueListTest
 	}
 
 	/**
-	 * Test the method set of the list iterator, of listIterator() and of listIterator(int): it
-	 * throws an UnsupportedOperationException, and the list stays [a, c] (#77)
+	 * Test the method set of the list iterator, of listIterator() and of listIterator(int), with a
+	 * comparator: it calls set(int, E) of the list at the index of the element last returned, which
+	 * throws the UnsupportedOperationException whatever its arguments, c, which the list holds, and
+	 * z after next() returned a, and b after previous() returned c; the list stays [a, c], and the
+	 * iterators go on with c and with a (#78, decided on #91)
 	 */
 	@Test
 	public void testListIteratorSet()
@@ -777,20 +961,26 @@ public class SortedUniqueListTest
 		assertEquals("a", iterator.next());
 		UnsupportedOperationException exception = assertThrows(UnsupportedOperationException.class,
 			() -> iterator.set("c"));
-		assertEquals("A SortedUniqueList puts an element at its place in the order of its"
-			+ " comparator, not at the position of a list iterator", exception.getMessage());
+		assertEquals(
+			"The comparator of a SortedUniqueList determines the position of its elements, so"
+				+ " explicit positioning is not supported",
+			exception.getMessage());
+		assertThrows(UnsupportedOperationException.class, () -> iterator.set("z"));
 		assertEquals(Arrays.asList("a", "c"), list);
+		assertEquals("c", iterator.next());
 
 		ListIterator<String> fromIndex = list.listIterator(2);
 		assertEquals("c", fromIndex.previous());
 		assertThrows(UnsupportedOperationException.class, () -> fromIndex.set("b"));
 		assertEquals(Arrays.asList("a", "c"), list);
+		assertEquals("a", fromIndex.previous());
 	}
 
 	/**
 	 * Test the method add of the list iterator, of listIterator() and of listIterator(int): it
-	 * throws an UnsupportedOperationException, for an element the list holds too, the list stays
-	 * [a, c], the cursor does not move, and next() returns c (#77)
+	 * throws an UnsupportedOperationException with the message of addFirst, as TreeSet.addFirst
+	 * does, for an element the list holds too, the list stays [a, c], the cursor does not move, and
+	 * next() returns c (#77, #78)
 	 */
 	@Test
 	public void testListIteratorAdd()
@@ -799,7 +989,12 @@ public class SortedUniqueListTest
 			Comparator.naturalOrder());
 		ListIterator<String> iterator = list.listIterator();
 		assertEquals("a", iterator.next());
-		assertThrows(UnsupportedOperationException.class, () -> iterator.add("a"));
+		UnsupportedOperationException exception = assertThrows(UnsupportedOperationException.class,
+			() -> iterator.add("a"));
+		assertEquals(
+			"The comparator of a SortedUniqueList determines the position of its elements, so"
+				+ " explicit positioning is not supported",
+			exception.getMessage());
 		assertEquals(Arrays.asList("a", "c"), list);
 		assertEquals(1, iterator.nextIndex());
 		assertTrue(iterator.hasNext());
@@ -808,6 +1003,44 @@ public class SortedUniqueListTest
 		assertThrows(UnsupportedOperationException.class, () -> fromIndex.add("b"));
 		assertEquals(Arrays.asList("a", "c"), list);
 		assertEquals("c", fromIndex.next());
+	}
+
+	/**
+	 * Test the method set of the list iterator of a {@link SortedUniqueList} without a comparator:
+	 * it sets through set(int, E) of the list, which swaps an element the list holds at another
+	 * index without a comparator, set(c) after the first next() gives [c, b, a] for [a, b, c], and
+	 * the iterator goes on with b and a, the element it returned first (#78)
+	 */
+	@Test
+	public void testListIteratorSetWithoutComparator()
+	{
+		List<String> list = new SortedUniqueList<>(Arrays.asList("a", "b", "c"));
+		ListIterator<String> iterator = list.listIterator();
+		assertEquals("a", iterator.next());
+
+		iterator.set("c");
+		assertEquals(Arrays.asList("c", "b", "a"), list);
+		assertEquals("b", iterator.next());
+		assertEquals("a", iterator.next());
+		assertFalse(iterator.hasNext());
+	}
+
+	/**
+	 * Test that the set of the list iterator of a {@link SortedUniqueList} without a comparator
+	 * fails fast: after an add to the list that the iterator did not make it throws a
+	 * ConcurrentModificationException, and the list stays [a, b, c, d]; before and after the
+	 * decision of 2026-11-04 on #91
+	 */
+	@Test
+	public void testListIteratorSetWithoutComparatorFailsFast()
+	{
+		List<String> list = new SortedUniqueList<>(Arrays.asList("a", "b", "c"));
+		ListIterator<String> iterator = list.listIterator();
+		assertEquals("a", iterator.next());
+
+		list.add("d");
+		assertThrows(ConcurrentModificationException.class, () -> iterator.set("x"));
+		assertEquals(Arrays.asList("a", "b", "c", "d"), list);
 	}
 
 	/**
@@ -828,9 +1061,10 @@ public class SortedUniqueListTest
 	/**
 	 * Test {@link Collections#swap(List, int, int)}, {@link Collections#reverse(List)},
 	 * {@link Collections#shuffle(List, Random)} and {@link Collections#rotate(List, int)} on a
-	 * {@link SortedUniqueList} with the natural order: each of them calls set with an element the
-	 * list holds at another index, which throws an IllegalArgumentException before the list
-	 * changes, and the list stays [a, b, c, d] (#77)
+	 * {@link SortedUniqueList} with the natural order: each throws the
+	 * UnsupportedOperationException of set at its first set, and the list stays [a, b, c, d], also
+	 * for two neighbours, a swap of an index with itself and the distance -1 (#77, #78, decided on
+	 * #91)
 	 */
 	@Test
 	public void testCollectionsAlgorithmsWithComparator()
@@ -838,15 +1072,43 @@ public class SortedUniqueListTest
 		List<String> elements = Arrays.asList("a", "b", "c", "d");
 		List<String> list = new SortedUniqueList<>(elements, Comparator.naturalOrder());
 
-		assertThrows(IllegalArgumentException.class, () -> Collections.swap(list, 0, 3));
+		assertThrows(UnsupportedOperationException.class, () -> Collections.swap(list, 0, 3));
 		assertEquals(elements, list);
-		assertThrows(IllegalArgumentException.class, () -> Collections.reverse(list));
+		assertThrows(UnsupportedOperationException.class, () -> Collections.reverse(list));
 		assertEquals(elements, list);
-		assertThrows(IllegalArgumentException.class,
+		assertThrows(UnsupportedOperationException.class,
 			() -> Collections.shuffle(list, new Random(77)));
 		assertEquals(elements, list);
-		assertThrows(IllegalArgumentException.class, () -> Collections.rotate(list, 1));
+		assertThrows(UnsupportedOperationException.class, () -> Collections.rotate(list, 1));
 		assertEquals(elements, list);
+		assertThrows(UnsupportedOperationException.class, () -> Collections.swap(list, 0, 1));
+		assertEquals(elements, list);
+		assertThrows(UnsupportedOperationException.class, () -> Collections.rotate(list, -1));
+		assertEquals(elements, list);
+		assertThrows(UnsupportedOperationException.class, () -> Collections.swap(list, 1, 1));
+		assertEquals(elements, list);
+	}
+
+	/**
+	 * Test {@link Collections#fill(List, Object)} and {@link Collections#copy(List, List)} on a
+	 * {@link SortedUniqueList} with the natural order: they throw the UnsupportedOperationException
+	 * of set at their first set, and the list does not change: fill of [b, c, d] with a, and copy
+	 * of [a, c] into [b, d, f]; with a set that kept the order, fill left [a, c, d] and had lost b
+	 * (#78, decided on #91)
+	 */
+	@Test
+	public void testCollectionsFillAndCopyWithComparator()
+	{
+		List<String> filled = new SortedUniqueList<>(Arrays.asList("b", "c", "d"),
+			Comparator.naturalOrder());
+		assertThrows(UnsupportedOperationException.class, () -> Collections.fill(filled, "a"));
+		assertEquals(Arrays.asList("b", "c", "d"), filled);
+
+		List<String> copied = new SortedUniqueList<>(Arrays.asList("b", "d", "f"),
+			Comparator.naturalOrder());
+		assertThrows(UnsupportedOperationException.class,
+			() -> Collections.copy(copied, Arrays.asList("a", "c")));
+		assertEquals(Arrays.asList("b", "d", "f"), copied);
 	}
 
 	/**

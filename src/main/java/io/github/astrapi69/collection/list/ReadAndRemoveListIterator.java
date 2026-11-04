@@ -31,11 +31,11 @@ import java.util.ListIterator;
  * and refuses {@link #set(Object)} and {@link #add(Object)} with an
  * {@link UnsupportedOperationException}.
  * <p>
- * The lists that return it decide themselves where an element goes, as {@link SortedList} and
- * {@link SortedUniqueList} put it at its place in the order of their comparator. A list iterator's
- * set and add put an element at the position of its cursor, a position such a list cannot promise
- * to keep; the cursor would then point past or before the element, and {@code next()} would skip
- * one. A removal keeps the order, so it is allowed.
+ * The views that return it, {@link ReadAndRemoveSubList}, read and remove only, and refuse set and
+ * add whatever the arguments, as the view refuses its own set and add methods; the reasons are on
+ * {@link ReadAndRemoveSubList}. A removal keeps the order and the uniqueness, so it is allowed. The
+ * list iterators of {@link SortedList} and {@link SortedUniqueList} themselves set through the
+ * list, {@link AddRefusingListIterator}.
  * <p>
  * It is fail-fast as the wrapped iterator is: the iterator of an {@link java.util.ArrayList} throws
  * a {@link java.util.ConcurrentModificationException} after a structural modification of the list

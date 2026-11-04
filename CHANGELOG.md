@@ -23,6 +23,19 @@ FIXED:
   **Note:** with an element the list holds, `add(size(), e)` of the view and the `add` of its list iterator at or
   before the cursor throw an `UnsupportedOperationException`: no index `size()` exists after a move, and the cursor
   cannot keep the contract of `ListIterator.add`; `addLast(e)` of the view moves an element to its end
+- `set(int, E)` and the `set` of the list iterator of `SortedList` and `SortedUniqueList` with a comparator throw
+  `UnsupportedOperationException`, whatever the arguments, as `TreeSet.addFirst` does ("explicit positioning is not
+  supported"), and the list does not change; `replaceAll` replaces the elements in place where the values keep the
+  order of the comparator, and otherwise throws `UnsupportedOperationException` and replaces none. They wrote any
+  element at any index, so that the list left the order of its comparator and a `SortedUniqueList` could hold an
+  element twice. `replaceAll` computes all values first; on a `SortedUniqueList` two equal values throw
+  `IllegalArgumentException`. The `add` of their list iterator throws `UnsupportedOperationException`, with and
+  without a comparator; it sorted the element in, wherever the cursor stood. Without a comparator `SortedList.set`
+  replaces in place, as before (#78).
+  **Note:** `Collections.swap`, `reverse`, `shuffle`, `rotate`, `fill`, `copy` and `replaceAll` throw
+  `UnsupportedOperationException` on a sorted list with a comparator, at their first write, and the list does not
+  change; they reordered it as an `ArrayList`. To replace an element, `remove(i)` it and `add(e)` the new one; to
+  reorder, work on a copy, `new ArrayList<>(list)`
 
 CHANGED:
 
