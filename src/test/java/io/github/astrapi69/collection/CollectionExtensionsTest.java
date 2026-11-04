@@ -30,8 +30,11 @@ import static org.junit.jupiter.api.Assertions.assertFalse;
 import static org.junit.jupiter.api.Assertions.assertNotNull;
 import static org.junit.jupiter.api.Assertions.assertNull;
 import static org.junit.jupiter.api.Assertions.assertSame;
+import static org.junit.jupiter.api.Assertions.assertThrows;
 import static org.junit.jupiter.api.Assertions.assertTrue;
 
+import java.util.ArrayList;
+import java.util.Arrays;
 import java.util.Collection;
 import java.util.List;
 
@@ -78,6 +81,66 @@ public class CollectionExtensionsTest
 		data = SetFactory.newLinkedHashSet();
 		actual = CollectionExtensions.toArray(data);
 		assertNull(actual);
+	}
+
+	/**
+	 * Test method for {@link CollectionExtensions#toArray(Collection)} with null as first element.
+	 * Pins what the method does today: it takes the class of the first element as component type
+	 * and throws a {@link NullPointerException}. The fix of #64 changes the result to a
+	 * {@code String[]} that holds null and "a"
+	 */
+	@Test
+	public void testToArrayWithNullFirstElement()
+	{
+		final List<String> list = new ArrayList<>(Arrays.asList(null, "a"));
+
+		assertThrows(NullPointerException.class, () -> CollectionExtensions.toArray(list));
+	}
+
+	/**
+	 * Test method for {@link CollectionExtensions#toArray(Collection)} with elements of different
+	 * classes. Pins what the method does today: the component type is the class of the first
+	 * element, {@code Integer} for [1, 2.5] and {@code Double} for [2.5, 1], and storing the other
+	 * element throws an {@link ArrayStoreException}. The fix of #64 changes the result to a
+	 * {@code Number[]} in both orders
+	 */
+	@Test
+	public void testToArrayWithElementsOfDifferentClasses()
+	{
+		final List<Number> integerFirst = new ArrayList<>(Arrays.asList(1, 2.5));
+		final List<Number> doubleFirst = new ArrayList<>(Arrays.asList(2.5, 1));
+
+		assertThrows(ArrayStoreException.class, () -> CollectionExtensions.toArray(integerFirst));
+		assertThrows(ArrayStoreException.class, () -> CollectionExtensions.toArray(doubleFirst));
+	}
+
+	/**
+	 * Test method for {@link CollectionExtensions#toArray(Collection)} with elements whose only
+	 * common superclass is {@link Object}, 1 and "a" in a {@code List<Comparable<?>>}. Pins what
+	 * the method does today: the component type is {@code Integer}, and storing "a" throws an
+	 * {@link ArrayStoreException}. The fix of #64 changes the result to an {@code Object[]}, which
+	 * a caller cannot assign to a {@code Comparable<?>[]}
+	 */
+	@Test
+	public void testToArrayWithElementsWithoutCommonSuperclass()
+	{
+		final List<Comparable<?>> list = new ArrayList<>(Arrays.asList(1, "a"));
+
+		assertThrows(ArrayStoreException.class, () -> CollectionExtensions.toArray(list));
+	}
+
+	/**
+	 * Test method for {@link CollectionExtensions#toArray(Collection)} with null elements only.
+	 * Pins what the method does today: it throws a {@link NullPointerException}. The fix of #64
+	 * changes the result to an {@code Object[]} that holds two nulls, which a caller cannot assign
+	 * to a {@code String[]}
+	 */
+	@Test
+	public void testToArrayWithNullElementsOnly()
+	{
+		final List<String> list = new ArrayList<>(Arrays.asList(null, null));
+
+		assertThrows(NullPointerException.class, () -> CollectionExtensions.toArray(list));
 	}
 
 	/**

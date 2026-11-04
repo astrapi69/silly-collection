@@ -915,6 +915,34 @@ public class ListExtensionsTest
 	}
 
 	/**
+	 * Test the method {@link ListExtensions#toArray(List)} with null as first element. Pins what
+	 * the method does today: it takes the class of the first element as component type and throws a
+	 * {@link NullPointerException}. The fix of #64 changes the result to a {@code String[]} that
+	 * holds null and "a"
+	 */
+	@Test
+	public void testListToArrayWithNullFirstElement()
+	{
+		final List<String> list = new ArrayList<>(Arrays.asList(null, "a"));
+
+		Assertions.assertThrows(NullPointerException.class, () -> ListExtensions.toArray(list));
+	}
+
+	/**
+	 * Test the method {@link ListExtensions#toArray(List)} with elements of different classes. Pins
+	 * what the method does today: the component type is the class of the first element,
+	 * {@code Integer} for [1, 2.5], and storing 2.5 throws an {@link ArrayStoreException}. The fix
+	 * of #64 changes the result to a {@code Number[]}
+	 */
+	@Test
+	public void testListToArrayWithElementsOfDifferentClasses()
+	{
+		final List<Number> list = new ArrayList<>(Arrays.asList(1, 2.5));
+
+		Assertions.assertThrows(ArrayStoreException.class, () -> ListExtensions.toArray(list));
+	}
+
+	/**
 	 * Test the method {@link ListExtensions#toIndexMap(List)}
 	 */
 	@Test

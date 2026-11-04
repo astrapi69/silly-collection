@@ -1113,6 +1113,53 @@ public class ArrayExtensionsTest
 	}
 
 	/**
+	 * Test method for {@link ArrayExtensions#removeFromStart(Object[], Object[])} with elements of
+	 * different classes. Pins what the method does today: the component type of the result is the
+	 * class of the first element, {@code Integer} for the {@code Number[]} {1, 2.5, 3}, and copying
+	 * 2.5 throws an {@link ArrayStoreException}. The fix of #64 changes the result to the
+	 * {@code Number[]} {2.5, 3}
+	 */
+	@Test
+	public void testRemoveFromStartWithElementsOfDifferentClasses()
+	{
+		final Number[] array = { 1, 2.5, 3 };
+
+		assertThrows(ArrayStoreException.class,
+			() -> ArrayExtensions.removeFromStart(array, new Number[] { 1 }));
+	}
+
+	/**
+	 * Test method for {@link ArrayExtensions#removeFromStart(Object[], Object[])} with null as
+	 * first element. Pins what the method does today: it takes the class of the first element as
+	 * component type and throws a {@link NullPointerException}. The fix of #64 changes the result
+	 * to the {@code String[]} {"a", "b"}
+	 */
+	@Test
+	public void testRemoveFromStartWithNullFirstElement()
+	{
+		final String[] array = { null, "a", "b" };
+
+		assertThrows(NullPointerException.class,
+			() -> ArrayExtensions.removeFromStart(array, new String[] { null }));
+	}
+
+	/**
+	 * Test method for {@link ArrayExtensions#removeFromStart(Object[], Object[])} with an
+	 * {@code Object[]} that holds strings. Pins what the method does today: the result is a
+	 * {@code String[]}, the class of the first element, not an array of the component type of the
+	 * given array. The fix of #64 changes the result to the {@code Object[]} {"b", "c"}
+	 */
+	@Test
+	public void testRemoveFromStartOfAnObjectArrayOfStrings()
+	{
+		final Object[] array = { "a", "b", "c" };
+
+		final Object[] actual = ArrayExtensions.removeFromStart(array, new Object[] { "a" });
+		assertArrayEquals(new Object[] { "b", "c" }, actual);
+		assertEquals(String[].class, actual.getClass());
+	}
+
+	/**
 	 * Test method for {@link ArrayExtensions#removeLast(Object[])}
 	 */
 	@Test
