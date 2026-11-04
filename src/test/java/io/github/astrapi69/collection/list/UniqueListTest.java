@@ -1058,4 +1058,81 @@ public class UniqueListTest
 	{
 		SubListViewAssertions.assertSubListOfSubListRemoves(UniqueList::new);
 	}
+
+	/**
+	 * Test the method addLast, which {@link UniqueList} inherits from ArrayList, with an element
+	 * the list holds: it calls add(E), which leaves the element where it is, so that it is not
+	 * last; [a, b] with addLast(a) stays [a, b], and getLast() is b (#87).
+	 * <p>
+	 * The fix of #87 changes the result: the element moves to the end, as in LinkedHashSet.addLast,
+	 * [b, a], and getLast() is a.
+	 */
+	@Test
+	public void testAddLastWithHeldElement()
+	{
+		List<String> list = new UniqueList<>(Arrays.asList("a", "b"));
+
+		list.addLast("a");
+		assertEquals(Arrays.asList("a", "b"), list);
+		assertEquals("b", list.getLast());
+	}
+
+	/**
+	 * Test the methods addFirst and addLast of {@link UniqueList} with a new element and addFirst
+	 * with an element the list holds: each puts the element first or last, and addFirst moves a
+	 * held element to the front, as LinkedHashSet does; [a, b] with addFirst(z), addLast(y) and
+	 * addFirst(b) gives [b, z, a, y]; before and after the fix of #87
+	 */
+	@Test
+	public void testAddFirstAndAddLast()
+	{
+		List<String> list = new UniqueList<>(Arrays.asList("a", "b"));
+
+		list.addFirst("z");
+		assertEquals(Arrays.asList("z", "a", "b"), list);
+		list.addLast("y");
+		assertEquals(Arrays.asList("z", "a", "b", "y"), list);
+		assertEquals("y", list.getLast());
+		list.addFirst("b");
+		assertEquals(Arrays.asList("b", "z", "a", "y"), list);
+		assertEquals("b", list.getFirst());
+	}
+
+	/**
+	 * Test the changes through {@link UniqueList#reversed()}, the view of List.reversed, which
+	 * writes through the methods of the list, so that the list holds each element once: on the view
+	 * of [a, b, c], addFirst(z) puts z first in the view and last in the list, addLast(c) moves c
+	 * to the end of the view and the front of the list, set(0, a) swaps, sort(null) sorts the view,
+	 * and add of its list iterator inserts behind the element next() returned; before and after the
+	 * fix of #87
+	 */
+	@Test
+	public void testReversed()
+	{
+		List<String> list = new UniqueList<>(Arrays.asList("a", "b", "c"));
+		List<String> reversed = list.reversed();
+		assertEquals(Arrays.asList("c", "b", "a"), reversed);
+
+		reversed.addFirst("z");
+		assertEquals(Arrays.asList("a", "b", "c", "z"), list);
+		assertEquals("z", reversed.getFirst());
+		reversed.addLast("c");
+		assertEquals(Arrays.asList("c", "a", "b", "z"), list);
+		assertEquals("c", reversed.getLast());
+
+		list = new UniqueList<>(Arrays.asList("a", "b", "c"));
+		reversed = list.reversed();
+		assertEquals("c", reversed.set(0, "a"));
+		assertEquals(Arrays.asList("c", "b", "a"), list);
+		reversed.sort(null);
+		assertEquals(Arrays.asList("a", "b", "c"), reversed);
+		assertEquals(Arrays.asList("c", "b", "a"), list);
+
+		list = new UniqueList<>(Arrays.asList("a", "b", "c"));
+		ListIterator<String> iterator = list.reversed().listIterator();
+		assertEquals("c", iterator.next());
+		iterator.add("a");
+		assertEquals(Arrays.asList("c", "a", "b"), list.reversed());
+		assertEquals("b", iterator.next());
+	}
 }

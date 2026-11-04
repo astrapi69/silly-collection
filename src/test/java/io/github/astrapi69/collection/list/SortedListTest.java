@@ -1000,4 +1000,109 @@ public class SortedListTest
 		SubListViewAssertions.assertSubListOfSubListRemoves(
 			elements -> new SortedList<>(elements, Comparator.naturalOrder()));
 	}
+
+	/**
+	 * Test the methods addFirst and addLast, which {@link SortedList} inherits from ArrayList: they
+	 * call add(int, E) and add(E), which sort the element in, so that it is neither first nor last;
+	 * [a, b] with addFirst(z) gives [a, b, z], getFirst() is a, and addLast(0) then gives [0, a, b,
+	 * z], getLast() is z; without a comparator addFirst(z) of [b, a] appends, [b, a, z] (#87).
+	 * <p>
+	 * The fix of #87 changes the result: both throw an UnsupportedOperationException, as those of
+	 * SortedSet and TreeSet do, with and without a comparator, and the list does not change.
+	 */
+	@Test
+	public void testAddFirstAndAddLast()
+	{
+		List<String> list = new SortedList<>(Arrays.asList("a", "b"), Comparator.naturalOrder());
+		list.addFirst("z");
+		assertEquals(Arrays.asList("a", "b", "z"), list);
+		assertEquals("a", list.getFirst());
+		list.addLast("0");
+		assertEquals(Arrays.asList("0", "a", "b", "z"), list);
+		assertEquals("z", list.getLast());
+
+		List<String> withoutComparator = new SortedList<>(Arrays.asList("b", "a"));
+		withoutComparator.addFirst("z");
+		assertEquals(Arrays.asList("b", "a", "z"), withoutComparator);
+	}
+
+	/**
+	 * Test the method {@link SortedList#setComparator(Comparator)} with a comparator whose sort
+	 * throws: the list keeps the new comparator, and the sort may have reordered it before it
+	 * threw; null, the natural order, throws a ClassCastException for two Objects and leaves the
+	 * comparator null, and the natural order throws a NullPointerException for [b, a, c, null]
+	 * without a comparator, leaves it as the comparator and the list [a, b, c, null] (#87).
+	 * <p>
+	 * The fix of #87 changes the result: the comparator and the order stay as they were.
+	 */
+	@Test
+	public void testSetComparatorWhenTheSortThrows()
+	{
+		Comparator<Object> equal = (first, second) -> 0;
+		SortedList<Object> objects = new SortedList<>(Arrays.asList(new Object(), new Object()),
+			equal);
+		assertThrows(ClassCastException.class, () -> objects.setComparator(null));
+		assertNull(objects.getComparator());
+
+		SortedList<String> list = new SortedList<>(Arrays.asList("b", "a", "c", null));
+		assertThrows(NullPointerException.class,
+			() -> list.setComparator(Comparator.naturalOrder()));
+		assertEquals(Comparator.naturalOrder(), list.getComparator());
+		assertEquals(Arrays.asList("a", "b", "c", null), list);
+	}
+
+	/**
+	 * Test the changes through {@link SortedList#reversed()}, the view of List.reversed: they go
+	 * through add(int, E) and set of the list, which sort the element in, so that addFirst(0) of
+	 * the view of [a, b, c] gives [0, a, b, c] and the view [c, b, a, 0], where 0 is last, and
+	 * add(z) and set(0, y) of the view sort z and y in (#87).
+	 * <p>
+	 * The fix of #87 changes the result: the view reads and removes, as the view of subList, and
+	 * every other change through it throws an UnsupportedOperationException, the list unchanged.
+	 */
+	@Test
+	public void testReversed()
+	{
+		List<String> list = new SortedList<>(Arrays.asList("a", "b", "c"),
+			Comparator.naturalOrder());
+		List<String> reversed = list.reversed();
+
+		reversed.addFirst("0");
+		assertEquals(Arrays.asList("0", "a", "b", "c"), list);
+		assertEquals(Arrays.asList("c", "b", "a", "0"), reversed);
+
+		reversed.add("z");
+		assertEquals(Arrays.asList("0", "a", "b", "c", "z"), list);
+		reversed.set(0, "y");
+		assertEquals(Arrays.asList("0", "a", "b", "c", "y"), list);
+	}
+
+	/**
+	 * Test that {@link SortedList#reversed()} reads the list backwards and removes from it: get,
+	 * size, contains, indexOf, iterator, equals, removeFirst, remove(Object) and removeIf of the
+	 * view, and that reversed() of the view gives the order of the list again; before and after the
+	 * fix of #87
+	 */
+	@Test
+	public void testReversedReadsAndRemoves()
+	{
+		List<String> list = new SortedList<>(Arrays.asList("a", "b", "c", "d"),
+			Comparator.naturalOrder());
+		List<String> reversed = list.reversed();
+
+		assertEquals(Arrays.asList("d", "c", "b", "a"), reversed);
+		assertEquals("d", reversed.get(0));
+		assertEquals("a", reversed.getLast());
+		assertEquals(4, reversed.size());
+		assertTrue(reversed.contains("b"));
+		assertEquals(2, reversed.indexOf("b"));
+		assertEquals("d", reversed.iterator().next());
+		assertEquals(list, reversed.reversed());
+
+		assertEquals("d", reversed.removeFirst());
+		assertTrue(reversed.remove("b"));
+		assertTrue(reversed.removeIf("a"::equals));
+		assertEquals(Arrays.asList("c"), list);
+		assertEquals(Arrays.asList("c"), reversed);
+	}
 }
