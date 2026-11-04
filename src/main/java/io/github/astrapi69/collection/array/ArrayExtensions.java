@@ -796,7 +796,8 @@ public final class ArrayExtensions
 	 * @return the new created array without the elements at the given indexes
 	 * @throws IndexOutOfBoundsException
 	 *             if one of the given indexes is negative or not less than the length of the given
-	 *             array; the given array is unchanged then too
+	 *             array, with the message of {@link Objects#checkIndex(int, int)} for the length of
+	 *             the given array; the given array is unchanged then too
 	 */
 	public static <T> T[] remove(final T[] array, int... indexes)
 	{
@@ -804,6 +805,12 @@ public final class ArrayExtensions
 		List<T> list = ListFactory.newArrayList(array);
 		// a sorted copy without duplicates, the indexes array of the caller stays as it is
 		final int[] distinctIndexes = Arrays.stream(indexes).distinct().sorted().toArray();
+		// every index is checked against the given array before any removal, so that the message
+		// names the length of the given array
+		for (final int index : distinctIndexes)
+		{
+			Objects.checkIndex(index, array.length);
+		}
 		// from the highest index down, so that a removal does not move the elements still to remove
 		for (int i = distinctIndexes.length - 1; -1 < i; i--)
 		{
@@ -853,48 +860,75 @@ public final class ArrayExtensions
 	}
 
 	/**
-	 * Removes the given suffix array from the first given array
+	 * Creates a new array from the given array without the given suffix, if the given array ends
+	 * with it.
+	 * <p>
+	 * The array ends with the suffix if its last elements equal those of the suffix, in their
+	 * order, compared with {@link Objects#equals(Object, Object)}; an empty suffix is a suffix of
+	 * every array. Otherwise, also for a suffix longer than the array, the result is a copy of the
+	 * given array, as {@code StringUtils.removeEnd} of Apache Commons Lang does for strings. The
+	 * result is always a new array of the component type of the given array; neither of the given
+	 * arrays is changed.
+	 * </p>
 	 *
 	 * @param <T>
 	 *            the generic type of the objects in the arrays
 	 *
 	 * @param array
-	 *            the array
+	 *            the array, not null
 	 * @param suffix
-	 *            the suffix
-	 * @return the resulted array
+	 *            the suffix to remove, not null
+	 * @return a new array without the suffix, or a copy of the given array if it does not end with
+	 *         the suffix
+	 * @throws IllegalArgumentException
+	 *             if the given array or suffix is null
 	 */
 	public static <T> T[] removeFromEnd(final T[] array, T[] suffix)
 	{
-		return Arrays.copyOf(array, array.length - suffix.length);
+		Argument.notNull(array, "array");
+		Argument.notNull(suffix, "suffix");
+		final int end = array.length - suffix.length;
+		if (end < 0 || !Arrays.equals(array, end, array.length, suffix, 0, suffix.length))
+		{
+			return array.clone();
+		}
+		return Arrays.copyOf(array, end);
 	}
 
 	/**
-	 * Removes the given prefix array from the first given array. The resulted array has the
-	 * component type of the given array
+	 * Creates a new array from the given array without the given prefix, if the given array starts
+	 * with it.
+	 * <p>
+	 * The array starts with the prefix if its first elements equal those of the prefix, in their
+	 * order, compared with {@link Objects#equals(Object, Object)}; an empty prefix is a prefix of
+	 * every array. Otherwise, also for a prefix longer than the array, the result is a copy of the
+	 * given array, as {@code StringUtils.removeStart} of Apache Commons Lang does for strings. The
+	 * result is always a new array of the component type of the given array; neither of the given
+	 * arrays is changed.
+	 * </p>
 	 *
 	 * @param <T>
 	 *            the generic type of the objects in the arrays
 	 *
 	 * @param array
-	 *            the array
+	 *            the array, not null
 	 * @param prefix
-	 *            the prefix
-	 * @return the resulted array
+	 *            the prefix to remove, not null
+	 * @return a new array without the prefix, or a copy of the given array if it does not start
+	 *         with the prefix
+	 * @throws IllegalArgumentException
+	 *             if the given array or prefix is null
 	 */
-	@SuppressWarnings("unchecked")
 	public static <T> T[] removeFromStart(final T[] array, final T[] prefix)
 	{
 		Argument.notNull(array, "array");
 		Argument.notNull(prefix, "prefix");
-		if (0 < array.length)
+		if (array.length < prefix.length
+			|| !Arrays.equals(array, 0, prefix.length, prefix, 0, prefix.length))
 		{
-			T[] result = (T[])ArrayFactory.newArray(array.getClass().getComponentType(),
-				array.length - prefix.length);
-			System.arraycopy(array, prefix.length, result, 0, result.length);
-			return result;
+			return array.clone();
 		}
-		return array;
+		return Arrays.copyOfRange(array, prefix.length, array.length);
 	}
 
 	/**
