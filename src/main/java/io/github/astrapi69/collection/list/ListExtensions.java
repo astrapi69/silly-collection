@@ -807,13 +807,18 @@ public final class ListExtensions
 	}
 
 	/**
-	 * To array.
+	 * Returns a new array with the given elements, as {@link ArrayFactory#newArray(Object...)}
+	 * does.
+	 * <p>
+	 * The result is a new array, also when no elements are given: a copy of the given array, so
+	 * that a write to the result does not change the array of the caller. Null gives null.
+	 * </p>
 	 *
 	 * @param <T>
 	 *            the generic type
 	 * @param elements
-	 *            the elements
-	 * @return the t[]
+	 *            the elements, may be null
+	 * @return a new array with the given elements, or null if the given elements are null
 	 */
 	@SafeVarargs
 	public static <T> T[] toArray(final T... elements)

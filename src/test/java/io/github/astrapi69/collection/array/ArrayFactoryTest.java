@@ -26,6 +26,8 @@ package io.github.astrapi69.collection.array;
 
 import static org.junit.jupiter.api.Assertions.assertArrayEquals;
 import static org.junit.jupiter.api.Assertions.assertEquals;
+import static org.junit.jupiter.api.Assertions.assertNotSame;
+import static org.junit.jupiter.api.Assertions.assertNull;
 import static org.junit.jupiter.api.Assertions.assertTrue;
 
 import java.util.Arrays;
@@ -64,6 +66,38 @@ public class ArrayFactoryTest
 	}
 
 	/**
+	 * Test for method {@link ArrayFactory#newArray(Object...)} with a given array: the result is a
+	 * new array with the elements of the given array, also for an empty one, and a write to the
+	 * result does not change the array of the caller. Before the fix of #62 the method returned the
+	 * given array itself
+	 */
+	@Test
+	public void testNewArrayWithGivenArray()
+	{
+		final String[] given = { "a", "b" };
+		final String[] actual = ArrayFactory.newArray(given);
+		assertNotSame(given, actual);
+		assertArrayEquals(given, actual);
+		actual[0] = "z";
+		assertEquals("a", given[0]);
+
+		final String[] empty = new String[0];
+		final String[] actualEmpty = ArrayFactory.newArray(empty);
+		assertNotSame(empty, actualEmpty);
+		assertArrayEquals(empty, actualEmpty);
+	}
+
+	/**
+	 * Test for method {@link ArrayFactory#newArray(Object...)} with null: the result is null, as
+	 * before the fix of #62
+	 */
+	@Test
+	public void testNewArrayWithNull()
+	{
+		assertNull(ArrayFactory.newArray((String[])null));
+	}
+
+	/**
 	 * Test for method {@link ArrayFactory#newArray(Object[], Object[])}
 	 */
 	@Test
@@ -84,6 +118,52 @@ public class ArrayFactoryTest
 		actual = ArrayFactory.newArray(null, 1, 2, 3);
 		expected = ArrayFactory.newArray(numbers);
 		assertArrayEquals(actual, expected);
+	}
+
+	/**
+	 * Test for method {@link ArrayFactory#newArray(Object[], Object[])} without elements: the
+	 * result is a new array with the elements of the existing array, for empty elements as for
+	 * null. Before the fix of #62 the method returned the existing array itself
+	 */
+	@Test
+	public void testNewArrayWithExistingArrayAndNoElements()
+	{
+		final String[] existing = { "a", "b" };
+		String[] actual;
+
+		actual = ArrayFactory.newArray(existing, new String[0]);
+		assertNotSame(existing, actual);
+		assertArrayEquals(existing, actual);
+
+		actual = ArrayFactory.newArray(existing, (String[])null);
+		assertNotSame(existing, actual);
+		assertArrayEquals(existing, actual);
+	}
+
+	/**
+	 * Test for method {@link ArrayFactory#newArray(Object[], Object[])} without an existing array:
+	 * the result is a new array with the given elements. Before the fix of #62 the method returned
+	 * the elements array itself
+	 */
+	@Test
+	public void testNewArrayWithoutExistingArray()
+	{
+		final String[] elements = { "a", "b" };
+		final String[] actual = ArrayFactory.newArray((String[])null, elements);
+		assertNotSame(elements, actual);
+		assertArrayEquals(elements, actual);
+	}
+
+	/**
+	 * Test for method {@link ArrayFactory#newArray(Object[], Object[])} without an existing array
+	 * and without elements: the result is null, for empty elements as for null, as before the fix
+	 * of #62
+	 */
+	@Test
+	public void testNewArrayWithoutExistingArrayAndNoElements()
+	{
+		assertNull(ArrayFactory.newArray((String[])null, new String[0]));
+		assertNull(ArrayFactory.newArray((String[])null, (String[])null));
 	}
 
 	/**
