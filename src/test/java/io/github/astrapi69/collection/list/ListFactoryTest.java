@@ -29,6 +29,7 @@ import static org.junit.jupiter.api.Assertions.assertNotNull;
 import static org.junit.jupiter.api.Assertions.assertTrue;
 
 import java.util.ArrayList;
+import java.util.Arrays;
 import java.util.Collection;
 import java.util.Collections;
 import java.util.Comparator;
@@ -459,6 +460,59 @@ public class ListFactoryTest
 		actual = ListFactory.newUniqueList();
 		assertNotNull(actual);
 		assertTrue(actual.size() == 0);
+	}
+
+	/**
+	 * Test the class of the lists that both methods newUniqueList return, from a collection, from
+	 * an empty one and from elements alone: a {@link SortedUniqueList} without comparator, not the
+	 * {@link UniqueList} their Javadoc names (#65).
+	 * <p>
+	 * The fix of #65 changes the result: each is a {@link UniqueList}.
+	 */
+	@Test
+	public void testNewUniqueListClass()
+	{
+		assertEquals(SortedUniqueList.class,
+			ListFactory.newUniqueList(Arrays.asList("b", "a"), "c").getClass());
+		assertEquals(SortedUniqueList.class,
+			ListFactory.newUniqueList(Collections.emptyList(), "c").getClass());
+		assertEquals(SortedUniqueList.class, ListFactory.newUniqueList("b", "a").getClass());
+	}
+
+	/**
+	 * Test the method add with an index on the lists of newUniqueList: it ignores the index and
+	 * appends, newUniqueList(b, a).add(0, c) gives [b, a, c] and add(0, a) leaves it, and
+	 * newUniqueList([b, a], c).add(1, d) gives [b, a, c, d] (#65).
+	 * <p>
+	 * The fix of #65 changes the result: add inserts at the index and moves an element the list
+	 * holds there, as {@link UniqueList#add(int, Object)} does; [c, b, a], then [a, c, b], and [b,
+	 * d, a, c].
+	 */
+	@Test
+	public void testNewUniqueListAddWithIndex()
+	{
+		List<String> list = ListFactory.newUniqueList("b", "a");
+		list.add(0, "c");
+		assertEquals(Arrays.asList("b", "a", "c"), list);
+		list.add(0, "a");
+		assertEquals(Arrays.asList("b", "a", "c"), list);
+
+		list = ListFactory.newUniqueList(Arrays.asList("b", "a"), "c");
+		list.add(1, "d");
+		assertEquals(Arrays.asList("b", "a", "c", "d"), list);
+	}
+
+	/**
+	 * Test the order of the lists of newUniqueList: the elements of the collection first, then the
+	 * given elements, each element once where it comes first; the same before and after the fix of
+	 * #65
+	 */
+	@Test
+	public void testNewUniqueListOrder()
+	{
+		assertEquals(Arrays.asList("b", "a", "c", "d"),
+			ListFactory.newUniqueList(Arrays.asList("b", "a", "b"), "c", "a", "d", "c"));
+		assertEquals(Arrays.asList("b", "a", "c"), ListFactory.newUniqueList("b", "a", "b", "c"));
 	}
 
 	/**
