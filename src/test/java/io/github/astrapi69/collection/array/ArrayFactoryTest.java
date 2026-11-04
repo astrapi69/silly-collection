@@ -280,7 +280,7 @@ public class ArrayFactoryTest
 
 	/**
 	 * Test the method {@link ArrayFactory#newRangeArray(int, int)} where end is smaller than start:
-	 * the message of the exception says that end should be greater than start
+	 * the message of the exception says that end must not be less than start
 	 */
 	@Test
 	public void testNewRangeArrayException()
@@ -289,7 +289,7 @@ public class ArrayFactoryTest
 			.assertThrows(IllegalArgumentException.class, () -> {
 				ArrayFactory.newRangeArray(9, 8);
 			});
-		assertEquals("Parameter end should be greater than parameter start.",
+		assertEquals("Parameter end must not be less than parameter start.",
 			exception.getMessage());
 	}
 

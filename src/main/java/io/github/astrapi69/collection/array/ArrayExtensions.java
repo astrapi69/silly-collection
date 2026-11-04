@@ -148,15 +148,25 @@ public final class ArrayExtensions
 	}
 
 	/**
-	 * Returns a concatenated array from given arrays
+	 * Returns a concatenated array from given arrays.
+	 * <p>
+	 * If the given elements are null or empty, the existing array itself is returned, also when it
+	 * is null: {@code concatenate(null, new Integer[0])} returns null and
+	 * {@code concatenate(new Integer[0], null)} returns the given empty array. Otherwise, if the
+	 * existing array is null, the elements array itself is returned. In all other cases the result
+	 * is a new array of the component type of the existing array, with the elements of the existing
+	 * array followed by the given elements.
+	 * </p>
 	 *
 	 * @param <T>
 	 *            the generic type
 	 * @param existingArray
-	 *            the existing array
+	 *            the existing array, may be null
 	 * @param elements
-	 *            the element that will be concatenated
-	 * @return a new concatenated array from given arrays
+	 *            the elements that will be concatenated, may be null
+	 * @return the existing array itself if the given elements are null or empty, else the elements
+	 *         array itself if the existing array is null, else a new concatenated array from the
+	 *         given arrays
 	 */
 	@SuppressWarnings("unchecked")
 	public static <T> T[] concatenate(T[] existingArray, T[] elements)
@@ -577,7 +587,7 @@ public final class ArrayExtensions
 	}
 
 	/**
-	 * Checks if the given array has a next element from the given element
+	 * Checks if the given array has a previous element from the given element
 	 *
 	 * @param <T>
 	 *            the generic type
@@ -768,7 +778,7 @@ public final class ArrayExtensions
 
 
 	/**
-	 * Removes the first element of the array
+	 * Creates a new array from the given array without the elements at the given indexes
 	 *
 	 * @param <T>
 	 *            the generic type of the objects in the array
@@ -776,7 +786,7 @@ public final class ArrayExtensions
 	 *            the origin array
 	 * @param indexes
 	 *            the indexes to remove
-	 * @return the new created array with the elements from the given indexes
+	 * @return the new created array without the elements at the given indexes
 	 */
 	public static <T> T[] remove(final T[] array, int... indexes)
 	{
@@ -793,7 +803,8 @@ public final class ArrayExtensions
 	}
 
 	/**
-	 * Removes the first element of the array
+	 * Creates a new array from the given array without all of its elements that are also contained
+	 * in the given array to remove
 	 *
 	 * @param <T>
 	 *            the generic type of the objects in the array
@@ -801,7 +812,7 @@ public final class ArrayExtensions
 	 *            the origin array
 	 * @param arrayToRemove
 	 *            the array to remove
-	 * @return the new created array with the elements
+	 * @return the new created array without the elements of the given array to remove
 	 */
 	public static <T> T[] removeAll(final T[] array, final T[] arrayToRemove)
 	{
@@ -874,13 +885,14 @@ public final class ArrayExtensions
 	}
 
 	/**
-	 * Removes the first element of the array
+	 * Creates a new array cloned from the given array with the difference that the last element is
+	 * removed
 	 *
 	 * @param <T>
 	 *            the generic type of the objects in the array
 	 * @param original
 	 *            the origin array
-	 * @return the new created array without the first element
+	 * @return the new created array without the last element
 	 */
 	public static <T> T[] removeLast(final T[] original)
 	{

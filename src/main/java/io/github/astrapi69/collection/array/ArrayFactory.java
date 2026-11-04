@@ -255,20 +255,23 @@ public final class ArrayFactory
 
 	/**
 	 * Creates a new {@link Integer} array with the given range that is defined through start and
-	 * end. For instance if the start is 5 and the end is 9 the resulted array will be [5,6,7,8,9]
+	 * end, both inclusive. For instance if the start is 5 and the end is 9 the resulted array will
+	 * be [5,6,7,8,9], and if the start and the end are 5 it will be [5]
 	 *
 	 * @param start
-	 *            The number to start
+	 *            The number to start, inclusive
 	 * @param end
-	 *            The number to end minus one
+	 *            The number to end, inclusive
 	 * @return the generated {@link Integer} array
+	 * @throws IllegalArgumentException
+	 *             if end is less than start
 	 */
 	public static Integer[] newRangeArray(final int start, final int end)
 	{
 		if (end < start)
 		{
 			throw new IllegalArgumentException(
-				"Parameter end should be greater than parameter start.");
+				"Parameter end must not be less than parameter start.");
 		}
 		final int length = end - start + 1;
 		final Integer[] array = new Integer[length];

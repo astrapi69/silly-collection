@@ -83,7 +83,8 @@ public final class MapExtensions
 	}
 
 	/**
-	 * Returns a Collection from all founded keys from the given value or null if nothing found.
+	 * Returns a Collection from all founded keys from the given value or an empty Collection if
+	 * nothing found.
 	 *
 	 * @param <K>
 	 *            the generic type of the key
