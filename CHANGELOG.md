@@ -31,6 +31,8 @@ CHANGED:
   file-worker go to 3.6 and 19.1, their last releases for Java 17, not to 5.0 and 20.0, which Gradle refuses for this
   project's Java 17; `gradle/version-catalog-update.gradle` pins both (#37)
 - the Gradle wrapper at 9.8.2, the current release; its jar is the one Gradle publishes for 9.8.2
+- the test dependency random-beans 3.9.0 is gone, which no test used, and with it jackson-databind and jackson-core
+  2.9.8 and classgraph 4.6.18: the source of 65 of the 67 Dependabot alerts, all 12 critical ones among them
 
 Version 28.2
 -------------
