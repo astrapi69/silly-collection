@@ -322,28 +322,36 @@ public class ArrayFactoryTest
 	}
 
 	/**
-	 * Test the factory methods of the primitive types with a given array: today they return the
-	 * given array itself. The fix of #75 changes the result: a new array with the same values.
+	 * Test the factory methods of the primitive types with a given array: the result is a new array
+	 * with the same values, not the given array itself (#75).
 	 */
 	@Test
 	public void testNewPrimitiveArrayWithGivenArray()
 	{
 		final boolean[] booleans = { true, false };
-		Assertions.assertSame(booleans, ArrayFactory.newBooleanArray(booleans));
+		Assertions.assertNotSame(booleans, ArrayFactory.newBooleanArray(booleans));
+		Assertions.assertArrayEquals(booleans, ArrayFactory.newBooleanArray(booleans));
 		final byte[] bytes = { 1, 2 };
-		Assertions.assertSame(bytes, ArrayFactory.newByteArray(bytes));
+		Assertions.assertNotSame(bytes, ArrayFactory.newByteArray(bytes));
+		Assertions.assertArrayEquals(bytes, ArrayFactory.newByteArray(bytes));
 		final char[] chars = { 'a', 'b' };
-		Assertions.assertSame(chars, ArrayFactory.newCharArray(chars));
+		Assertions.assertNotSame(chars, ArrayFactory.newCharArray(chars));
+		Assertions.assertArrayEquals(chars, ArrayFactory.newCharArray(chars));
 		final double[] doubles = { 1.0D, 2.0D };
-		Assertions.assertSame(doubles, ArrayFactory.newDoubleArray(doubles));
+		Assertions.assertNotSame(doubles, ArrayFactory.newDoubleArray(doubles));
+		Assertions.assertArrayEquals(doubles, ArrayFactory.newDoubleArray(doubles));
 		final float[] floats = { 1.0F, 2.0F };
-		Assertions.assertSame(floats, ArrayFactory.newFloatArray(floats));
+		Assertions.assertNotSame(floats, ArrayFactory.newFloatArray(floats));
+		Assertions.assertArrayEquals(floats, ArrayFactory.newFloatArray(floats));
 		final int[] ints = { 1, 2 };
-		Assertions.assertSame(ints, ArrayFactory.newIntArray(ints));
+		Assertions.assertNotSame(ints, ArrayFactory.newIntArray(ints));
+		Assertions.assertArrayEquals(ints, ArrayFactory.newIntArray(ints));
 		final long[] longs = { 1L, 2L };
-		Assertions.assertSame(longs, ArrayFactory.newLongArray(longs));
+		Assertions.assertNotSame(longs, ArrayFactory.newLongArray(longs));
+		Assertions.assertArrayEquals(longs, ArrayFactory.newLongArray(longs));
 		final short[] shorts = { 1, 2 };
-		Assertions.assertSame(shorts, ArrayFactory.newShortArray(shorts));
+		Assertions.assertNotSame(shorts, ArrayFactory.newShortArray(shorts));
+		Assertions.assertArrayEquals(shorts, ArrayFactory.newShortArray(shorts));
 	}
 
 	/**

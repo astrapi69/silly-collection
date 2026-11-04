@@ -94,31 +94,40 @@ public final class ArrayFactory
 	/**
 	 * Factory method for create new array of primitive boolean values from the given optional
 	 * elements.
+	 * <p>
+	 * The result is a new array, also when no elements are given: a copy of the given array, so
+	 * that a write to the result does not change the array of the caller. Null gives null.
+	 * </p>
 	 *
 	 * @param elements
-	 *            the optional primitive boolean values that will be in the returned array of
-	 *            primitive boolean values array.
-	 * @return the new array of primitive boolean values
+	 *            the optional primitive boolean values that will be in the returned array, may be
+	 *            null
+	 * @return a new array with the given primitive boolean values, or null if the given elements
+	 *         are null
 	 */
 	@SafeVarargs
 	public static boolean[] newBooleanArray(final boolean... elements)
 	{
-		return elements;
+		return elements == null ? null : elements.clone();
 	}
 
 	/**
 	 * Factory method for create new array of primitive byte values from the given optional
 	 * elements.
+	 * <p>
+	 * The result is a new array, also when no elements are given: a copy of the given array, so
+	 * that a write to the result does not change the array of the caller. Null gives null.
+	 * </p>
 	 *
 	 * @param elements
-	 *            the optional primitive byte values that will be in the returned array of primitive
-	 *            byte values array.
-	 * @return the new array of primitive byte values
+	 *            the optional primitive byte values that will be in the returned array, may be null
+	 * @return a new array with the given primitive byte values, or null if the given elements are
+	 *         null
 	 */
 	@SafeVarargs
 	public static byte[] newByteArray(final byte... elements)
 	{
-		return elements;
+		return elements == null ? null : elements.clone();
 	}
 
 	/**
@@ -148,31 +157,41 @@ public final class ArrayFactory
 	/**
 	 * Factory method for create new array of primitive character values from the given optional
 	 * elements.
+	 * <p>
+	 * The result is a new array, also when no elements are given: a copy of the given array, so
+	 * that a write to the result does not change the array of the caller. Null gives null.
+	 * </p>
 	 *
 	 * @param elements
-	 *            the optional primitive character values that will be in the returned array of
-	 *            primitive character values array.
-	 * @return the new array of primitive character values
+	 *            the optional primitive character values that will be in the returned array, may be
+	 *            null
+	 * @return a new array with the given primitive character values, or null if the given elements
+	 *         are null
 	 */
 	@SafeVarargs
 	public static char[] newCharArray(final char... elements)
 	{
-		return elements;
+		return elements == null ? null : elements.clone();
 	}
 
 	/**
 	 * Factory method for create new array of primitive double values from the given optional
 	 * elements.
+	 * <p>
+	 * The result is a new array, also when no elements are given: a copy of the given array, so
+	 * that a write to the result does not change the array of the caller. Null gives null.
+	 * </p>
 	 *
 	 * @param elements
-	 *            the optional primitive double values that will be in the returned array of
-	 *            primitive double values array.
-	 * @return the new array of primitive double values
+	 *            the optional primitive double values that will be in the returned array, may be
+	 *            null
+	 * @return a new array with the given primitive double values, or null if the given elements are
+	 *         null
 	 */
 	@SafeVarargs
 	public static double[] newDoubleArray(final double... elements)
 	{
-		return elements;
+		return elements == null ? null : elements.clone();
 	}
 
 	/**
@@ -211,46 +230,60 @@ public final class ArrayFactory
 	/**
 	 * Factory method for create new array of primitive float values from the given optional
 	 * elements.
+	 * <p>
+	 * The result is a new array, also when no elements are given: a copy of the given array, so
+	 * that a write to the result does not change the array of the caller. Null gives null.
+	 * </p>
 	 *
 	 * @param elements
-	 *            the optional primitive float values that will be in the returned array of
-	 *            primitive float values array.
-	 * @return the new array of primitive float values
+	 *            the optional primitive float values that will be in the returned array, may be
+	 *            null
+	 * @return a new array with the given primitive float values, or null if the given elements are
+	 *         null
 	 */
 	@SafeVarargs
 	public static float[] newFloatArray(final float... elements)
 	{
-		return elements;
+		return elements == null ? null : elements.clone();
 	}
 
 	/**
 	 * Factory method for create new array of primitive integer values from the given optional
 	 * elements.
+	 * <p>
+	 * The result is a new array, also when no elements are given: a copy of the given array, so
+	 * that a write to the result does not change the array of the caller. Null gives null.
+	 * </p>
 	 *
 	 * @param elements
-	 *            the optional primitive integer values that will be in the returned array of
-	 *            primitive integer values array.
-	 * @return the new array of primitive integer values
+	 *            the optional primitive integer values that will be in the returned array, may be
+	 *            null
+	 * @return a new array with the given primitive integer values, or null if the given elements
+	 *         are null
 	 */
 	@SafeVarargs
 	public static int[] newIntArray(final int... elements)
 	{
-		return elements;
+		return elements == null ? null : elements.clone();
 	}
 
 	/**
 	 * Factory method for create new array of primitive long values from the given optional
 	 * elements.
+	 * <p>
+	 * The result is a new array, also when no elements are given: a copy of the given array, so
+	 * that a write to the result does not change the array of the caller. Null gives null.
+	 * </p>
 	 *
 	 * @param elements
-	 *            the optional primitive long values that will be in the returned array of primitive
-	 *            long values array.
-	 * @return the new array of primitive long values
+	 *            the optional primitive long values that will be in the returned array, may be null
+	 * @return a new array with the given primitive long values, or null if the given elements are
+	 *         null
 	 */
 	@SafeVarargs
 	public static long[] newLongArray(final long... elements)
 	{
-		return elements;
+		return elements == null ? null : elements.clone();
 	}
 
 	/**
@@ -285,16 +318,21 @@ public final class ArrayFactory
 	/**
 	 * Factory method for create new array of primitive short values from the given optional
 	 * elements.
+	 * <p>
+	 * The result is a new array, also when no elements are given: a copy of the given array, so
+	 * that a write to the result does not change the array of the caller. Null gives null.
+	 * </p>
 	 *
 	 * @param elements
-	 *            the optional primitive short values that will be in the returned array of
-	 *            primitive short values array.
-	 * @return the new array of primitive short values
+	 *            the optional primitive short values that will be in the returned array, may be
+	 *            null
+	 * @return a new array with the given primitive short values, or null if the given elements are
+	 *         null
 	 */
 	@SafeVarargs
 	public static short[] newShortArray(final short... elements)
 	{
-		return elements;
+		return elements == null ? null : elements.clone();
 	}
 
 	/**
