@@ -84,6 +84,20 @@ dependencies {
 }
 ```
 
+## Quality
+
+As of 28.3, measured by its release gate (JDK 17, the tree of `RELEASE-28.3`); each release takes
+the numbers of its own gate:
+
+| | |
+|---|---|
+| tests | 518 in 24 test classes; 3 are skipped: two `BeanTester` tests that wait for a factory method, and a benchmark |
+| line and branch coverage (JaCoCo) | 1247 of 1247 lines, 546 of 558 branches; the build fails below 98% of the lines or 95% of the branches (`jacocoTestCoverageVerification` in `gradle/testing.gradle`) |
+| mutation score (PIT) | 781 of 794 mutants killed, 98%; the build fails below 95% (`mutationThreshold` in `build.gradle`). The 13 survivors are equivalent: ten conditions whose edge case gives the same result either way, such as `0 < elements.length` before adding no elements, and three `return true` mutants of `add` methods that always return true, as `ArrayList.add` does |
+
+The CI build runs both checks on every pull request, and publishes the mutation score of `develop`
+as the badge above.
+
 ## Support this project
 
 If silly-collection is useful to you, a star on [GitHub](https://github.com/astrapi69/silly-collection) helps others find it.
@@ -112,6 +126,33 @@ Release version numbers will be incremented in the following format:
 For detailed information on versioning for this project you can visit
 this [wiki page](https://github.com/lightblueseas/mvn-parent-projects/wiki/Simplified-Semantic-Versioning)
 .
+
+## Releasing
+
+What a release consists of, in the order it is run:
+
+1. **No open issue** but those of a later milestone: every issue of the release's milestone is
+   closed, and a finding on the way is fixed in the release or, if it changes what callers rely
+   on, assigned to the next major release.
+2. **One pull request** with the CHANGELOG entry and `projectVersion` without `-SNAPSHOT`
+   (`docs: changelog for X.Y, and the version that carries it`), the full build green on it.
+3. **The release gate** on that pull request's tree: the tests, `pitest` with its floor and
+   `jacocoTestCoverageVerification` with its floor in one run, `--rerun-tasks --no-build-cache`, on
+   JDK 17, the toolchain of the build; the class files are of Java 17 (major version 61), and the
+   resolved dependencies hold no `-SNAPSHOT`. Its numbers go into the CHANGELOG entry and into the
+   Quality section above, in the same pull request, before it is merged.
+4. **Tag the merge commit** with `./gradlew tagRelease` (`make tag-release`), which names it
+   `RELEASE-X.Y`, once its tree is the tree of the gate, and push the tag. `publish.yml` uploads to
+   the Central Portal, where the maintainer releases it. A pushed tag is never moved or deleted; a
+   failed run is fixed on the branch and run again.
+5. **Verify on Central**: the jar, pom, `.module`, `-sources.jar` and `-javadoc.jar`, their sha1, and
+   `gpg --verify` on the `.asc`.
+6. **GitHub release** from the CHANGELOG entry.
+7. **`master` follows the release** by a merge of the tag: on `master`,
+   `git merge --no-ff "RELEASE-X.Y^{commit}" -m "Merge tag RELEASE-X.Y into master"`. Before
+   `master` is pushed, `git diff RELEASE-X.Y master` has to be empty; if it is not, nothing is
+   pushed. Never a force push: `master` is always the latest release, nothing else.
+8. **Open the next cycle**: `projectVersion` to the next `-SNAPSHOT`.
 
 ## Want to Help and improve it? ###
 

@@ -1,20 +1,118 @@
 ## Change log
 ----------------------
 
-Version 28.3-SNAPSHOT
+Version 28.3
 -------------
+
+Every change of this release is binary compatible with 28.2: no public or protected method is removed or changes
+its signature. The fixes make methods do what their contract says, where they did something else, so a caller that
+relied on the old behavior sees a difference. Those that callers are likely to notice are marked **Note** below.
+
+FIXED:
+
+- `CollectionExtensions.isEqualCollection` compares the elements and how often each occurs, whatever their order,
+  through `CollectionUtils.isEqualCollection` of commons-collections4. It returned true for any two collections of
+  the same size without a common element, `[1, 2]` and `[3, 4]`, and did not compare how often an element occurs,
+  `[1, 1, 2]` and `[1, 2, 2]`. The elements compare by `equals`, so arrays by identity (#42).
+  **Note:** the tests of a caller that relied on the old result can turn red with 28.3. That shows real differences
+  between the collections they compare, which the old result hid; it is not a fault of the update. Of the family,
+  nine assertions of json-extensions, two of gson-extensions and one of csv-worker rely on it, listed on #42
+  (astrapi69/json-extensions#29, astrapi69/gson-extensions#27)
+- `UniqueList.addAll(Collection)` and `addAll(int, Collection)` return whether the list changed; they returned true
+  for every non-empty collection. `addAll(int, Collection)` and `add(int, E)` check the index as `ArrayList` does,
+  before the list changes. `add(int, E)` of an element the list holds moves it to the index; it removed the element
+  first, so that a valid index could be out of range by then, and the exception left the element removed (#39)
+- `SortedList` and `SortedUniqueList` take an element that their comparator holds equal to another one but `equals`
+  does not, `"A"` beside `"a"` with `String.CASE_INSENSITIVE_ORDER`, where they threw an `IndexOutOfBoundsException`
+  (`ListExtensions.getIndexToInsert`). The Javadoc of their `add(int, E)` and `addAll(int, Collection)` says that the
+  index is ignored, as the class Javadoc says of every add method (#40)
+- `InsertionOrderSet.add`, and through it `addAll` and the same methods of `IndexableSet`, return false for an
+  element the set holds, as `Set.add` says; the element still moves to the end. `IndexableSet.getIndex` takes a null
+  element, where it threw a `NullPointerException` (#41)
+- `ListExtensions.removeLastValues(list, n)` removes the last n values, where it removed the first ones, and
+  `sortByProperty(list, function, true)` sorts ascending and `false` descending, where the flag worked the wrong way
+  round (#43)
+- `MapExtensions.getKeyFromValue` returns null when no entry holds the value, where it returned the last key. It and
+  `getKeysFromValue` compare with `Objects.equals`, and no longer throw for a null value in the map.
+  `MapFactory.newTreeMap` with a comparator takes keys that are not `Comparable` (#44)
+- `SortedProperties.keySet()` is a view backed by the properties, as `Map.keySet` specifies, in the order of the
+  comparator, where it was a copy: a removal through it removes the entry, `add` throws
+  `UnsupportedOperationException`. `propertyNames()` lists the keys of the defaults too, as
+  `Properties.propertyNames` specifies. `SortedProperties` and `IndexSortedProperties` serialize (#46).
+  **Note:** `propertyNames()` throws a `ClassCastException` for a key that is no `String`, as
+  `Properties.propertyNames` specifies; it listed such keys before
+- the index of `IndexSortedProperties` holds exactly the keys of the entries of the object itself, in the order of
+  the comparator: a key put twice is in it once, a removed key leaves nothing behind, `putIfAbsent`, `compute`,
+  `computeIfAbsent`, `computeIfPresent`, `merge` and removals through `keySet()`, `entrySet()` and `values()` reach
+  it, a clone has an index of its own, and `get(int)`, `getProperty(int)` and `remove(int)` return null for any
+  index out of range, a negative one included (#45).
+  **Note:** the index no longer holds the keys of the defaults. A caller that read a default through `get(int)` or
+  `getProperty(int)` no longer finds it there, and the indexes of the own keys can be different;
+  `getProperty(String)` still finds the defaults
+- the Javadoc says what the code does, where it contradicted it: `ArrayExtensions.concatenate`,
+  `remove`, `removeAll`, `removeLast` and `hasPrevious`, `CollectionExtensions.toList`, `toArray` and `isNotEmpty`,
+  `ListExtensions.toArray`, `toList(Enumeration)` and `hasPrevious`, `ArrayFactory.newRangeArray` and
+  `MapExtensions.getKeysFromValue`. No method returns or throws anything else; only the message of `newRangeArray`
+  changes, to "Parameter end must not be less than parameter start." (#47)
+- the Javadoc of `add(E)` and `addAll(Collection)` of `SortedList` and `SortedUniqueList`, and of
+  `UniqueList.add(E)`, says where the element goes and what they return, where it inherited "Appends ... to the end"
+  from `ArrayList`: at the place of the comparator, in front of one of the elements the comparator holds equal; false
+  for an element a unique list holds; `SortedList.add` always true (#66)
+- `ArrayFactory.newArray(T...)` and `ListExtensions.toArray(T...)` return a new array, also when no elements are
+  given, where they returned the given array itself; `newArray(T[], T...)` returns a copy where `concatenate` hands
+  back one of the given arrays. The factory methods of the primitive types, `newBooleanArray` to `newShortArray`,
+  return a new array too (#75). Null still gives null (#62).
+  **Note:** a caller that wrote to the result to change its own array, or compared it with `==`, sees a difference;
+  no caller in the family does
+- `ArrayExtensions.remove(array, indexes)` no longer sorts the caller's indexes array, and an index given twice
+  removes one element, where it removed two, `remove({0, 1, 2, 3}, 1, 1)` gave `{0, 3}`, or threw for the last
+  index. An index out of range names the length of the given array in its message (#76). `removeLast` of an empty
+  array throws an `IndexOutOfBoundsException`, as `removeFirst` does, where it threw a `NegativeArraySizeException`
+  (#63)
+- `ArrayExtensions.removeFromStart` and `removeFromEnd` remove the prefix or suffix only when the array starts or
+  ends with it, compared with `Objects.equals`, and otherwise return a copy of the array, as
+  `StringUtils.removeStart` and `removeEnd` of Apache Commons Lang do for strings. They removed as many elements as
+  the prefix or suffix had, whatever they were, and threw a `NegativeArraySizeException` for a longer one. The
+  result is always a new array; `removeFromEnd` checks its arguments as `removeFromStart` does, so null throws an
+  `IllegalArgumentException` (#76).
+  **Note:** a caller that removed a prefix or suffix by its length alone gets the array unchanged; no caller in the
+  family does
+- `CollectionExtensions.toArray(Collection)`, `ListExtensions.toArray(List)` and `SetExtensions.toArray(Set)` take as
+  component type the most specific common superclass of the non-null elements, `Object` if all are null, not the
+  class of the first element: a null first element no longer throws a `NullPointerException`, and elements of
+  different classes no longer throw an `ArrayStoreException`, `[1, 2.5]` gives a `Number[]`.
+  `ArrayExtensions.removeFromStart` takes the component type of the given array (#64).
+  **Note:** a caller whose `T` is an interface, or whose collection holds only nulls, gets an `Object[]` and a
+  `ClassCastException` where it assigns it to a `T[]`. Of the family, `PropertiesKeyExtensions.concatenate` of
+  resourcebundle-core gives `"null.foo"` for a list whose first element is null, where it threw a
+  `NullPointerException`
+- `ListFactory.newUniqueList` returns a `UniqueList`, as its Javadoc says, where it built a `SortedUniqueList`
+  without comparator: the order of the elements is the same, but `add(int, E)` inserts at the index instead of
+  appending; the sorted one is `newSortedUniqueList` (#65)
+- `UniqueList.set(int, E)` and the `set` of its list iterator swap an element the list holds at another index with
+  the one at the index, where they stored it a second time, so that `Collections.swap`, `reverse`, `shuffle` and
+  `rotate` keep working. `replaceAll` throws an `IllegalArgumentException` for an operator that gives two equal
+  values and leaves the list unchanged. The `add` of its list iterator inserts before the element `next()` returns,
+  also for an element held before the cursor, where `next()` skipped an element (#67).
+  **Note:** `replaceAll` with an operator that maps two elements to equal values throws now, and `Collections.fill`
+  and `copy` give a permutation without duplicates instead of the repeated values
 
 CHANGED:
 
 - publishing as in the rest of the family (#31): the Central Portal through the nmcp settings plugin, a release
   waiting for the maintainer (USER_MANAGED), the signing subkey through GPG_KEY_ID, a refused upload when only half
   of the key is set, and uploads only from CI, a release only from its RELEASE-* tag
-- mutation testing (#36): the tests kill 703 of the 721 mutants of PIT 1.30.0 with its default mutators, 97.5%, up
-  from 625, 87%, and the CI build fails below 95% (`mutationThreshold` in `build.gradle`, 85% before; PIT rounds the
-  score half up to a whole percent before it compares). Of the 18 that survive, 14 are equivalent; the other 4 point
-  at bugs and at Javadoc that contradicts the code (#41, #43, #47). The README's mutation score badge shows the score
-  of `develop`, which CI publishes on the `gh-pages` branch from each push to it, also when the score fails the
-  floor; a push to `master` publishes master's. `make pitest` runs PIT
+- mutation testing (#36): the tests kill 781 of the 794 mutants of PIT 1.30.0 with its default mutators, 98.4%, up
+  from 625 of 721, 87%, and the CI build fails below 95% (`mutationThreshold` in `build.gradle`, 85% before; PIT
+  rounds the score half up to a whole percent before it compares). The 13 that survive are equivalent. Four more
+  survived when the floor was set, at 703 of 721; they pointed at the bugs and the Javadoc of #41, #43 and #47, and
+  their fixes kill them. The README's mutation score badge shows the score of `develop`, which CI publishes on the
+  `gh-pages` branch from each push to it, also when the score fails the floor; a push to `master` publishes
+  master's. `make pitest` runs PIT
+- a coverage floor (#38): the tests cover all 1247 lines and 546 of the 558 branches (JaCoCo), 518 tests in 24
+  classes, and the build fails below 98% of the lines or 95% of the branches (`jacocoTestCoverageVerification` in
+  `gradle/testing.gradle`), each measure minus about two points, rounded down, as for the mutation score. The README
+  has a Quality section with the numbers of the release gate, and a Releasing section with its steps (#38)
 - the tests that PIT found weak check what `add` and `addAll` of the list classes return, the boundaries at their
   exact value, the content and order of results that were checked by their size, the types the factories document,
   the order of the sorted maps, and the index of `IndexSortedProperties` after `put`, `remove` and `clear`; two
@@ -24,15 +122,25 @@ CHANGED:
   directory, where a run of PIT left five of them behind (#36)
 - the test runtime class path no longer holds this project's own jar: file-worker depends on an older
   silly-collection, which Gradle resolved to this project, so `test` needed `mustRunAfter(jar)` and
-  `./gradlew build pitest` failed Gradle's validation (#36); the cycle itself is #37
+  `./gradlew build pitest` failed Gradle's validation (#36). file-worker is no test dependency any more, and with
+  it the exclude of #36 is gone: `testRuntimeClasspath` holds no silly-collection. `MigrateToTomlVersions`, its only
+  user, a test class whose only test printed two paths and asserted nothing, is removed; silly-io 3.6 is the only
+  library of the family in the tests (#37)
 - dependencies raised with versionCatalogUpdate: commons-collections4 4.6.0, a release instead of the milestone
   4.5.0-M2 on the consumers' runtime class path (#35); for the tests junit-jupiter 6.1.3, mockito-core 5.24.0 and
-  test-object 9.1; the Gradle plugins spotless 8.11.0, versions 0.67.0 and version-catalog-update 1.1.2. silly-io and
-  file-worker go to 3.6 and 19.1, their last releases for Java 17, not to 5.0 and 20.0, which Gradle refuses for this
-  project's Java 17; `gradle/version-catalog-update.gradle` pins both (#37)
+  test-object 9.1; the Gradle plugins spotless 8.11.0, versions 0.67.0 and version-catalog-update 1.1.2. silly-io
+  goes to 3.6, its last release for Java 17, not to 5.0, which Gradle refuses for this project's Java 17;
+  `gradle/version-catalog-update.gradle` pins it (#37)
 - the Gradle wrapper at 9.8.2, the current release; its jar is the one Gradle publishes for 9.8.2
 - the test dependency random-beans 3.9.0 is gone, which no test used, and with it jackson-databind and jackson-core
   2.9.8 and classgraph 4.6.18: the source of 65 of the 67 Dependabot alerts, all 12 critical ones among them
+
+KNOWN ISSUES, for 29.0:
+
+- `set`, `replaceAll` and the list iterator of `SortedList` and `SortedUniqueList` can break the order or the
+  uniqueness, and `SortedList.addAll` of the list itself throws a `ConcurrentModificationException` (#77)
+- changes through a `subList` of `UniqueList`, `SortedList` and `SortedUniqueList` can break the list or the view
+  (#78)
 
 Version 28.2
 -------------
