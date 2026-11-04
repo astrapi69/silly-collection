@@ -12,11 +12,6 @@ versionCatalogUpdate {
         // plugins = [libs.plugins.my.plugin, libs.plugins.my.other.plugin]
         // pins all libraries (not plugins) for the given groups
         // groups = ["com.somegroup", "com.someothergroup"]
-        // silly-io from 4.0 is built for Java 25 (its Gradle module metadata says
-        // org.gradle.jvm.version 25), and Gradle refuses it on the class path of this library,
-        // which compiles and tests with Java 17 (projectSourceCompatibility). silly-io 3.6 is its
-        // last release for Java 17 (#37)
-        libraries = [libs.silly.io]
     }
     keep {
         // keep has the same options as pin to keep specific entries

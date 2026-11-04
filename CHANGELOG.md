@@ -1,6 +1,120 @@
 ## Change log
 ----------------------
 
+Version 29.0
+-------------
+
+29.0 needs Java 25, and the list classes keep their own rules where the methods they inherit from `ArrayList` broke
+them. Every breaking change has an entry in "MIGRATION FROM 28.x" below. 28.3 is the last release for Java 17; the
+28.x line is frozen but for security fixes (the README's "Upgrading from 28.x").
+
+BREAKING:
+
+- Java 25 is the minimum, up from 17: the family builds, tests and releases on JDK 25 (astrapi69/mystic-crypt#235),
+  so this release is 29.0 instead of 28.4 (#51). Gradle refuses a library built for Java 25 on the class path of a
+  project below 25; such a project stays on 28.3 until it moves to JDK 25 itself. The projects of the family it
+  concerns are listed on #51
+- `SortedList` and `SortedUniqueList` with a comparator refuse explicit positioning, as `TreeSet` does: `set`,
+  `sort`, `addFirst`, `addLast`, and the `set` and `add` of their list iterators throw an
+  `UnsupportedOperationException`, and `replaceAll` writes only values that keep the order; so the algorithms of
+  `Collections` that write through `set` throw at their first write and leave the list unchanged (#77, #78, #87)
+- `subList` of `UniqueList`, `SortedList` and `SortedUniqueList`, and `reversed()` of the two sorted lists, read and
+  remove only: `set`, `add`, `addAll`, `replaceAll` and `sort` through them throw an `UnsupportedOperationException`;
+  `subList(from, to).clear()` still removes a range (#78, #87)
+- `UniqueList.reversed()` refuses the two moves its view cannot make keep their contract: `add(size(), e)` and the
+  `add` of its list iterator at or before the cursor, with an element the list holds (#77)
+
+FIXED:
+
+- `UniqueList.reversed()` returns a view of its own that adds at the index of the view: after `reversed().add(i, e)`,
+  `reversed().get(i)` is `e`, for an element the list holds too, which moves there. The JDK's view of `List.reversed`
+  calls `add(size() - i, e)` of the list, which assumes that the list grows, so that a held element ended one place
+  too early: `[a, b, c].reversed().add(1, a)` gave the view `[a, c, b]`, not `[c, a, b]`. The view writes through the
+  methods of `UniqueList` as before; its `add(e)` and `addAll` return false for elements the list holds, as
+  `UniqueList.add` and `addAll` do, where they returned true, and `set` and `remove` of its list iterator after its
+  `add` throw an `IllegalStateException`, as `ListIterator` says, where they acted on the added element (#77).
+  **Note:** with an element the list holds, `add(size(), e)` of the view and the `add` of its list iterator at or
+  before the cursor throw an `UnsupportedOperationException`: no index `size()` exists after a move, and the cursor
+  cannot keep the contract of `ListIterator.add`; `addLast(e)` of the view moves an element to its end
+- `set(int, E)` and the `set` of the list iterator of `SortedList` and `SortedUniqueList` with a comparator throw
+  `UnsupportedOperationException`, whatever the arguments, as `TreeSet.addFirst` does ("explicit positioning is not
+  supported"), and the list does not change; `replaceAll` replaces the elements in place where the values keep the
+  order of the comparator, and otherwise throws `UnsupportedOperationException` and replaces none. They wrote any
+  element at any index, so that the list left the order of its comparator and a `SortedUniqueList` could hold an
+  element twice. `replaceAll` computes all values first; on a `SortedUniqueList` two equal values throw
+  `IllegalArgumentException`. The `add` of their list iterator throws `UnsupportedOperationException`, with and
+  without a comparator; it sorted the element in, wherever the cursor stood. Without a comparator `SortedList.set`
+  replaces in place, as before (#78).
+  **Note:** `Collections.swap`, `reverse`, `shuffle`, `rotate`, `fill`, `copy` and `replaceAll` throw
+  `UnsupportedOperationException` on a sorted list with a comparator, at their first write, and the list does not
+  change; they reordered it as an `ArrayList`. To replace an element, `remove(i)` it and `add(e)` the new one; to
+  reorder, work on a copy, `new ArrayList<>(list)`
+
+- `SortedUniqueList.set` without a comparator swaps an element the list holds at another index with the one at the
+  index, as `UniqueList.set` does since 28.3 (#67), where it stored the element a second time; the `set` of its list
+  iterator goes through it (#77, #78)
+- `UniqueList.addFirst` and `addLast` put the element first or last, and move it there if the list holds it, as
+  `LinkedHashSet` does; `addLast` left a held element where it was (#87)
+- `setComparator` of `SortedList` and `SortedUniqueList` sorts with the new comparator first, and keeps the old
+  comparator and order when that sort throws; it kept the new comparator on a list it had sorted in part (#87)
+- `SortedList.addAll` of the list itself adds a copy of its elements, as `ArrayList` does, where it threw a
+  `ConcurrentModificationException` (#77)
+
+CHANGED:
+
+- CI, the dependency submission and publishing build on JDK 25 (`gradle.yml`, `dependency-submission.yml`,
+  `publish.yml`) (#51)
+- the tests take silly-io 5.0, its release for Java 25, which `gradle/version-catalog-update.gradle` no longer pins
+  to 3.6 (#37, #51); PIT 1.30.1, as silly-io on JDK 25
+- the README as silly-io's (#85): what the library is for and when another one fits better, the requirements, the
+  installation, upgrading, a quick start whose examples run in `ReadmeExamplesTest`, the packages, the quality, how
+  to verify the release signatures; "Upgrading from 28.x" says that 28.3 is the last release for Java 17 and that the
+  28.x line is frozen but for security fixes, on a branch `release/28.x` from `RELEASE-28.3`
+- mutation testing and coverage, measured by the release gate of 29.0 on JDK 25: the tests kill 960 of the
+  971 mutants of PIT 1.30.1, 98.9%; the 11 that survive are equivalent. JaCoCo covers 1502 of 1502 lines
+  and 611 of 622 branches; 640 tests in 25 classes
+
+MIGRATION FROM 28.x:
+
+- **Java 25 (#51).** Before: 28.3 runs on Java 17. After: 29.0 holds Java 25 bytecode and does not load on an older
+  JVM. What to change: build and run on JDK 25, or stay on 28.3.
+- **`set` of a sorted list with a comparator, and the `set` of its list iterator (#78).** Before: the element was
+  written at the index, so that the list could leave its order and a `SortedUniqueList` could hold an element twice.
+  After: `UnsupportedOperationException`, the list unchanged. What to change: `remove(i)` the old element and
+  `add(e)` the new one, which sorts it in.
+- **`replaceAll` of a sorted list with a comparator (#78).** Before: every value was written in place. After: the
+  values are written only if they keep the order of the comparator; otherwise `UnsupportedOperationException` and
+  nothing replaced; a `SortedUniqueList` throws `IllegalArgumentException` for two equal values. What to change:
+  compute the values, then `clear()` and `addAll(values)`.
+- **`sort(c)` and `Collections.sort(list)` of a sorted list (#77).** Before: the list was sorted by any comparator,
+  against its own. After: `UnsupportedOperationException`. What to change: `setComparator(c)` to change the order
+  for good, or sort a copy, `new ArrayList<>(list)`.
+- **`add` of the list iterator of a sorted list (#77, #78).** Before: the element was sorted in wherever the cursor
+  stood, and the cursor moved as if it were there. After: `UnsupportedOperationException`. What to change: `add` to
+  the list after the iteration.
+- **`Collections.swap`, `reverse`, `shuffle`, `rotate`, `fill` and `copy` on a sorted list with a comparator (#78).**
+  Before: they reordered the list as an `ArrayList` and broke its order. After: `UnsupportedOperationException` at
+  their first write, the list unchanged. What to change: work on a copy, `new ArrayList<>(list)`.
+- **`addFirst` and `addLast` of a sorted list, on Java 21 or later (#87).** Before: the element was sorted in, so
+  it was neither first nor last. After: `UnsupportedOperationException`, as `TreeSet.addFirst`. What to change:
+  `add(e)`, which sorts the element in.
+- **`reversed()` of a sorted list (#87).** Before: the JDK's view, whose writes sorted the element in. After: a view
+  that reads and removes; its writes throw `UnsupportedOperationException`. What to change: write through the list.
+- **`subList` of `UniqueList`, `SortedList` and `SortedUniqueList` (#78).** Before: `ArrayList`'s view, whose writes
+  could add a duplicate, break the order or corrupt the view. After: the view reads and removes; `set`, `add`,
+  `addAll`, `replaceAll` and `sort` throw `UnsupportedOperationException`. What to change: write through the list,
+  for instance `list.set(from + i, e)` on a `UniqueList`, or work on a copy, `new ArrayList<>(list.subList(a, b))`.
+- **`UniqueList.reversed()`, on Java 21 or later (#77).** Before: `add(i, e)` with an element the list holds and
+  `0 < i < size()` put it one place too early in the view. After: it lands at `i`; `add(size(), e)` with a held
+  element and the `add` of the view's list iterator of a held element at or before the cursor throw
+  `UnsupportedOperationException`. What to change: pass `i`, not `i + 1`; use `addLast(e)` of the view to move an
+  element to its end.
+- **`UniqueList.addLast` of a held element, on Java 21 or later (#87).** Before: the element stayed where it was.
+  After: it moves to the end. What to change: `add(e)`, if a held element is to stay where it is.
+- **`SortedUniqueList.set` without a comparator (#77).** Before: an element held at another index was stored a
+  second time. After: the two swap. What to change: nothing, unless the code relied on the duplicate.
+
+
 Version 28.3
 -------------
 
@@ -141,6 +255,12 @@ KNOWN ISSUES, for 29.0:
   uniqueness, and `SortedList.addAll` of the list itself throws a `ConcurrentModificationException` (#77)
 - changes through a `subList` of `UniqueList`, `SortedList` and `SortedUniqueList` can break the list or the view
   (#78)
+- on a JDK 21 or later runtime, `UniqueList.reversed().add(i, e)` with 0 < i < size and an element the list holds
+  puts it one place too early in the view, as the JDK's reversed view expects the list to grow; the list stays
+  unique. The methods of `SequencedCollection` behave as follows there: `addFirst` and `addLast` of `SortedList` and
+  `SortedUniqueList` sort the element in, and `UniqueList.addLast` leaves a held element where it is (#87)
+- `setComparator` of `SortedList` and `SortedUniqueList` keeps the new comparator when the sort with it throws, on
+  any runtime (#87)
 
 Version 28.2
 -------------
