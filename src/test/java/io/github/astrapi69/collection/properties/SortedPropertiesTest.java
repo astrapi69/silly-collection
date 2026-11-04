@@ -26,10 +26,13 @@ package io.github.astrapi69.collection.properties;
 
 import static org.junit.jupiter.api.Assertions.*;
 
+import java.io.IOException;
+import java.io.NotSerializableException;
 import java.util.ArrayList;
 import java.util.Collections;
 import java.util.Comparator;
 import java.util.Enumeration;
+import java.util.Iterator;
 import java.util.List;
 import java.util.Properties;
 import java.util.Set;
@@ -38,6 +41,7 @@ import org.junit.jupiter.api.Test;
 
 import io.github.astrapi69.collection.list.ListFactory;
 import io.github.astrapi69.comparator.NullCheckComparator;
+import io.github.astrapi69.io.SerializedObjectExtensions;
 
 /**
  * The unit test class for the class {@link SortedProperties}.
@@ -326,6 +330,81 @@ public class SortedPropertiesTest
 	}
 
 	/**
+	 * Test the method {@link Set#remove(Object)} of {@link SortedProperties#keySet()}. #46: today
+	 * the set is a copy, so the key goes from the copy and its entry stays in the properties; the
+	 * fix of #46 changes the result
+	 */
+	@Test
+	public void testKeySetRemove()
+	{
+		final SortedProperties properties = new SortedProperties();
+		properties.setProperty("B", "2");
+		properties.setProperty("A", "1");
+
+		final Set<Object> keySet = properties.keySet();
+		assertTrue(keySet.remove("A"));
+		assertFalse(keySet.contains("A"));
+		assertTrue(properties.containsKey("A"));
+		assertEquals(2, properties.size());
+	}
+
+	/**
+	 * Test the method {@link Iterator#remove()} of the iterator of
+	 * {@link SortedProperties#keySet()}. #46: today the set is a copy, so the key goes from the
+	 * copy and its entry stays in the properties; the fix of #46 changes the result
+	 */
+	@Test
+	public void testKeySetIteratorRemove()
+	{
+		final SortedProperties properties = new SortedProperties();
+		properties.setProperty("B", "2");
+		properties.setProperty("A", "1");
+
+		final Iterator<Object> iterator = properties.keySet().iterator();
+		assertEquals("A", iterator.next());
+		iterator.remove();
+		assertTrue(properties.containsKey("A"));
+		assertEquals(2, properties.size());
+	}
+
+	/**
+	 * Test the method {@link SortedProperties#keySet()} after a change of the properties. #46:
+	 * today the set is a copy, which keeps the keys of the moment it was made; the fix of #46
+	 * changes the result
+	 */
+	@Test
+	public void testKeySetAfterAChangeOfTheProperties()
+	{
+		final SortedProperties properties = new SortedProperties();
+		properties.setProperty("B", "2");
+		properties.setProperty("A", "1");
+
+		final Set<Object> keySet = properties.keySet();
+		properties.setProperty("C", "3");
+		properties.remove("A");
+		assertEquals(ListFactory.newArrayList("A", "B"), new ArrayList<>(keySet));
+		assertTrue(keySet.contains("A"));
+		assertFalse(keySet.contains("C"));
+	}
+
+	/**
+	 * Test the method {@link Set#add(Object)} of {@link SortedProperties#keySet()}. #46: today the
+	 * set is a copy that takes the key and leaves the properties as they are; the fix of #46
+	 * changes the result
+	 */
+	@Test
+	public void testKeySetAdd()
+	{
+		final SortedProperties properties = new SortedProperties();
+		properties.setProperty("A", "1");
+
+		final Set<Object> keySet = properties.keySet();
+		assertTrue(keySet.add("B"));
+		assertTrue(keySet.contains("B"));
+		assertFalse(properties.containsKey("B"));
+	}
+
+	/**
 	 * Test for factory method {@link SortedProperties#of()}
 	 */
 	@Test
@@ -356,7 +435,9 @@ public class SortedPropertiesTest
 	}
 
 	/**
-	 * Test for factory method {@link SortedProperties#of(Properties, Comparator)}
+	 * Test for factory method {@link SortedProperties#of(Properties, Comparator)}. #46: today
+	 * {@link SortedProperties#propertyNames()} leaves out the keys of the defaults, so the loop
+	 * over them never runs; the fix of #46 changes the result
 	 */
 	@Test
 	public void testOfPropertiesComparatorOfObject()
@@ -396,6 +477,8 @@ public class SortedPropertiesTest
 			}
 			count++;
 		}
+		// count started at 1: the loop did not run
+		assertEquals(1, count);
 	}
 
 	/**
@@ -499,6 +582,73 @@ public class SortedPropertiesTest
 			}
 			count++;
 		}
+	}
+
+	/**
+	 * Test the method {@link SortedProperties#propertyNames()} with defaults, one of their keys
+	 * also a key of the properties. #46: today it lists only the keys of the properties, where
+	 * {@link Properties#propertyNames()} includes those of the defaults; the fix of #46 changes the
+	 * result
+	 */
+	@Test
+	public void testPropertyNamesWithDefaults()
+	{
+		final Properties defaults = new Properties();
+		defaults.setProperty("A", "1");
+		defaults.setProperty("B", "2");
+		assertEquals(Collections.emptyList(),
+			Collections.list(new SortedProperties(defaults).propertyNames()));
+
+		final SortedProperties properties = new SortedProperties(defaults);
+		properties.setProperty("C", "3");
+		properties.setProperty("B", "20");
+		assertEquals(ListFactory.newArrayList("B", "C"),
+			Collections.list(properties.propertyNames()));
+
+		final SortedProperties reversed = SortedProperties.of(defaults,
+			(o1, o2) -> o2.toString().compareTo(o1.toString()));
+		reversed.setProperty("C", "3");
+		reversed.setProperty("B", "20");
+		assertEquals(ListFactory.newArrayList("C", "B"),
+			Collections.list(reversed.propertyNames()));
+	}
+
+	/**
+	 * Test the method {@link SortedProperties#propertyNames()} with keys that are no strings. #46:
+	 * today it lists them, sorted by their string form, where {@link Properties#propertyNames()}
+	 * throws a {@link ClassCastException}; the fix of #46 changes the result
+	 */
+	@Test
+	public void testPropertyNamesWithKeysThatAreNoStrings()
+	{
+		final SortedProperties properties = new SortedProperties();
+		properties.put(10, "ten");
+		properties.put(9, "nine");
+		properties.put(100, "hundred");
+		assertEquals(ListFactory.newArrayList(10, 100, 9),
+			Collections.list(properties.propertyNames()));
+	}
+
+	/**
+	 * Test the serialization of a {@link SortedProperties}. #46: today it serializes only until it
+	 * creates its comparator, a lambda, which is part of its serialized form; the fix of #46
+	 * changes the result
+	 *
+	 * @throws IOException
+	 *             Signals that an I/O exception has occurred
+	 */
+	@Test
+	public void testSerialization() throws IOException
+	{
+		final SortedProperties properties = new SortedProperties();
+		properties.setProperty("B", "2");
+		properties.setProperty("A", "1");
+		assertNotNull(SerializedObjectExtensions.toByteArray(properties));
+
+		// keys() creates the comparator
+		assertEquals(ListFactory.newArrayList("A", "B"), Collections.list(properties.keys()));
+		assertThrows(NotSerializableException.class,
+			() -> SerializedObjectExtensions.toByteArray(properties));
 	}
 
 }

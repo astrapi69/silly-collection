@@ -26,6 +26,7 @@ package io.github.astrapi69.collection.properties;
 
 import static org.junit.jupiter.api.Assertions.*;
 
+import java.io.NotSerializableException;
 import java.util.ArrayList;
 import java.util.Comparator;
 import java.util.Properties;
@@ -34,6 +35,7 @@ import org.junit.jupiter.api.Test;
 
 import io.github.astrapi69.collection.list.ListFactory;
 import io.github.astrapi69.comparator.NullCheckComparator;
+import io.github.astrapi69.io.SerializedObjectExtensions;
 
 /**
  * The unit test class for the class {@link IndexSortedProperties}.
@@ -693,6 +695,21 @@ public class IndexSortedPropertiesTest
 		expected = 0;
 		actual = properties.indexOf("1");
 		assertEquals(expected, actual);
+	}
+
+	/**
+	 * Test the serialization of an {@link IndexSortedProperties}. #46: today it does not serialize,
+	 * as its constructor creates the comparator, a lambda, which is part of its serialized form;
+	 * the fix of #46 changes the result
+	 */
+	@Test
+	public void testSerialization()
+	{
+		final IndexSortedProperties properties = IndexSortedProperties.of();
+		properties.setProperty("B", "2");
+		properties.setProperty("A", "1");
+		assertThrows(NotSerializableException.class,
+			() -> SerializedObjectExtensions.toByteArray(properties));
 	}
 
 }
