@@ -42,7 +42,8 @@ import java.util.function.UnaryOperator;
  * {@link #replaceAll(UnaryOperator)} too. What would put an element at a position the caller
  * chooses, or reorder the list against its comparator, throws an
  * {@link UnsupportedOperationException}: {@link #sort(Comparator)}, which
- * {@link Collections#sort(List)} calls, and the set and add of its list iterator.
+ * {@link Collections#sort(List)} calls, and the set and add of its list iterator. The view of
+ * {@link #subList(int, int)} reads and removes, and refuses to set, add, replace or sort.
  * {@link #setComparator(Comparator)} changes the order.
  * <p>
  * A list without a comparator has no order to keep: its add methods append at the end, and set and
@@ -56,6 +57,13 @@ import java.util.function.UnaryOperator;
  */
 public class SortedList<E> extends ArrayList<E>
 {
+
+	/**
+	 * The message of the {@link UnsupportedOperationException} of the view of
+	 * {@link #subList(int, int)}
+	 */
+	private static final String SUB_LIST_REFUSAL = "A subList view of a SortedList reads and"
+		+ " removes only; set and add through the list itself";
 
 	/**
 	 * The message of the {@link UnsupportedOperationException} of {@link #sort(Comparator)}
@@ -141,9 +149,8 @@ public class SortedList<E> extends ArrayList<E>
 	 * {@link Collections#binarySearch(java.util.List, Object, Comparator) Collections.binarySearch}
 	 * finds, which can be any of them: it does not necessarily come after them, and such elements
 	 * do not keep the order in which they were added. The place is not specified if this list is
-	 * not in the order of its comparator, as after a change through a view of
-	 * {@link #subList(int, int)}, or after an element changed so that the comparator orders it
-	 * elsewhere.
+	 * not in the order of its comparator, as after an element changed so that the comparator orders
+	 * it elsewhere.
 	 *
 	 * @param element
 	 *            the element to add
@@ -371,6 +378,42 @@ public class SortedList<E> extends ArrayList<E>
 	public ListIterator<E> listIterator(int index)
 	{
 		return new ReadAndRemoveListIterator<>(super.listIterator(index), LIST_ITERATOR_REFUSAL);
+	}
+
+	/**
+	 * Returns a view of the elements of this list between the given indexes, as
+	 * {@link ArrayList#subList(int, int)} does, that reads and removes and refuses every other
+	 * change.
+	 * <p>
+	 * Reading, {@code remove}, {@code clear}, {@code removeIf}, {@code removeAll} and
+	 * {@code retainAll} through the view, and the remove of its iterators, work as on the view of
+	 * {@link ArrayList}: a removal keeps the order of the comparator, and
+	 * {@code list.subList(from, to).clear()} removes a range of this list.
+	 * <p>
+	 * Set, add, addAll, replaceAll and sort through the view, and the set and add of its list
+	 * iterators, throw an {@link UnsupportedOperationException}, whatever the arguments: this list
+	 * puts an element at its place in the order of its comparator, which can be outside the view,
+	 * so that the view of ArrayList, which counts every added element as one of its own, showed
+	 * elements from outside its range, and a set, a replaceAll or a sort inside the view would
+	 * break the order. {@link java.util.Collections#swap(List, int, int)} and
+	 * {@link java.util.Collections#reverse(List)} work through set and throw on the view too. The
+	 * view of a view follows the same rules.
+	 *
+	 * @param fromIndex
+	 *            the index of the first element of the view, inclusive
+	 * @param toIndex
+	 *            the index after the last element of the view, exclusive
+	 * @return a view of the elements between the given indexes that reads and removes
+	 * @throws IndexOutOfBoundsException
+	 *             if an index is out of range ({@code fromIndex < 0 || toIndex > size()}), as
+	 *             {@link ArrayList#subList(int, int)} checks it
+	 * @throws IllegalArgumentException
+	 *             if fromIndex is greater than toIndex
+	 */
+	@Override
+	public List<E> subList(int fromIndex, int toIndex)
+	{
+		return new ReadAndRemoveSubList<>(super.subList(fromIndex, toIndex), SUB_LIST_REFUSAL);
 	}
 
 	/**

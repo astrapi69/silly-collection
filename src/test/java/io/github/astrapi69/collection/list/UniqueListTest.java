@@ -30,6 +30,7 @@ import java.util.ArrayList;
 import java.util.Arrays;
 import java.util.Collection;
 import java.util.Collections;
+import java.util.Comparator;
 import java.util.ConcurrentModificationException;
 import java.util.Iterator;
 import java.util.List;
@@ -909,5 +910,152 @@ public class UniqueListTest
 			list.remove("b");
 			return element.toUpperCase();
 		}));
+	}
+
+	/**
+	 * Test set and replaceAll of the view of {@link UniqueList#subList(int, int)} and of a view of
+	 * it: each throws an UnsupportedOperationException, for an element the list holds and for a new
+	 * one, and neither the list nor the view changes; the first case of #78, [a, b, c,
+	 * d].subList(1, 3).set(0, a) and [a, b, c].subList(0, 2).replaceAll(e -> c), too
+	 */
+	@Test
+	public void testSubListSetAndReplaceAll()
+	{
+		List<String> list = new UniqueList<>(Arrays.asList("a", "b", "c", "d"));
+		List<String> view = list.subList(1, 3);
+
+		UnsupportedOperationException exception = assertThrows(UnsupportedOperationException.class,
+			() -> view.set(0, "a"));
+		assertEquals("A subList view of a UniqueList reads and removes only; set and add through"
+			+ " the list itself", exception.getMessage());
+		assertThrows(UnsupportedOperationException.class, () -> view.set(0, "x"));
+		assertThrows(UnsupportedOperationException.class, () -> view.replaceAll(element -> "x"));
+		assertThrows(UnsupportedOperationException.class, () -> view.subList(0, 1).set(0, "a"));
+		assertThrows(UnsupportedOperationException.class,
+			() -> view.subList(0, 1).replaceAll(element -> "x"));
+		assertEquals(Arrays.asList("a", "b", "c", "d"), list);
+		assertEquals(Arrays.asList("b", "c"), view);
+
+		List<String> other = new UniqueList<>(Arrays.asList("a", "b", "c"));
+		assertThrows(UnsupportedOperationException.class,
+			() -> other.subList(0, 2).replaceAll(element -> "c"));
+		assertEquals(Arrays.asList("a", "b", "c"), other);
+	}
+
+	/**
+	 * Test the add methods of the view of {@link UniqueList#subList(int, int)} and of a view of it:
+	 * add(E), add(int, E), addAll and addAll(int, Collection) throw an
+	 * UnsupportedOperationException, with an empty collection too, and neither the list nor the
+	 * view changes; the second case of #78, add(0, c) on subList(1, 3) of [a, b, c, d], too
+	 */
+	@Test
+	public void testSubListAdd()
+	{
+		List<String> list = new UniqueList<>(Arrays.asList("a", "b", "c", "d"));
+		List<String> view = list.subList(1, 3);
+
+		assertThrows(UnsupportedOperationException.class, () -> view.add(0, "c"));
+		assertThrows(UnsupportedOperationException.class, () -> view.add("e"));
+		assertThrows(UnsupportedOperationException.class, () -> view.add(1, "e"));
+		assertThrows(UnsupportedOperationException.class, () -> view.addAll(Arrays.asList("e")));
+		assertThrows(UnsupportedOperationException.class, () -> view.addAll(0, Arrays.asList("e")));
+		assertThrows(UnsupportedOperationException.class,
+			() -> view.addAll(Collections.emptyList()));
+		assertThrows(UnsupportedOperationException.class,
+			() -> view.addAll(0, Collections.emptyList()));
+		assertThrows(UnsupportedOperationException.class, () -> view.subList(0, 1).add("e"));
+		assertThrows(UnsupportedOperationException.class,
+			() -> view.subList(0, 1).addAll(Arrays.asList("e")));
+		assertEquals(Arrays.asList("a", "b", "c", "d"), list);
+		assertEquals(Arrays.asList("b", "c"), view);
+	}
+
+	/**
+	 * Test sort of the view of {@link UniqueList#subList(int, int)} and of a view of it, and
+	 * {@link Collections#reverse(List)} and {@link Collections#swap(List, int, int)}, which work
+	 * through its set: each throws an UnsupportedOperationException, sort with null and on an empty
+	 * view too, and the list does not change
+	 */
+	@Test
+	public void testSubListSort()
+	{
+		List<String> list = new UniqueList<>(Arrays.asList("a", "b", "c", "d"));
+		List<String> view = list.subList(1, 3);
+
+		assertThrows(UnsupportedOperationException.class,
+			() -> view.sort(Comparator.reverseOrder()));
+		assertThrows(UnsupportedOperationException.class, () -> view.sort(null));
+		assertThrows(UnsupportedOperationException.class, () -> list.subList(2, 2).sort(null));
+		assertThrows(UnsupportedOperationException.class, () -> view.subList(0, 2).sort(null));
+		assertThrows(UnsupportedOperationException.class, () -> Collections.reverse(view));
+		assertThrows(UnsupportedOperationException.class, () -> Collections.swap(view, 0, 1));
+		assertEquals(Arrays.asList("a", "b", "c", "d"), list);
+	}
+
+	/**
+	 * Test set and add of the list iterators of the view of {@link UniqueList#subList(int, int)},
+	 * of listIterator() and of listIterator(int): they throw an UnsupportedOperationException, and
+	 * neither the list nor the view changes
+	 */
+	@Test
+	public void testSubListListIteratorSetAndAdd()
+	{
+		List<String> list = new UniqueList<>(Arrays.asList("a", "b", "c", "d"));
+		List<String> view = list.subList(1, 3);
+
+		ListIterator<String> iterator = view.listIterator();
+		assertEquals("b", iterator.next());
+		UnsupportedOperationException exception = assertThrows(UnsupportedOperationException.class,
+			() -> iterator.set("a"));
+		assertEquals("A subList view of a UniqueList reads and removes only; set and add through"
+			+ " the list itself", exception.getMessage());
+		assertThrows(UnsupportedOperationException.class, () -> iterator.add("e"));
+
+		ListIterator<String> fromIndex = view.listIterator(1);
+		assertThrows(UnsupportedOperationException.class, () -> fromIndex.add("e"));
+		assertEquals("c", fromIndex.next());
+		assertThrows(UnsupportedOperationException.class, () -> fromIndex.set("x"));
+		assertEquals(Arrays.asList("a", "b", "c", "d"), list);
+		assertEquals(Arrays.asList("b", "c"), view);
+	}
+
+	/**
+	 * Test that the view of {@link UniqueList#subList(int, int)} reads as the view of
+	 * ArrayList.subList reads; before and after the fix of #78
+	 */
+	@Test
+	public void testSubListReads()
+	{
+		SubListViewAssertions.assertReads(UniqueList::new);
+	}
+
+	/**
+	 * Test that the view of {@link UniqueList#subList(int, int)} removes as the view of
+	 * ArrayList.subList removes; before and after the fix of #78
+	 */
+	@Test
+	public void testSubListRemoves()
+	{
+		SubListViewAssertions.assertRemoves(UniqueList::new);
+	}
+
+	/**
+	 * Test that subList(from, to).clear() removes the range from a {@link UniqueList}; before and
+	 * after the fix of #78
+	 */
+	@Test
+	public void testSubListClearRemovesTheRange()
+	{
+		SubListViewAssertions.assertClearRemovesTheRange(UniqueList::new);
+	}
+
+	/**
+	 * Test that the view of a view of {@link UniqueList#subList(int, int)} reads and removes as the
+	 * view does; before and after the fix of #78
+	 */
+	@Test
+	public void testSubListOfSubListRemoves()
+	{
+		SubListViewAssertions.assertSubListOfSubListRemoves(UniqueList::new);
 	}
 }
