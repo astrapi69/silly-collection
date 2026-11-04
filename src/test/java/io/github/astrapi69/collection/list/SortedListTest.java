@@ -374,4 +374,37 @@ public class SortedListTest
 		list.add("Dora");
 		assertEquals(Arrays.asList("Dora", "Caesar", "Berta", "Anton"), list);
 	}
+
+	/**
+	 * Test the method {@link SortedList#add(Object)} with several elements the comparator holds
+	 * equal to the given one: it goes in front of one of them, so not after the last of them, and
+	 * the list stays in the order of the comparator (#66)
+	 */
+	@Test
+	public void testAddWithSeveralElementsTheComparatorHoldsEqual()
+	{
+		List<String> list = new SortedList<>(Comparator.comparingInt(String::length));
+		list.addAll(Arrays.asList("x", "aa", "bb", "cc", "zzz"));
+
+		assertTrue(list.add("dd"));
+		assertEquals("x", list.get(0));
+		assertEquals("zzz", list.get(5));
+		int index = list.indexOf("dd");
+		assertTrue(1 <= index && index <= 3, "dd is not in front of one of aa, bb and cc: " + list);
+	}
+
+	/**
+	 * Test the method {@link SortedList#addAll(Collection)} without a comparator: the elements are
+	 * appended in the order of the collection, an element the list contains already too, and the
+	 * method returns true (#66)
+	 */
+	@Test
+	public void testAddAllWithoutComparator()
+	{
+		List<String> list = new SortedList<>();
+		list.add("Emil");
+
+		assertTrue(list.addAll(Arrays.asList("Caesar", "Emil", "Anton")));
+		assertEquals(Arrays.asList("Emil", "Caesar", "Emil", "Anton"), list);
+	}
 }

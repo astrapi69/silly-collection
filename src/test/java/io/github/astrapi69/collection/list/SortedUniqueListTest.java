@@ -407,4 +407,56 @@ public class SortedUniqueListTest
 		assertTrue(list.addAll(5, Arrays.asList("Anton", "Berta")));
 		assertEquals(Arrays.asList("Anton", "Berta", "Caesar"), list);
 	}
+
+	/**
+	 * Test the method {@link SortedUniqueList#add(Object)} without a comparator: an element the
+	 * list does not contain yet is appended and the method returns true, for an element the list
+	 * contains already it returns false and the list does not change (#66)
+	 */
+	@Test
+	public void testAddWithoutComparator()
+	{
+		List<String> list = new SortedUniqueList<>();
+
+		assertTrue(list.add("Leonidas"));
+		assertTrue(list.add("Berta"));
+		assertFalse(list.add("Leonidas"));
+		assertEquals(Arrays.asList("Leonidas", "Berta"), list);
+	}
+
+	/**
+	 * Test the method {@link SortedUniqueList#add(Object)} with several elements the comparator
+	 * holds equal to the given one, which equals does not: it goes in front of one of them, so not
+	 * after the last of them, and the list stays in the order of the comparator. An element equal
+	 * to one of them by equals is not added (#66)
+	 */
+	@Test
+	public void testAddWithSeveralElementsTheComparatorHoldsEqual()
+	{
+		List<String> list = new SortedUniqueList<>(Comparator.comparingInt(String::length));
+		list.addAll(Arrays.asList("x", "aa", "bb", "cc", "zzz"));
+
+		assertTrue(list.add("dd"));
+		assertFalse(list.add("bb"));
+		assertEquals(6, list.size());
+		assertEquals("x", list.get(0));
+		assertEquals("zzz", list.get(5));
+		int index = list.indexOf("dd");
+		assertTrue(1 <= index && index <= 3, "dd is not in front of one of aa, bb and cc: " + list);
+	}
+
+	/**
+	 * Test the method {@link SortedUniqueList#addAll(Collection)} without a comparator: the
+	 * elements the list does not contain yet are appended in the order of the collection, each of
+	 * them once, and the method returns true (#66)
+	 */
+	@Test
+	public void testAddAllWithoutComparator()
+	{
+		List<String> list = new SortedUniqueList<>();
+		list.add("Emil");
+
+		assertTrue(list.addAll(Arrays.asList("Caesar", "Emil", "Anton", "Caesar")));
+		assertEquals(Arrays.asList("Emil", "Caesar", "Anton"), list);
+	}
 }

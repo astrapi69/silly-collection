@@ -68,7 +68,13 @@ public class UniqueList<E> extends ArrayList<E>
 	}
 
 	/**
-	 * {@inheritDoc}
+	 * Appends the given element to the end of this list unless this list contains it already, by
+	 * {@link #contains(Object)}, which compares with equals. An element this list contains already
+	 * keeps its position, unlike in {@link #add(int, Object)}, which moves such an element.
+	 *
+	 * @param element
+	 *            the element to append
+	 * @return true if the element was appended, false if this list contains it already
 	 */
 	@Override
 	public boolean add(E element)
