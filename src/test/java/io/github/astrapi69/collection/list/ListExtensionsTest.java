@@ -1540,17 +1540,16 @@ public class ListExtensionsTest
 	/**
 	 * Test method for {@link ListExtensions#getIndexToInsert(List, Object, java.util.Comparator)}
 	 * with an element that the comparator holds equal to an element of the list, but equals does
-	 * not. Pins what the method returns today: binarySearch finds the element at its index, the
-	 * list does not contain the given element, and the method turns the index found into a negative
-	 * one, -1 for index 0 and -2 for index 1. The fix of #40 changes the result to the index found
+	 * not: the method returns the index of the element that binarySearch finds, whatever contains
+	 * says (#40)
 	 */
 	@Test
 	public void testGetIndexToInsertWithComparatorInconsistentWithEquals()
 	{
 		List<String> list = ListFactory.newArrayList("a", "b");
 
-		assertEquals(-1, ListExtensions.getIndexToInsert(list, "A", String.CASE_INSENSITIVE_ORDER));
-		assertEquals(-2, ListExtensions.getIndexToInsert(list, "B", String.CASE_INSENSITIVE_ORDER));
+		assertEquals(0, ListExtensions.getIndexToInsert(list, "A", String.CASE_INSENSITIVE_ORDER));
+		assertEquals(1, ListExtensions.getIndexToInsert(list, "B", String.CASE_INSENSITIVE_ORDER));
 	}
 
 	/**

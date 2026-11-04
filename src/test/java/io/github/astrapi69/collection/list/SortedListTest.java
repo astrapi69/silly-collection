@@ -244,10 +244,8 @@ public class SortedListTest
 
 	/**
 	 * Test the method {@link SortedList#add(Object)} with a comparator that holds "a" and "A", and
-	 * "b" and "B", equal, which equals does not. Pins what the method does today: it throws an
-	 * {@link IndexOutOfBoundsException} for "A" and for "B" and leaves the list as it was. The fix
-	 * of #40 changes the result: each goes in next to the element the comparator holds it equal to,
-	 * and the method returns true
+	 * "b" and "B", equal, which equals does not: each goes in next to the element the comparator
+	 * holds it equal to, and the method returns true (#40)
 	 */
 	@Test
 	public void testAddWithComparatorInconsistentWithEquals()
@@ -256,9 +254,9 @@ public class SortedListTest
 		list.add("a");
 		list.add("b");
 
-		assertThrows(IndexOutOfBoundsException.class, () -> list.add("A"));
-		assertThrows(IndexOutOfBoundsException.class, () -> list.add("B"));
-		assertEquals(Arrays.asList("a", "b"), list);
+		assertTrue(list.add("A"));
+		assertTrue(list.add("B"));
+		assertEquals(Arrays.asList("A", "a", "B", "b"), list);
 	}
 
 	/**
@@ -316,6 +314,45 @@ public class SortedListTest
 
 		assertFalse(list.addAll(0, Collections.emptyList()));
 		assertEquals(Arrays.asList("Emil"), list);
+	}
+
+	/**
+	 * Test the method {@link SortedList#add(int, Object)} with a negative index and one past the
+	 * end of the list: the index is ignored and not checked, and the element goes in at its place
+	 * in the order of the comparator, or at the end of a list without one (#40)
+	 */
+	@Test
+	public void testAddWithIndexOutOfRange()
+	{
+		List<String> list = new SortedList<>();
+		list.add(-1, "Caesar");
+		list.add(5, "Anton");
+		assertEquals(Arrays.asList("Caesar", "Anton"), list);
+
+		list = new SortedList<>(Comparator.naturalOrder());
+		list.add(-1, "Caesar");
+		list.add(5, "Anton");
+		assertEquals(Arrays.asList("Anton", "Caesar"), list);
+	}
+
+	/**
+	 * Test the method {@link SortedList#addAll(int, Collection)} with a negative index and one past
+	 * the end of the list: the index is ignored and not checked, the elements go in at their place
+	 * in the order of the comparator, or at the end of a list without one, and the method returns
+	 * true (#40)
+	 */
+	@Test
+	public void testAddAllWithIndexOutOfRange()
+	{
+		List<String> list = new SortedList<>();
+		assertTrue(list.addAll(-1, Arrays.asList("Caesar", "Anton")));
+		assertTrue(list.addAll(5, Arrays.asList("Berta")));
+		assertEquals(Arrays.asList("Caesar", "Anton", "Berta"), list);
+
+		list = new SortedList<>(Comparator.naturalOrder());
+		assertTrue(list.addAll(-1, Arrays.asList("Caesar", "Anton")));
+		assertTrue(list.addAll(5, Arrays.asList("Berta")));
+		assertEquals(Arrays.asList("Anton", "Berta", "Caesar"), list);
 	}
 
 	/**
