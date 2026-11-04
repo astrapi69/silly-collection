@@ -87,6 +87,18 @@ public class InsertionOrderSetTest
 	}
 
 	/**
+	 * Test the method {@link InsertionOrderSet#add(Object)} with elements the set does not hold
+	 * yet: each add returns true, as its Javadoc and the {@link Set} contract say
+	 */
+	@Test
+	public void testAddReturnsTrueForANewElement()
+	{
+		final Set<String> set = new InsertionOrderSet<>();
+		assertTrue(set.add("value1"));
+		assertTrue(set.add("value2"));
+	}
+
+	/**
 	 * Test the no argument constructor of {@link InsertionOrderSet}.
 	 */
 	@Test

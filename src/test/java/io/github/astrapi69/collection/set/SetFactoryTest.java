@@ -26,7 +26,10 @@ package io.github.astrapi69.collection.set;
 
 import static org.junit.jupiter.api.Assertions.assertEquals;
 import static org.junit.jupiter.api.Assertions.assertNotNull;
+import static org.junit.jupiter.api.Assertions.assertNull;
+import static org.junit.jupiter.api.Assertions.assertSame;
 
+import java.util.ArrayList;
 import java.util.Collection;
 import java.util.Comparator;
 import java.util.List;
@@ -298,6 +301,27 @@ public class SetFactoryTest
 		actual = set.size();
 		expected = 2;
 		assertEquals(actual, expected);
+	}
+
+	/**
+	 * Test the method {@link SetFactory#newTreeSet(Collection, Comparator, Object[])}: with a
+	 * comparator the set sorts the elements of the collection and the given elements by it, and
+	 * with a null comparator by their natural order
+	 */
+	@Test
+	public void testNewTreeSetSortsByTheComparator()
+	{
+		SortedSet<String> set;
+		final Comparator<String> comparator = Comparator.reverseOrder();
+		final List<String> list = ListFactory.newArrayList("b", "d");
+		// new scenario...
+		set = SetFactory.newTreeSet(list, comparator, "a", "c");
+		assertSame(comparator, set.comparator());
+		assertEquals(ListFactory.newArrayList("d", "c", "b", "a"), new ArrayList<>(set));
+		// new scenario...
+		set = SetFactory.newTreeSet(list, (Comparator<String>)null, "a", "c");
+		assertNull(set.comparator());
+		assertEquals(ListFactory.newArrayList("a", "b", "c", "d"), new ArrayList<>(set));
 	}
 
 

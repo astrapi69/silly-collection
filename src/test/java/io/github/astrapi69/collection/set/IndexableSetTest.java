@@ -150,6 +150,22 @@ public class IndexableSetTest
 	}
 
 	/**
+	 * Test the method {@link IndexableSet#get(int)} at the upper bound of the index, as its Javadoc
+	 * names it (index &gt;= size()): size() - 1 gives the last element, size() throws an
+	 * IndexOutOfBoundsException
+	 */
+	@Test
+	public void testGetThrowIndexOutOfBoundsExceptionAtSize()
+	{
+		final IndexableSet<String> set = new IndexableSet<>();
+		set.add("value1");
+		set.add("value2");
+		set.add("value3");
+		assertEquals("value3", set.get(2));
+		Assertions.assertThrows(IndexOutOfBoundsException.class, () -> set.get(3));
+	}
+
+	/**
 	 * Test method for {@link IndexableSet#get(int)} with index over the minimum
 	 */
 	@Test
