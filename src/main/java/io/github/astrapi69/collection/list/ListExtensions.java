@@ -611,13 +611,15 @@ public final class ListExtensions
 	 *            The Vector with the received Messages.
 	 * @param remove
 	 *            How much to remove.
-	 * @return the list
+	 * @return the given list without its last values
+	 * @throws IllegalArgumentException
+	 *             if remove is greater than the size of the given list
 	 */
 	public static <T> List<T> removeLastValues(final List<T> v, final int remove)
 	{
-		if (remove < v.size())
+		if (remove <= v.size())
 		{
-			return v.subList(remove, v.size());
+			return v.subList(0, v.size() - remove);
 		}
 		throw new IllegalArgumentException("You cannot remove "
 			+ "more element than in the ArrayList exists. \nSize from ArrayList:" + v.size() + "\n"
@@ -727,7 +729,7 @@ public final class ListExtensions
 	{
 		Comparator comparator = Comparator.comparing(beanPropertyFunction,
 			Comparator.nullsFirst(Comparator.naturalOrder()));
-		if (ascending)
+		if (!ascending)
 		{
 			comparator = comparator.reversed();
 		}
