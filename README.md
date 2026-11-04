@@ -40,7 +40,7 @@ larger and used almost everywhere.
 - [Why silly-collection](#why-silly-collection)
 - [Requirements](#requirements)
 - [Installation](#installation)
-- [Upgrading from 28.2](#upgrading-from-282)
+- [Upgrading from 28.x](#upgrading-from-28x)
 - [Quick start](#quick-start)
 - [Features](#features)
 - [Quality](#quality)
@@ -55,14 +55,14 @@ larger and used almost everywhere.
 
 ## Requirements
 
-**JDK 25 or newer** from 29.0 on, at build and at runtime: its jar holds Java 25 bytecode and does
+**JDK 25 or newer**, at build and at runtime: from 29.0 on its jar holds Java 25 bytecode and does
 not load on an older JVM. **28.3 is the last release for Java 17**; a project below Java 25 stays on
-it. The runtime dependencies are Apache Commons Collections 4.6.0, and jobj-core, silly-bean and
+it (see [Upgrading from 28.x](#upgrading-from-28x)). The runtime dependencies are Apache Commons Collections 4.6.0, and jobj-core, silly-bean and
 comparator-extensions of this family, which run on Java 17 and 25 alike.
 
 ## Installation
 
-Latest release on Maven Central: 28.3, for Java 17
+Latest release on Maven Central: 29.0, for Java 25 (for Java 17: 28.3)
 
 [![Maven Central](https://img.shields.io/maven-central/v/io.github.astrapi69/silly-collection.svg?label=Maven%20Central)](https://central.sonatype.com/artifact/io.github.astrapi69/silly-collection)
 
@@ -70,7 +70,7 @@ Latest release on Maven Central: 28.3, for Java 17
 
 ```toml
 [versions]
-silly-collection-version = "28.3"
+silly-collection-version = "29.0"
 
 [libraries]
 silly-collection = { module = "io.github.astrapi69:silly-collection", version.ref = "silly-collection-version" }
@@ -86,7 +86,7 @@ dependencies {
 
 ```groovy
 dependencies {
-    implementation "io.github.astrapi69:silly-collection:28.3"
+    implementation "io.github.astrapi69:silly-collection:29.0"
 }
 ```
 
@@ -96,29 +96,36 @@ dependencies {
 <dependency>
     <groupId>io.github.astrapi69</groupId>
     <artifactId>silly-collection</artifactId>
-    <version>28.3</version>
+    <version>29.0</version>
 </dependency>
 ```
 
 The module name is `io.github.astrapisixtynine.silly.collection`.
 
-## Upgrading from 28.2
+## Upgrading from 28.x
 
-28.3 is binary compatible with 28.2, but its fixes make methods do what their contract says, where
-they did something else. The CHANGELOG's [Version 28.3](CHANGELOG.md#version-283) marks with
-**Note** the changes a caller is likely to notice; the most likely ones:
+**28.3 is the last release for Java 17.** The 28.x line is frozen: the only exception are security
+fixes, which then come as a patch release on a branch `release/28.x` that starts at `RELEASE-28.3`.
+New fixes and features come in 29.x only.
 
-- `CollectionExtensions.isEqualCollection` compares the elements and how often each occurs: a test
-  that relied on the old result, true for any two collections of the same size, can turn red, which
-  shows a real difference;
-- the index of `IndexSortedProperties` holds the keys of its own entries, not those of the
-  defaults; `SortedProperties.propertyNames()` lists the defaults too, and throws a
-  `ClassCastException` for a key that is no `String`;
-- `ListFactory.newUniqueList` returns a `UniqueList`; `UniqueList.set` swaps an element the list
-  holds at another index, and `replaceAll` refuses two equal values;
-- the array factories return a new array, `removeFromStart` and `removeFromEnd` remove only a prefix
-  or suffix that matches, and `toArray` of a collection takes the common superclass of the elements
-  as its component type.
+29.0 needs Java 25, and the list classes keep their own rules where the methods they inherit from
+`ArrayList` broke them. The CHANGELOG's [MIGRATION FROM 28.x](CHANGELOG.md#version-290) gives for
+each breaking change what it was, what it is and what to change; in short:
+
+- `SortedList` and `SortedUniqueList` with a comparator refuse explicit positioning, as `TreeSet`
+  does: `set`, `sort`, `addFirst`, `addLast` and the `set` and `add` of their list iterators throw an
+  `UnsupportedOperationException`, and so do `Collections.swap`, `reverse`, `shuffle` and the like,
+  at their first write, with the list unchanged; `replaceAll` writes only values that keep the order;
+- `subList` of the three list classes, and `reversed()` of the sorted lists, read and remove only;
+  `subList(from, to).clear()` still removes a range;
+- `UniqueList.reversed().add(i, e)` puts an element the list holds at `i` of the view, where it
+  landed one place too early; the two moves its view cannot make keep their contract are refused;
+- `UniqueList.addFirst` and `addLast` move an element the list holds, as `LinkedHashSet` does, and
+  `SortedUniqueList.set` without a comparator swaps, as `UniqueList.set` does.
+
+From 28.2, read [Version 28.3](CHANGELOG.md#version-283) first: its notes mark the changes of 28.3 a
+caller is likely to notice, among them `isEqualCollection`, which compares how often each element
+occurs.
 
 ## Quick start
 
@@ -232,18 +239,17 @@ The [Javadoc](https://www.javadoc.io/doc/io.github.astrapi69/silly-collection) h
 
 ## Quality
 
-As of 28.3, measured by its release gate (JDK 17, the tree of `RELEASE-28.3`); each release takes
+As of 29.0, measured by its release gate (JDK 25, the tree of `RELEASE-29.0`); each release takes
 the numbers of its own gate:
 
 | | |
 |---|---|
-| tests | 518 in 24 test classes; 3 are skipped: two `BeanTester` tests that wait for a factory method, and a benchmark |
-| line and branch coverage (JaCoCo) | 1247 of 1247 lines, 546 of 558 branches; the build fails below 98% of the lines or 95% of the branches (`jacocoTestCoverageVerification` in `gradle/testing.gradle`) |
-| mutation score (PIT) | 781 of 794 mutants killed, 98%; the build fails below 95% (`mutationThreshold` in `build.gradle`). The 13 survivors are equivalent: ten conditions whose edge case gives the same result either way, such as `0 < elements.length` before adding no elements, and three `return true` mutants of `add` methods that always return true, as `ArrayList.add` does |
+| tests | 640 in 25 test classes; 3 are skipped: two `BeanTester` tests that wait for a factory method, and a benchmark |
+| line and branch coverage (JaCoCo) | 1502 of 1502 lines, 611 of 622 branches; the build fails below 98% of the lines or 95% of the branches (`jacocoTestCoverageVerification` in `gradle/testing.gradle`) |
+| mutation score (PIT) | 960 of 971 mutants killed, 99%; the build fails below 95% (`mutationThreshold` in `build.gradle`). The 11 survivors are equivalent: ten conditions whose edge case gives the same result either way, such as `0 < elements.length` before adding no elements, and the `return true` of `UniqueList.add`, which returns what `ArrayList.add` returns, always true |
 
 The CI build runs both checks on every pull request, and publishes the mutation score of `develop`
 as the badge above.
-
 
 ## Verifying the release signatures
 
@@ -264,7 +270,7 @@ subkey, is on keys.openpgp.org. Fetch it once, then verify the signature next to
 
 ```sh
 gpg --keyserver hkps://keys.openpgp.org --recv-keys 5B2FA6B11E298BC09287F423D8C403518C49CA75
-gpg --verify silly-collection-28.3.jar.asc silly-collection-28.3.jar
+gpg --verify silly-collection-29.0.jar.asc silly-collection-29.0.jar
 ```
 
 gpg answers `Good signature` and prints the `Primary key fingerprint`, and for a release signed by
@@ -330,8 +336,8 @@ guidelines, `<major>.<minor>.<patch>`. Questions, bug reports and feature reques
 ## How this project is made
 
 silly-collection was written by its maintainer over many years, since 2015, before there were AI
-tools; release 28.3 and the work towards 29.0 were implemented mostly by AI agents, under the
-maintainer's review and with the maintainer's decision on every change of behaviour. How AI is used in the projects of
+tools; releases 28.3 and 29.0 were implemented mostly by AI agents, under the maintainer's review
+and with the maintainer's decision on every change of behaviour. How AI is used in the projects of
 this profile: [AI_USAGE.md](https://github.com/astrapi69/astrapi69/blob/main/AI_USAGE.md).
 
 ## License
