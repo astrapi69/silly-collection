@@ -1,6 +1,8 @@
+# silly-collection
 
-
-# Overview
+**Java helpers for collections: lists that stay unique or sorted, sets that keep their order or
+an index, factories and utilities for lists, sets, maps and arrays, sorted and indexed
+`Properties`, and iterators over arrays and enumerations.**
 
 <div style="text-align: center">
 
@@ -8,81 +10,225 @@
 [![Coverage Status](https://codecov.io/gh/astrapi69/silly-collection/branch/develop/graph/badge.svg)](https://codecov.io/gh/astrapi69/silly-collection)
 [![Mutation Score](https://img.shields.io/endpoint?url=https%3A%2F%2Fraw.githubusercontent.com%2Fastrapi69%2Fsilly-collection%2Fgh-pages%2Fbadges%2Fmutation-score-develop.json)](https://pitest.org/)
 [![Open Issues](https://img.shields.io/github/issues/astrapi69/silly-collection.svg?style=flat)](https://github.com/astrapi69/silly-collection/issues)
-[![Maven Central](https://img.shields.io/maven-central/v/io.github.astrapi69/silly-collection)](https://central.sonatype.com/artifact/io.github.astrapi69/silly-collection)
-[![Javadocs](http://www.javadoc.io/badge/io.github.astrapi69/silly-collection.svg)](http://www.javadoc.io/doc/io.github.astrapi69/silly-collection)
-[![MIT license](http://img.shields.io/badge/license-MIT-brightgreen.svg?style=flat)](http://opensource.org/licenses/MIT)
-[![Donate](https://img.shields.io/badge/donate-❤-ff2244.svg)](https://www.paypal.com/cgi-bin/webscr?cmd=_s-xclick&hosted_button_id=GVBTWLRAZ7HB8)
+[![Maven Central](https://img.shields.io/maven-central/v/io.github.astrapi69/silly-collection.svg?label=Maven%20Central)](https://central.sonatype.com/artifact/io.github.astrapi69/silly-collection)
+[![Javadoc](https://www.javadoc.io/badge/io.github.astrapi69/silly-collection.svg)](https://www.javadoc.io/doc/io.github.astrapi69/silly-collection)
+[![MIT license](https://img.shields.io/badge/license-MIT-brightgreen.svg?style=flat)](https://opensource.org/licenses/MIT)
+[![Java](https://img.shields.io/badge/Java-25-orange)](https://openjdk.org/projects/jdk/25/)
 
 </div>
 
-Utility library for collections, comparators and iterator classes.
+silly-collection collects the collection code that otherwise gets written again in every project,
+and keeps it tested: every line is covered, and PIT checks that the tests notice when the code
+changes.
 
-> Please support this project by simply putting a Github <!-- Place this tag where you want the button to render. --><a class="github-button" href="https://github.com/astrapi69/silly-collection" data-icon="octicon-star" aria-label="Star astrapi69/silly-collection on GitHub">
- Star ⭐</a>
->
-> Share this library with friends on Twitter and everywhere else you can
->
-> If you love this project [![donation](https://img.shields.io/badge/donate-❤-ff2244.svg)](https://www.paypal.com/cgi-bin/webscr?cmd=_s-xclick&hosted_button_id=GVBTWLRAZ7HB8)
+## Why silly-collection
 
-## Maven dependency
+It fills the gaps the JDK leaves between `List`, `Set` and `Map`: a list that refuses duplicates,
+a list that keeps itself sorted by a comparator, a set that keeps the insertion order and gives an
+element by its index, `Properties` that list their keys in order, and the small operations on
+lists, maps and arrays that are one line each but easy to get wrong. Every line of it is tested,
+and a mutation score close to 100% says that the tests check what the code does, not only that
+they run it. Its runtime dependencies are Apache Commons Collections and three small libraries of
+this family. If you need immutable or multi-valued collections, primitive collections or caches,
+[Guava](https://github.com/google/guava), [Apache Commons
+Collections](https://commons.apache.org/proper/commons-collections/) or [Eclipse
+Collections](https://github.com/eclipse/eclipse-collections) are the better choice: they are far
+larger and used almost everywhere.
 
-The library is on Maven Central. Check out [Maven Central](https://central.sonatype.com/artifact/io.github.astrapi69/silly-collection) for the latest release.
+## Table of contents
 
-Replace the variable ${latestVersion} with the current latest version: [![Maven Central](https://img.shields.io/maven-central/v/io.github.astrapi69/silly-collection)](https://central.sonatype.com/artifact/io.github.astrapi69/silly-collection)
+- [Why silly-collection](#why-silly-collection)
+- [Requirements](#requirements)
+- [Installation](#installation)
+- [Upgrading from 28.2](#upgrading-from-282)
+- [Quick start](#quick-start)
+- [Features](#features)
+- [Quality](#quality)
+- [Verifying the release signatures](#verifying-the-release-signatures)
+- [Releasing](#releasing)
+- [Contributing](#contributing)
+- [How this project is made](#how-this-project-is-made)
+- [License](#license)
+- [Support this project](#support-this-project)
+- [Similar projects](#similar-projects)
+- [Credits](#credits)
 
-Add the following maven dependency to your project `pom.xml` if you want to import the core
-functionality of silly-collection:
+## Requirements
 
-Then you can add the dependency to your dependencies:
+**JDK 25 or newer** from 29.0 on, at build and at runtime: its jar holds Java 25 bytecode and does
+not load on an older JVM. **28.3 is the last release for Java 17**; a project below Java 25 stays on
+it. The runtime dependencies are Apache Commons Collections 4.6.0, and jobj-core, silly-bean and
+comparator-extensions of this family, which run on Java 17 and 25 alike.
 
-    <properties>
-            ...
-        <!-- SILLY-COLLECTION version -->
-        <silly-collection.version>${latestVersion}</silly-collection.version>
-            ...
-    </properties>
-            ...
-        <dependencies>
-            ...
-            <!-- SILLY-COLLECTION DEPENDENCY -->
-            <dependency>
-                <groupId>io.github.astrapi69</groupId>
-                <artifactId>silly-collection</artifactId>
-                <version>${silly-collection.version}</version>
-            </dependency>
-            ...
-        </dependencies>
+## Installation
 
-## gradle dependency
+Latest release on Maven Central: 28.3, for Java 17
 
-You can first define the version in the ext section and add than the following gradle dependency to
-your project `build.gradle` if you want to import the core functionality of silly-collection:
+[![Maven Central](https://img.shields.io/maven-central/v/io.github.astrapi69/silly-collection.svg?label=Maven%20Central)](https://central.sonatype.com/artifact/io.github.astrapi69/silly-collection)
 
-define version in file gradle.properties
+**Gradle** (version catalog, `gradle/libs.versions.toml`):
 
+```toml
+[versions]
+silly-collection-version = "28.3"
+
+[libraries]
+silly-collection = { module = "io.github.astrapi69:silly-collection", version.ref = "silly-collection-version" }
 ```
-sillyCollectionVersion=${latestVersion}
-```
 
-or in build.gradle ext area
-
-```
-ext {
-            ...
-    sillyCollectionVersion = "${latestVersion}"
-            ...
-}
-```
-
-then add the dependency to the dependencies area
-
-```
+```groovy
 dependencies {
-            ...
-    implementation("io.github.astrapi69:silly-collection:$sillyCollectionVersion")
-            ...
+    implementation libs.silly.collection
 }
 ```
+
+**Gradle** (plain):
+
+```groovy
+dependencies {
+    implementation "io.github.astrapi69:silly-collection:28.3"
+}
+```
+
+**Maven**:
+
+```xml
+<dependency>
+    <groupId>io.github.astrapi69</groupId>
+    <artifactId>silly-collection</artifactId>
+    <version>28.3</version>
+</dependency>
+```
+
+The module name is `io.github.astrapisixtynine.silly.collection`.
+
+## Upgrading from 28.2
+
+28.3 is binary compatible with 28.2, but its fixes make methods do what their contract says, where
+they did something else. The CHANGELOG's [Version 28.3](CHANGELOG.md#version-283) marks with
+**Note** the changes a caller is likely to notice; the most likely ones:
+
+- `CollectionExtensions.isEqualCollection` compares the elements and how often each occurs: a test
+  that relied on the old result, true for any two collections of the same size, can turn red, which
+  shows a real difference;
+- the index of `IndexSortedProperties` holds the keys of its own entries, not those of the
+  defaults; `SortedProperties.propertyNames()` lists the defaults too, and throws a
+  `ClassCastException` for a key that is no `String`;
+- `ListFactory.newUniqueList` returns a `UniqueList`; `UniqueList.set` swaps an element the list
+  holds at another index, and `replaceAll` refuses two equal values;
+- the array factories return a new array, `removeFromStart` and `removeFromEnd` remove only a prefix
+  or suffix that matches, and `toArray` of a collection takes the common superclass of the elements
+  as its component type.
+
+## Quick start
+
+The examples are checked: each block runs, with the values its comments name as assertions, in
+[`ReadmeExamplesTest`](src/test/java/io/github/astrapi69/collection/ReadmeExamplesTest.java).
+
+**Lists that stay unique or sorted.** A `UniqueList` holds each element once, a `SortedList` keeps
+the order of its comparator, a `SortedUniqueList` both.
+
+```java
+List<String> unique = ListFactory.newUniqueList("b", "a", "b"); // [b, a]
+boolean added = unique.add("a");                                // false: held already
+
+List<String> start = List.of("c", "a");
+List<String> sorted = ListFactory.newSortedList(start, Comparator.naturalOrder(), "b"); // [a, b, c]
+sorted.add("ab");                                                                       // [a, ab, b, c]
+List<String> sortedUnique = ListFactory.newSortedUniqueList(start,
+    Comparator.naturalOrder(), "a", "b");                                               // [a, b, c]
+```
+
+**Working with lists.**
+
+```java
+List<String> letters = List.of("A", "B", "C", "D", "E", "F");
+ListExtensions.removeLastValues(letters, 2); // [A, B, C, D]
+ListExtensions.splitToParts(letters, 4);     // [[A, B, C, D], [E, F]]
+ListExtensions.getFirst(letters);            // "A"
+ListExtensions.getLast(letters);             // "F"
+
+List<String> words = new ArrayList<>(List.of("ccc", "a", "bb"));
+ListExtensions.sortByProperty(words, String::length, true); // [a, bb, ccc], ascending
+```
+
+**Sets that keep the order.** An `InsertionOrderSet` moves an element that is added again to the
+end; an `IndexableSet` gives an element by its index, and the index of an element.
+
+```java
+Set<String> set = SetFactory.newInsertionOrderSet("b", "a");
+boolean added = set.add("b"); // false, and "b" moves to the end: [a, b]
+
+IndexableSet<String> indexable = new IndexableSet<>();
+indexable.add("c");
+indexable.add("a");
+indexable.get(1);        // "a"
+indexable.getIndex("c"); // 0
+```
+
+**Maps.**
+
+```java
+Map<Integer, String> numbers = new LinkedHashMap<>();
+numbers.put(1, "one");
+numbers.put(2, "two");
+numbers.put(3, "one");
+MapExtensions.getKeyFromValue(numbers, "one");   // 1, the first in iteration order
+MapExtensions.getKeysFromValue(numbers, "one");  // 1 and 3
+MapExtensions.getKeyFromValue(numbers, "three"); // null
+```
+
+**Arrays.** The factories and the operations return a new array; the given one stays as it is.
+
+```java
+Integer[] numbers = ArrayFactory.newArray(1, 2, 3);
+ArrayExtensions.removeFromStart(numbers, new Integer[] { 1 }); // [2, 3]
+ArrayExtensions.removeFromStart(numbers, new Integer[] { 9 }); // [1, 2, 3], a copy: no such prefix
+ArrayExtensions.remove(numbers, 2, 0);                         // [2]
+ArrayExtensions.concatenate(numbers, new Integer[] { 4 });     // [1, 2, 3, 4]
+ArrayFactory.newRangeArray(1, 3);                              // [1, 2, 3], both ends included
+```
+
+**Collections.**
+
+```java
+CollectionExtensions.isEqualCollection(List.of(1, 1, 2), List.of(2, 1, 1)); // true: the same elements, as often each
+CollectionExtensions.isEqualCollection(List.of(1, 2), List.of(3, 4));       // false
+Number[] mixed = CollectionExtensions.toArray(List.<Number> of(1, 2.5));    // a Number[]: 1, 2.5
+CollectionExtensions.partition(List.of(1, 2, 3, 4, 5), 2);                  // [[1, 2], [3, 4], [5]]
+```
+
+**Properties in order.** A `SortedProperties` lists its keys in the order of its comparator; an
+`IndexSortedProperties` gives a value by the index of its key in that order.
+
+```java
+SortedProperties sorted = SortedProperties.of();
+sorted.setProperty("b", "2");
+sorted.setProperty("a", "1");
+sorted.keySet(); // [a, b], a view in the order of the keys
+
+IndexSortedProperties indexed = IndexSortedProperties.of();
+indexed.setProperty("b", "2");
+indexed.setProperty("a", "1");
+indexed.getProperty(0); // "1", the value of "a"
+indexed.indexOf("2");   // 1
+```
+
+## Features
+
+| Package `io.github.astrapi69.collection...` | What it holds |
+|---|---|
+| (root) | `CollectionExtensions`: emptiness, equal collections by element and count, intersection, difference, partitions, a collection as list or array |
+| `list` | `UniqueList`, `SortedList`, `SortedUniqueList`; `ListFactory` (array lists, linked lists, vectors, ranges, unique and sorted lists), `ListExtensions` (first and last elements, neighbours, splitting, removing, rearranging, sorting by a property, combinations, an index map, the changes between two lists), `VectorExtensions` |
+| `set` | `InsertionOrderSet`, `IndexableSet`; `SetFactory` (hash, linked, tree and insertion order sets), `SetExtensions` (a set as array, set or sorted set) |
+| `map` | `InsertionOrderMap`; `MapFactory` (hash, linked, tree, concurrent, lazy and counter maps), `MapExtensions` (keys by value, sorting by key or value, the largest key by a comparator, merging counter maps, swapping keys and values, maps as `Properties`) |
+| `array` | `ArrayFactory` (arrays of objects and of each primitive type, empty, ranges, sub-arrays), `ArrayExtensions` (contains, indexes and neighbours, concatenating and joining, removing by index, prefix or suffix, intersection, chunks, lists, sets and two-dimensional arrays) |
+| `properties` | `SortedProperties`, `IndexSortedProperties`; `PropertiesExtensions` (loading, storing and exporting, as XML, parameters in values, redundant values) |
+| `iterator` | `ArrayIterator`, `EnumerationIterator` |
+| `enumeration` | `SetEnumeration` |
+| `modification` | `ModifiedState`, `ModifiedCollections`: what was added to and removed from a collection |
+
+The [Javadoc](https://www.javadoc.io/doc/io.github.astrapi69/silly-collection) has the details.
 
 ## Quality
 
@@ -98,34 +244,33 @@ the numbers of its own gate:
 The CI build runs both checks on every pull request, and publishes the mutation score of `develop`
 as the badge above.
 
-## Support this project
 
-If silly-collection is useful to you, a star on [GitHub](https://github.com/astrapi69/silly-collection) helps others find it.
-Sharing it or reporting a bug helps just as much.
+## Verifying the release signatures
 
-If you would like to contribute financially, the channels are on the repository's Sponsor button, which
-reads [.github/FUNDING.yml](.github/FUNDING.yml): GitHub Sponsors, Liberapay, Ko-fi and PayPal.
+The releases on Maven Central are signed with the OpenPGP key
 
-## License
+```text
+5B2F A6B1 1E29 8BC0 9287  F423 D8C4 0351 8C49 CA75
+```
 
-The source code comes under the liberal MIT License, making silly-collection great for all types of
-applications.
+Since 28.3 they are signed by its signing subkey
 
-## Note
+```text
+6D67 F844 2A6F CC96 BD7C  1B5E 9FCF 7C97 10E2 BD8D
+```
 
-No animals were harmed in the making of this library.
+valid until 2028-10-09; up to 28.2 they were signed by the primary key itself. The key, with the
+subkey, is on keys.openpgp.org. Fetch it once, then verify the signature next to each file:
 
-## Semantic Versioning
+```sh
+gpg --keyserver hkps://keys.openpgp.org --recv-keys 5B2FA6B11E298BC09287F423D8C403518C49CA75
+gpg --verify silly-collection-28.3.jar.asc silly-collection-28.3.jar
+```
 
-The versions of silly-collection are maintained with the Simplified Semantic Versioning guidelines.
-
-Release version numbers will be incremented in the following format:
-
-`<major>.<minor>.<patch>`
-
-For detailed information on versioning for this project you can visit
-this [wiki page](https://github.com/lightblueseas/mvn-parent-projects/wiki/Simplified-Semantic-Versioning)
-.
+gpg answers `Good signature` and prints the `Primary key fingerprint`, and for a release signed by
+the subkey the `Subkey fingerprint`; both have to be the ones above. The warning that the key "is not
+certified with a trusted signature" only says that you have not marked it as trusted in your own
+keyring.
 
 ## Releasing
 
@@ -154,57 +299,72 @@ What a release consists of, in the order it is run:
    pushed. Never a force push: `master` is always the latest release, nothing else.
 8. **Open the next cycle**: `projectVersion` to the next `-SNAPSHOT`.
 
-## Want to Help and improve it? ###
+## Contributing
 
-The source code for silly-collection are on GitHub. Please feel free to fork and send pull
-requests!
+Pull requests are welcome: fork
+[astrapi69/silly-collection](https://github.com/astrapi69/silly-collection/fork) and
+[open a pull request](https://github.com/astrapi69/silly-collection/pull/new/develop) against
+`develop`. [CONTRIBUTING.md](.github/CONTRIBUTING.md) has the details.
 
-Create your own fork
-of [astrapi69/silly-collection/fork](https://github.com/astrapi69/silly-collection/fork)
+Please add tests for your change; the coverage and mutation floors above hold for it too. The
+`Makefile` runs the usual tasks:
 
-To share your
-changes, [submit a pull request](https://github.com/astrapi69/silly-collection/pull/new/develop)
-.
+```shell
+make build          # build: tests, coverage check, formatting check
+make spotless-apply # format, and write the license headers
+make pitest         # mutation testing, fails below the floor
+```
 
-Don't forget to add new units tests on your changes.
-
-## Contacting the Developers
-
-Do not hesitate to contact the silly-collection developers with your questions, concerns, comments,
-bug reports, or feature requests.
-
-- Feature requests, questions and bug reports can be reported at
-  the [issues page](https://github.com/astrapi69/silly-collection/issues).
-
-## Similar projects
-
-Here is a list of awesome similar projects:
-
-Open Source:
-
-* [streamex](https://github.com/amaembo/streamex) Enhancing Java 8 Streams
-* [glazedlists](https://github.com/glazedlists/glazedlists) Open Source List Transformations for
-  Java
-
-## Credits
-
-|**Maven Central**|
-|     :---:      |
-|[![Maven Central](https://img.shields.io/maven-central/v/io.github.astrapi69/silly-collection?style=for-the-badge)](https://central.sonatype.com/artifact/io.github.astrapi69/silly-collection)|
-|Special thanks to [sonatype repository](https://www.sonatype.com) for providing a free maven repository service for open source projects|
-|     <img width=1000/>     |
-
-|**javadoc.io**|
-|     :---:      |
-|[![Javadocs](http://www.javadoc.io/badge/io.github.astrapi69/silly-collection.svg)](http://www.javadoc.io/doc/io.github.astrapi69/silly-collection)|
-|Special thanks to [javadoc.io](http://www.javadoc.io) for providing a free javadoc documentation for open source projects|
-|     <img width=1000/>     |
-
-## Git hooks
-
-The repository's git hooks live in `.githooks`: `commit-msg` where present, and `pre-commit`, which refuses a
-commit whose files Spotless would format. Activate them once per clone or worktree:
+The repository's git hooks live in `.githooks`: `commit-msg` where present, and `pre-commit`, which
+refuses a commit whose files Spotless would format. Activate them once per clone or worktree:
 
 ```bash
 git config core.hooksPath .githooks
 ```
+
+The versions follow the
+[Simplified Semantic Versioning](https://github.com/lightblueseas/mvn-parent-projects/wiki/Simplified-Semantic-Versioning)
+guidelines, `<major>.<minor>.<patch>`. Questions, bug reports and feature requests belong on the
+[issues page](https://github.com/astrapi69/silly-collection/issues).
+
+## How this project is made
+
+silly-collection was written by its maintainer over many years, since 2015, before there were AI
+tools; release 28.3 and the work towards 29.0 were implemented mostly by AI agents, under the
+maintainer's review and with the maintainer's decision on every change of behaviour. How AI is used in the projects of
+this profile: [AI_USAGE.md](https://github.com/astrapi69/astrapi69/blob/main/AI_USAGE.md).
+
+## License
+
+MIT - see [LICENSE](LICENSE).
+
+## Support this project
+
+If silly-collection is useful to you, a star on [GitHub](https://github.com/astrapi69/silly-collection)
+helps others find it. Sharing it or reporting a bug helps just as much.
+
+If you would like to contribute financially, the channels are on the repository's Sponsor button,
+which reads [.github/FUNDING.yml](.github/FUNDING.yml): GitHub Sponsors, Liberapay, Ko-fi and PayPal.
+
+## Similar projects
+
+- [Guava](https://github.com/google/guava): Google's core libraries, with immutable and multi-valued
+  collections
+- [Apache Commons Collections](https://commons.apache.org/proper/commons-collections/), on which this
+  library builds
+- [Eclipse Collections](https://github.com/eclipse/eclipse-collections): collections with primitive
+  types and a rich API
+- [streamex](https://github.com/amaembo/streamex): enhancing Java 8 streams
+- [glazedlists](https://github.com/glazedlists/glazedlists): open source list transformations for
+  Java
+
+## Credits
+
+| | |
+|---|---|
+| [Maven Central](https://central.sonatype.com/artifact/io.github.astrapi69/silly-collection) | for hosting the artifacts of this open source project |
+| [codecov.io](https://codecov.io) | for free code coverage reporting |
+| [javadoc.io](https://www.javadoc.io) | for free javadoc hosting |
+| [PIT](https://pitest.org/) | for mutation testing |
+
+No animals were harmed in the making of this library.
