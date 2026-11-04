@@ -257,6 +257,25 @@ public class SortedUniqueListTest
 	}
 
 	/**
+	 * Test the method {@link SortedUniqueList#add(Object)} with a comparator that holds "a" and
+	 * "A", and "b" and "B", equal, which equals does not. Pins what the method does today: it
+	 * throws an {@link IndexOutOfBoundsException} for "A" and for "B" and leaves the list as it
+	 * was. The fix of #40 changes the result: each goes in next to the element the comparator holds
+	 * it equal to, and the method returns true
+	 */
+	@Test
+	public void testAddWithComparatorInconsistentWithEquals()
+	{
+		List<String> list = new SortedUniqueList<>(String.CASE_INSENSITIVE_ORDER);
+		list.add("a");
+		list.add("b");
+
+		assertThrows(IndexOutOfBoundsException.class, () -> list.add("A"));
+		assertThrows(IndexOutOfBoundsException.class, () -> list.add("B"));
+		assertEquals(Arrays.asList("a", "b"), list);
+	}
+
+	/**
 	 * Test method for {@link SortedUniqueList#setComparator(Comparator)}.
 	 */
 	@Test

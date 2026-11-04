@@ -243,6 +243,25 @@ public class SortedListTest
 	}
 
 	/**
+	 * Test the method {@link SortedList#add(Object)} with a comparator that holds "a" and "A", and
+	 * "b" and "B", equal, which equals does not. Pins what the method does today: it throws an
+	 * {@link IndexOutOfBoundsException} for "A" and for "B" and leaves the list as it was. The fix
+	 * of #40 changes the result: each goes in next to the element the comparator holds it equal to,
+	 * and the method returns true
+	 */
+	@Test
+	public void testAddWithComparatorInconsistentWithEquals()
+	{
+		List<String> list = new SortedList<>(String.CASE_INSENSITIVE_ORDER);
+		list.add("a");
+		list.add("b");
+
+		assertThrows(IndexOutOfBoundsException.class, () -> list.add("A"));
+		assertThrows(IndexOutOfBoundsException.class, () -> list.add("B"));
+		assertEquals(Arrays.asList("a", "b"), list);
+	}
+
+	/**
 	 * Test the method {@link SortedList#addAll(Collection)} with a collection of elements: they are
 	 * inserted in the order of the comparator and the method returns true
 	 */
