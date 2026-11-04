@@ -28,6 +28,7 @@ import java.util.ArrayList;
 import java.util.Collection;
 import java.util.ConcurrentModificationException;
 import java.util.Iterator;
+import java.util.List;
 import java.util.ListIterator;
 import java.util.NoSuchElementException;
 import java.util.Objects;
@@ -37,7 +38,8 @@ import java.util.function.UnaryOperator;
  * The class {@link UniqueList} extends the {@link ArrayList} and holds each element once: it
  * overrides the methods of {@link ArrayList} that put an element into the list, the add methods,
  * {@link #set(int, Object)}, {@link #replaceAll(UnaryOperator)} and the add and set of its list
- * iterator, so that they check whether the list holds the element already
+ * iterator, so that they check whether the list holds the element already. The view of
+ * {@link #subList(int, int)} reads and removes, and refuses to set, add, replace or sort.
  *
  * @param <E>
  *            the generic type of values
@@ -45,6 +47,13 @@ import java.util.function.UnaryOperator;
  */
 public class UniqueList<E> extends ArrayList<E>
 {
+
+	/**
+	 * The message of the {@link UnsupportedOperationException} of the view of
+	 * {@link #subList(int, int)}
+	 */
+	private static final String SUB_LIST_REFUSAL = "A subList view of a UniqueList reads and"
+		+ " removes only; set and add through the list itself";
 
 	/**
 	 * Constructs an empty {@link UniqueList} instance with the specified initial capacity
@@ -304,6 +313,45 @@ public class UniqueList<E> extends ArrayList<E>
 	{
 		rangeCheckForAdd(index);
 		return new UniqueListIterator(index);
+	}
+
+	/**
+	 * Returns a view of the elements of this list between the given indexes, as
+	 * {@link ArrayList#subList(int, int)} does, that reads and removes and refuses every other
+	 * change.
+	 * <p>
+	 * Reading, {@code remove}, {@code clear}, {@code removeIf}, {@code removeAll} and
+	 * {@code retainAll} through the view, and the remove of its iterators, work as on the view of
+	 * {@link ArrayList}: a removal leaves each element once, and
+	 * {@code list.subList(from, to).clear()} removes a range of this list.
+	 * <p>
+	 * Set, add, addAll, replaceAll and sort through the view, and the set and add of its list
+	 * iterators, throw an {@link UnsupportedOperationException}, whatever the arguments: this list
+	 * moves an element it holds when it is added again, and swaps it in set, so that an element can
+	 * leave the view or come into it from outside, which the view of ArrayList, which counts every
+	 * added element as one of its own, does not follow; set and replaceAll of that view wrote the
+	 * backing array and put an element into this list twice. A sort only reorders inside the view
+	 * and keeps each element once; it is refused as well, so that the views of this list and of the
+	 * sorted lists of this package follow one rule: they read and remove.
+	 * {@link java.util.Collections#swap(List, int, int)} and
+	 * {@link java.util.Collections#reverse(List)} work through set and throw on the view too. The
+	 * view of a view follows the same rules.
+	 *
+	 * @param fromIndex
+	 *            the index of the first element of the view, inclusive
+	 * @param toIndex
+	 *            the index after the last element of the view, exclusive
+	 * @return a view of the elements between the given indexes that reads and removes
+	 * @throws IndexOutOfBoundsException
+	 *             if an index is out of range ({@code fromIndex < 0 || toIndex > size()}), as
+	 *             {@link ArrayList#subList(int, int)} checks it
+	 * @throws IllegalArgumentException
+	 *             if fromIndex is greater than toIndex
+	 */
+	@Override
+	public List<E> subList(int fromIndex, int toIndex)
+	{
+		return new ReadAndRemoveSubList<>(super.subList(fromIndex, toIndex), SUB_LIST_REFUSAL);
 	}
 
 	/**

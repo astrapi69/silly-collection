@@ -844,144 +844,122 @@ public class SortedUniqueListTest
 
 	/**
 	 * Test set and replaceAll of the view of {@link SortedUniqueList#subList(int, int)} and of a
-	 * view of it: they are ArrayList's and write the backing array, so the list holds an element
-	 * twice or leaves the order of its comparator; [a, b, c, d].subList(1, 3).set(0, a) gives [a,
-	 * a, c, d], set(0, z) gives [a, z, c, d], replaceAll(e -> x) of the view gives [a, x, x, d],
-	 * and set(0, a) of subList(0, 1) of the view gives [a, a, c, d] (#78).
-	 * <p>
-	 * The fix of #78 changes the result: each throws an UnsupportedOperationException, and the list
-	 * does not change.
+	 * view of it: each throws an UnsupportedOperationException, for an element the list holds and
+	 * for a new one, and neither the list nor the view changes
 	 */
 	@Test
 	public void testSubListSetAndReplaceAll()
 	{
-		List<String> elements = Arrays.asList("a", "b", "c", "d");
-		List<String> list;
+		List<String> list = new SortedUniqueList<>(Arrays.asList("a", "b", "c", "d"),
+			Comparator.naturalOrder());
+		List<String> view = list.subList(1, 3);
 
-		list = new SortedUniqueList<>(elements, Comparator.naturalOrder());
-		list.subList(1, 3).set(0, "a");
-		assertEquals(Arrays.asList("a", "a", "c", "d"), list);
-
-		list = new SortedUniqueList<>(elements, Comparator.naturalOrder());
-		list.subList(1, 3).set(0, "z");
-		assertEquals(Arrays.asList("a", "z", "c", "d"), list);
-
-		list = new SortedUniqueList<>(elements, Comparator.naturalOrder());
-		list.subList(1, 3).replaceAll(element -> "x");
-		assertEquals(Arrays.asList("a", "x", "x", "d"), list);
-
-		list = new SortedUniqueList<>(elements, Comparator.naturalOrder());
-		list.subList(1, 3).subList(0, 1).set(0, "a");
-		assertEquals(Arrays.asList("a", "a", "c", "d"), list);
+		UnsupportedOperationException exception = assertThrows(UnsupportedOperationException.class,
+			() -> view.set(0, "z"));
+		assertEquals(
+			"A subList view of a SortedUniqueList reads and removes only; set and add through"
+				+ " the list itself",
+			exception.getMessage());
+		assertThrows(UnsupportedOperationException.class, () -> view.set(0, "a"));
+		assertThrows(UnsupportedOperationException.class,
+			() -> view.replaceAll(String::toUpperCase));
+		assertThrows(UnsupportedOperationException.class, () -> view.subList(0, 1).set(0, "z"));
+		assertThrows(UnsupportedOperationException.class,
+			() -> view.subList(0, 1).replaceAll(String::toUpperCase));
+		assertEquals(Arrays.asList("a", "b", "c", "d"), list);
+		assertEquals(Arrays.asList("b", "c"), view);
 	}
 
 	/**
 	 * Test the add methods of the view of {@link SortedUniqueList#subList(int, int)} and of a view
-	 * of it: they call the add methods of the list, which put the element at its sorted place or
-	 * add nothing for an element the list holds, and add one, or the size of the collection, to the
-	 * size of the view; [a, c] with add(a) on subList(0, 2) leaves the list [a, c], and the view
-	 * counts three elements, [a, c, null]. add(0, e), addAll([e]), addAll(0, [e]), and add(e) of
-	 * subList(0, 1) of the view, put e at the end of [a, b, c, d], and the view [b, c] then shows
-	 * [b, c, d] (#78).
-	 * <p>
-	 * The fix of #78 changes the result: each throws an UnsupportedOperationException, with an
-	 * empty collection too, and neither the list nor the view changes.
+	 * of it: add(E), add(int, E), addAll and addAll(int, Collection) throw an
+	 * UnsupportedOperationException, with an empty collection too, and neither the list nor the
+	 * view changes; the third case of #78, add(a) on subList(0, 2) of [a, c], too
 	 */
 	@Test
 	public void testSubListAdd()
 	{
-		List<String> list = new SortedUniqueList<>(Arrays.asList("a", "c"),
+		List<String> unique = new SortedUniqueList<>(Arrays.asList("a", "c"),
 			Comparator.naturalOrder());
-		List<String> view = list.subList(0, 2);
-		view.add("a");
-		assertEquals(Arrays.asList("a", "c"), list);
-		assertEquals(3, view.size());
-		assertEquals(Arrays.asList("a", "c", null), view);
+		List<String> whole = unique.subList(0, 2);
+		assertThrows(UnsupportedOperationException.class, () -> whole.add("a"));
+		assertEquals(Arrays.asList("a", "c"), unique);
+		assertEquals(2, whole.size());
+		assertEquals(Arrays.asList("a", "c"), whole);
 
-		List<String> elements = Arrays.asList("a", "b", "c", "d");
-		List<String> expected = Arrays.asList("a", "b", "c", "d", "e");
+		List<String> list = new SortedUniqueList<>(Arrays.asList("a", "b", "c", "d"),
+			Comparator.naturalOrder());
+		List<String> view = list.subList(1, 3);
 
-		list = new SortedUniqueList<>(elements, Comparator.naturalOrder());
-		view = list.subList(1, 3);
-		view.add(0, "e");
-		assertEquals(expected, list);
-		assertEquals(Arrays.asList("b", "c", "d"), view);
-
-		list = new SortedUniqueList<>(elements, Comparator.naturalOrder());
-		list.subList(1, 3).addAll(Arrays.asList("e"));
-		assertEquals(expected, list);
-
-		list = new SortedUniqueList<>(elements, Comparator.naturalOrder());
-		list.subList(1, 3).addAll(0, Arrays.asList("e"));
-		assertEquals(expected, list);
-
-		list = new SortedUniqueList<>(elements, Comparator.naturalOrder());
-		assertFalse(list.subList(1, 3).addAll(Collections.emptyList()));
-		list.subList(1, 3).subList(0, 1).add("e");
-		assertEquals(expected, list);
+		assertThrows(UnsupportedOperationException.class, () -> view.add("e"));
+		assertThrows(UnsupportedOperationException.class, () -> view.add(0, "e"));
+		assertThrows(UnsupportedOperationException.class, () -> view.addAll(Arrays.asList("e")));
+		assertThrows(UnsupportedOperationException.class, () -> view.addAll(0, Arrays.asList("e")));
+		assertThrows(UnsupportedOperationException.class,
+			() -> view.addAll(Collections.emptyList()));
+		assertThrows(UnsupportedOperationException.class,
+			() -> view.addAll(0, Collections.emptyList()));
+		assertThrows(UnsupportedOperationException.class, () -> view.subList(0, 1).add("e"));
+		assertThrows(UnsupportedOperationException.class,
+			() -> view.subList(0, 1).addAll(Arrays.asList("e")));
+		assertEquals(Arrays.asList("a", "b", "c", "d"), list);
+		assertEquals(Arrays.asList("b", "c"), view);
 	}
 
 	/**
-	 * Test sort of the view of {@link SortedUniqueList#subList(int, int)}, and
+	 * Test sort of the view of {@link SortedUniqueList#subList(int, int)} and of a view of it, and
 	 * {@link Collections#reverse(List)} and {@link Collections#swap(List, int, int)}, which work
-	 * through its set: they reorder the elements inside the view against the comparator of the
-	 * list, [a, b, c, d] gives [a, c, b, d] with each (#78).
-	 * <p>
-	 * The fix of #78 changes the result: each throws an UnsupportedOperationException, and the list
-	 * does not change.
+	 * through its set: each throws an UnsupportedOperationException, sort with null, with the
+	 * comparator of the list and on an empty view too, and the list does not change
 	 */
 	@Test
 	public void testSubListSort()
 	{
-		List<String> elements = Arrays.asList("a", "b", "c", "d");
-		List<String> list;
+		List<String> list = new SortedUniqueList<>(Arrays.asList("a", "b", "c", "d"),
+			Comparator.naturalOrder());
+		List<String> view = list.subList(1, 3);
 
-		list = new SortedUniqueList<>(elements, Comparator.naturalOrder());
-		list.subList(1, 3).sort(Comparator.reverseOrder());
-		assertEquals(Arrays.asList("a", "c", "b", "d"), list);
-
-		list = new SortedUniqueList<>(elements, Comparator.naturalOrder());
-		Collections.reverse(list.subList(1, 3));
-		assertEquals(Arrays.asList("a", "c", "b", "d"), list);
-
-		list = new SortedUniqueList<>(elements, Comparator.naturalOrder());
-		Collections.swap(list.subList(1, 3), 0, 1);
-		assertEquals(Arrays.asList("a", "c", "b", "d"), list);
+		assertThrows(UnsupportedOperationException.class,
+			() -> view.sort(Comparator.reverseOrder()));
+		assertThrows(UnsupportedOperationException.class, () -> view.sort(null));
+		assertThrows(UnsupportedOperationException.class,
+			() -> view.sort(Comparator.naturalOrder()));
+		assertThrows(UnsupportedOperationException.class, () -> list.subList(2, 2).sort(null));
+		assertThrows(UnsupportedOperationException.class, () -> view.subList(0, 2).sort(null));
+		assertThrows(UnsupportedOperationException.class, () -> Collections.reverse(view));
+		assertThrows(UnsupportedOperationException.class, () -> Collections.swap(view, 0, 1));
+		assertEquals(Arrays.asList("a", "b", "c", "d"), list);
 	}
 
 	/**
-	 * Test set and add of the list iterator of the view of
-	 * {@link SortedUniqueList#subList(int, int)}: set calls set(int, E) of the list, which throws
-	 * an IllegalArgumentException for an element the list holds at another index, [a, b, c, d] with
-	 * next() and set(a) on subList(1, 3), and sorts any other element in, set(z) gives [a, c, d,
-	 * z], after which the view throws a ConcurrentModificationException; add calls add(int, E) of
-	 * the view, the iterator of listIterator(1) with add(e) gives [a, b, c, d, e] and the view [b,
-	 * c, d] (#78).
-	 * <p>
-	 * The fix of #78 changes the result: set and add throw an UnsupportedOperationException, and
-	 * neither the list nor the view changes.
+	 * Test set and add of the list iterators of the view of
+	 * {@link SortedUniqueList#subList(int, int)}, of listIterator() and of listIterator(int): they
+	 * throw an UnsupportedOperationException, for an element the list holds and for a new one, and
+	 * neither the list nor the view changes
 	 */
 	@Test
 	public void testSubListListIteratorSetAndAdd()
 	{
-		List<String> elements = Arrays.asList("a", "b", "c", "d");
-
-		List<String> list = new SortedUniqueList<>(elements, Comparator.naturalOrder());
+		List<String> list = new SortedUniqueList<>(Arrays.asList("a", "b", "c", "d"),
+			Comparator.naturalOrder());
 		List<String> view = list.subList(1, 3);
+
 		ListIterator<String> iterator = view.listIterator();
 		assertEquals("b", iterator.next());
-		assertThrows(IllegalArgumentException.class, () -> iterator.set("a"));
-		assertEquals(elements, list);
-		iterator.set("z");
-		assertEquals(Arrays.asList("a", "c", "d", "z"), list);
-		assertThrows(ConcurrentModificationException.class, view::size);
+		UnsupportedOperationException exception = assertThrows(UnsupportedOperationException.class,
+			() -> iterator.set("z"));
+		assertEquals(
+			"A subList view of a SortedUniqueList reads and removes only; set and add through"
+				+ " the list itself",
+			exception.getMessage());
+		assertThrows(UnsupportedOperationException.class, () -> iterator.set("a"));
+		assertThrows(UnsupportedOperationException.class, () -> iterator.add("e"));
 
-		list = new SortedUniqueList<>(elements, Comparator.naturalOrder());
-		List<String> other = list.subList(1, 3);
-		ListIterator<String> fromIndex = other.listIterator(1);
-		fromIndex.add("e");
-		assertEquals(Arrays.asList("a", "b", "c", "d", "e"), list);
-		assertEquals(Arrays.asList("b", "c", "d"), other);
+		ListIterator<String> fromIndex = view.listIterator(1);
+		assertThrows(UnsupportedOperationException.class, () -> fromIndex.add("e"));
+		assertEquals("c", fromIndex.next());
+		assertEquals(Arrays.asList("a", "b", "c", "d"), list);
+		assertEquals(Arrays.asList("b", "c"), view);
 	}
 
 	/**
