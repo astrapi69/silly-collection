@@ -1071,6 +1071,18 @@ public class ArrayExtensionsTest
 	}
 
 	/**
+	 * Test method for {@link ArrayExtensions#removeFirst(Object[])} with an empty array: it throws
+	 * an {@link IndexOutOfBoundsException}, as before the fix of #63
+	 */
+	@Test
+	public void testRemoveFirstOfAnEmptyArray()
+	{
+		final IndexOutOfBoundsException exception = assertThrows(IndexOutOfBoundsException.class,
+			() -> ArrayExtensions.removeFirst(new String[0]));
+		assertEquals("Index 0 out of bounds for length 0", exception.getMessage());
+	}
+
+	/**
 	 * Test method for {@link ArrayExtensions#removeFromEnd(Object[], Object[])}
 	 */
 	@Test
@@ -1129,6 +1141,19 @@ public class ArrayExtensionsTest
 	}
 
 	/**
+	 * Test method for {@link ArrayExtensions#removeLast(Object[])} with an empty array: it throws
+	 * an {@link IndexOutOfBoundsException}, as {@link ArrayExtensions#removeFirst(Object[])} does.
+	 * Before the fix of #63 it threw a {@link NegativeArraySizeException}
+	 */
+	@Test
+	public void testRemoveLastOfAnEmptyArray()
+	{
+		final IndexOutOfBoundsException exception = assertThrows(IndexOutOfBoundsException.class,
+			() -> ArrayExtensions.removeLast(new String[0]));
+		assertEquals("Index -1 out of bounds for length 0", exception.getMessage());
+	}
+
+	/**
 	 * Test method for {@link ArrayExtensions#remove(Object[], int... )}
 	 */
 	@Test
@@ -1153,6 +1178,71 @@ public class ArrayExtensionsTest
 		actual = ArrayExtensions.remove(source, 3, 5, 1);
 		expected = ArrayFactory.newArray("1", "3", "5");
 		assertArrayEquals(actual, expected);
+	}
+
+	/**
+	 * Test method for {@link ArrayExtensions#remove(Object[], int...)} with unsorted indexes: the
+	 * indexes array of the caller stays { 2, 0 }. Before the fix of #63 the method sorted it to {
+	 * 0, 2 }
+	 */
+	@Test
+	public void testRemoveWithUnsortedIndexes()
+	{
+		final Integer[] array = { 0, 1, 2, 3 };
+		final int[] indexes = { 2, 0 };
+
+		assertArrayEquals(new Integer[] { 1, 3 }, ArrayExtensions.remove(array, indexes));
+		assertArrayEquals(new int[] { 2, 0 }, indexes);
+	}
+
+	/**
+	 * Test method for {@link ArrayExtensions#remove(Object[], int...)} with an index given twice:
+	 * it removes the element at the index once, { 0, 1, 2, 3 } without 1 and 1 gives { 0, 2, 3 }.
+	 * Before the fix of #63 the method also removed the element that moved there and gave { 0, 3 }
+	 */
+	@Test
+	public void testRemoveWithAnIndexTwice()
+	{
+		final Integer[] array = { 0, 1, 2, 3 };
+
+		assertArrayEquals(new Integer[] { 0, 2, 3 }, ArrayExtensions.remove(array, 1, 1));
+	}
+
+	/**
+	 * Test method for {@link ArrayExtensions#remove(Object[], int...)} with the last index given
+	 * twice: it removes the last element once, { 0, 1, 2, 3 } without 3 and 3 gives { 0, 1, 2 }.
+	 * Before the fix of #63 the method threw an {@link IndexOutOfBoundsException}, as the second 3
+	 * was out of range after the first one was removed
+	 */
+	@Test
+	public void testRemoveWithTheLastIndexTwice()
+	{
+		final Integer[] array = { 0, 1, 2, 3 };
+
+		assertArrayEquals(new Integer[] { 0, 1, 2 }, ArrayExtensions.remove(array, 3, 3));
+	}
+
+	/**
+	 * Test method for {@link ArrayExtensions#remove(Object[], int...)} with an index out of range:
+	 * it throws an {@link IndexOutOfBoundsException} with the message of
+	 * {@link java.util.ArrayList#remove(int)}, and the given array is unchanged, as before the fix
+	 * of #63
+	 */
+	@Test
+	public void testRemoveWithAnIndexOutOfRange()
+	{
+		final Integer[] array = { 0, 1, 2, 3 };
+		IndexOutOfBoundsException exception;
+
+		exception = assertThrows(IndexOutOfBoundsException.class,
+			() -> ArrayExtensions.remove(array, 1, 4));
+		assertEquals("Index 4 out of bounds for length 4", exception.getMessage());
+
+		exception = assertThrows(IndexOutOfBoundsException.class,
+			() -> ArrayExtensions.remove(array, -1));
+		assertEquals("Index -1 out of bounds for length 4", exception.getMessage());
+
+		assertArrayEquals(new Integer[] { 0, 1, 2, 3 }, array);
 	}
 
 	/**
