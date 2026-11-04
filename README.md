@@ -138,7 +138,7 @@ What a release consists of, in the order it is run:
    (`docs: changelog for X.Y, and the version that carries it`), the full build green on it.
 3. **The release gate** on that pull request's tree: the tests, `pitest` with its floor and
    `jacocoTestCoverageVerification` with its floor in one run, `--rerun-tasks --no-build-cache`, on
-   JDK 17, the toolchain of the build; the class files are of Java 17 (major version 61), and the
+   JDK 25, the toolchain of the build; the class files are of Java 25 (major version 69), and the
    resolved dependencies hold no `-SNAPSHOT`. Its numbers go into the CHANGELOG entry and into the
    Quality section above, in the same pull request, before it is merged.
 4. **Tag the merge commit** with `./gradlew tagRelease` (`make tag-release`), which names it

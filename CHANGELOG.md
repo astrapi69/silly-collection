@@ -1,6 +1,23 @@
 ## Change log
 ----------------------
 
+Version 29.0-SNAPSHOT
+-------------
+
+BREAKING:
+
+- Java 25 is the minimum, up from 17: the family builds, tests and releases on JDK 25 (astrapi69/mystic-crypt#235),
+  so this release is 29.0 instead of 28.4 (#51). Gradle refuses a library built for Java 25 on the class path of a
+  project below 25; such a project stays on 28.3 until it moves to JDK 25 itself. The projects of the family it
+  concerns are listed on #51
+
+CHANGED:
+
+- CI, the dependency submission and publishing build on JDK 25 (`gradle.yml`, `dependency-submission.yml`,
+  `publish.yml`) (#51)
+- the tests take silly-io 5.0, its release for Java 25, which `gradle/version-catalog-update.gradle` no longer pins
+  to 3.6 (#37, #51); PIT 1.30.1, as silly-io on JDK 25
+
 Version 28.3
 -------------
 
