@@ -28,6 +28,7 @@ import java.lang.reflect.Array;
 import java.util.Arrays;
 import java.util.List;
 import java.util.Map;
+import java.util.Objects;
 import java.util.Optional;
 import java.util.Set;
 import java.util.stream.Collectors;
@@ -778,26 +779,35 @@ public final class ArrayExtensions
 
 
 	/**
-	 * Creates a new array from the given array without the elements at the given indexes
+	 * Creates a new array from the given array without the elements at the given indexes.
+	 * <p>
+	 * The indexes refer to the given array and may be given in any order. Each distinct index
+	 * removes one element: an index given twice removes the element at this index once, so
+	 * {@code remove({ 0, 1, 2, 3 }, 1, 1)} returns {@code { 0, 2, 3 }}. Neither the given array nor
+	 * the given indexes array is changed.
+	 * </p>
 	 *
 	 * @param <T>
 	 *            the generic type of the objects in the array
 	 * @param array
 	 *            the origin array
 	 * @param indexes
-	 *            the indexes to remove
+	 *            the indexes of the elements to remove, in any order
 	 * @return the new created array without the elements at the given indexes
+	 * @throws IndexOutOfBoundsException
+	 *             if one of the given indexes is negative or not less than the length of the given
+	 *             array; the given array is unchanged then too
 	 */
 	public static <T> T[] remove(final T[] array, int... indexes)
 	{
 		Argument.notNull(array, "array");
 		List<T> list = ListFactory.newArrayList(array);
-		final int lastIndex = indexes.length - 1;
-		Arrays.sort(indexes);
-		for (int i = lastIndex; -1 < i; i--)
+		// a sorted copy without duplicates, the indexes array of the caller stays as it is
+		final int[] distinctIndexes = Arrays.stream(indexes).distinct().sorted().toArray();
+		// from the highest index down, so that a removal does not move the elements still to remove
+		for (int i = distinctIndexes.length - 1; -1 < i; i--)
 		{
-			int index = indexes[i];
-			list.remove(index);
+			list.remove(distinctIndexes[i]);
 		}
 		return list.toArray(Arrays.copyOf(array, list.size()));
 	}
@@ -833,6 +843,8 @@ public final class ArrayExtensions
 	 * @param original
 	 *            the origin array
 	 * @return the new created array without the first element
+	 * @throws IndexOutOfBoundsException
+	 *             if the given array is empty
 	 */
 	public static <T> T[] removeFirst(final T[] original)
 	{
@@ -893,11 +905,14 @@ public final class ArrayExtensions
 	 * @param original
 	 *            the origin array
 	 * @return the new created array without the last element
+	 * @throws IndexOutOfBoundsException
+	 *             if the given array is empty, as {@link #removeFirst(Object[])} does
 	 */
 	public static <T> T[] removeLast(final T[] original)
 	{
 		Argument.notNull(original, "original");
-		return Arrays.copyOf(original, original.length - 1);
+		final int lastIndex = Objects.checkIndex(original.length - 1, original.length);
+		return Arrays.copyOf(original, lastIndex);
 	}
 
 	/**
