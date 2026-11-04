@@ -26,13 +26,17 @@ package io.github.astrapi69.collection.properties;
 
 import static org.junit.jupiter.api.Assertions.*;
 
+import java.util.ArrayList;
+import java.util.Collections;
 import java.util.Comparator;
 import java.util.Enumeration;
+import java.util.List;
 import java.util.Properties;
 import java.util.Set;
 
 import org.junit.jupiter.api.Test;
 
+import io.github.astrapi69.collection.list.ListFactory;
 import io.github.astrapi69.comparator.NullCheckComparator;
 
 /**
@@ -290,6 +294,25 @@ public class SortedPropertiesTest
 	}
 
 	/**
+	 * Test the methods {@link SortedProperties#keys()} and {@link SortedProperties#keySet()} with
+	 * keys that are no strings: the default comparator sorts them by their string form, not by
+	 * their natural order
+	 */
+	@Test
+	public void testKeysAreSortedByTheirStringForm()
+	{
+		final SortedProperties sortedProperties = new SortedProperties();
+		sortedProperties.put(10, "ten");
+		sortedProperties.put(9, "nine");
+		sortedProperties.put(100, "hundred");
+
+		// by their string form "10" < "100" < "9", by their natural order 9 < 10 < 100
+		final List<Integer> expected = ListFactory.newArrayList(10, 100, 9);
+		assertEquals(expected, Collections.list(sortedProperties.keys()));
+		assertEquals(expected, new ArrayList<>(sortedProperties.keySet()));
+	}
+
+	/**
 	 * Test for factory method {@link SortedProperties#of()}
 	 */
 	@Test
@@ -360,6 +383,26 @@ public class SortedPropertiesTest
 			}
 			count++;
 		}
+	}
+
+	/**
+	 * Test the factory method {@link SortedProperties#of(Properties, Comparator)} sorts the keys
+	 * with the given comparator in {@link SortedProperties#keys()},
+	 * {@link SortedProperties#keySet()} and {@link SortedProperties#propertyNames()}
+	 */
+	@Test
+	public void testOfPropertiesComparatorSortsTheKeysWithIt()
+	{
+		final SortedProperties sortedProperties = SortedProperties.of(new Properties(),
+			(o1, o2) -> o2.toString().compareTo(o1.toString()));
+		sortedProperties.setProperty("B", "2");
+		sortedProperties.setProperty("C", "3");
+		sortedProperties.setProperty("A", "1");
+
+		final List<String> expected = ListFactory.newArrayList("C", "B", "A");
+		assertEquals(expected, Collections.list(sortedProperties.keys()));
+		assertEquals(expected, new ArrayList<>(sortedProperties.keySet()));
+		assertEquals(expected, Collections.list(sortedProperties.propertyNames()));
 	}
 
 	/**
