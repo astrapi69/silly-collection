@@ -222,8 +222,8 @@ public class UniqueListTest
 
 	/**
 	 * Test the method {@link UniqueList#addAll(Collection)} with an element the list contains
-	 * already: today [a].addAll([a]) leaves the list as it is and returns true (#39); the fix of
-	 * #39 changes the result to false, as the list did not change
+	 * already: [a].addAll([a]) leaves the list as it is and returns false, as the list did not
+	 * change (#39)
 	 */
 	@Test
 	public void testAddAllWithContainedElement()
@@ -231,14 +231,14 @@ public class UniqueListTest
 		List<String> list = new UniqueList<>();
 		list.add("a");
 
-		assertTrue(list.addAll(Arrays.asList("a")));
+		assertFalse(list.addAll(Arrays.asList("a")));
 		assertEquals(Arrays.asList("a"), list);
 	}
 
 	/**
 	 * Test the method {@link UniqueList#addAll(int, Collection)} with an element the list contains
-	 * already: today [a].addAll(1, [a]) leaves the list as it is and returns true (#39); the fix of
-	 * #39 changes the result to false, as the list did not change
+	 * already: [a].addAll(1, [a]) leaves the list as it is and returns false, as the list did not
+	 * change (#39)
 	 */
 	@Test
 	public void testAddAllWithIndexAndContainedElement()
@@ -246,14 +246,14 @@ public class UniqueListTest
 		List<String> list = new UniqueList<>();
 		list.add("a");
 
-		assertTrue(list.addAll(1, Arrays.asList("a")));
+		assertFalse(list.addAll(1, Arrays.asList("a")));
 		assertEquals(Arrays.asList("a"), list);
 	}
 
 	/**
 	 * Test the method {@link UniqueList#addAll(int, Collection)} with an index greater than the
-	 * size: today [a].addAll(5, [b]) appends b and returns true (#39); the fix of #39 changes the
-	 * result to an IndexOutOfBoundsException, as ArrayList throws, and the list stays [a]
+	 * size: [a].addAll(5, [b]) throws an IndexOutOfBoundsException with the message of ArrayList,
+	 * and the list stays [a] (#39)
 	 */
 	@Test
 	public void testAddAllWithIndexOverSize()
@@ -261,14 +261,16 @@ public class UniqueListTest
 		List<String> list = new UniqueList<>();
 		list.add("a");
 
-		assertTrue(list.addAll(5, Arrays.asList("b")));
-		assertEquals(Arrays.asList("a", "b"), list);
+		IndexOutOfBoundsException exception = assertThrows(IndexOutOfBoundsException.class,
+			() -> list.addAll(5, Arrays.asList("b")));
+		assertEquals("Index: 5, Size: 1", exception.getMessage());
+		assertEquals(Arrays.asList("a"), list);
 	}
 
 	/**
 	 * Test the method {@link UniqueList#addAll(int, Collection)} with an index greater than the
-	 * size and an empty collection: today [a].addAll(5, []) returns false (#39); the fix of #39
-	 * changes the result to an IndexOutOfBoundsException, as ArrayList throws
+	 * size and an empty collection: [a].addAll(5, []) throws an IndexOutOfBoundsException, as
+	 * ArrayList does (#39)
 	 */
 	@Test
 	public void testAddAllWithIndexOverSizeAndEmptyCollection()
@@ -276,15 +278,15 @@ public class UniqueListTest
 		List<String> list = new UniqueList<>();
 		list.add("a");
 
-		assertFalse(list.addAll(5, Collections.emptyList()));
+		IndexOutOfBoundsException exception = assertThrows(IndexOutOfBoundsException.class,
+			() -> list.addAll(5, Collections.emptyList()));
+		assertEquals("Index: 5, Size: 1", exception.getMessage());
 		assertEquals(Arrays.asList("a"), list);
 	}
 
 	/**
 	 * Test the method {@link UniqueList#add(int, Object)} with the index size() and an element the
-	 * list contains already: today [a, b].add(2, a) removes a, then throws an
-	 * IndexOutOfBoundsException for the index that is out of range by then, and a is lost (#39);
-	 * the fix of #39 changes the result to [b, a], a moved to the end
+	 * list contains already: [a, b].add(2, a) moves a to the end and gives [b, a] (#39)
 	 */
 	@Test
 	public void testAddWithIndexOfSizeAndContainedElement()
@@ -293,17 +295,13 @@ public class UniqueListTest
 		list.add("a");
 		list.add("b");
 
-		IndexOutOfBoundsException exception = assertThrows(IndexOutOfBoundsException.class,
-			() -> list.add(2, "a"));
-		assertEquals("Index: 2, Size: 1", exception.getMessage());
-		assertEquals(Arrays.asList("b"), list);
+		list.add(2, "a");
+		assertEquals(Arrays.asList("b", "a"), list);
 	}
 
 	/**
 	 * Test the method {@link UniqueList#addAll(int, Collection)} with an element the collection
-	 * holds twice: today [x].addAll(0, [a, a, b]) gives [x, a, b], the second a moves the first one
-	 * behind x and b follows it (#39); the fix of #39 changes the result to [a, b, x], as
-	 * [x].addAll(0, [a, b]) gives
+	 * holds twice: [x].addAll(0, [a, a, b]) gives [a, b, x], as [x].addAll(0, [a, b]) gives (#39)
 	 */
 	@Test
 	public void testAddAllWithIndexAndRepeatedElement()
@@ -312,6 +310,134 @@ public class UniqueListTest
 		list.add("x");
 
 		assertTrue(list.addAll(0, Arrays.asList("a", "a", "b")));
-		assertEquals(Arrays.asList("x", "a", "b"), list);
+		assertEquals(Arrays.asList("a", "b", "x"), list);
+	}
+
+	/**
+	 * Test the method {@link UniqueList#add(int, Object)} with elements the list contains already:
+	 * each moves so that it ends at the given index, to the front, to the back or to where it is,
+	 * and the size stays the same (#39)
+	 */
+	@Test
+	public void testAddWithIndexAndContainedElement()
+	{
+		List<String> list = new UniqueList<>(Arrays.asList("a", "b", "c"));
+
+		list.add(0, "c");
+		assertEquals(Arrays.asList("c", "a", "b"), list);
+		list.add(2, "c");
+		assertEquals(Arrays.asList("a", "b", "c"), list);
+		list.add(1, "a");
+		assertEquals(Arrays.asList("b", "a", "c"), list);
+		list.add(1, "a");
+		assertEquals(Arrays.asList("b", "a", "c"), list);
+	}
+
+	/**
+	 * Test the method {@link UniqueList#add(int, Object)} with new elements: each is inserted at
+	 * the given index, the index size() included, as ArrayList inserts it (#39)
+	 */
+	@Test
+	public void testAddWithIndexAndNewElement()
+	{
+		List<String> list = new UniqueList<>();
+		list.add("a");
+
+		list.add(1, "b");
+		assertEquals(Arrays.asList("a", "b"), list);
+		list.add(0, "c");
+		assertEquals(Arrays.asList("c", "a", "b"), list);
+		list.add(1, "d");
+		assertEquals(Arrays.asList("c", "d", "a", "b"), list);
+	}
+
+	/**
+	 * Test the method {@link UniqueList#add(int, Object)} with an index out of range and an element
+	 * the list contains already: it throws an IndexOutOfBoundsException with the message of
+	 * ArrayList, before it moves the element, and the list does not change (#39)
+	 */
+	@Test
+	public void testAddWithIndexOutOfRangeAndContainedElement()
+	{
+		List<String> list = new UniqueList<>(Arrays.asList("a", "b"));
+
+		IndexOutOfBoundsException exception = assertThrows(IndexOutOfBoundsException.class,
+			() -> list.add(3, "a"));
+		assertEquals("Index: 3, Size: 2", exception.getMessage());
+		assertEquals(Arrays.asList("a", "b"), list);
+
+		exception = assertThrows(IndexOutOfBoundsException.class, () -> list.add(-1, "a"));
+		assertEquals("Index: -1, Size: 2", exception.getMessage());
+		assertEquals(Arrays.asList("a", "b"), list);
+	}
+
+	/**
+	 * Test the method {@link UniqueList#add(int, Object)} with an index out of range and a new
+	 * element: it throws an IndexOutOfBoundsException with the message of ArrayList, and the list
+	 * does not change (#39)
+	 */
+	@Test
+	public void testAddWithIndexOutOfRangeAndNewElement()
+	{
+		List<String> list = new UniqueList<>();
+		list.add("a");
+
+		IndexOutOfBoundsException exception = assertThrows(IndexOutOfBoundsException.class,
+			() -> list.add(2, "b"));
+		assertEquals("Index: 2, Size: 1", exception.getMessage());
+
+		exception = assertThrows(IndexOutOfBoundsException.class, () -> list.add(-1, "b"));
+		assertEquals("Index: -1, Size: 1", exception.getMessage());
+		assertEquals(Arrays.asList("a"), list);
+	}
+
+	/**
+	 * Test the method {@link UniqueList#addAll(int, Collection)} with a negative index: it throws
+	 * an IndexOutOfBoundsException with the message of ArrayList, for an empty collection too, and
+	 * the list does not change (#39)
+	 */
+	@Test
+	public void testAddAllWithNegativeIndex()
+	{
+		List<String> list = new UniqueList<>();
+		list.add("a");
+
+		IndexOutOfBoundsException exception = assertThrows(IndexOutOfBoundsException.class,
+			() -> list.addAll(-1, Arrays.asList("b")));
+		assertEquals("Index: -1, Size: 1", exception.getMessage());
+
+		exception = assertThrows(IndexOutOfBoundsException.class,
+			() -> list.addAll(-1, Collections.emptyList()));
+		assertEquals("Index: -1, Size: 1", exception.getMessage());
+		assertEquals(Arrays.asList("a"), list);
+	}
+
+	/**
+	 * Test the method {@link UniqueList#addAll(int, Collection)} with the index size(): the new
+	 * elements are appended in the order of the collection, the one the list contains already is
+	 * left out, and the method returns true (#39)
+	 */
+	@Test
+	public void testAddAllWithIndexOfSize()
+	{
+		List<String> list = new UniqueList<>();
+		list.add("a");
+
+		assertTrue(list.addAll(1, Arrays.asList("b", "a", "c")));
+		assertEquals(Arrays.asList("a", "b", "c"), list);
+	}
+
+	/**
+	 * Test the method {@link UniqueList#addAll(int, Collection)} with a new element and one the
+	 * list contains already: the new one is inserted at the index, and the contained one keeps its
+	 * position, unlike with {@link UniqueList#add(int, Object)}, which moves it (#39)
+	 */
+	@Test
+	public void testAddAllWithIndexAndNewAndContainedElement()
+	{
+		List<String> list = new UniqueList<>(Arrays.asList("a", "b"));
+
+		assertTrue(list.addAll(0, Arrays.asList("b", "c")));
+		assertEquals(Arrays.asList("c", "a", "b"), list);
 	}
 }
