@@ -182,7 +182,7 @@ public final class CollectionExtensions
 	 *            the generic type
 	 * @param collection
 	 *            The collection to check
-	 * @return true if the given {@link Collection} is null or empty otherwise false
+	 * @return true if the given {@link Collection} is neither null nor empty otherwise false
 	 */
 	public static <T> boolean isNotEmpty(final Collection<T> collection)
 	{
@@ -237,13 +237,16 @@ public final class CollectionExtensions
 	}
 
 	/**
-	 * Creates a new {@link List} from the given {@link Collection} object
+	 * Returns the given {@link Collection} object as a {@link List}: the collection itself if it is
+	 * a {@link List}, otherwise a new {@link ArrayList} with the elements of the collection
 	 *
 	 * @param <T>
 	 *            the generic type of the objects in the {@link Collection} object
 	 * @param collection
 	 *            the collection to transform
-	 * @return the new {@link List} created from the given {@link Collection} object
+	 * @return the given collection itself if it is a {@link List}, otherwise a new
+	 *         {@link ArrayList} created from the given {@link Collection} object, or null if the
+	 *         given collection is null
 	 */
 	public static <T> List<T> toList(final Collection<T> collection)
 	{
@@ -265,8 +268,8 @@ public final class CollectionExtensions
 	 *            the generic type of the objects in the {@link Collection} object
 	 * @param collection
 	 *            the collection to transform
-	 * @return the new generic array created from the given {@link Collection} object, or an empty
-	 *         array if the collection is empty
+	 * @return the new generic array created from the given {@link Collection} object, or null if
+	 *         the collection is null or empty
 	 */
 	public static <T> T[] toArray(final Collection<T> collection)
 	{

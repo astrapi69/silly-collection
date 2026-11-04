@@ -389,7 +389,7 @@ public final class ListExtensions
 	}
 
 	/**
-	 * Checks if the given {@link List} has a next element from the given element
+	 * Checks if the given {@link List} has a previous element from the given element
 	 *
 	 * @param <T>
 	 *            the generic type
@@ -781,7 +781,9 @@ public final class ListExtensions
 	 *            the generic type
 	 * @param list
 	 *            the list
-	 * @return the array or null if the list is empty
+	 * @return the new array with the elements of the given list
+	 * @throws IllegalArgumentException
+	 *             if the given list is null or empty
 	 */
 	@SuppressWarnings("unchecked")
 	public static <T> T[] toArray(final List<T> list)
@@ -829,14 +831,14 @@ public final class ListExtensions
 	}
 
 	/**
-	 * Converts the given enumeration to a Vector.
+	 * Converts the given enumeration to an ArrayList.
 	 *
 	 * @param <T>
 	 *            the generic type
 	 * @param enumeration
 	 *            The Enumeration to convert.
 	 *
-	 * @return A new Vector with the content of the given Enumeration.
+	 * @return A new ArrayList with the content of the given Enumeration.
 	 */
 	public static <T> List<T> toList(final Enumeration<T> enumeration)
 	{

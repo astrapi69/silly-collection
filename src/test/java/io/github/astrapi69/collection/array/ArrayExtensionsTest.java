@@ -27,7 +27,9 @@ package io.github.astrapi69.collection.array;
 import static org.junit.jupiter.api.Assertions.assertArrayEquals;
 import static org.junit.jupiter.api.Assertions.assertEquals;
 import static org.junit.jupiter.api.Assertions.assertNotNull;
+import static org.junit.jupiter.api.Assertions.assertNotSame;
 import static org.junit.jupiter.api.Assertions.assertNull;
+import static org.junit.jupiter.api.Assertions.assertSame;
 import static org.junit.jupiter.api.Assertions.assertThrows;
 import static org.junit.jupiter.api.Assertions.assertTrue;
 
@@ -1245,6 +1247,25 @@ public class ArrayExtensionsTest
 		final Integer[] existingArray = { 1, 2, 3 };
 		assertArrayEquals(expected, ArrayExtensions.concatenate(existingArray, new Integer[0]));
 		assertArrayEquals(expected, ArrayExtensions.concatenate(existingArray, null));
+	}
+
+	/**
+	 * Test the method {@link ArrayExtensions#concatenate(Object[], Object[])} where the second
+	 * array is null or empty, or the first array is null: the result is a given array itself, not a
+	 * copy of it. Only with elements in the second array and a first array that is not null is the
+	 * result a new array
+	 */
+	@Test
+	public void testConcatenateReturnsAGivenArrayItself()
+	{
+		final Integer[] existingArray = { 1, 2, 3 };
+		final Integer[] emptyArray = new Integer[0];
+		assertSame(existingArray, ArrayExtensions.concatenate(existingArray, emptyArray));
+		assertSame(existingArray, ArrayExtensions.concatenate(existingArray, null));
+		assertSame(emptyArray, ArrayExtensions.concatenate(emptyArray, null));
+		assertNull(ArrayExtensions.concatenate(null, emptyArray));
+		assertSame(existingArray, ArrayExtensions.concatenate(null, existingArray));
+		assertNotSame(existingArray, ArrayExtensions.concatenate(emptyArray, existingArray));
 	}
 
 	/**
