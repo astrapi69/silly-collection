@@ -224,6 +224,59 @@ public class CollectionExtensionsTest
 	}
 
 	/**
+	 * Test the method {@link CollectionExtensions#isEqualCollection(Collection, Collection)} with
+	 * two collections of the same size without a common element. Pins the result of today, true,
+	 * which #42 reports as a bug: the fix of #42 changes it to false
+	 */
+	@Test
+	public void testIsEqualCollectionWithoutCommonElement()
+	{
+		boolean actual;
+		boolean expected;
+		final List<Integer> one = ListFactory.newArrayList(1, 2);
+		final List<Integer> other = ListFactory.newArrayList(3, 4);
+		actual = CollectionExtensions.isEqualCollection(one, other);
+		expected = true;
+		assertEquals(expected, actual);
+	}
+
+	/**
+	 * Test the method {@link CollectionExtensions#isEqualCollection(Collection, Collection)} with
+	 * two collections that hold the same elements with a different cardinality. Pins the result of
+	 * today, true, which #42 reports as a bug: the fix of #42 changes it to false
+	 */
+	@Test
+	public void testIsEqualCollectionWithDifferentCardinality()
+	{
+		boolean actual;
+		boolean expected;
+		final List<Integer> one = ListFactory.newArrayList(1, 1, 2);
+		final List<Integer> other = ListFactory.newArrayList(1, 2, 2);
+		actual = CollectionExtensions.isEqualCollection(one, other);
+		expected = true;
+		assertEquals(expected, actual);
+	}
+
+	/**
+	 * Test the method {@link CollectionExtensions#isEqualCollection(Collection, Collection)} with
+	 * two lists of the same size whose arrays hold different values. Pins the result of today,
+	 * true, which #42 reports as a bug: the fix of #42 changes it to false
+	 */
+	@Test
+	public void testIsEqualCollectionWithArraysOfDifferentContent()
+	{
+		boolean actual;
+		boolean expected;
+		final List<String[]> one = ListFactory.newArrayList(ArrayFactory.newArray("1", "23", "3"),
+			ArrayFactory.newArray("4", "25", "9"));
+		final List<String[]> other = ListFactory.newArrayList(ArrayFactory.newArray("x"),
+			ArrayFactory.newArray("y"));
+		actual = CollectionExtensions.isEqualCollection(one, other);
+		expected = true;
+		assertEquals(expected, actual);
+	}
+
+	/**
 	 * Test method for {@link CollectionExtensions#hashCode(java.util.Collection)}.
 	 */
 	@Test
