@@ -41,7 +41,9 @@ import java.util.function.UnaryOperator;
  * iterator, so that they check whether the list holds the element already.
  * {@link #addFirst(Object)} and {@link #addLast(Object)} put the element first or last and move an
  * element the list holds there, as in a {@link java.util.LinkedHashSet}. The view of
- * {@link #subList(int, int)} reads and removes, and refuses to set, add, replace or sort.
+ * {@link #subList(int, int)} reads and removes, and refuses to set, add, replace or sort. The view
+ * of {@link #reversed()} writes through the methods of this class, and adds or moves an element so
+ * that it ends at the index of the view.
  *
  * @param <E>
  *            the generic type of values
@@ -387,6 +389,79 @@ public class UniqueList<E> extends ArrayList<E>
 	public List<E> subList(int fromIndex, int toIndex)
 	{
 		return new ReadAndRemoveSubList<>(super.subList(fromIndex, toIndex), SUB_LIST_REFUSAL);
+	}
+
+	/**
+	 * Returns a view of this list in the reverse order, as {@link List#reversed()} does: the index
+	 * {@code i} of the view is the index {@code size() - 1 - i} of this list. The view reads this
+	 * list and writes through the methods of this class, so that this list holds each element once.
+	 * <p>
+	 * The view of List.reversed, which this list returned up to 28.3 on a JDK 21 or later runtime,
+	 * maps {@code add(i, e)} to {@code add(size() - i, e)} of this list, which assumes that this
+	 * list grows: an element this list holds, which {@link #add(int, Object)} moves instead, ended
+	 * one place too early in the view, {@code [a, b, c].reversed().add(1, a)} gave the view
+	 * {@code [a, c, b]}.
+	 * <p>
+	 * <b>Postcondition:</b> after {@code reversed().add(i, e)}, {@code reversed().get(i)} is
+	 * {@code e}, for a new element at every index from 0 to {@code size()}, and for an element this
+	 * list holds, which moves there, at every index from 0 to {@code size() - 1}; the other
+	 * elements keep their order. {@code [a, b, c].reversed().add(1, a)} gives the view
+	 * {@code [c, a, b]}.
+	 * <p>
+	 * The other operations of the view mirror those of this list:
+	 * <ul>
+	 * <li>reading, {@code equals}, {@code hashCode} and {@code toString} are those of a
+	 * {@link List} of the elements in the reverse order, and {@code reversed()} of the view is this
+	 * list itself;</li>
+	 * <li>{@code add(e)} appends a new element to the end of the view and returns false for an
+	 * element this list holds, which stays where it is, as {@link #add(Object)} does;
+	 * {@code addAll(c)} and {@code addAll(i, c)} add the new elements in the order of the
+	 * collection, each once, and leave the held ones where they are, as {@link #addAll(Collection)}
+	 * and {@link #addAll(int, Collection)} do;</li>
+	 * <li>{@code addFirst(e)} and {@code addLast(e)} of the view are {@link #addLast(Object)} and
+	 * {@link #addFirst(Object)} of this list: the element is first or last of the view afterwards,
+	 * and a held element moves there;</li>
+	 * <li>{@code set(i, e)} swaps an element this list holds at another index, as
+	 * {@link #set(int, Object)} does; {@code replaceAll} is {@link #replaceAll(UnaryOperator)};
+	 * {@code sort} sorts the view, stable in its order; the removals remove from this list;</li>
+	 * <li>the set, remove and add of its list iterators go through set, remove and add of the view,
+	 * with the contract of {@link ListIterator}, and its iterators fail fast with a
+	 * {@link ConcurrentModificationException} after a structural change of this list that they did
+	 * not make;</li>
+	 * <li>its {@code subList} reads and removes, and refuses every other change, as the view of
+	 * {@link #subList(int, int)} does.</li>
+	 * </ul>
+	 * Refused with an {@link UnsupportedOperationException}, and this list does not change:
+	 * <ul>
+	 * <li>{@code add(size(), e)} of the view with an element this list holds: a move does not make
+	 * the view grow, so the index {@code size()} does not exist after it and {@code get(size())}
+	 * cannot return the element; {@code addLast(e)} of the view moves the element to its end;</li>
+	 * <li>the add of a list iterator of the view with an element this list holds before the cursor
+	 * or at it: {@link ListIterator#add(Object)} says that a following {@code next()} is unaffected
+	 * and that {@code nextIndex()} grows by one, which cannot hold for an element that is before
+	 * the cursor already, nor for the one {@code next()} would return; an element behind the cursor
+	 * moves to it;</li>
+	 * <li>set, add, addAll, replaceAll and sort through a {@code subList} of the view, and the set
+	 * and add of its list iterators, as on the view of {@link #subList(int, int)}.</li>
+	 * </ul>
+	 *
+	 * @return a view of this list in the reverse order
+	 */
+	@Override
+	public List<E> reversed()
+	{
+		return new ReversedUniqueListView<>(this);
+	}
+
+	/**
+	 * Returns the modification count of this list, which the iterators of the view of
+	 * {@link #reversed()} compare to fail fast
+	 *
+	 * @return the modification count of this list
+	 */
+	int modificationCount()
+	{
+		return modCount;
 	}
 
 	/**

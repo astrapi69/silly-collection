@@ -11,6 +11,19 @@ BREAKING:
   project below 25; such a project stays on 28.3 until it moves to JDK 25 itself. The projects of the family it
   concerns are listed on #51
 
+FIXED:
+
+- `UniqueList.reversed()` returns a view of its own that adds at the index of the view: after `reversed().add(i, e)`,
+  `reversed().get(i)` is `e`, for an element the list holds too, which moves there. The JDK's view of `List.reversed`
+  calls `add(size() - i, e)` of the list, which assumes that the list grows, so that a held element ended one place
+  too early: `[a, b, c].reversed().add(1, a)` gave the view `[a, c, b]`, not `[c, a, b]`. The view writes through the
+  methods of `UniqueList` as before; its `add(e)` and `addAll` return false for elements the list holds, as
+  `UniqueList.add` and `addAll` do, where they returned true, and `set` and `remove` of its list iterator after its
+  `add` throw an `IllegalStateException`, as `ListIterator` says, where they acted on the added element (#77).
+  **Note:** with an element the list holds, `add(size(), e)` of the view and the `add` of its list iterator at or
+  before the cursor throw an `UnsupportedOperationException`: no index `size()` exists after a move, and the cursor
+  cannot keep the contract of `ListIterator.add`; `addLast(e)` of the view moves an element to its end
+
 CHANGED:
 
 - CI, the dependency submission and publishing build on JDK 25 (`gradle.yml`, `dependency-submission.yml`,
@@ -158,6 +171,12 @@ KNOWN ISSUES, for 29.0:
   uniqueness, and `SortedList.addAll` of the list itself throws a `ConcurrentModificationException` (#77)
 - changes through a `subList` of `UniqueList`, `SortedList` and `SortedUniqueList` can break the list or the view
   (#78)
+- on a JDK 21 or later runtime, `UniqueList.reversed().add(i, e)` with an element the list holds puts it one place
+  too early in the view, as the JDK's reversed view expects the list to grow; the list stays unique. The methods of
+  `SequencedCollection` behave as follows there: `addFirst` and `addLast` of `SortedList` and `SortedUniqueList` sort
+  the element in, and `UniqueList.addLast` leaves a held element where it is (#87)
+- `setComparator` of `SortedList` and `SortedUniqueList` keeps the new comparator when the sort with it throws, on
+  any runtime (#87)
 
 Version 28.2
 -------------

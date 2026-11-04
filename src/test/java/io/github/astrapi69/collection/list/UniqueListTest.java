@@ -1148,14 +1148,12 @@ public class UniqueListTest
 	}
 
 	/**
-	 * Test add(int, E) of {@link UniqueList#reversed()} with an element the list holds: the view of
-	 * List.reversed calls add(size() - index, element) of the list, which is right for an element
-	 * that makes the list grow and one place off for one that moves, so that the element ends at
-	 * the index - 1 of the view, and at 0 for the index 0; [a, b, c].reversed().add(1, a) gives the
-	 * view [a, c, b], not [c, a, b]. The same over every index of lists of one to four elements,
-	 * with the held element at every position; the list holds each element once. The fix of #77
-	 * changes the result: the element ends at the index, and the index size() throws an
-	 * UnsupportedOperationException.
+	 * Test add(int, E) of {@link UniqueList#reversed()} with an element the list holds, the
+	 * postcondition of the view: after reversed().add(i, e), reversed().get(i) is e, the element
+	 * moves there and the other elements keep their order; [a, b, c].reversed().add(1, a) gives the
+	 * view [c, a, b], where the view of List.reversed gave [a, c, b]. The same over every index
+	 * from 0 to size() - 1 of lists of one to four elements, with the held element at every
+	 * position (#77)
 	 */
 	@Test
 	public void testReversedAddWithIndexAndHeldElement()
@@ -1163,34 +1161,37 @@ public class UniqueListTest
 		List<String> list = new UniqueList<>(Arrays.asList("a", "b", "c"));
 		List<String> reversed = list.reversed();
 		reversed.add(1, "a");
-		assertEquals(Arrays.asList("a", "c", "b"), reversed);
-		assertEquals(Arrays.asList("b", "c", "a"), list);
+		assertEquals(Arrays.asList("c", "a", "b"), reversed);
+		assertEquals(Arrays.asList("b", "a", "c"), list);
 
 		for (int size = 1; size <= 4; size++)
 		{
 			for (int position = 0; position < size; position++)
 			{
-				for (int index = 0; index <= size; index++)
+				for (int index = 0; index < size; index++)
 				{
 					List<String> view = newListOf(size).reversed();
 					String element = view.get(position);
 					List<String> expected = new ArrayList<>(view);
 					expected.remove(element);
-					expected.add(Math.max(index - 1, 0), element);
+					expected.add(index, element);
 
 					view.add(index, element);
-					assertEquals(expected, view,
-						"size " + size + ", position " + position + ", index " + index);
+					String message = "size " + size + ", position " + position + ", index " + index;
+					assertEquals(element, view.get(index), message);
+					assertEquals(expected, view, message);
 				}
 			}
 		}
 	}
 
 	/**
-	 * Test add(size(), E) of {@link UniqueList#reversed()} with an element the list holds: the view
-	 * of [a, b, c] with add(3, c) moves c to the end of the view, [b, a, c], where get(3) does not
-	 * exist, as the view does not grow by a move. The fix of #77 changes the result: it throws an
-	 * UnsupportedOperationException and the view stays [c, b, a]
+	 * Test add(size(), E) of {@link UniqueList#reversed()} with an element the list holds: a move
+	 * does not make the view grow, so that get(size()) cannot return the element afterwards; it
+	 * throws an UnsupportedOperationException that says so, and the view of [a, b, c] with add(3,
+	 * c) stays [c, b, a], where the view of List.reversed moved c to its end; the same for the held
+	 * element at every position of lists of one to four elements. addLast moves the element to the
+	 * end of the view (#77)
 	 */
 	@Test
 	public void testReversedAddAtTheEndWithHeldElement()
@@ -1198,9 +1199,29 @@ public class UniqueListTest
 		List<String> list = new UniqueList<>(Arrays.asList("a", "b", "c"));
 		List<String> reversed = list.reversed();
 
-		reversed.add(3, "c");
+		UnsupportedOperationException exception = assertThrows(UnsupportedOperationException.class,
+			() -> reversed.add(3, "c"));
+		assertEquals("The reversed view of a UniqueList does not move an element the list holds to"
+			+ " the index size(), which does not exist after a move; addLast moves it to the end of"
+			+ " the view", exception.getMessage());
+		assertEquals(Arrays.asList("c", "b", "a"), reversed);
+		reversed.addLast("c");
 		assertEquals(Arrays.asList("b", "a", "c"), reversed);
-		assertEquals(Arrays.asList("c", "a", "b"), list);
+
+		for (int size = 1; size <= 4; size++)
+		{
+			for (int position = 0; position < size; position++)
+			{
+				List<String> view = newListOf(size).reversed();
+				String element = view.get(position);
+				List<String> before = new ArrayList<>(view);
+				int end = size;
+
+				assertThrows(UnsupportedOperationException.class, () -> view.add(end, element),
+					"size " + size + ", position " + position);
+				assertEquals(before, view, "size " + size + ", position " + position);
+			}
+		}
 	}
 
 	/**
@@ -1240,11 +1261,10 @@ public class UniqueListTest
 	}
 
 	/**
-	 * Test add(E) of {@link UniqueList#reversed()} with an element the list holds: the view of
-	 * List.reversed calls add(0, element) of the list, which moves a held element to the front of
-	 * the list, the end of the view, and returns true; the view of [a, b, c] with add(c) gives [b,
-	 * a, c]. The fix of #77 changes the result: as {@link UniqueList#add(Object)}, it returns false
-	 * and the view stays [c, b, a]
+	 * Test add(E) of {@link UniqueList#reversed()} with an element the list holds: as
+	 * {@link UniqueList#add(Object)}, it returns false and leaves the element where it is, the view
+	 * of [a, b, c] with add(c) and add(a) stays [c, b, a], where the view of List.reversed moved c
+	 * to its end and returned true (#77)
 	 */
 	@Test
 	public void testReversedAddWithHeldElement()
@@ -1252,20 +1272,20 @@ public class UniqueListTest
 		List<String> list = new UniqueList<>(Arrays.asList("a", "b", "c"));
 		List<String> reversed = list.reversed();
 
-		assertTrue(reversed.add("c"));
-		assertEquals(Arrays.asList("b", "a", "c"), reversed);
-		assertEquals(Arrays.asList("c", "a", "b"), list);
+		assertFalse(reversed.add("c"));
+		assertFalse(reversed.add("a"));
+		assertEquals(Arrays.asList("c", "b", "a"), reversed);
+		assertEquals(Arrays.asList("a", "b", "c"), list);
 	}
 
 	/**
 	 * Test addAll and addAll(int, Collection) of {@link UniqueList#reversed()} with elements the
-	 * list holds and with a repeated new element: the view of List.reversed returns true for any
-	 * collection that is not empty, also when the list does not change, and adds the reversed
-	 * collection to the list, so that a repeated element counts by its last occurrence; the view of
-	 * [a, b, c] with addAll([x, y, x]) gives [c, b, a, y, x], with addAll(1, [p, q, p]) [c, q, p,
-	 * b, a]. The fix of #77 changes the result: as {@link UniqueList#addAll(Collection)}, they
-	 * return false when the list does not change, and add the new elements in the order of their
-	 * first occurrence, [c, b, a, x, y] and [c, p, q, b, a]
+	 * list holds and with a repeated new element: as {@link UniqueList#addAll(Collection)} and
+	 * {@link UniqueList#addAll(int, Collection)}, they return false when the list does not change,
+	 * and add the new elements in the order of their first occurrence; the view of [a, b, c] with
+	 * addAll([x, y, x]) gives [c, b, a, x, y], with addAll(1, [p, q, p]) [c, p, q, b, a], where the
+	 * view of List.reversed returned true for any collection that is not empty and gave [c, b, a,
+	 * y, x] and [c, q, p, b, a] (#77)
 	 */
 	@Test
 	public void testReversedAddAllWithHeldAndRepeatedElements()
@@ -1273,17 +1293,17 @@ public class UniqueListTest
 		List<String> list = new UniqueList<>(Arrays.asList("a", "b", "c"));
 		List<String> reversed = list.reversed();
 
-		assertTrue(reversed.addAll(Arrays.asList("a", "c")));
-		assertTrue(reversed.addAll(1, Arrays.asList("b")));
+		assertFalse(reversed.addAll(Arrays.asList("a", "c")));
+		assertFalse(reversed.addAll(1, Arrays.asList("b")));
 		assertEquals(Arrays.asList("c", "b", "a"), reversed);
 
 		assertTrue(reversed.addAll(Arrays.asList("x", "y", "x")));
-		assertEquals(Arrays.asList("c", "b", "a", "y", "x"), reversed);
+		assertEquals(Arrays.asList("c", "b", "a", "x", "y"), reversed);
 
 		List<String> other = new UniqueList<>(Arrays.asList("a", "b", "c"));
 		List<String> otherReversed = other.reversed();
 		assertTrue(otherReversed.addAll(1, Arrays.asList("p", "q", "p")));
-		assertEquals(Arrays.asList("c", "q", "p", "b", "a"), otherReversed);
+		assertEquals(Arrays.asList("c", "p", "q", "b", "a"), otherReversed);
 	}
 
 	/**
@@ -1349,12 +1369,12 @@ public class UniqueListTest
 
 	/**
 	 * Test add of the list iterator of {@link UniqueList#reversed()} with an element the list holds
-	 * before the cursor or at it: the view of [a, b, c] with next() twice and add(c) gives [b, c,
-	 * a], and nextIndex() stays 2; with next() and add(b), b being the element next() would return,
-	 * the view stays [c, b, a], but nextIndex() becomes 2 and next() returns a, so that b is
-	 * skipped. The fix of #77 changes the result: both throw an UnsupportedOperationException, as
-	 * the contract of ListIterator.add, a following next() unaffected and nextIndex() one higher,
-	 * cannot hold for them; the view stays [c, b, a], and next() returns a and b
+	 * before the cursor or at it: it throws an UnsupportedOperationException that says why, as the
+	 * contract of ListIterator.add, a following next() unaffected and nextIndex() one higher,
+	 * cannot hold for them, and neither the view nor the cursor changes; the view of [a, b, c] with
+	 * next() twice and add(c) or add(b) stays [c, b, a], nextIndex() 2 and next() a, with next()
+	 * and add(b) nextIndex() 1 and next() b. The view of List.reversed gave [b, c, a] with
+	 * nextIndex() 2 for the first, and skipped b for the second (#77)
 	 */
 	@Test
 	public void testReversedListIteratorAddWithElementHeldAtOrBeforeTheCursor()
@@ -1364,8 +1384,13 @@ public class UniqueListTest
 		assertEquals("c", iterator.next());
 		assertEquals("b", iterator.next());
 
-		iterator.add("c");
-		assertEquals(Arrays.asList("b", "c", "a"), list.reversed());
+		UnsupportedOperationException exception = assertThrows(UnsupportedOperationException.class,
+			() -> iterator.add("c"));
+		assertEquals("The list iterator of the reversed view of a UniqueList does not add an"
+			+ " element the list holds before the cursor or at it: next() would skip it or"
+			+ " nextIndex() would not grow", exception.getMessage());
+		assertThrows(UnsupportedOperationException.class, () -> iterator.add("b"));
+		assertEquals(Arrays.asList("c", "b", "a"), list.reversed());
 		assertEquals(2, iterator.nextIndex());
 		assertEquals("a", iterator.next());
 
@@ -1373,19 +1398,17 @@ public class UniqueListTest
 		ListIterator<String> otherIterator = other.reversed().listIterator();
 		assertEquals("c", otherIterator.next());
 
-		otherIterator.add("b");
+		assertThrows(UnsupportedOperationException.class, () -> otherIterator.add("b"));
 		assertEquals(Arrays.asList("c", "b", "a"), other.reversed());
-		assertEquals(2, otherIterator.nextIndex());
-		assertEquals("a", otherIterator.next());
+		assertEquals(1, otherIterator.nextIndex());
+		assertEquals("b", otherIterator.next());
 	}
 
 	/**
-	 * Test set and remove of the list iterator of {@link UniqueList#reversed()} after its add: the
-	 * view of List.reversed calls previous() of the list's iterator after its add, so that set and
-	 * remove act on the added element, where the contract of ListIterator says that they throw an
-	 * IllegalStateException; the view of [a, b] with next(), add(z), set(y) gives [b, y, a], and
-	 * remove() then [b, a]. The fix of #77 changes the result: set and remove throw an
-	 * IllegalStateException and the view stays [b, z, a]
+	 * Test set and remove of the list iterator of {@link UniqueList#reversed()} after its add: they
+	 * throw an IllegalStateException, as the contract of ListIterator says, and the view of [a, b]
+	 * with next() and add(z) stays [b, z, a]; the view of List.reversed called previous() of the
+	 * list's iterator after its add, so that set and remove acted on the added element (#77)
 	 */
 	@Test
 	public void testReversedListIteratorSetAndRemoveAfterAdd()
@@ -1395,10 +1418,9 @@ public class UniqueListTest
 		assertEquals("b", iterator.next());
 		iterator.add("z");
 
-		iterator.set("y");
-		assertEquals(Arrays.asList("b", "y", "a"), list.reversed());
-		iterator.remove();
-		assertEquals(Arrays.asList("b", "a"), list.reversed());
+		assertThrows(IllegalStateException.class, () -> iterator.set("y"));
+		assertThrows(IllegalStateException.class, iterator::remove);
+		assertEquals(Arrays.asList("b", "z", "a"), list.reversed());
 	}
 
 	/**
@@ -1731,11 +1753,10 @@ public class UniqueListTest
 
 	/**
 	 * Test the message of the refusals of subList of {@link UniqueList#reversed()}, and addAll with
-	 * an empty collection: the view of List.reversed refuses through the view of
-	 * {@link UniqueList#subList(int, int)}, with its message, and returns false for an empty
-	 * collection without asking it. The fix of #77 changes the result: the message names the
-	 * reversed view, and addAll with an empty collection throws an UnsupportedOperationException
-	 * too, as on the view of subList
+	 * an empty collection: the message names the reversed view, and addAll with an empty collection
+	 * throws an UnsupportedOperationException too, as on the view of
+	 * {@link UniqueList#subList(int, int)}, where the view of List.reversed refused with the
+	 * message of that view and returned false for an empty collection (#77)
 	 */
 	@Test
 	public void testReversedSubListRefusal()
@@ -1745,10 +1766,14 @@ public class UniqueListTest
 
 		UnsupportedOperationException exception = assertThrows(UnsupportedOperationException.class,
 			() -> view.set(0, "a"));
-		assertEquals("A subList view of a UniqueList reads and removes only; set and add through"
-			+ " the list itself", exception.getMessage());
-		assertFalse(view.addAll(Collections.emptyList()));
-		assertFalse(view.addAll(0, Collections.emptyList()));
+		assertEquals(
+			"A subList view of the reversed view of a UniqueList reads and removes only;"
+				+ " set and add through the reversed view or the list itself",
+			exception.getMessage());
+		assertThrows(UnsupportedOperationException.class,
+			() -> view.addAll(Collections.emptyList()));
+		assertThrows(UnsupportedOperationException.class,
+			() -> view.addAll(0, Collections.emptyList()));
 		assertEquals(Arrays.asList("a", "b", "c", "d"), list);
 	}
 }
