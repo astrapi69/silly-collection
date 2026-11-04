@@ -1174,6 +1174,97 @@ public class ArrayExtensionsTest
 	}
 
 	/**
+	 * Test method for {@link ArrayExtensions#removeFromStart(Object[], Object[])} and
+	 * {@link ArrayExtensions#removeFromEnd(Object[], Object[])} with a prefix or suffix that does
+	 * not match: the result is a copy of the given array (#76). Before the fix of #76 both removed
+	 * as many elements as the prefix or suffix has, whatever they are
+	 */
+	@Test
+	public void testRemoveFromStartAndEndWithAPrefixOrSuffixThatDoesNotMatch()
+	{
+		final Integer[] array = { 1, 2, 3 };
+
+		final Integer[] withoutPrefix = ArrayExtensions.removeFromStart(array, new Integer[] { 9 });
+		assertArrayEquals(new Integer[] { 1, 2, 3 }, withoutPrefix);
+		assertNotSame(array, withoutPrefix);
+		final Integer[] withoutSuffix = ArrayExtensions.removeFromEnd(array, new Integer[] { 9 });
+		assertArrayEquals(new Integer[] { 1, 2, 3 }, withoutSuffix);
+		assertNotSame(array, withoutSuffix);
+		// a prefix or suffix that matches in part only does not match either
+		assertArrayEquals(new Integer[] { 1, 2, 3 },
+			ArrayExtensions.removeFromStart(array, new Integer[] { 1, 9 }));
+		assertArrayEquals(new Integer[] { 1, 2, 3 },
+			ArrayExtensions.removeFromEnd(array, new Integer[] { 9, 3 }));
+		assertArrayEquals(new Integer[] { 1, 2, 3 }, array);
+	}
+
+	/**
+	 * Test method for {@link ArrayExtensions#removeFromStart(Object[], Object[])} and
+	 * {@link ArrayExtensions#removeFromEnd(Object[], Object[])} with a prefix or suffix longer than
+	 * the array: the result is a copy of the given array, as a longer prefix or suffix does not
+	 * match (#76). Before the fix of #76 both threw a {@link NegativeArraySizeException}
+	 */
+	@Test
+	public void testRemoveFromStartAndEndWithALongerPrefixOrSuffix()
+	{
+		final Integer[] array = { 1 };
+
+		assertArrayEquals(new Integer[] { 1 },
+			ArrayExtensions.removeFromStart(array, new Integer[] { 1, 2 }));
+		assertArrayEquals(new Integer[] { 1 },
+			ArrayExtensions.removeFromEnd(array, new Integer[] { 1, 2 }));
+	}
+
+	/**
+	 * Test method for {@link ArrayExtensions#removeFromStart(Object[], Object[])} with an empty
+	 * array: the result is a new empty array (#76). Before the fix of #76 it was the given array
+	 * itself
+	 */
+	@Test
+	public void testRemoveFromStartOfAnEmptyArray()
+	{
+		final Integer[] empty = { };
+
+		final Integer[] actual = ArrayExtensions.removeFromStart(empty, new Integer[] { 1 });
+		assertArrayEquals(new Integer[] { }, actual);
+		assertNotSame(empty, actual);
+	}
+
+	/**
+	 * Test method for {@link ArrayExtensions#removeFromEnd(Object[], Object[])} with null: it
+	 * throws an {@link IllegalArgumentException} for a null array and a null suffix, as
+	 * {@link ArrayExtensions#removeFromStart(Object[], Object[])} does (#76). Before the fix of #76
+	 * it threw a {@link NullPointerException}
+	 */
+	@Test
+	public void testRemoveFromEndWithNull()
+	{
+		assertThrows(IllegalArgumentException.class,
+			() -> ArrayExtensions.removeFromEnd(null, new Integer[] { 1 }));
+		assertThrows(IllegalArgumentException.class,
+			() -> ArrayExtensions.removeFromEnd(new Integer[] { 1 }, null));
+	}
+
+	/**
+	 * Test method for {@link ArrayExtensions#removeFromStart(Object[], Object[])} and
+	 * {@link ArrayExtensions#removeFromEnd(Object[], Object[])} with a prefix or suffix as long as
+	 * the array, and with null elements that match: the result is an empty array, and the array
+	 * without the null at its start or its end, as before the fix of #76
+	 */
+	@Test
+	public void testRemoveFromStartAndEndWithTheWholeArrayAndWithNullElements()
+	{
+		final Integer[] array = { 1, 2 };
+
+		assertArrayEquals(new Integer[] { }, ArrayExtensions.removeFromStart(array, array));
+		assertArrayEquals(new Integer[] { }, ArrayExtensions.removeFromEnd(array, array));
+		assertArrayEquals(new String[] { "a" },
+			ArrayExtensions.removeFromEnd(new String[] { "a", null }, new String[] { null }));
+		assertArrayEquals(new String[] { "a" },
+			ArrayExtensions.removeFromStart(new String[] { null, "a" }, new String[] { null }));
+	}
+
+	/**
 	 * Test method for {@link ArrayExtensions#removeLast(Object[])}
 	 */
 	@Test
@@ -1291,6 +1382,22 @@ public class ArrayExtensionsTest
 			() -> ArrayExtensions.remove(array, -1));
 		assertEquals("Index -1 out of bounds for length 4", exception.getMessage());
 
+		assertArrayEquals(new Integer[] { 0, 1, 2, 3 }, array);
+	}
+
+	/**
+	 * Test method for {@link ArrayExtensions#remove(Object[], int...)} with a negative index and
+	 * another one: the message names the length of the given array, 4 (#76). Before the fix of #76
+	 * it named the length of the list after the other index was removed, 3
+	 */
+	@Test
+	public void testRemoveWithANegativeIndexAndAnother()
+	{
+		final Integer[] array = { 0, 1, 2, 3 };
+
+		final IndexOutOfBoundsException exception = assertThrows(IndexOutOfBoundsException.class,
+			() -> ArrayExtensions.remove(array, -1, 2));
+		assertEquals("Index -1 out of bounds for length 4", exception.getMessage());
 		assertArrayEquals(new Integer[] { 0, 1, 2, 3 }, array);
 	}
 
