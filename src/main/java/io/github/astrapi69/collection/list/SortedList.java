@@ -101,7 +101,23 @@ public class SortedList<E> extends ArrayList<E>
 	}
 
 	/**
-	 * {@inheritDoc}
+	 * Adds the given element at its place in the order of the comparator of this list, the index
+	 * that {@link ListExtensions#getIndexToInsert(java.util.List, Object, Comparator)
+	 * ListExtensions.getIndexToInsert} gives, or at the end of this list if it has no comparator.
+	 * An element this list contains already is added again.
+	 * <p>
+	 * If this list holds elements that the comparator holds equal to the given one, the given
+	 * element goes in front of the one of them that
+	 * {@link Collections#binarySearch(java.util.List, Object, Comparator) Collections.binarySearch}
+	 * finds, which can be any of them: it does not necessarily come after them, and such elements
+	 * do not keep the order in which they were added. The place is not specified if this list is
+	 * not in the order of its comparator, as after {@link #set(int, Object)}, or
+	 * {@link #sort(Comparator)} with another comparator, which this list inherits from
+	 * {@link ArrayList}.
+	 *
+	 * @param element
+	 *            the element to add
+	 * @return true, always: this list changes with every call
 	 */
 	@Override
 	public boolean add(E element)
@@ -134,7 +150,15 @@ public class SortedList<E> extends ArrayList<E>
 	}
 
 	/**
-	 * {@inheritDoc}
+	 * Adds the elements of the given collection one by one, in the order of the collection's
+	 * iterator, as {@link #add(Object)} adds each of them: each at its place in the order of the
+	 * comparator of this list, or at the end of this list if it has no comparator. Elements this
+	 * list contains already are added again.
+	 *
+	 * @param collection
+	 *            the collection with the elements to add
+	 * @return true if this list changed as a result of the call, that is if the collection is not
+	 *         empty
 	 */
 	@Override
 	public boolean addAll(Collection<? extends E> collection)

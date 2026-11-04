@@ -101,7 +101,24 @@ public class SortedUniqueList<E> extends ArrayList<E>
 	}
 
 	/**
-	 * {@inheritDoc}
+	 * Adds the given element unless this list contains it already, by {@link #contains(Object)},
+	 * which compares with equals: at its place in the order of the comparator of this list, the
+	 * index that {@link ListExtensions#getIndexToInsert(java.util.List, Object, Comparator)
+	 * ListExtensions.getIndexToInsert} gives, or at the end of this list if it has no comparator.
+	 * An element this list contains already keeps its position.
+	 * <p>
+	 * An element that the comparator holds equal to elements of this list but equals does not is
+	 * added: it goes in front of the one of them that
+	 * {@link Collections#binarySearch(java.util.List, Object, Comparator) Collections.binarySearch}
+	 * finds, which can be any of them, so that it does not necessarily come after them, and such
+	 * elements do not keep the order in which they were added. The place is not specified if this
+	 * list is not in the order of its comparator, as after {@link #set(int, Object)}, or
+	 * {@link #sort(Comparator)} with another comparator, which this list inherits from
+	 * {@link ArrayList}.
+	 *
+	 * @param element
+	 *            the element to add
+	 * @return true if the element was added, false if this list contains it already
 	 */
 	@Override
 	public boolean add(E element)
@@ -135,7 +152,15 @@ public class SortedUniqueList<E> extends ArrayList<E>
 	}
 
 	/**
-	 * {@inheritDoc}
+	 * Adds the elements of the given collection that this list does not contain yet, one by one in
+	 * the order of the collection's iterator and each of them once, as {@link #add(Object)} adds
+	 * each of them: each at its place in the order of the comparator of this list, or at the end of
+	 * this list if it has no comparator. The elements this list contains already keep their
+	 * positions.
+	 *
+	 * @param collection
+	 *            the collection with the elements to add
+	 * @return true if at least one element was added, otherwise false
 	 */
 	@Override
 	public boolean addAll(Collection<? extends E> collection)
