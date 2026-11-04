@@ -1062,4 +1062,124 @@ public class SortedUniqueListTest
 		SubListViewAssertions.assertSubListOfSubListRemoves(
 			elements -> new SortedUniqueList<>(elements, Comparator.naturalOrder()));
 	}
+
+	/**
+	 * Test the methods {@link SortedUniqueList#addFirst(Object)} and
+	 * {@link SortedUniqueList#addLast(Object)}: they throw an UnsupportedOperationException, as
+	 * those of SortedSet and TreeSet do, the comparator determines the position; with and without a
+	 * comparator, for a new element and for one the list holds, and the list does not change (#87)
+	 */
+	@Test
+	public void testAddFirstAndAddLast()
+	{
+		List<String> list = new SortedUniqueList<>(Arrays.asList("a", "b"),
+			Comparator.naturalOrder());
+		UnsupportedOperationException exception = assertThrows(UnsupportedOperationException.class,
+			() -> list.addFirst("z"));
+		assertEquals(
+			"The comparator of a SortedUniqueList determines the position of its elements, so"
+				+ " explicit positioning is not supported",
+			exception.getMessage());
+		assertThrows(UnsupportedOperationException.class, () -> list.addLast("0"));
+		assertThrows(UnsupportedOperationException.class, () -> list.addFirst("b"));
+		assertEquals(Arrays.asList("a", "b"), list);
+
+		List<String> withoutComparator = new SortedUniqueList<>(Arrays.asList("b", "a"));
+		assertThrows(UnsupportedOperationException.class, () -> withoutComparator.addFirst("z"));
+		assertThrows(UnsupportedOperationException.class, () -> withoutComparator.addLast("z"));
+		assertEquals(Arrays.asList("b", "a"), withoutComparator);
+	}
+
+	/**
+	 * Test the method {@link SortedUniqueList#setComparator(Comparator)} with a comparator whose
+	 * sort throws: it throws that exception, and the list keeps its comparator and its order; null,
+	 * the natural order, throws a ClassCastException for two Objects, and the natural order throws
+	 * a NullPointerException for [b, a, c, null] without a comparator, after which the list is
+	 * still [b, a, c, null] without one, where a sort in place would have left [a, b, c, null]
+	 * (#87)
+	 */
+	@Test
+	public void testSetComparatorWhenTheSortThrows()
+	{
+		Comparator<Object> equal = (first, second) -> 0;
+		SortedUniqueList<Object> objects = new SortedUniqueList<>(
+			Arrays.asList(new Object(), new Object()), equal);
+		List<Object> order = List.copyOf(objects);
+		assertThrows(ClassCastException.class, () -> objects.setComparator(null));
+		assertSame(equal, objects.getComparator());
+		assertEquals(order, objects);
+
+		SortedUniqueList<String> list = new SortedUniqueList<>(Arrays.asList("b", "a", "c", null));
+		assertThrows(NullPointerException.class,
+			() -> list.setComparator(Comparator.naturalOrder()));
+		assertNull(list.getComparator());
+		assertEquals(Arrays.asList("b", "a", "c", null), list);
+	}
+
+	/**
+	 * Test the changes through {@link SortedUniqueList#reversed()}: the view reads and removes, as
+	 * the view of subList, and add, add(int, E), addFirst, addLast, addAll, set, replaceAll and
+	 * sort through it, and the set and add of its list iterator, throw an
+	 * UnsupportedOperationException, and the list does not change (#87)
+	 */
+	@Test
+	public void testReversed()
+	{
+		List<String> list = new SortedUniqueList<>(Arrays.asList("a", "b", "c"),
+			Comparator.naturalOrder());
+		List<String> reversed = list.reversed();
+
+		UnsupportedOperationException exception = assertThrows(UnsupportedOperationException.class,
+			() -> reversed.addFirst("0"));
+		assertEquals(
+			"The reversed view of a SortedUniqueList reads and removes only; add through the"
+				+ " list itself",
+			exception.getMessage());
+		assertThrows(UnsupportedOperationException.class, () -> reversed.addLast("z"));
+		assertThrows(UnsupportedOperationException.class, () -> reversed.add("z"));
+		assertThrows(UnsupportedOperationException.class, () -> reversed.add(0, "z"));
+		assertThrows(UnsupportedOperationException.class,
+			() -> reversed.addAll(Arrays.asList("z")));
+		assertThrows(UnsupportedOperationException.class, () -> reversed.set(0, "y"));
+		assertThrows(UnsupportedOperationException.class,
+			() -> reversed.replaceAll(String::toUpperCase));
+		assertThrows(UnsupportedOperationException.class, () -> reversed.sort(null));
+		ListIterator<String> iterator = reversed.listIterator();
+		assertEquals("c", iterator.next());
+		assertThrows(UnsupportedOperationException.class, () -> iterator.set("y"));
+		assertThrows(UnsupportedOperationException.class, () -> iterator.add("y"));
+		assertThrows(UnsupportedOperationException.class,
+			() -> reversed.subList(0, 2).addFirst("0"));
+		assertEquals(Arrays.asList("a", "b", "c"), list);
+		assertEquals(Arrays.asList("c", "b", "a"), reversed);
+	}
+
+	/**
+	 * Test that {@link SortedUniqueList#reversed()} reads the list backwards and removes from it:
+	 * get, size, contains, indexOf, iterator, equals, removeFirst, remove(Object) and removeIf of
+	 * the view, and that reversed() of the view gives the order of the list again; before and after
+	 * the fix of #87
+	 */
+	@Test
+	public void testReversedReadsAndRemoves()
+	{
+		List<String> list = new SortedUniqueList<>(Arrays.asList("a", "b", "c", "d"),
+			Comparator.naturalOrder());
+		List<String> reversed = list.reversed();
+
+		assertEquals(Arrays.asList("d", "c", "b", "a"), reversed);
+		assertEquals("d", reversed.get(0));
+		assertEquals("a", reversed.getLast());
+		assertEquals(4, reversed.size());
+		assertTrue(reversed.contains("b"));
+		assertEquals(2, reversed.indexOf("b"));
+		assertEquals("d", reversed.iterator().next());
+		assertEquals(list, reversed.reversed());
+
+		assertEquals("d", reversed.removeFirst());
+		assertTrue(reversed.remove("b"));
+		assertTrue(reversed.removeIf("a"::equals));
+		assertEquals(Arrays.asList("c"), list);
+		assertEquals(Arrays.asList("c"), reversed);
+	}
 }
