@@ -374,7 +374,8 @@ public class ListExtensionsTest
 	}
 
 	/**
-	 * Test the method {@link ListExtensions#getCombinations(List, int)}
+	 * Test the method {@link ListExtensions#getCombinations(List, int)}. Its Javadoc promises no
+	 * order of the values within a combination, so each combination is sorted before the comparison
 	 */
 	@Test
 	public void testGetCombinations()
@@ -386,6 +387,7 @@ public class ListExtensionsTest
 		expected = ListFactory.newArrayList();
 		values = ListFactory.newArrayList("1", "2", "3", "4");
 		actual = ListExtensions.getCombinations(values, 3);
+		actual.forEach(Collections::sort);
 		expected.add(ListFactory.newArrayList("1", "2", "3"));
 		expected.add(ListFactory.newArrayList("1", "2", "4"));
 		expected.add(ListFactory.newArrayList("1", "3", "4"));
@@ -395,6 +397,7 @@ public class ListExtensionsTest
 		expected = ListFactory.newArrayList();
 		values = ListFactory.newArrayList("1", "2", "3", "4", "5", "6", "7");
 		actual = ListExtensions.getCombinations(values, 6);
+		actual.forEach(Collections::sort);
 		expected.add(ListFactory.newArrayList("1", "2", "3", "4", "5", "6"));
 		expected.add(ListFactory.newArrayList("1", "2", "3", "4", "5", "7"));
 		expected.add(ListFactory.newArrayList("1", "2", "3", "4", "6", "7"));

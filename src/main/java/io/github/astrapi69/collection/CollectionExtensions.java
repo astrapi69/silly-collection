@@ -156,7 +156,11 @@ public final class CollectionExtensions
 	}
 
 	/**
-	 * Compare the given two {@link Collection} objects in equality.
+	 * Compare the given two {@link Collection} objects in equality. They are equal if both are
+	 * null, or if they hold equal elements with the same cardinality, whatever their order: each
+	 * element occurs in the one as often as in the other, so [1, 1, 2] and [1, 2, 2] are not equal.
+	 * The elements compare by their {@link Object#equals(Object)} method, so arrays compare by
+	 * identity and not by their content.
 	 *
 	 * @param <T>
 	 *            the generic type of the elements
@@ -164,15 +168,15 @@ public final class CollectionExtensions
 	 *            the one
 	 * @param other
 	 *            the other
-	 * @return true, if the given two {@link Collection} objects are equal otherwise false
+	 * @return true, if both given {@link Collection} objects are null or hold equal elements with
+	 *         the same cardinality, whatever their order, otherwise false
 	 */
 	public static <T> boolean isEqualCollection(Collection<T> one, Collection<T> other)
 	{
 		Optional<Boolean> optionalEvaluation = preconditionOfEqualCollection(one, other);
 		if (optionalEvaluation.isPresent())
 			return optionalEvaluation.get();
-		Collection<T> retainAll = CollectionUtils.retainAll(one, other);
-		return retainAll.isEmpty() || one.containsAll(other) && other.containsAll(one);
+		return CollectionUtils.isEqualCollection(one, other);
 	}
 
 	/**
