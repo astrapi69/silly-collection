@@ -27,9 +27,11 @@ package io.github.astrapi69.collection.properties;
 import static org.junit.jupiter.api.Assertions.*;
 
 import java.io.IOException;
+import java.io.StringReader;
 import java.util.ArrayList;
 import java.util.Comparator;
 import java.util.Iterator;
+import java.util.List;
 import java.util.Properties;
 
 import org.junit.jupiter.api.Test;
@@ -754,6 +756,195 @@ public class IndexSortedPropertiesTest
 		assertEquals("3", copy.get(2));
 		assertEquals(0, copy.indexOf("1"));
 		assertNull(properties.get(2));
+	}
+
+	/**
+	 * Test the method {@link IndexSortedProperties#put(Object, Object)} with a key that is there
+	 * already. #45: today the key goes into the index a second time; the fix of #45 changes the
+	 * result
+	 */
+	@Test
+	public void testPutOfAKeyTwice()
+	{
+		final IndexSortedProperties properties = IndexSortedProperties.of();
+		properties.put("A", "1");
+		properties.put("A", "2");
+		assertEquals(1, properties.size());
+		assertEquals("2", properties.get(0));
+		assertEquals("2", properties.get(1));
+	}
+
+	/**
+	 * Test the method {@link IndexSortedProperties#remove(Object)} with a key that was put twice,
+	 * and a put of another key afterwards. #45: today one of the two places of the key stays in the
+	 * index; the fix of #45 changes the result
+	 */
+	@Test
+	public void testRemoveOfAKeyPutTwice()
+	{
+		final IndexSortedProperties properties = IndexSortedProperties.of();
+		properties.put("A", "1");
+		properties.put("A", "2");
+		properties.remove("A");
+		properties.put("B", "3");
+		assertNull(properties.get(0));
+		assertEquals("3", properties.get(1));
+		assertEquals(1, properties.indexOf("3"));
+	}
+
+	/**
+	 * Test the methods {@link IndexSortedProperties#put(Object, Object)} and
+	 * {@link IndexSortedProperties#putAll(java.util.Map)} with defaults. #45: today the index holds
+	 * the keys of the defaults after put, and not after putAll; the fix of #45 changes the result
+	 */
+	@Test
+	public void testPutAndPutAllWithDefaults()
+	{
+		final Properties defaults = new Properties();
+		defaults.setProperty("A", "1");
+		defaults.setProperty("B", "2");
+
+		final IndexSortedProperties put = new IndexSortedProperties(defaults);
+		put.put("C", "3");
+		assertEquals("1", put.getProperty(0));
+		assertEquals("2", put.getProperty(1));
+		assertEquals("3", put.getProperty(2));
+
+		final Properties more = new Properties();
+		more.setProperty("C", "3");
+		final IndexSortedProperties putAll = new IndexSortedProperties(defaults);
+		putAll.putAll(more);
+		assertEquals("3", putAll.getProperty(0));
+		assertNull(putAll.getProperty(1));
+	}
+
+	/**
+	 * Test the methods {@link IndexSortedProperties#putIfAbsent(Object, Object)},
+	 * {@link IndexSortedProperties#merge(Object, Object, java.util.function.BiFunction)} and
+	 * {@link IndexSortedProperties#compute(Object, java.util.function.BiFunction)}. #45: today none
+	 * of them puts its key into the index; the fix of #45 changes the result
+	 */
+	@Test
+	public void testPutIfAbsentMergeAndCompute()
+	{
+		final IndexSortedProperties properties = IndexSortedProperties.of();
+		properties.putIfAbsent("A", "1");
+		properties.merge("B", "2", (oldValue, value) -> value);
+		properties.compute("C", (key, value) -> "3");
+		assertEquals(3, properties.size());
+		assertNull(properties.get(0));
+		assertEquals(-1, properties.indexOf("1"));
+	}
+
+	/**
+	 * Test the methods
+	 * {@link IndexSortedProperties#computeIfAbsent(Object, java.util.function.Function)} and
+	 * {@link IndexSortedProperties#computeIfPresent(Object, java.util.function.BiFunction)}. #45:
+	 * today the key computeIfAbsent adds does not go into the index, and the key computeIfPresent
+	 * removes stays in it; the fix of #45 changes the result
+	 */
+	@Test
+	public void testComputeIfAbsentAndComputeIfPresent()
+	{
+		final IndexSortedProperties properties = IndexSortedProperties.of();
+		properties.setProperty("A", "1");
+		properties.computeIfAbsent("B", key -> "2");
+		properties.computeIfPresent("A", (key, value) -> null);
+		assertEquals(1, properties.size());
+		assertNull(properties.get(0));
+		assertNull(properties.get(1));
+		assertEquals(-1, properties.indexOf("2"));
+	}
+
+	/**
+	 * Test the method {@link IndexSortedProperties#load(java.io.Reader)} with a key that is twice
+	 * in the input. #45: today the key goes into the index twice; the fix of #45 changes the result
+	 *
+	 * @throws IOException
+	 *             Signals that an I/O exception has occurred
+	 */
+	@Test
+	public void testLoadOfAKeyTwice() throws IOException
+	{
+		final IndexSortedProperties properties = IndexSortedProperties.of();
+		properties.load(new StringReader("B=2\nA=1\nA=3\n"));
+		assertEquals(2, properties.size());
+		assertEquals("3", properties.get(0));
+		assertEquals("3", properties.get(1));
+		assertEquals("2", properties.get(2));
+	}
+
+	/**
+	 * Test the method {@link IndexSortedProperties#clone()} with changes of the copy. #45: today
+	 * the copy shares the index of the original, so its changes change the index of the original;
+	 * the fix of #45 changes the result
+	 */
+	@Test
+	public void testClone()
+	{
+		final IndexSortedProperties original = IndexSortedProperties.of();
+		original.setProperty("A", "1");
+
+		final IndexSortedProperties copy = (IndexSortedProperties)original.clone();
+		copy.setProperty("B", "2");
+		copy.remove("A");
+		assertEquals("1", original.getProperty("A"));
+		assertNull(original.get(0));
+		assertEquals(-1, original.indexOf("1"));
+	}
+
+	/**
+	 * Test the methods {@link IndexSortedProperties#get(int)},
+	 * {@link IndexSortedProperties#getProperty(int)} and {@link IndexSortedProperties#remove(int)}
+	 * with a negative index. #45: today they throw an {@link IndexOutOfBoundsException}, where
+	 * their Javadoc says that they return null for an index out of range; the fix of #45 changes
+	 * the result
+	 */
+	@Test
+	public void testNegativeIndex()
+	{
+		final IndexSortedProperties properties = IndexSortedProperties.of();
+		properties.setProperty("A", "1");
+		assertThrows(IndexOutOfBoundsException.class, () -> properties.get(-1));
+		assertThrows(IndexOutOfBoundsException.class, () -> properties.getProperty(-1));
+		assertThrows(IndexOutOfBoundsException.class, () -> properties.remove(-1));
+		assertEquals(1, properties.size());
+	}
+
+	/**
+	 * Test the constructor with a subclass whose {@link IndexSortedProperties#newComparator()}
+	 * returns a descending comparator from a field of its own. #45: today the constructor sorts the
+	 * keys of the defaults into the index and calls newComparator() for it before the subclass has
+	 * set its field, so the index starts in the natural order; the fix of #45 changes the result
+	 */
+	@Test
+	public void testConstructorWithTheComparatorFromAFieldOfASubclass()
+	{
+		final Properties defaults = new Properties();
+		defaults.setProperty("A", "1");
+		defaults.setProperty("B", "2");
+		defaults.setProperty("C", "3");
+
+		// newComparator() records whether the field of the subclass was set when it was called
+		final List<Boolean> calls = new ArrayList<>();
+		final IndexSortedProperties properties = new IndexSortedProperties(defaults)
+		{
+			private static final long serialVersionUID = 1L;
+
+			private final Comparator<Object> descending = (o1, o2) -> o2.toString()
+				.compareTo(o1.toString());
+
+			@Override
+			protected Comparator<Object> newComparator()
+			{
+				calls.add(descending != null);
+				return descending;
+			}
+		};
+		assertEquals(ListFactory.newArrayList(false), calls);
+		assertEquals("1", properties.getProperty(0));
+		assertEquals("2", properties.getProperty(1));
+		assertEquals("3", properties.getProperty(2));
 	}
 
 }
