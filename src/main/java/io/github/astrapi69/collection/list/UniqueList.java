@@ -38,7 +38,9 @@ import java.util.function.UnaryOperator;
  * The class {@link UniqueList} extends the {@link ArrayList} and holds each element once: it
  * overrides the methods of {@link ArrayList} that put an element into the list, the add methods,
  * {@link #set(int, Object)}, {@link #replaceAll(UnaryOperator)} and the add and set of its list
- * iterator, so that they check whether the list holds the element already. The view of
+ * iterator, so that they check whether the list holds the element already.
+ * {@link #addFirst(Object)} and {@link #addLast(Object)} put the element first or last and move an
+ * element the list holds there, as in a {@link java.util.LinkedHashSet}. The view of
  * {@link #subList(int, int)} reads and removes, and refuses to set, add, replace or sort.
  *
  * @param <E>
@@ -129,6 +131,39 @@ public class UniqueList<E> extends ArrayList<E>
 		// and the index size() it had before is its end
 		remove(element);
 		super.add(Math.min(index, size()), element);
+	}
+
+	/**
+	 * Inserts the given element at the front of this list, or moves it there if this list holds it
+	 * already, as {@link java.util.LinkedHashSet#addFirst(Object)} relocates an element it holds:
+	 * the element is first afterwards, as {@link java.util.SequencedCollection#addFirst(Object)}
+	 * says. It is {@code add(0, element)}, see {@link #add(int, Object)}; {@code [a, b]} becomes
+	 * {@code [b, a]} with {@code addFirst(b)}.
+	 *
+	 * @param element
+	 *            the element to insert or to move to the front
+	 */
+	@Override
+	public void addFirst(E element)
+	{
+		add(0, element);
+	}
+
+	/**
+	 * Appends the given element to the end of this list, or moves it there if this list holds it
+	 * already, as {@link java.util.LinkedHashSet#addLast(Object)} relocates an element it holds:
+	 * the element is last afterwards, as {@link java.util.SequencedCollection#addLast(Object)}
+	 * says. {@link #add(Object)} leaves a held element where it is instead; addLast is
+	 * {@code add(size(), element)}, see {@link #add(int, Object)}; {@code [a, b]} becomes
+	 * {@code [b, a]} with {@code addLast(a)}.
+	 *
+	 * @param element
+	 *            the element to append or to move to the end
+	 */
+	@Override
+	public void addLast(E element)
+	{
+		add(size(), element);
 	}
 
 	/**

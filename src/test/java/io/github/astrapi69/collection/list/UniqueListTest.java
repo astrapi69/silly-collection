@@ -1060,12 +1060,9 @@ public class UniqueListTest
 	}
 
 	/**
-	 * Test the method addLast, which {@link UniqueList} inherits from ArrayList, with an element
-	 * the list holds: it calls add(E), which leaves the element where it is, so that it is not
-	 * last; [a, b] with addLast(a) stays [a, b], and getLast() is b (#87).
-	 * <p>
-	 * The fix of #87 changes the result: the element moves to the end, as in LinkedHashSet.addLast,
-	 * [b, a], and getLast() is a.
+	 * Test the method {@link UniqueList#addLast(Object)} with an element the list holds: it moves
+	 * the element to the end, as LinkedHashSet.addLast does, [a, b] with addLast(a) gives [b, a],
+	 * and getLast() is a; for the element that is last already the list does not change (#87)
 	 */
 	@Test
 	public void testAddLastWithHeldElement()
@@ -1073,8 +1070,10 @@ public class UniqueListTest
 		List<String> list = new UniqueList<>(Arrays.asList("a", "b"));
 
 		list.addLast("a");
-		assertEquals(Arrays.asList("a", "b"), list);
-		assertEquals("b", list.getLast());
+		assertEquals(Arrays.asList("b", "a"), list);
+		assertEquals("a", list.getLast());
+		list.addLast("a");
+		assertEquals(Arrays.asList("b", "a"), list);
 	}
 
 	/**

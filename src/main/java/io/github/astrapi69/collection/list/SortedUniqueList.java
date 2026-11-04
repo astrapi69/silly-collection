@@ -43,9 +43,10 @@ import java.util.function.UnaryOperator;
  * {@link #replaceAll(UnaryOperator)} too. What would put an element at a position the caller
  * chooses, or reorder the list against its comparator, throws an
  * {@link UnsupportedOperationException}: {@link #sort(Comparator)}, which
- * {@link Collections#sort(List)} calls, and the set and add of its list iterator. The view of
- * {@link #subList(int, int)} reads and removes, and refuses to set, add, replace or sort.
- * {@link #setComparator(Comparator)} changes the order.
+ * {@link Collections#sort(List)} calls, the set and add of its list iterator, and
+ * {@link #addFirst(Object)} and {@link #addLast(Object)}, as in a {@link java.util.SortedSet}. The
+ * views of {@link #subList(int, int)} and {@link #reversed()} read and remove, and refuse to set,
+ * add, replace or sort. {@link #setComparator(Comparator)} changes the order.
  * <p>
  * A list without a comparator has no order to keep: its add methods append at the end, replaceAll
  * replaces in place, as in {@link ArrayList}, with the same check for equal values, and set swaps
@@ -63,6 +64,19 @@ public class SortedUniqueList<E> extends ArrayList<E>
 	 */
 	private static final String SUB_LIST_REFUSAL = "A subList view of a SortedUniqueList reads and"
 		+ " removes only; set and add through the list itself";
+
+	/**
+	 * The message of the {@link UnsupportedOperationException} of {@link #addFirst(Object)} and
+	 * {@link #addLast(Object)}
+	 */
+	private static final String SEQUENCED_REFUSAL = "The comparator of a SortedUniqueList determines the"
+		+ " position of its elements, so explicit positioning is not supported";
+
+	/**
+	 * The message of the {@link UnsupportedOperationException} of the view of {@link #reversed()}
+	 */
+	private static final String REVERSED_REFUSAL = "The reversed view of a SortedUniqueList reads and"
+		+ " removes only; add through the list itself";
 
 	/**
 	 * The message of the {@link UnsupportedOperationException} of {@link #sort(Comparator)}
@@ -457,6 +471,62 @@ public class SortedUniqueList<E> extends ArrayList<E>
 	}
 
 	/**
+	 * Throws an {@link UnsupportedOperationException}. The comparator of this list determines the
+	 * position of its elements, so explicit positioning is not supported, as in
+	 * {@link java.util.SortedSet#addFirst(Object)}; {@link #add(Object)} sorts the element in. It
+	 * throws also if this list has no comparator, whose add appends at the end, as
+	 * {@link #sort(Comparator)} does, so that what this list supports does not depend on whether
+	 * {@link #setComparator(Comparator)} was called.
+	 *
+	 * @param element
+	 *            ignored
+	 * @throws UnsupportedOperationException
+	 *             always
+	 */
+	@Override
+	public void addFirst(E element)
+	{
+		throw new UnsupportedOperationException(SEQUENCED_REFUSAL);
+	}
+
+	/**
+	 * Throws an {@link UnsupportedOperationException}, as {@link #addFirst(Object)} does: the
+	 * comparator of this list determines the position of its elements, so explicit positioning is
+	 * not supported, as in {@link java.util.SortedSet#addLast(Object)}
+	 *
+	 * @param element
+	 *            ignored
+	 * @throws UnsupportedOperationException
+	 *             always
+	 */
+	@Override
+	public void addLast(E element)
+	{
+		throw new UnsupportedOperationException(SEQUENCED_REFUSAL);
+	}
+
+	/**
+	 * Returns a view of this list in the reverse order, as {@link List#reversed()} does, that reads
+	 * and removes and refuses every other change, as the view of {@link #subList(int, int)} does.
+	 * <p>
+	 * The view of List.reversed writes through add(int, E) and set of this list, which sort the
+	 * element in, and its addFirst and addLast go through add(int, E) as well, past the refusal of
+	 * {@link #addFirst(Object)} and {@link #addLast(Object)}: the positions a reversed view
+	 * promises, an element added first or last, cannot hold in a sorted list. Reading,
+	 * {@code remove}, {@code clear}, {@code removeIf}, {@code removeAll} and {@code retainAll}
+	 * through the view work and keep the order; set, add, addFirst, addLast, addAll, replaceAll and
+	 * sort through it, and the set and add of its list iterators, throw an
+	 * {@link UnsupportedOperationException}.
+	 *
+	 * @return a view of this list in the reverse order that reads and removes
+	 */
+	@Override
+	public List<E> reversed()
+	{
+		return new ReadAndRemoveSubList<>(super.reversed(), REVERSED_REFUSAL);
+	}
+
+	/**
 	 * Gets the comparator of this list
 	 *
 	 * @return the comparator of this list
@@ -472,13 +542,25 @@ public class SortedUniqueList<E> extends ArrayList<E>
 	 * later change keeps that order. It is the way to change the order of this list, which
 	 * {@link #sort(Comparator)} refuses. With null the elements are sorted in their natural order,
 	 * as ArrayList sorts them for null, and elements added later go to the end.
+	 * <p>
+	 * The elements are sorted in a copy first, and the comparator is set and this list reordered
+	 * only when that sort succeeded: if the sort throws, as the natural order does for elements
+	 * that are not {@link Comparable} or for null, this method throws that exception, and this list
+	 * keeps its comparator and its order. A sort in place could leave this list half sorted, and a
+	 * comparator set before the sort would claim an order the list does not have.
 	 *
 	 * @param comparator
 	 *            the new comparator of this list
+	 * @throws ClassCastException
+	 *             if the comparator is null and an element is not {@link Comparable}, or the
+	 *             comparator cannot compare two of the elements
 	 */
 	public void setComparator(Comparator<? super E> comparator)
 	{
+		List<E> sorted = new ArrayList<>(this);
+		sorted.sort(comparator);
+		Iterator<E> element = sorted.iterator();
+		super.replaceAll(each -> element.next());
 		this.comparator = comparator;
-		super.sort(comparator);
 	}
 }

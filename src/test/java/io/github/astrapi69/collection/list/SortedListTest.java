@@ -1002,38 +1002,35 @@ public class SortedListTest
 	}
 
 	/**
-	 * Test the methods addFirst and addLast, which {@link SortedList} inherits from ArrayList: they
-	 * call add(int, E) and add(E), which sort the element in, so that it is neither first nor last;
-	 * [a, b] with addFirst(z) gives [a, b, z], getFirst() is a, and addLast(0) then gives [0, a, b,
-	 * z], getLast() is z; without a comparator addFirst(z) of [b, a] appends, [b, a, z] (#87).
-	 * <p>
-	 * The fix of #87 changes the result: both throw an UnsupportedOperationException, as those of
-	 * SortedSet and TreeSet do, with and without a comparator, and the list does not change.
+	 * Test the methods {@link SortedList#addFirst(Object)} and {@link SortedList#addLast(Object)}:
+	 * they throw an UnsupportedOperationException, as those of SortedSet and TreeSet do, the
+	 * comparator determines the position; with and without a comparator, for a new element and for
+	 * one the list holds, and the list does not change (#87)
 	 */
 	@Test
 	public void testAddFirstAndAddLast()
 	{
 		List<String> list = new SortedList<>(Arrays.asList("a", "b"), Comparator.naturalOrder());
-		list.addFirst("z");
-		assertEquals(Arrays.asList("a", "b", "z"), list);
-		assertEquals("a", list.getFirst());
-		list.addLast("0");
-		assertEquals(Arrays.asList("0", "a", "b", "z"), list);
-		assertEquals("z", list.getLast());
+		UnsupportedOperationException exception = assertThrows(UnsupportedOperationException.class,
+			() -> list.addFirst("z"));
+		assertEquals("The comparator of a SortedList determines the position of its elements, so"
+			+ " explicit positioning is not supported", exception.getMessage());
+		assertThrows(UnsupportedOperationException.class, () -> list.addLast("0"));
+		assertThrows(UnsupportedOperationException.class, () -> list.addFirst("b"));
+		assertEquals(Arrays.asList("a", "b"), list);
 
 		List<String> withoutComparator = new SortedList<>(Arrays.asList("b", "a"));
-		withoutComparator.addFirst("z");
-		assertEquals(Arrays.asList("b", "a", "z"), withoutComparator);
+		assertThrows(UnsupportedOperationException.class, () -> withoutComparator.addFirst("z"));
+		assertThrows(UnsupportedOperationException.class, () -> withoutComparator.addLast("z"));
+		assertEquals(Arrays.asList("b", "a"), withoutComparator);
 	}
 
 	/**
 	 * Test the method {@link SortedList#setComparator(Comparator)} with a comparator whose sort
-	 * throws: the list keeps the new comparator, and the sort may have reordered it before it
-	 * threw; null, the natural order, throws a ClassCastException for two Objects and leaves the
-	 * comparator null, and the natural order throws a NullPointerException for [b, a, c, null]
-	 * without a comparator, leaves it as the comparator and the list [a, b, c, null] (#87).
-	 * <p>
-	 * The fix of #87 changes the result: the comparator and the order stay as they were.
+	 * throws: it throws that exception, and the list keeps its comparator and its order; null, the
+	 * natural order, throws a ClassCastException for two Objects, and the natural order throws a
+	 * NullPointerException for [b, a, c, null] without a comparator, after which the list is still
+	 * [b, a, c, null] without one, where a sort in place would have left [a, b, c, null] (#87)
 	 */
 	@Test
 	public void testSetComparatorWhenTheSortThrows()
@@ -1041,24 +1038,23 @@ public class SortedListTest
 		Comparator<Object> equal = (first, second) -> 0;
 		SortedList<Object> objects = new SortedList<>(Arrays.asList(new Object(), new Object()),
 			equal);
+		List<Object> order = List.copyOf(objects);
 		assertThrows(ClassCastException.class, () -> objects.setComparator(null));
-		assertNull(objects.getComparator());
+		assertSame(equal, objects.getComparator());
+		assertEquals(order, objects);
 
 		SortedList<String> list = new SortedList<>(Arrays.asList("b", "a", "c", null));
 		assertThrows(NullPointerException.class,
 			() -> list.setComparator(Comparator.naturalOrder()));
-		assertEquals(Comparator.naturalOrder(), list.getComparator());
-		assertEquals(Arrays.asList("a", "b", "c", null), list);
+		assertNull(list.getComparator());
+		assertEquals(Arrays.asList("b", "a", "c", null), list);
 	}
 
 	/**
-	 * Test the changes through {@link SortedList#reversed()}, the view of List.reversed: they go
-	 * through add(int, E) and set of the list, which sort the element in, so that addFirst(0) of
-	 * the view of [a, b, c] gives [0, a, b, c] and the view [c, b, a, 0], where 0 is last, and
-	 * add(z) and set(0, y) of the view sort z and y in (#87).
-	 * <p>
-	 * The fix of #87 changes the result: the view reads and removes, as the view of subList, and
-	 * every other change through it throws an UnsupportedOperationException, the list unchanged.
+	 * Test the changes through {@link SortedList#reversed()}: the view reads and removes, as the
+	 * view of subList, and add, add(int, E), addFirst, addLast, addAll, set, replaceAll and sort
+	 * through it, and the set and add of its list iterator, throw an UnsupportedOperationException,
+	 * and the list does not change (#87)
 	 */
 	@Test
 	public void testReversed()
@@ -1067,14 +1063,27 @@ public class SortedListTest
 			Comparator.naturalOrder());
 		List<String> reversed = list.reversed();
 
-		reversed.addFirst("0");
-		assertEquals(Arrays.asList("0", "a", "b", "c"), list);
-		assertEquals(Arrays.asList("c", "b", "a", "0"), reversed);
-
-		reversed.add("z");
-		assertEquals(Arrays.asList("0", "a", "b", "c", "z"), list);
-		reversed.set(0, "y");
-		assertEquals(Arrays.asList("0", "a", "b", "c", "y"), list);
+		UnsupportedOperationException exception = assertThrows(UnsupportedOperationException.class,
+			() -> reversed.addFirst("0"));
+		assertEquals("The reversed view of a SortedList reads and removes only; add through the"
+			+ " list itself", exception.getMessage());
+		assertThrows(UnsupportedOperationException.class, () -> reversed.addLast("z"));
+		assertThrows(UnsupportedOperationException.class, () -> reversed.add("z"));
+		assertThrows(UnsupportedOperationException.class, () -> reversed.add(0, "z"));
+		assertThrows(UnsupportedOperationException.class,
+			() -> reversed.addAll(Arrays.asList("z")));
+		assertThrows(UnsupportedOperationException.class, () -> reversed.set(0, "y"));
+		assertThrows(UnsupportedOperationException.class,
+			() -> reversed.replaceAll(String::toUpperCase));
+		assertThrows(UnsupportedOperationException.class, () -> reversed.sort(null));
+		ListIterator<String> iterator = reversed.listIterator();
+		assertEquals("c", iterator.next());
+		assertThrows(UnsupportedOperationException.class, () -> iterator.set("y"));
+		assertThrows(UnsupportedOperationException.class, () -> iterator.add("y"));
+		assertThrows(UnsupportedOperationException.class,
+			() -> reversed.subList(0, 2).addFirst("0"));
+		assertEquals(Arrays.asList("a", "b", "c"), list);
+		assertEquals(Arrays.asList("c", "b", "a"), reversed);
 	}
 
 	/**
