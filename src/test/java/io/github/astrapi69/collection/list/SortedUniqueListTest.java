@@ -469,7 +469,9 @@ public class SortedUniqueListTest
 	 * Test the method {@link SortedUniqueList#set(int, Object)} with a comparator and an element
 	 * the list holds at another index, in front of and behind the given one: it throws an
 	 * IllegalArgumentException, and the list does not change; set(0, c) and set(2, a) of [a, b, c]
-	 * (#77)
+	 * (#77). The decision of 2026-11-04 on #91 changes the result: set with a comparator throws an
+	 * UnsupportedOperationException whatever its arguments, for an element the list holds too, with
+	 * the message of addFirst, and the list does not change.
 	 */
 	@Test
 	public void testSetWithElementHeldAtAnotherIndex()
@@ -488,7 +490,9 @@ public class SortedUniqueListTest
 	 * Test the method {@link SortedUniqueList#set(int, Object)} with a comparator and an element
 	 * the list holds at another index, where it would keep the order: set(1, a) and set(1, c) of
 	 * [a, b, c] throw the IllegalArgumentException as well, and the list does not change; before
-	 * and after the change for #78
+	 * and after the change for #78. The decision of 2026-11-04 on #91 changes the result: set with
+	 * a comparator throws an UnsupportedOperationException whatever its arguments, for an element
+	 * the list holds too, and the list does not change.
 	 */
 	@Test
 	public void testSetWithElementHeldAtAnotherIndexThatKeepsTheOrder()
@@ -510,7 +514,9 @@ public class SortedUniqueListTest
 	 * index: [b, d, f] gives [a, d, f] with set(0, a), [c, d, f] with set(0, c), [b, c, f] with
 	 * set(1, c), [b, e, f] with set(1, e), [b, d, e] with set(2, e) and [b, d, z] with set(2, z),
 	 * each set returns the element that was at the index, and a list of one element takes any
-	 * element; before and after the change for #78
+	 * element; before and after the change for #78. The decision of 2026-11-04 on #91 changes the
+	 * result: set with a comparator throws an UnsupportedOperationException whatever its arguments,
+	 * also where the element keeps the order, and the list does not change.
 	 */
 	@Test
 	public void testSetWithComparatorAndElementThatKeepsTheOrder()
@@ -553,7 +559,9 @@ public class SortedUniqueListTest
 	 * equals and elements it holds equal to a neighbour of the index, which equals does not: with
 	 * {@link String#CASE_INSENSITIVE_ORDER}, B keeps the order at the index 1 of [b, d, f] and
 	 * replaces d there, set(1, B) gives [b, B, f], where the sorting in of #77 gave [B, b, f]; F,
-	 * equal to the neighbour behind, then gives [b, F, f] (#78)
+	 * equal to the neighbour behind, then gives [b, F, f] (#78). The decision of 2026-11-04 on #91
+	 * changes the result: set with a comparator throws an UnsupportedOperationException whatever
+	 * its arguments, and the list does not change.
 	 */
 	@Test
 	public void testSetWithComparatorInconsistentWithEquals()
@@ -571,7 +579,9 @@ public class SortedUniqueListTest
 	 * Test the method {@link SortedUniqueList#set(int, Object)} with a comparator while an iterator
 	 * runs over the list: d keeps the order at the index 1 of [a, c, e] and replaces c in place,
 	 * which is no structural modification, so set(1, d) after the first next() gives [a, d, e], and
-	 * the iterator goes on with d and e (#78)
+	 * the iterator goes on with d and e (#78). The decision of 2026-11-04 on #91 changes the
+	 * result: set with a comparator throws an UnsupportedOperationException whatever its arguments,
+	 * the list stays [a, c, e], and the iterator goes on with c and e.
 	 */
 	@Test
 	public void testSetWithComparatorWhileAnIteratorRuns()
@@ -630,7 +640,10 @@ public class SortedUniqueListTest
 	 * Test the method {@link SortedUniqueList#set(int, Object)} with a comparator and elements the
 	 * list does not hold that break the order at the index, behind and in front of it: set(0, d)
 	 * and set(2, b) of [a, c, e] throw an UnsupportedOperationException, as TreeSet.addFirst does,
-	 * with the element and the index in the message, and the list stays [a, c, e] (#78)
+	 * with the element and the index in the message, and the list stays [a, c, e] (#78). The
+	 * decision of 2026-11-04 on #91 changes the result: set with a comparator throws an
+	 * UnsupportedOperationException whatever its arguments, with the message of addFirst, and the
+	 * list does not change.
 	 */
 	@Test
 	public void testSetWithComparator()
@@ -652,7 +665,9 @@ public class SortedUniqueListTest
 	 * Test the method {@link SortedUniqueList#set(int, Object)} with an element equal to the one at
 	 * the index, with and without a comparator: the given instance replaces the one at the index,
 	 * the method returns the previous one, and the list keeps its order; before and after the fix
-	 * of #77
+	 * of #77. The decision of 2026-11-04 on #91 changes the result: set with a comparator throws an
+	 * UnsupportedOperationException whatever its arguments, an element equal to the one at the
+	 * index too, and the list does not change; without a comparator the result stays.
 	 */
 	@Test
 	public void testSetWithElementHeldAtTheIndex()
@@ -692,7 +707,9 @@ public class SortedUniqueListTest
 	 * Test the method {@link SortedUniqueList#set(int, Object)} with an index out of range, with
 	 * and without a comparator: it throws an IndexOutOfBoundsException with the message of
 	 * ArrayList, for an element the list holds too, and the list does not change; before and after
-	 * the fix of #77
+	 * the fix of #77. The decision of 2026-11-04 on #91 changes the result: set with a comparator
+	 * throws an UnsupportedOperationException whatever its arguments, an index out of range too,
+	 * and the list does not change; without a comparator the result stays.
 	 */
 	@Test
 	public void testSetWithIndexOutOfRange()
@@ -716,7 +733,9 @@ public class SortedUniqueListTest
 	/**
 	 * Test the method {@link SortedUniqueList#set(int, Object)} with an element the comparator
 	 * cannot compare, null for the natural order: the comparator throws a NullPointerException
-	 * before the list changes, and the list stays [a, c] (#77, #78)
+	 * before the list changes, and the list stays [a, c] (#77, #78). The decision of 2026-11-04 on
+	 * #91 changes the result: set with a comparator throws an UnsupportedOperationException
+	 * whatever its arguments, null too, and the list does not change.
 	 */
 	@Test
 	public void testSetWithElementTheComparatorCannotCompare()
@@ -956,7 +975,10 @@ public class SortedUniqueListTest
 	 * semantics: after next() returned a, c, which the list holds at the index 1, throws the
 	 * IllegalArgumentException of set, and z, which breaks the order at the index 0, its
 	 * UnsupportedOperationException, and the list stays [a, c]; b after previous() returned c keeps
-	 * the order at the index 1 and gives [a, b], and previous() returns a (#78)
+	 * the order at the index 1 and gives [a, b], and previous() returns a (#78). The decision of
+	 * 2026-11-04 on #91 changes the result: the iterator calls set(int, E) of the list, which
+	 * throws an UnsupportedOperationException with a comparator whatever its arguments, so set(c)
+	 * and set(b) throw it too and the list stays [a, c].
 	 */
 	@Test
 	public void testListIteratorSet()
@@ -1051,7 +1073,9 @@ public class SortedUniqueListTest
 	 * list holds at another index, which throws an IllegalArgumentException before the list
 	 * changes, and the list stays [a, b, c, d] (#77), for two neighbours and with the distance -1
 	 * too; a swap of an index with itself works. Before and after the change for #78, which checks
-	 * the uniqueness before the order.
+	 * the uniqueness before the order. The decision of 2026-11-04 on #91 changes the result: each
+	 * of them throws an UnsupportedOperationException at its first set, a swap of an index with
+	 * itself too, and the list does not change.
 	 */
 	@Test
 	public void testCollectionsAlgorithmsWithComparator()
@@ -1075,6 +1099,28 @@ public class SortedUniqueListTest
 		assertEquals(elements, list);
 		Collections.swap(list, 1, 1);
 		assertEquals(elements, list);
+	}
+
+	/**
+	 * Test {@link Collections#fill(List, Object)} and {@link Collections#copy(List, List)} on a
+	 * {@link SortedUniqueList} with the natural order: they set one element after another. Fill of
+	 * [b, c, d] with a sets a at 0, which keeps the order, and throws the IllegalArgumentException
+	 * at 1, a held at 0: the list is [a, c, d] and has lost b. Copy of [a, c] into [b, d, f] gives
+	 * [a, c, f] (#78). The decision of 2026-11-04 on #91 changes the result: fill and copy throw an
+	 * UnsupportedOperationException at their first set, and the list does not change.
+	 */
+	@Test
+	public void testCollectionsFillAndCopyWithComparator()
+	{
+		List<String> filled = new SortedUniqueList<>(Arrays.asList("b", "c", "d"),
+			Comparator.naturalOrder());
+		assertThrows(IllegalArgumentException.class, () -> Collections.fill(filled, "a"));
+		assertEquals(Arrays.asList("a", "c", "d"), filled);
+
+		List<String> copied = new SortedUniqueList<>(Arrays.asList("b", "d", "f"),
+			Comparator.naturalOrder());
+		Collections.copy(copied, Arrays.asList("a", "c"));
+		assertEquals(Arrays.asList("a", "c", "f"), copied);
 	}
 
 	/**

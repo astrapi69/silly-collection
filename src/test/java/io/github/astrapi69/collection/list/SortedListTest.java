@@ -419,7 +419,9 @@ public class SortedListTest
 	 * Test the method {@link SortedList#set(int, Object)} with a comparator and elements that break
 	 * the order at the index, behind and in front of it: set(0, d) and set(2, b) of [a, c, e] throw
 	 * an UnsupportedOperationException, as TreeSet.addFirst does, with the element and the index in
-	 * the message, and the list stays [a, c, e] (#78)
+	 * the message, and the list stays [a, c, e] (#78). The decision of 2026-11-04 on #91 changes
+	 * the result: set with a comparator throws an UnsupportedOperationException whatever its
+	 * arguments, with the message of addFirst, and the list does not change.
 	 */
 	@Test
 	public void testSetWithComparator()
@@ -439,7 +441,9 @@ public class SortedListTest
 	/**
 	 * Test the method {@link SortedList#set(int, Object)} with an element the comparator cannot
 	 * compare, null for the natural order: the comparator throws a NullPointerException before the
-	 * list changes, and the list stays [a, c] (#77, #78)
+	 * list changes, and the list stays [a, c] (#77, #78). The decision of 2026-11-04 on #91 changes
+	 * the result: set with a comparator throws an UnsupportedOperationException whatever its
+	 * arguments, null too, and the list does not change.
 	 */
 	@Test
 	public void testSetWithElementTheComparatorCannotCompare()
@@ -467,7 +471,10 @@ public class SortedListTest
 	/**
 	 * Test the method {@link SortedList#set(int, Object)} with an index out of range, with and
 	 * without a comparator: it throws an IndexOutOfBoundsException with the message of ArrayList,
-	 * and the list does not change; before and after the fix of #77
+	 * and the list does not change; before and after the fix of #77. The decision of 2026-11-04 on
+	 * #91 changes the result: set with a comparator throws an UnsupportedOperationException
+	 * whatever its arguments, an index out of range too, and the list does not change; without a
+	 * comparator the result stays.
 	 */
 	@Test
 	public void testSetWithIndexOutOfRange()
@@ -493,7 +500,9 @@ public class SortedListTest
 	 * equal to them: [b, d, f] gives [a, d, f] with set(0, a), [d, d, f] with set(0, d), [b, b, f]
 	 * with set(1, b), [b, f, f] with set(1, f), [b, d, d] with set(2, d) and [b, d, z] with set(2,
 	 * z), each set returns the element that was at the index, and a list of one element takes any
-	 * element; before and after the change for #78
+	 * element; before and after the change for #78. The decision of 2026-11-04 on #91 changes the
+	 * result: set with a comparator throws an UnsupportedOperationException whatever its arguments,
+	 * also where the element keeps the order, and the list does not change.
 	 */
 	@Test
 	public void testSetWithComparatorAndElementThatKeepsTheOrder()
@@ -535,7 +544,9 @@ public class SortedListTest
 	 * Test the method {@link SortedList#set(int, Object)} with a comparator inconsistent with
 	 * equals and an element it holds equal to the neighbour in front of the index: with
 	 * {@link String#CASE_INSENSITIVE_ORDER}, B keeps the order at the index 1 of [b, d, f] and
-	 * replaces d there, set(1, B) gives [b, B, f], where the sorting in of #77 gave [B, b, f] (#78)
+	 * replaces d there, set(1, B) gives [b, B, f], where the sorting in of #77 gave [B, b, f]
+	 * (#78). The decision of 2026-11-04 on #91 changes the result: set with a comparator throws an
+	 * UnsupportedOperationException whatever its arguments, and the list does not change.
 	 */
 	@Test
 	public void testSetWithComparatorInconsistentWithEquals()
@@ -551,7 +562,9 @@ public class SortedListTest
 	 * Test the method {@link SortedList#set(int, Object)} with a comparator while an iterator runs
 	 * over the list: d keeps the order at the index 1 of [a, c, e] and replaces c in place, which
 	 * is no structural modification, so set(1, d) after the first next() gives [a, d, e], and the
-	 * iterator goes on with d and e (#78)
+	 * iterator goes on with d and e (#78). The decision of 2026-11-04 on #91 changes the result:
+	 * set with a comparator throws an UnsupportedOperationException whatever its arguments, the
+	 * list stays [a, c, e], and the iterator goes on with c and e.
 	 */
 	@Test
 	public void testSetWithComparatorWhileAnIteratorRuns()
@@ -747,7 +760,9 @@ public class SortedListTest
 	 * semantics: z after next() returned a breaks the order at the index 0 and throws the
 	 * UnsupportedOperationException of set, the list stays [a, c] and the iterator goes on with c;
 	 * b after previous() returned c keeps the order at the index 1 and gives [a, b], and previous()
-	 * returns a (#78)
+	 * returns a (#78). The decision of 2026-11-04 on #91 changes the result: the iterator calls
+	 * set(int, E) of the list, which throws an UnsupportedOperationException with a comparator
+	 * whatever its arguments, so set(b) throws too and the list stays [a, c].
 	 */
 	@Test
 	public void testListIteratorSet()
@@ -835,6 +850,38 @@ public class SortedListTest
 		iterator.set("b");
 		assertEquals(Arrays.asList("b", "a"), list);
 		assertEquals("a", iterator.next());
+	}
+
+	/**
+	 * Test that the set of the list iterator of a {@link SortedList} without a comparator replaces
+	 * the element last returned, after previous() too, and after a remove only once next() or
+	 * previous() returned an element again: [c, a, e] gives [c, x, e] with set(x) after next(),
+	 * next() and previous(), remove() then gives [c, e], set throws an IllegalStateException, and
+	 * set(y) after next() gives [c, y]; after an add to the list set throws a
+	 * ConcurrentModificationException, and the list stays [c, y, z]; before and after the decision
+	 * of 2026-11-04 on #91
+	 */
+	@Test
+	public void testListIteratorSetWithoutComparatorReplacesTheElementLastReturned()
+	{
+		List<String> list = new SortedList<>(Arrays.asList("c", "a", "e"));
+		ListIterator<String> iterator = list.listIterator();
+		assertEquals("c", iterator.next());
+		assertEquals("a", iterator.next());
+		assertEquals("a", iterator.previous());
+		iterator.set("x");
+		assertEquals(Arrays.asList("c", "x", "e"), list);
+
+		iterator.remove();
+		assertEquals(Arrays.asList("c", "e"), list);
+		assertThrows(IllegalStateException.class, () -> iterator.set("y"));
+		assertEquals("e", iterator.next());
+		iterator.set("y");
+		assertEquals(Arrays.asList("c", "y"), list);
+
+		list.add("z");
+		assertThrows(ConcurrentModificationException.class, () -> iterator.set("w"));
+		assertEquals(Arrays.asList("c", "y", "z"), list);
 	}
 
 	/**
@@ -971,7 +1018,9 @@ public class SortedListTest
 	 * element keeps the order. A swap of an index with itself works. swap(0, 3) of [a, b, c, d]
 	 * throws an UnsupportedOperationException at its first set, a at 3, and the list does not
 	 * change. swap(0, 1), two neighbours, sets a at 1, which keeps the order, and throws at its
-	 * second set, b at 0: the list is [a, a, c, d] and has lost b (#78)
+	 * second set, b at 0: the list is [a, a, c, d] and has lost b (#78). The decision of 2026-11-04
+	 * on #91 changes the result: swap throws an UnsupportedOperationException at its first set,
+	 * also for an index with itself, and the list does not change.
 	 */
 	@Test
 	public void testCollectionsSwapWithComparator()
@@ -996,7 +1045,9 @@ public class SortedListTest
 	 * not change; reverse of [a, b] sets a at 1 and throws for b at 0, [a, a]. Shuffle with the
 	 * seed 77 swaps 3 and 2 first, sets d at 2 and throws for c at 3, [a, b, d, d]. Rotate by 1
 	 * sets a at 1, b at 2 and c at 3 and throws for d at 0, [a, a, b, c]; rotate by -1 throws at
-	 * its first set, a at 3, and the list does not change (#78)
+	 * its first set, a at 3, and the list does not change (#78). The decision of 2026-11-04 on #91
+	 * changes the result: each of them throws an UnsupportedOperationException at its first set,
+	 * and the list does not change.
 	 */
 	@Test
 	public void testCollectionsAlgorithmsWithComparator()
@@ -1030,7 +1081,8 @@ public class SortedListTest
 	 * list holds in front of each other in the order opposite to the one they were added in: each
 	 * set keeps the order, so swap(1, 2) of [a, cc, bb, ddd] gives [a, bb, cc, ddd], and reverse of
 	 * [cc, bb, aa] gives [aa, bb, cc], as on an ArrayList, where the sorting in of #77 gave [aa,
-	 * cc, bb] (#78)
+	 * cc, bb] (#78). The decision of 2026-11-04 on #91 changes the result: swap and reverse throw
+	 * an UnsupportedOperationException at their first set, and the list does not change.
 	 */
 	@Test
 	public void testCollectionsAlgorithmsWithElementsTheComparatorHoldsEqual()
@@ -1046,6 +1098,34 @@ public class SortedListTest
 		assertEquals(Arrays.asList("cc", "bb", "aa"), list);
 		Collections.reverse(list);
 		assertEquals(Arrays.asList("aa", "bb", "cc"), list);
+	}
+
+	/**
+	 * Test {@link Collections#fill(List, Object)} and {@link Collections#copy(List, List)} on a
+	 * {@link SortedList} with the natural order: they set one element after another, and each set
+	 * replaces where the element keeps the order. Fill of [b, c, d] with a gives [a, a, a]; fill
+	 * with z throws an UnsupportedOperationException at its first set, z at 0, and the list does
+	 * not change; copy of [a, c] into [b, d, f] gives [a, c, f] (#78). The decision of 2026-11-04
+	 * on #91 changes the result: fill and copy throw an UnsupportedOperationException at their
+	 * first set, and the list does not change.
+	 */
+	@Test
+	public void testCollectionsFillAndCopyWithComparator()
+	{
+		List<String> filled = new SortedList<>(Arrays.asList("b", "c", "d"),
+			Comparator.naturalOrder());
+		Collections.fill(filled, "a");
+		assertEquals(Arrays.asList("a", "a", "a"), filled);
+
+		List<String> refused = new SortedList<>(Arrays.asList("b", "c", "d"),
+			Comparator.naturalOrder());
+		assertThrows(UnsupportedOperationException.class, () -> Collections.fill(refused, "z"));
+		assertEquals(Arrays.asList("b", "c", "d"), refused);
+
+		List<String> copied = new SortedList<>(Arrays.asList("b", "d", "f"),
+			Comparator.naturalOrder());
+		Collections.copy(copied, Arrays.asList("a", "c"));
+		assertEquals(Arrays.asList("a", "c", "f"), copied);
 	}
 
 	/**
