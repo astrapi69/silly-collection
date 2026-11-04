@@ -25,6 +25,11 @@ CHANGED:
 - the test runtime class path no longer holds this project's own jar: file-worker depends on an older
   silly-collection, which Gradle resolved to this project, so `test` needed `mustRunAfter(jar)` and
   `./gradlew build pitest` failed Gradle's validation (#36); the cycle itself is #37
+- dependencies raised with versionCatalogUpdate: commons-collections4 4.6.0, a release instead of the milestone
+  4.5.0-M2 on the consumers' runtime class path (#35); for the tests junit-jupiter 6.1.3, mockito-core 5.24.0 and
+  test-object 9.1; the Gradle plugins spotless 8.11.0, versions 0.67.0 and version-catalog-update 1.1.2. silly-io and
+  file-worker go to 3.6 and 19.1, their last releases for Java 17, not to 5.0 and 20.0, which Gradle refuses for this
+  project's Java 17; `gradle/version-catalog-update.gradle` pins both (#37)
 
 Version 28.2
 -------------
