@@ -4,12 +4,3 @@ dependencies {
     testImplementation libs.bundles.unit.testing
     testRuntimeOnly libs.bundles.test.runtime.only
 }
-
-// file-worker depends on an older silly-collection, directly and through silly-strings. Gradle
-// resolves those coordinates to this project itself, which put the project's own jar on the test
-// runtime class path: a copy of build/classes/java/main, which comes first, and without a task
-// dependency on :jar, so every task that reads the class path (test, pitest) needed mustRunAfter(jar)
-// to pass Gradle's validation. The cycle itself is #37
-configurations.named("testRuntimeClasspath") {
-    exclude group: project.group as String, module: project.name
-}
