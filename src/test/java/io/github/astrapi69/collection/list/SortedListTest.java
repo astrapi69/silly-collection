@@ -168,7 +168,7 @@ public class SortedListTest
 		assertTrue(expected);
 
 		comparator = StringComparator.of(false);
-		list.sort(comparator);
+		((SortedList<String>)list).setComparator(comparator);
 
 		expected = list.indexOf(alex) == 2;
 		assertTrue(expected);
@@ -415,12 +415,10 @@ public class SortedListTest
 	}
 
 	/**
-	 * Test the method {@link SortedList#set(int, Object)} with a comparator: it replaces the
-	 * element at the index, as ArrayList does, and the list leaves the order of its comparator; [a,
-	 * c, e].set(0, d) returns a and gives [d, c, e], and [a, c, e].set(2, b) returns e and gives
-	 * [a, c, b] (#77).
-	 * <p>
-	 * The fix of #77 changes the result: the given element is sorted in, [c, d, e] and [a, b, c].
+	 * Test the method {@link SortedList#set(int, Object)} with a comparator: it removes the element
+	 * at the index and sorts the given one in, behind and in front of the index; [a, c, e] with
+	 * set(0, d) returns a and gives [c, d, e], and with set(2, b) returns e and gives [a, b, c]
+	 * (#77)
 	 */
 	@Test
 	public void testSetWithComparator()
@@ -428,28 +426,25 @@ public class SortedListTest
 		List<String> list = new SortedList<>(Arrays.asList("a", "c", "e"),
 			Comparator.naturalOrder());
 		assertEquals("a", list.set(0, "d"));
-		assertEquals(Arrays.asList("d", "c", "e"), list);
+		assertEquals(Arrays.asList("c", "d", "e"), list);
 
 		list = new SortedList<>(Arrays.asList("a", "c", "e"), Comparator.naturalOrder());
 		assertEquals("e", list.set(2, "b"));
-		assertEquals(Arrays.asList("a", "c", "b"), list);
+		assertEquals(Arrays.asList("a", "b", "c"), list);
 	}
 
 	/**
 	 * Test the method {@link SortedList#set(int, Object)} with an element the comparator cannot
-	 * compare, null for the natural order: it is stored as ArrayList stores it, [a, c].set(0, null)
-	 * gives [null, c] (#77).
-	 * <p>
-	 * The fix of #77 changes the result: the comparator throws a NullPointerException, and the list
-	 * stays [a, c].
+	 * compare, null for the natural order: the comparator throws a NullPointerException, the
+	 * removed element is put back at its index, and the list stays [a, c] (#77)
 	 */
 	@Test
 	public void testSetWithElementTheComparatorCannotCompare()
 	{
 		List<String> list = new SortedList<>(Arrays.asList("a", "c"), Comparator.naturalOrder());
 
-		assertEquals("a", list.set(0, null));
-		assertEquals(Arrays.asList(null, "c"), list);
+		assertThrows(NullPointerException.class, () -> list.set(0, null));
+		assertEquals(Arrays.asList("a", "c"), list);
 	}
 
 	/**
@@ -490,14 +485,10 @@ public class SortedListTest
 	}
 
 	/**
-	 * Test the method {@link SortedList#replaceAll(UnaryOperator)} with a comparator: it writes
-	 * each value at the index of the element it replaces, as ArrayList does, and the list leaves
-	 * the order of its comparator; the operator that gives f for a gives [f, c, e] for [a, c, e],
-	 * and with the comparator of the length the operator that gives zzz for a gives [zzz, bb, ccc]
-	 * for [a, bb, ccc] (#77).
-	 * <p>
-	 * The fix of #77 changes the result: the values are sorted in, [c, e, f], and values the
-	 * comparator holds equal keep the order of the elements they replace, [bb, zzz, ccc].
+	 * Test the method {@link SortedList#replaceAll(UnaryOperator)} with a comparator: the values
+	 * are sorted in, the operator that gives f for a gives [c, e, f] for [a, c, e]; values the
+	 * comparator holds equal keep the order of the elements they replace, with the comparator of
+	 * the length the operator that gives zzz for a gives [bb, zzz, ccc] for [a, bb, ccc] (#77)
 	 */
 	@Test
 	public void testReplaceAllWithComparator()
@@ -505,29 +496,27 @@ public class SortedListTest
 		List<String> list = new SortedList<>(Arrays.asList("a", "c", "e"),
 			Comparator.naturalOrder());
 		list.replaceAll(element -> "a".equals(element) ? "f" : element);
-		assertEquals(Arrays.asList("f", "c", "e"), list);
+		assertEquals(Arrays.asList("c", "e", "f"), list);
 
 		list = new SortedList<>(Arrays.asList("a", "bb", "ccc"),
 			Comparator.comparingInt(String::length));
 		list.replaceAll(element -> "a".equals(element) ? "zzz" : element);
-		assertEquals(Arrays.asList("zzz", "bb", "ccc"), list);
+		assertEquals(Arrays.asList("bb", "zzz", "ccc"), list);
 	}
 
 	/**
 	 * Test the method {@link SortedList#replaceAll(UnaryOperator)} with a value the comparator
-	 * cannot compare, null for the natural order: it is stored as ArrayList stores it, [a, c] gives
-	 * [null, c] (#77).
-	 * <p>
-	 * The fix of #77 changes the result: the comparator throws a NullPointerException, and the list
-	 * stays [a, c].
+	 * cannot compare, null for the natural order: the comparator throws a NullPointerException, no
+	 * element is replaced, and the list stays [a, c] (#77)
 	 */
 	@Test
 	public void testReplaceAllWithValueTheComparatorCannotCompare()
 	{
 		List<String> list = new SortedList<>(Arrays.asList("a", "c"), Comparator.naturalOrder());
 
-		list.replaceAll(element -> "a".equals(element) ? null : element);
-		assertEquals(Arrays.asList(null, "c"), list);
+		assertThrows(NullPointerException.class,
+			() -> list.replaceAll(element -> "a".equals(element) ? null : element));
+		assertEquals(Arrays.asList("a", "c"), list);
 	}
 
 	/**
@@ -574,13 +563,9 @@ public class SortedListTest
 	}
 
 	/**
-	 * Test the method {@link SortedList#sort(Comparator)}: it sorts the list with the given
-	 * comparator, as ArrayList does, also against the comparator of the list; [a, b, c] with the
-	 * natural order gives [c, b, a] with sort(reverseOrder()), and sort(null) sorts in the natural
-	 * order again (#77).
-	 * <p>
-	 * The fix of #77 changes the result: sort throws an UnsupportedOperationException for every
-	 * argument, null and the comparator of the list too, and the list does not change.
+	 * Test the method {@link SortedList#sort(Comparator)}: it throws an
+	 * UnsupportedOperationException for every argument, another comparator, null and the comparator
+	 * of the list, also on a list without a comparator, and the list does not change (#77)
 	 */
 	@Test
 	public void testSort()
@@ -588,19 +573,25 @@ public class SortedListTest
 		List<String> list = new SortedList<>(Arrays.asList("a", "b", "c"),
 			Comparator.naturalOrder());
 
-		list.sort(Comparator.reverseOrder());
-		assertEquals(Arrays.asList("c", "b", "a"), list);
-		list.sort(null);
+		UnsupportedOperationException exception = assertThrows(UnsupportedOperationException.class,
+			() -> list.sort(Comparator.reverseOrder()));
+		assertEquals(
+			"A SortedList keeps the order of its comparator; setComparator(Comparator) changes it",
+			exception.getMessage());
+		assertThrows(UnsupportedOperationException.class, () -> list.sort(null));
+		assertThrows(UnsupportedOperationException.class,
+			() -> list.sort(Comparator.naturalOrder()));
 		assertEquals(Arrays.asList("a", "b", "c"), list);
+
+		List<String> withoutComparator = new SortedList<>(Arrays.asList("b", "a"));
+		assertThrows(UnsupportedOperationException.class, () -> withoutComparator.sort(null));
+		assertEquals(Arrays.asList("b", "a"), withoutComparator);
 	}
 
 	/**
 	 * Test {@link Collections#sort(List)} and {@link Collections#sort(List, Comparator)} on a
-	 * {@link SortedList} with the reverse order: they call list.sort, null for the first, and sort
-	 * the list against its comparator; [c, b, a] gives [a, b, c] (#77).
-	 * <p>
-	 * The fix of #77 changes the result: both throw an UnsupportedOperationException, and the list
-	 * stays [c, b, a].
+	 * {@link SortedList} with the reverse order: they call list.sort, null for the first, which
+	 * throws an UnsupportedOperationException, and the list stays [c, b, a] (#77)
 	 */
 	@Test
 	public void testCollectionsSort()
@@ -609,19 +600,15 @@ public class SortedListTest
 			Comparator.reverseOrder());
 		assertEquals(Arrays.asList("c", "b", "a"), list);
 
-		Collections.sort(list);
-		assertEquals(Arrays.asList("a", "b", "c"), list);
-		Collections.sort(list, Comparator.reverseOrder());
+		assertThrows(UnsupportedOperationException.class, () -> Collections.sort(list));
+		assertThrows(UnsupportedOperationException.class,
+			() -> Collections.sort(list, Comparator.reverseOrder()));
 		assertEquals(Arrays.asList("c", "b", "a"), list);
 	}
 
 	/**
-	 * Test the method set of the list iterator: it is ArrayList's, which replaces the element last
-	 * returned in place, [a, c] with next() and set(z) gives [z, c], and the iterator of
-	 * listIterator(2) with previous() and set(b) gives [z, b] (#77).
-	 * <p>
-	 * The fix of #77 changes the result: set throws an UnsupportedOperationException, and the list
-	 * stays [a, c].
+	 * Test the method set of the list iterator, of listIterator() and of listIterator(int): it
+	 * throws an UnsupportedOperationException, and the list stays [a, c] (#77)
 	 */
 	@Test
 	public void testListIteratorSet()
@@ -629,39 +616,38 @@ public class SortedListTest
 		List<String> list = new SortedList<>(Arrays.asList("a", "c"), Comparator.naturalOrder());
 		ListIterator<String> iterator = list.listIterator();
 		assertEquals("a", iterator.next());
-		iterator.set("z");
-		assertEquals(Arrays.asList("z", "c"), list);
+		UnsupportedOperationException exception = assertThrows(UnsupportedOperationException.class,
+			() -> iterator.set("z"));
+		assertEquals("A SortedList puts an element at its place in the order of its comparator,"
+			+ " not at the position of a list iterator", exception.getMessage());
+		assertEquals(Arrays.asList("a", "c"), list);
 
 		ListIterator<String> fromIndex = list.listIterator(2);
 		assertEquals("c", fromIndex.previous());
-		fromIndex.set("b");
-		assertEquals(Arrays.asList("z", "b"), list);
+		assertThrows(UnsupportedOperationException.class, () -> fromIndex.set("b"));
+		assertEquals(Arrays.asList("a", "c"), list);
 	}
 
 	/**
-	 * Test the method add of the list iterator: it is ArrayList's, which calls add(cursor, e) and
-	 * moves the cursor one on, while add(int, E) of the list puts the element at its sorted place
-	 * or, without a comparator, at the end; [a, c] with add(z) gives [a, c, z], nextIndex() is 1
-	 * and next() returns c, so a is skipped, with and without a comparator (#77).
-	 * <p>
-	 * The fix of #77 changes the result: add throws an UnsupportedOperationException, the list
-	 * stays [a, c], and next() returns a.
+	 * Test the method add of the list iterator, with and without a comparator: it throws an
+	 * UnsupportedOperationException, the list stays [a, c], the cursor does not move, and next()
+	 * returns a (#77)
 	 */
 	@Test
 	public void testListIteratorAdd()
 	{
 		List<String> list = new SortedList<>(Arrays.asList("a", "c"), Comparator.naturalOrder());
 		ListIterator<String> iterator = list.listIterator();
-		iterator.add("z");
-		assertEquals(Arrays.asList("a", "c", "z"), list);
-		assertEquals(1, iterator.nextIndex());
-		assertEquals("c", iterator.next());
+		assertThrows(UnsupportedOperationException.class, () -> iterator.add("z"));
+		assertEquals(Arrays.asList("a", "c"), list);
+		assertEquals(0, iterator.nextIndex());
+		assertEquals("a", iterator.next());
 
 		List<String> withoutComparator = new SortedList<>(Arrays.asList("a", "c"));
 		ListIterator<String> fromIndex = withoutComparator.listIterator(0);
-		fromIndex.add("z");
-		assertEquals(Arrays.asList("a", "c", "z"), withoutComparator);
-		assertEquals("c", fromIndex.next());
+		assertThrows(UnsupportedOperationException.class, () -> fromIndex.add("z"));
+		assertEquals(Arrays.asList("a", "c"), withoutComparator);
+		assertEquals("a", fromIndex.next());
 	}
 
 	/**
@@ -776,34 +762,28 @@ public class SortedListTest
 	}
 
 	/**
-	 * Test the method {@link SortedList#addAll(Collection)} with the list itself: it iterates over
-	 * the list while it adds to it and throws a ConcurrentModificationException (#77).
-	 * <p>
-	 * The fix of #77 changes the result: the list adds a copy of its elements, as ArrayList does,
-	 * [a, b] gives [a, a, b, b] with the natural order and [b, a, b, a] without a comparator, and
-	 * the method returns true.
+	 * Test the method {@link SortedList#addAll(Collection)} with the list itself: it adds a copy of
+	 * its elements, as ArrayList does, [a, b] gives [a, a, b, b] with the natural order and [b, a,
+	 * b, a] without a comparator, and the method returns true (#77)
 	 */
 	@Test
 	public void testAddAllOfTheListItself()
 	{
 		List<String> list = new SortedList<>(Arrays.asList("a", "b"), Comparator.naturalOrder());
-		assertThrows(ConcurrentModificationException.class, () -> list.addAll(list));
+		assertTrue(list.addAll(list));
+		assertEquals(Arrays.asList("a", "a", "b", "b"), list);
 
 		List<String> withoutComparator = new SortedList<>(Arrays.asList("b", "a"));
-		assertThrows(ConcurrentModificationException.class,
-			() -> withoutComparator.addAll(withoutComparator));
+		assertTrue(withoutComparator.addAll(withoutComparator));
+		assertEquals(Arrays.asList("b", "a", "b", "a"), withoutComparator);
 	}
 
 	/**
 	 * Test {@link Collections#swap(List, int, int)}, {@link Collections#reverse(List)},
 	 * {@link Collections#shuffle(List, Random)} and {@link Collections#rotate(List, int)} on a
-	 * {@link SortedList} with the natural order: they work through set, which replaces in place
-	 * today, so they reorder the list against its comparator: swap(0, 3) of [a, b, c, d] gives [d,
-	 * b, c, a], reverse gives [d, c, b, a], shuffle the order of an ArrayList shuffled with the
-	 * same seed, and rotate by 1 gives [d, a, b, c] (#77).
-	 * <p>
-	 * The fix of #77 changes the result: set sorts the element in, so the list stays [a, b, c, d]
-	 * after each of them.
+	 * {@link SortedList} with the natural order: they work through set, which sorts each element
+	 * in, so the list [a, b, c, d] stays as it is after each of them, also with a seed that
+	 * reorders an ArrayList (#77)
 	 */
 	@Test
 	public void testCollectionsAlgorithmsWithComparator()
@@ -813,22 +793,22 @@ public class SortedListTest
 
 		list = new SortedList<>(elements, Comparator.naturalOrder());
 		Collections.swap(list, 0, 3);
-		assertEquals(Arrays.asList("d", "b", "c", "a"), list);
+		assertEquals(elements, list);
 
 		list = new SortedList<>(elements, Comparator.naturalOrder());
 		Collections.reverse(list);
-		assertEquals(Arrays.asList("d", "c", "b", "a"), list);
+		assertEquals(elements, list);
 
 		List<String> shuffled = new ArrayList<>(elements);
 		Collections.shuffle(shuffled, new Random(77));
 		assertNotEquals(elements, shuffled);
 		list = new SortedList<>(elements, Comparator.naturalOrder());
 		Collections.shuffle(list, new Random(77));
-		assertEquals(shuffled, list);
+		assertEquals(elements, list);
 
 		list = new SortedList<>(elements, Comparator.naturalOrder());
 		Collections.rotate(list, 1);
-		assertEquals(Arrays.asList("d", "a", "b", "c"), list);
+		assertEquals(elements, list);
 	}
 
 	/**
