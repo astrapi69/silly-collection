@@ -25,6 +25,10 @@
 package io.github.astrapi69.collection.set;
 
 import static org.junit.jupiter.api.Assertions.assertEquals;
+import static org.junit.jupiter.api.Assertions.assertFalse;
+
+import java.util.Arrays;
+import java.util.Collection;
 
 import org.junit.jupiter.api.Assertions;
 import org.junit.jupiter.api.Test;
@@ -178,6 +182,55 @@ public class IndexableSetTest
 		Assertions.assertThrows(IndexOutOfBoundsException.class, () -> {
 			set.get(0);
 		});
+	}
+
+	/**
+	 * Test the method {@link IndexableSet#add(Object)}, inherited from {@link InsertionOrderSet},
+	 * with an element the set holds already: the element moves to the last index, and the method
+	 * returns false (#41)
+	 */
+	@Test
+	public void testAddWithContainedElement()
+	{
+		final IndexableSet<String> set = new IndexableSet<>();
+		set.add("a");
+		set.add("b");
+
+		assertFalse(set.add("a"));
+		assertEquals(1, set.getIndex("a"));
+		assertEquals("b", set.get(0));
+	}
+
+	/**
+	 * Test the method {@link IndexableSet#addAll(Collection)}, inherited from
+	 * {@link InsertionOrderSet}, with an element the set holds already: it returns false, as the
+	 * set holds no new element (#41)
+	 */
+	@Test
+	public void testAddAllWithContainedElement()
+	{
+		final IndexableSet<String> set = new IndexableSet<>();
+		set.add("a");
+
+		assertFalse(set.addAll(Arrays.asList("a")));
+		assertEquals(1, set.size());
+	}
+
+	/**
+	 * Test the method {@link IndexableSet#getIndex(Object)} with a set that holds null and "a":
+	 * getIndex("a") gives 1, getIndex(null) gives 0, and an element the set does not hold gives -1
+	 * (#41)
+	 */
+	@Test
+	public void testGetIndexWithNullElement()
+	{
+		final IndexableSet<String> set = new IndexableSet<>();
+		set.add(null);
+		set.add("a");
+
+		assertEquals(1, set.getIndex("a"));
+		assertEquals(0, set.getIndex(null));
+		assertEquals(-1, set.getIndex("b"));
 	}
 
 }

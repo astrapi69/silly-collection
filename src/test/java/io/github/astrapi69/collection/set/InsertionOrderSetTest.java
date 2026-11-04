@@ -24,9 +24,13 @@
  */
 package io.github.astrapi69.collection.set;
 
+import static org.junit.jupiter.api.Assertions.assertEquals;
+import static org.junit.jupiter.api.Assertions.assertFalse;
 import static org.junit.jupiter.api.Assertions.assertTrue;
 
+import java.util.ArrayList;
 import java.util.Arrays;
+import java.util.Collection;
 import java.util.Set;
 
 import org.junit.jupiter.api.AfterEach;
@@ -211,6 +215,52 @@ public class InsertionOrderSetTest
 			assertTrue(element.equals(exp));
 			count++;
 		}
+	}
+
+	/**
+	 * Test the method {@link InsertionOrderSet#add(Object)} with an element the set holds already:
+	 * the element moves to the end, and the method returns false, as its Javadoc says, "true if the
+	 * set did not already contain the specified element" (#41)
+	 */
+	@Test
+	public void testAddWithContainedElement()
+	{
+		final Set<String> set = new InsertionOrderSet<>();
+		set.add("a");
+		set.add("b");
+
+		assertFalse(set.add("a"));
+		assertEquals(Arrays.asList("b", "a"), new ArrayList<>(set));
+	}
+
+	/**
+	 * Test the method {@link InsertionOrderSet#addAll(Collection)} with an element the set holds
+	 * already: it returns false, as the set holds no new element (#41)
+	 */
+	@Test
+	public void testAddAllWithContainedElement()
+	{
+		final Set<String> set = new InsertionOrderSet<>();
+		set.add("a");
+
+		assertFalse(set.addAll(Arrays.asList("a")));
+		assertEquals(Arrays.asList("a"), new ArrayList<>(set));
+	}
+
+	/**
+	 * Test the method {@link InsertionOrderSet#addAll(Collection)} with a new element and one the
+	 * set holds already: it returns true, as the set changed, and both elements end in the order of
+	 * the collection, behind the others (#41)
+	 */
+	@Test
+	public void testAddAllWithNewAndContainedElement()
+	{
+		final Set<String> set = new InsertionOrderSet<>();
+		set.add("a");
+		set.add("b");
+
+		assertTrue(set.addAll(Arrays.asList("a", "c")));
+		assertEquals(Arrays.asList("b", "a", "c"), new ArrayList<>(set));
 	}
 
 }
