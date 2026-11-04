@@ -28,7 +28,6 @@ import static org.junit.jupiter.api.Assertions.*;
 
 import java.util.ArrayList;
 import java.util.Comparator;
-import java.util.Enumeration;
 import java.util.Properties;
 
 import org.junit.jupiter.api.Test;
@@ -119,7 +118,8 @@ public class IndexSortedPropertiesTest
 	}
 
 	/**
-	 * Test for constructor of the class {@link IndexSortedProperties}.
+	 * Test for constructor of the class {@link IndexSortedProperties}: it reads the keys of the
+	 * given defaults into its index, sorted with its comparator
 	 */
 	@Test
 	public void testConstructor()
@@ -130,31 +130,34 @@ public class IndexSortedPropertiesTest
 		unsortedProperties.put("A", "1");
 		unsortedProperties.put("D", "4");
 
-		Properties sortedProperties = new IndexSortedProperties(unsortedProperties);
+		IndexSortedProperties sortedProperties = new IndexSortedProperties(unsortedProperties);
 
-		Enumeration<?> keys = sortedProperties.keys();
-		int count = 1;
-		while (keys.hasMoreElements())
+		// the given properties are the defaults, which keys() does not list: the index holds their
+		// keys A, B, C, D, and getProperty(int) returns the value of the key at an index
+		int count = 0;
+		while (sortedProperties.getProperty(count) != null)
 		{
-			final Object key = keys.nextElement();
+			assertTrue(count < 4, "the index holds more than the four keys of the defaults");
+			final String value = sortedProperties.getProperty(count);
+			if (count == 0)
+			{
+				assertEquals("1", value);
+			}
 			if (count == 1)
 			{
-				assertEquals(key, "A");
+				assertEquals("2", value);
 			}
 			if (count == 2)
 			{
-				assertEquals(key, "B");
+				assertEquals("3", value);
 			}
 			if (count == 3)
 			{
-				assertEquals(key, "C");
-			}
-			if (count == 4)
-			{
-				assertEquals(key, "D");
+				assertEquals("4", value);
 			}
 			count++;
 		}
+		assertEquals(4, count);
 
 		// Add a reverse comparator.
 		sortedProperties = new IndexSortedProperties(unsortedProperties)
@@ -169,34 +172,35 @@ public class IndexSortedPropertiesTest
 			{
 
 				return NullCheckComparator.of(
-					(final Object o1, final Object o2) -> o1.toString().compareTo(o2.toString()),
+					(final Object o1, final Object o2) -> o2.toString().compareTo(o1.toString()),
 					false);
 			}
 		};
 
-		keys = sortedProperties.keys();
-		count = 1;
-		while (keys.hasMoreElements())
+		count = 0;
+		while (sortedProperties.getProperty(count) != null)
 		{
-			final Object key = keys.nextElement();
+			assertTrue(count < 4, "the index holds more than the four keys of the defaults");
+			final String value = sortedProperties.getProperty(count);
+			if (count == 0)
+			{
+				assertEquals("4", value);
+			}
 			if (count == 1)
 			{
-				assertEquals(key, "D");
+				assertEquals("3", value);
 			}
 			if (count == 2)
 			{
-				assertEquals(key, "C");
+				assertEquals("2", value);
 			}
 			if (count == 3)
 			{
-				assertEquals(key, "B");
-			}
-			if (count == 4)
-			{
-				assertEquals(key, "A");
+				assertEquals("1", value);
 			}
 			count++;
 		}
+		assertEquals(4, count);
 	}
 
 	/**

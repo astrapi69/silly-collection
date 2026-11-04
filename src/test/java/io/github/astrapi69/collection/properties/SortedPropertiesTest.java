@@ -48,18 +48,25 @@ public class SortedPropertiesTest
 {
 
 	/**
-	 * Test for constructor of {@link SortedProperties}.
+	 * Test for constructor of {@link SortedProperties}: the given properties are its defaults,
+	 * which {@link Properties#getProperty(String)} finds, while {@link SortedProperties#keys()}
+	 * lists the keys of its own entries, sorted, and not the keys of the defaults
 	 */
 	@Test
 	public void testConstructor()
 	{
+		final Properties defaults = new Properties();
+		defaults.put("E", "5");
+
 		final Properties unsortedProperties = new Properties();
 		unsortedProperties.put("B", "2");
 		unsortedProperties.put("C", "3");
 		unsortedProperties.put("A", "1");
 		unsortedProperties.put("D", "4");
 
-		Properties sortedProperties = new SortedProperties(unsortedProperties);
+		Properties sortedProperties = new SortedProperties(defaults);
+		sortedProperties.putAll(unsortedProperties);
+		assertEquals("5", sortedProperties.getProperty("E"));
 
 		Enumeration<?> keys = sortedProperties.keys();
 		int count = 1;
@@ -84,9 +91,12 @@ public class SortedPropertiesTest
 			}
 			count++;
 		}
+		// count started at 1: the loop ran once for each of the four keys of its own entries, and
+		// not for the key E of the defaults
+		assertEquals(5, count);
 
 		// Add a reverse comparator.
-		sortedProperties = new SortedProperties(unsortedProperties)
+		sortedProperties = new SortedProperties(defaults)
 		{
 			/**
 			 * The serialVersionUID
@@ -103,6 +113,8 @@ public class SortedPropertiesTest
 					false);
 			}
 		};
+		sortedProperties.putAll(unsortedProperties);
+		assertEquals("5", sortedProperties.getProperty("E"));
 
 		keys = sortedProperties.keys();
 		count = 1;
@@ -127,6 +139,7 @@ public class SortedPropertiesTest
 			}
 			count++;
 		}
+		assertEquals(5, count);
 	}
 
 	/**

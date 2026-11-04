@@ -34,6 +34,7 @@ import java.io.InputStream;
 import java.io.OutputStream;
 import java.net.URL;
 import java.nio.file.Path;
+import java.util.ArrayList;
 import java.util.Collections;
 import java.util.List;
 import java.util.Map;
@@ -276,7 +277,7 @@ public class PropertiesExtensionsTest
 
 		assertEquals(1, redundantValues.size());
 		assertFalse(redundantValues.containsKey("once"));
-		final List<String> keys = redundantValues.get("twice");
+		final List<String> keys = new ArrayList<>(redundantValues.get("twice"));
 		Collections.sort(keys);
 		assertEquals(ListFactory.newArrayList("first", "second"), keys);
 	}
@@ -369,7 +370,8 @@ public class PropertiesExtensionsTest
 			.getMatchedPrefixLists(properties);
 
 		assertEquals(2, matchedPrefixLists.size());
-		final List<String> buttons = matchedPrefixLists.get("com.example.gui.window.buttons");
+		final List<String> buttons = new ArrayList<>(
+			matchedPrefixLists.get("com.example.gui.window.buttons"));
 		Collections.sort(buttons);
 		assertEquals(ListFactory.newArrayList("com.example.gui.window.buttons.cancel",
 			"com.example.gui.window.buttons.ok"), buttons);
