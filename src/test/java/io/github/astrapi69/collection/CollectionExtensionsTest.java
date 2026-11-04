@@ -29,6 +29,7 @@ import static org.junit.jupiter.api.Assertions.assertEquals;
 import static org.junit.jupiter.api.Assertions.assertFalse;
 import static org.junit.jupiter.api.Assertions.assertNotNull;
 import static org.junit.jupiter.api.Assertions.assertNull;
+import static org.junit.jupiter.api.Assertions.assertSame;
 import static org.junit.jupiter.api.Assertions.assertTrue;
 
 import java.util.Collection;
@@ -103,6 +104,19 @@ public class CollectionExtensionsTest
 		actual = CollectionExtensions.toList(data);
 		expected = null;
 		assertEquals(expected, actual);
+	}
+
+	/**
+	 * Test the method {@link CollectionExtensions#toList(Collection)} with a {@link List}: the
+	 * result is the given list itself, not a copy of it
+	 */
+	@Test
+	public void testToListReturnsAGivenListItself()
+	{
+		final List<Integer> arrayList = ListFactory.newArrayList(1, 2, 3);
+		final List<Integer> linkedList = ListFactory.newLinkedList(1, 2, 3);
+		assertSame(arrayList, CollectionExtensions.toList(arrayList));
+		assertSame(linkedList, CollectionExtensions.toList(linkedList));
 	}
 
 	/**
