@@ -644,6 +644,45 @@ public class MapFactoryTest
 	}
 
 	/**
+	 * Test the method {@link MapFactory#newTreeMap(java.util.Collection)}: the new map is a
+	 * {@link TreeMap} without a comparator that holds the pairs in the natural order of their keys
+	 */
+	@Test
+	public void testNewTreeMapListOfKeyValuePairs()
+	{
+		final List<KeyValuePair<Integer, String>> keyValuePairs = ListFactory.newArrayList(
+			KeyValuePair.<Integer, String> builder().key(5).value("value").build(),
+			KeyValuePair.<Integer, String> builder().key(1).value("novalue").build());
+		final List<Integer> expectedKeys = ListFactory.newArrayList(1, 5);
+		final Map<Integer, String> expected = new HashMap<>();
+		expected.put(1, "novalue");
+		expected.put(5, "value");
+		final Map<Integer, String> actual = MapFactory.newTreeMap(keyValuePairs);
+		assertNull(assertInstanceOf(TreeMap.class, actual).comparator());
+		assertEquals(expectedKeys, new ArrayList<>(actual.keySet()));
+		assertEquals(expected, actual);
+	}
+
+	/**
+	 * Test the method {@link MapFactory#newTreeMap(KeyValuePair...)}: the new map is a
+	 * {@link TreeMap} without a comparator that holds the pairs in the natural order of their keys
+	 */
+	@Test
+	public void testNewTreeMapKeyValuePairs()
+	{
+		final List<Integer> expectedKeys = ListFactory.newArrayList(1, 5);
+		final Map<Integer, String> expected = new HashMap<>();
+		expected.put(1, "novalue");
+		expected.put(5, "value");
+		final Map<Integer, String> actual = MapFactory.newTreeMap(
+			KeyValuePair.<Integer, String> builder().key(5).value("value").build(),
+			KeyValuePair.<Integer, String> builder().key(1).value("novalue").build());
+		assertNull(assertInstanceOf(TreeMap.class, actual).comparator());
+		assertEquals(expectedKeys, new ArrayList<>(actual.keySet()));
+		assertEquals(expected, actual);
+	}
+
+	/**
 	 * Test the method {@link MapFactory#newTreeMap(Comparator)}: the new map is an empty
 	 * {@link TreeMap}, the type its Javadoc names, that orders its keys by the given comparator
 	 */
@@ -691,9 +730,8 @@ public class MapFactoryTest
 
 	/**
 	 * Test the method {@link MapFactory#newTreeMap(Comparator, java.util.Collection)} with keys
-	 * that are not {@link Comparable}, ordered by the given comparator. Pins the result of today, a
-	 * {@link ClassCastException}, which #44 reports as a bug: the fix of #44 changes it to a
-	 * {@link TreeMap} that holds the pairs in the order of the comparator
+	 * that are not {@link Comparable}, ordered by the given comparator: the new map is a
+	 * {@link TreeMap} with that comparator that holds the pairs in its order (#44)
 	 */
 	@Test
 	public void testNewTreeMapComparatorListOfKeyValuePairsWithKeysNotComparable()
@@ -702,8 +740,14 @@ public class MapFactoryTest
 		final List<KeyValuePair<Class<?>, String>> keyValuePairs = ListFactory.newArrayList(
 			KeyValuePair.<Class<?>, String> builder().key(String.class).value("string").build(),
 			KeyValuePair.<Class<?>, String> builder().key(Integer.class).value("integer").build());
-		assertThrows(ClassCastException.class,
-			() -> MapFactory.newTreeMap(comparator, keyValuePairs));
+		final List<Class<?>> expectedKeys = ListFactory.newArrayList(Integer.class, String.class);
+		final Map<Class<?>, String> expected = new HashMap<>();
+		expected.put(Integer.class, "integer");
+		expected.put(String.class, "string");
+		final Map<Class<?>, String> actual = MapFactory.newTreeMap(comparator, keyValuePairs);
+		assertSame(comparator, assertInstanceOf(TreeMap.class, actual).comparator());
+		assertEquals(expectedKeys, new ArrayList<>(actual.keySet()));
+		assertEquals(expected, actual);
 	}
 
 	/**
@@ -743,17 +787,23 @@ public class MapFactoryTest
 
 	/**
 	 * Test the method {@link MapFactory#newTreeMap(Comparator, KeyValuePair...)} with keys that are
-	 * not {@link Comparable}, ordered by the given comparator. Pins the result of today, a
-	 * {@link ClassCastException}, which #44 reports as a bug: the fix of #44 changes it to a
-	 * {@link TreeMap} that holds the pairs in the order of the comparator
+	 * not {@link Comparable}, ordered by the given comparator: the new map is a {@link TreeMap}
+	 * with that comparator that holds the pairs in its order (#44)
 	 */
 	@Test
 	public void testNewTreeMapObjectsWithKeysNotComparable()
 	{
 		final Comparator<Class<?>> comparator = Comparator.comparing(Class::getName);
-		assertThrows(ClassCastException.class, () -> MapFactory.newTreeMap(comparator,
+		final List<Class<?>> expectedKeys = ListFactory.newArrayList(Integer.class, String.class);
+		final Map<Class<?>, String> expected = new HashMap<>();
+		expected.put(Integer.class, "integer");
+		expected.put(String.class, "string");
+		final Map<Class<?>, String> actual = MapFactory.newTreeMap(comparator,
 			KeyValuePair.<Class<?>, String> builder().key(String.class).value("string").build(),
-			KeyValuePair.<Class<?>, String> builder().key(Integer.class).value("integer").build()));
+			KeyValuePair.<Class<?>, String> builder().key(Integer.class).value("integer").build());
+		assertSame(comparator, assertInstanceOf(TreeMap.class, actual).comparator());
+		assertEquals(expectedKeys, new ArrayList<>(actual.keySet()));
+		assertEquals(expected, actual);
 	}
 
 	/**

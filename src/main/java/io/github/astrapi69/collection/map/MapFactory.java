@@ -713,7 +713,10 @@ public final class MapFactory
 		Argument.notNull(comparator, "comparator");
 		Argument.notNull(keyValuePairs, "keyValuePairs");
 		TreeMap<K, V> treeMap = new TreeMap<>(comparator);
-		treeMap.putAll(newTreeMap(keyValuePairs));
+		for (final KeyValuePair<K, V> keyValuePair : keyValuePairs)
+		{
+			treeMap.put(keyValuePair.getKey(), keyValuePair.getValue());
+		}
 		return treeMap;
 	}
 
@@ -736,9 +739,7 @@ public final class MapFactory
 	{
 		Argument.notNull(comparator, "comparator");
 		Argument.notNull(keyValuePairs, "keyValuePairs");
-		TreeMap<K, V> treeMap = new TreeMap<>(comparator);
-		treeMap.putAll(newTreeMap(keyValuePairs));
-		return treeMap;
+		return newTreeMap(comparator, ListFactory.newArrayList(keyValuePairs));
 	}
 
 	/**

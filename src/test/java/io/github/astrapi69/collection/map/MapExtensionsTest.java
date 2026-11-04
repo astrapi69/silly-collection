@@ -27,7 +27,6 @@ package io.github.astrapi69.collection.map;
 import static org.junit.jupiter.api.Assertions.assertArrayEquals;
 import static org.junit.jupiter.api.Assertions.assertEquals;
 import static org.junit.jupiter.api.Assertions.assertNull;
-import static org.junit.jupiter.api.Assertions.assertThrows;
 import static org.junit.jupiter.api.Assertions.assertTrue;
 
 import java.util.AbstractMap;
@@ -126,8 +125,7 @@ public class MapExtensionsTest
 
 	/**
 	 * Test the method {@link MapExtensions#getKeyFromValue(Map, Object)} with a value that no entry
-	 * holds. Pins the result of today, the last key of the map, which #44 reports as a bug: the fix
-	 * of #44 changes it to null
+	 * holds: no key is found, so null is returned (#44)
 	 */
 	@Test
 	public void testGetKeyFromValueWithoutMatch()
@@ -138,38 +136,44 @@ public class MapExtensionsTest
 		map.put("1", "novalue");
 		map.put("2", "somevalue");
 		actual = MapExtensions.getKeyFromValue(map, "missing");
-		expected = "2";
+		expected = null;
 		assertEquals(expected, actual);
 	}
 
 	/**
 	 * Test the method {@link MapExtensions#getKeyFromValue(Map, Object)} with a map that holds null
-	 * as the value of an entry before the one that holds the value. Pins the result of today, a
-	 * {@link NullPointerException}, which #44 reports as a bug: the fix of #44 changes it to the
-	 * key of the value
+	 * as the value of an entry before the one that holds the value: the key of the value is
+	 * returned (#44)
 	 */
 	@Test
 	public void testGetKeyFromValueWithNullValueInMap()
 	{
+		String actual;
+		String expected;
 		final Map<String, String> map = MapFactory.newLinkedHashMap();
 		map.put("1", null);
 		map.put("2", "value");
-		assertThrows(NullPointerException.class, () -> MapExtensions.getKeyFromValue(map, "value"));
+		actual = MapExtensions.getKeyFromValue(map, "value");
+		expected = "2";
+		assertEquals(expected, actual);
 	}
 
 	/**
 	 * Test the method {@link MapExtensions#getKeyFromValue(Map, Object)} with null as the value to
-	 * look for. Pins the result of today, a {@link NullPointerException}, which #44 reports as a
-	 * bug: the fix of #44 changes it to the first key mapped to null
+	 * look for: the first key mapped to null is returned (#44)
 	 */
 	@Test
 	public void testGetKeyFromValueWithNullValue()
 	{
+		String actual;
+		String expected;
 		final Map<String, String> map = MapFactory.newLinkedHashMap();
 		map.put("1", "value");
 		map.put("2", null);
 		map.put("3", null);
-		assertThrows(NullPointerException.class, () -> MapExtensions.getKeyFromValue(map, null));
+		actual = MapExtensions.getKeyFromValue(map, null);
+		expected = "2";
+		assertEquals(expected, actual);
 	}
 
 	/**
@@ -212,32 +216,37 @@ public class MapExtensionsTest
 
 	/**
 	 * Test the method {@link MapExtensions#getKeysFromValue(Map, Object)} with a map that holds
-	 * null as the value of an entry. Pins the result of today, a {@link NullPointerException},
-	 * which #44 reports as a bug: the fix of #44 changes it to the keys of the value
+	 * null as the value of an entry: the keys of the value are returned (#44)
 	 */
 	@Test
 	public void testGetKeysFromValueWithNullValueInMap()
 	{
+		Set<String> actual;
+		Set<String> expected;
 		final Map<String, String> map = MapFactory.newLinkedHashMap();
 		map.put("1", null);
 		map.put("2", "value");
-		assertThrows(NullPointerException.class,
-			() -> MapExtensions.getKeysFromValue(map, "value"));
+		actual = SetFactory.newHashSet(MapExtensions.getKeysFromValue(map, "value"));
+		expected = SetFactory.newHashSet("2");
+		assertEquals(expected, actual);
 	}
 
 	/**
 	 * Test the method {@link MapExtensions#getKeysFromValue(Map, Object)} with null as the value to
-	 * look for. Pins the result of today, a {@link NullPointerException}, which #44 reports as a
-	 * bug: the fix of #44 changes it to the keys mapped to null
+	 * look for: the keys mapped to null are returned (#44)
 	 */
 	@Test
 	public void testGetKeysFromValueWithNullValue()
 	{
+		Set<String> actual;
+		Set<String> expected;
 		final Map<String, String> map = MapFactory.newLinkedHashMap();
 		map.put("1", null);
 		map.put("2", "value");
 		map.put("3", null);
-		assertThrows(NullPointerException.class, () -> MapExtensions.getKeysFromValue(map, null));
+		actual = SetFactory.newHashSet(MapExtensions.getKeysFromValue(map, null));
+		expected = SetFactory.newHashSet("1", "3");
+		assertEquals(expected, actual);
 	}
 
 	/**
