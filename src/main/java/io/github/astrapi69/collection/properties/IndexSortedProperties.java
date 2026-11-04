@@ -29,15 +29,21 @@ import java.util.Comparator;
 import java.util.List;
 import java.util.Map;
 import java.util.Properties;
-import java.util.Set;
+import java.util.function.BiFunction;
+import java.util.function.Function;
 
-import io.github.astrapi69.collection.CollectionExtensions;
-import io.github.astrapi69.collection.list.ListFactory;
 import io.github.astrapi69.comparator.NullCheckComparator;
 
 /**
- * The class {@link IndexSortedProperties} extends SortedProperties and holds an intern list with
- * the keys for get values over an index.
+ * The class {@link IndexSortedProperties} extends {@link SortedProperties} with an index, so that a
+ * value can be read and removed over its position.
+ * <p>
+ * The index holds exactly the keys of the entries of this object, the keys that
+ * {@link #get(Object)} and {@link #keySet()} give, in the order of {@link #keySet()}: sorted with
+ * the comparator of this object. The keys of the defaults are not in it, as they are not in
+ * {@link #keySet()}. The index follows every change of the keys, also through the views
+ * {@link #keySet()}, {@link #entrySet()} and {@link #values()}. The methods {@link #get(int)},
+ * {@link #getProperty(int)}, {@link #remove(int)} and {@link #indexOf(Object)} read it.
  *
  * @author Asterios Raptis
  */
@@ -46,8 +52,16 @@ public class IndexSortedProperties extends SortedProperties
 
 	/** The Constant serialVersionUID. */
 	private static final long serialVersionUID = 1L;
-	/** The keys. */
-	private List<Object> keys;
+	/**
+	 * The index: the keys of the entries of this object, sorted with its comparator, built from
+	 * them by {@link #sortedKeys()} when it is read. Every method of this class that may change the
+	 * keys sets it to null, so that the next read builds it again. The views of {@link #entrySet()}
+	 * and {@link #values()} remove entries without such a method, but cannot add any, so an index
+	 * of another size than this object is built again, too. The list is replaced, never changed, so
+	 * a clone, which starts with the list of the original, has an index of its own. Built from the
+	 * keys, it is not part of the serialized form
+	 */
+	private transient List<Object> keys;
 
 	/**
 	 * Instantiates a new {@link IndexSortedProperties}.
@@ -66,7 +80,6 @@ public class IndexSortedProperties extends SortedProperties
 	public IndexSortedProperties(final Properties defaults)
 	{
 		super(defaults);
-		sortKeyList(defaults.keySet());
 	}
 
 	/**
@@ -142,28 +155,49 @@ public class IndexSortedProperties extends SortedProperties
 	}
 
 	/**
-	 * Adds the key.
-	 *
-	 * @param key
-	 *            the key
+	 * {@inheritDoc}
 	 */
-	private void addKey(final Object key)
+	@Override
+	public synchronized void clear()
 	{
-		keys.add(key);
-		resortKeyList();
+		super.clear();
+		keys = null;
 	}
 
 	/**
 	 * {@inheritDoc}
 	 */
 	@Override
-	public synchronized void clear()
+	public synchronized Object compute(final Object key,
+		final BiFunction<? super Object, ? super Object, ?> remappingFunction)
 	{
-		if (CollectionExtensions.isNotEmpty(keys))
-		{
-			keys.clear();
-		}
-		super.clear();
+		final Object value = super.compute(key, remappingFunction);
+		keys = null;
+		return value;
+	}
+
+	/**
+	 * {@inheritDoc}
+	 */
+	@Override
+	public synchronized Object computeIfAbsent(final Object key,
+		final Function<? super Object, ?> mappingFunction)
+	{
+		final Object value = super.computeIfAbsent(key, mappingFunction);
+		keys = null;
+		return value;
+	}
+
+	/**
+	 * {@inheritDoc}
+	 */
+	@Override
+	public synchronized Object computeIfPresent(final Object key,
+		final BiFunction<? super Object, ? super Object, ?> remappingFunction)
+	{
+		final Object value = super.computeIfPresent(key, remappingFunction);
+		keys = null;
+		return value;
 	}
 
 	/**
@@ -175,9 +209,7 @@ public class IndexSortedProperties extends SortedProperties
 	 */
 	public synchronized Object get(final int index)
 	{
-		if (index < keys.size())
-			return getProperty((String)keys.get(index));
-		return null;
+		return getProperty(index);
 	}
 
 	/**
@@ -187,10 +219,11 @@ public class IndexSortedProperties extends SortedProperties
 	 *            the index
 	 * @return the property that was found over the index or null if the index was out of range.
 	 */
-	public String getProperty(final int index)
+	public synchronized String getProperty(final int index)
 	{
-		if (index < keys.size())
-			return getProperty((String)keys.get(index));
+		final List<Object> sortedKeys = sortedKeys();
+		if (0 <= index && index < sortedKeys.size())
+			return getProperty((String)sortedKeys.get(index));
 		return null;
 	}
 
@@ -203,12 +236,13 @@ public class IndexSortedProperties extends SortedProperties
 	 */
 	public synchronized int indexOf(final Object object)
 	{
-		for (final Object key : keys)
+		final List<Object> sortedKeys = sortedKeys();
+		for (final Object key : sortedKeys)
 		{
 			final Object value = getProperty((String)key);
 			if (object.equals(value))
 			{
-				return keys.indexOf(key);
+				return sortedKeys.indexOf(key);
 			}
 		}
 		return -1;
@@ -218,12 +252,24 @@ public class IndexSortedProperties extends SortedProperties
 	 * {@inheritDoc}
 	 */
 	@Override
-	public synchronized Object put(final Object key, final Object value)
+	public synchronized Object merge(final Object key, final Object value,
+		final BiFunction<? super Object, ? super Object, ?> remappingFunction)
 	{
-		addKey(key);
-		return super.put(key, value);
+		final Object merged = super.merge(key, value, remappingFunction);
+		keys = null;
+		return merged;
 	}
 
+	/**
+	 * {@inheritDoc}
+	 */
+	@Override
+	public synchronized Object put(final Object key, final Object value)
+	{
+		final Object previous = super.put(key, value);
+		keys = null;
+		return previous;
+	}
 
 	/**
 	 * {@inheritDoc}
@@ -232,7 +278,18 @@ public class IndexSortedProperties extends SortedProperties
 	public synchronized void putAll(final Map<? extends Object, ? extends Object> t)
 	{
 		super.putAll(t);
-		sortKeyList(keySet());
+		keys = null;
+	}
+
+	/**
+	 * {@inheritDoc}
+	 */
+	@Override
+	public synchronized Object putIfAbsent(final Object key, final Object value)
+	{
+		final Object previous = super.putIfAbsent(key, value);
+		keys = null;
+		return previous;
 	}
 
 	/**
@@ -244,8 +301,9 @@ public class IndexSortedProperties extends SortedProperties
 	 */
 	public synchronized Object remove(final int index)
 	{
-		if (index < keys.size())
-			return remove(keys.get(index));
+		final List<Object> sortedKeys = sortedKeys();
+		if (0 <= index && index < sortedKeys.size())
+			return remove(sortedKeys.get(index));
 		return null;
 	}
 
@@ -255,8 +313,9 @@ public class IndexSortedProperties extends SortedProperties
 	@Override
 	public synchronized Object remove(final Object key)
 	{
-		removeKey(key);
-		return super.remove(key);
+		final Object removed = super.remove(key);
+		keys = null;
+		return removed;
 	}
 
 	/**
@@ -266,41 +325,26 @@ public class IndexSortedProperties extends SortedProperties
 	public synchronized boolean remove(final Object key, final Object value)
 	{
 		final boolean removed = super.remove(key, value);
-		if (removed)
-			removeKey(key);
+		keys = null;
 		return removed;
 	}
 
 	/**
-	 * Removes the key.
+	 * Gets the index, and builds it from the keys of the entries of this object first if a change
+	 * of the keys dropped it or if its size differs from the number of entries. Its callers hold
+	 * the lock of this object
 	 *
-	 * @param key
-	 *            the key
+	 * @return the keys of the entries of this object, sorted with its comparator
 	 */
-	private void removeKey(final Object key)
+	private List<Object> sortedKeys()
 	{
-		keys.remove(key);
-		resortKeyList();
-	}
-
-	/**
-	 * Resort the intern key list.
-	 */
-	private void resortKeyList()
-	{
-		Collections.sort(keys, getComparator());
-	}
-
-	/**
-	 * Sort intern key list.
-	 *
-	 * @param keySet
-	 *            the key set
-	 */
-	private void sortKeyList(final Set<Object> keySet)
-	{
-		keys = ListFactory.newArrayList(keySet);
-		resortKeyList();
+		// a dropped index counts as one of another size than this object
+		final int indexed = keys == null ? -1 : keys.size();
+		if (indexed != size())
+		{
+			keys = Collections.unmodifiableList(Collections.list(keys()));
+		}
+		return keys;
 	}
 
 }
