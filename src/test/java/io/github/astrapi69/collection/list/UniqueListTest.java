@@ -26,10 +26,16 @@ package io.github.astrapi69.collection.list;
 
 import static org.junit.jupiter.api.Assertions.*;
 
+import java.util.ArrayList;
 import java.util.Arrays;
 import java.util.Collection;
 import java.util.Collections;
+import java.util.ConcurrentModificationException;
+import java.util.Iterator;
 import java.util.List;
+import java.util.ListIterator;
+import java.util.NoSuchElementException;
+import java.util.Random;
 
 import org.junit.jupiter.api.Test;
 
@@ -439,5 +445,474 @@ public class UniqueListTest
 
 		assertTrue(list.addAll(0, Arrays.asList("b", "c")));
 		assertEquals(Arrays.asList("c", "a", "b"), list);
+	}
+
+	/**
+	 * Test the method {@link UniqueList#set(int, Object)} with an element the list holds at another
+	 * index: [a, b, c].set(0, c) returns a and gives [c, b, c], and [a, b, c].set(2, a) returns c
+	 * and gives [a, b, a], a duplicate each time (#67).
+	 * <p>
+	 * The fix of #67 changes the result: the two elements swap, both calls give [c, b, a].
+	 */
+	@Test
+	public void testSetWithElementHeldAtAnotherIndex()
+	{
+		List<String> list = new UniqueList<>(Arrays.asList("a", "b", "c"));
+		assertEquals("a", list.set(0, "c"));
+		assertEquals(Arrays.asList("c", "b", "c"), list);
+
+		list = new UniqueList<>(Arrays.asList("a", "b", "c"));
+		assertEquals("c", list.set(2, "a"));
+		assertEquals(Arrays.asList("a", "b", "a"), list);
+	}
+
+	/**
+	 * Test the method {@link UniqueList#set(int, Object)} with a new element and with an element
+	 * the list holds at the index itself: each replaces the element at the index and returns the
+	 * previous one, as ArrayList does; an equal element at the index is replaced by the given
+	 * instance (#67)
+	 */
+	@Test
+	public void testSetWithNewElementOrElementHeldAtTheIndex()
+	{
+		List<String> list = new UniqueList<>(Arrays.asList("a", "b"));
+		assertEquals("a", list.set(0, "x"));
+		assertEquals(Arrays.asList("x", "b"), list);
+
+		String previous = list.get(1);
+		String equal = new String("b");
+		assertSame(previous, list.set(1, equal));
+		assertSame(equal, list.get(1));
+		assertEquals(Arrays.asList("x", "b"), list);
+	}
+
+	/**
+	 * Test the method {@link UniqueList#set(int, Object)} with an index out of range: it throws an
+	 * IndexOutOfBoundsException with the message of ArrayList, for an element the list holds too,
+	 * and the list does not change (#67)
+	 */
+	@Test
+	public void testSetWithIndexOutOfRange()
+	{
+		List<String> list = new UniqueList<>(Arrays.asList("a", "b"));
+
+		IndexOutOfBoundsException exception = assertThrows(IndexOutOfBoundsException.class,
+			() -> list.set(2, "a"));
+		assertEquals("Index 2 out of bounds for length 2", exception.getMessage());
+		exception = assertThrows(IndexOutOfBoundsException.class, () -> list.set(-1, "b"));
+		assertEquals("Index -1 out of bounds for length 2", exception.getMessage());
+		assertEquals(Arrays.asList("a", "b"), list);
+	}
+
+	/**
+	 * Test the method {@link UniqueList#set(int, Object)} while an iterator runs over the list: set
+	 * is no structural modification, the iterator goes on without a
+	 * ConcurrentModificationException; [a, b, c].set(0, c) after the first next() gives [c, b, c],
+	 * and the iterator returns b and c (#67).
+	 * <p>
+	 * The fix of #67 changes the result: [c, b, a], and the iterator returns b and a.
+	 */
+	@Test
+	public void testSetWhileAnIteratorRuns()
+	{
+		List<String> list = new UniqueList<>(Arrays.asList("a", "b", "c"));
+		Iterator<String> iterator = list.iterator();
+		assertEquals("a", iterator.next());
+
+		list.set(0, "c");
+		assertEquals("b", iterator.next());
+		assertEquals("c", iterator.next());
+		assertFalse(iterator.hasNext());
+		assertEquals(Arrays.asList("c", "b", "c"), list);
+	}
+
+	/**
+	 * Test that {@link Collections#swap(List, int, int)}, which calls
+	 * {@code l.set(i, l.set(j, l.get(i)))}, swaps two elements of the list, before and after the
+	 * fix of #67, which makes {@link UniqueList#set(int, Object)} swap an element the list holds
+	 */
+	@Test
+	public void testCollectionsSwap()
+	{
+		List<String> list = new UniqueList<>(Arrays.asList("a", "b", "c", "d"));
+
+		Collections.swap(list, 0, 3);
+		assertEquals(Arrays.asList("d", "b", "c", "a"), list);
+		Collections.swap(list, 2, 1);
+		assertEquals(Arrays.asList("d", "c", "b", "a"), list);
+		Collections.swap(list, 1, 1);
+		assertEquals(Arrays.asList("d", "c", "b", "a"), list);
+	}
+
+	/**
+	 * Test that {@link Collections#reverse(List)}, which swaps through set, reverses the list of an
+	 * odd and of an even size, before and after the fix of #67
+	 */
+	@Test
+	public void testCollectionsReverse()
+	{
+		List<String> list = new UniqueList<>(Arrays.asList("a", "b", "c", "d", "e"));
+		Collections.reverse(list);
+		assertEquals(Arrays.asList("e", "d", "c", "b", "a"), list);
+
+		list = new UniqueList<>(Arrays.asList("a", "b", "c", "d"));
+		Collections.reverse(list);
+		assertEquals(Arrays.asList("d", "c", "b", "a"), list);
+	}
+
+	/**
+	 * Test that {@link Collections#shuffle(List, Random)}, which swaps through set, gives the list
+	 * the order it gives an ArrayList with the same elements and the same seed, each element once,
+	 * before and after the fix of #67
+	 */
+	@Test
+	public void testCollectionsShuffle()
+	{
+		List<String> elements = Arrays.asList("a", "b", "c", "d", "e", "f", "g", "h");
+		List<String> expected = new ArrayList<>(elements);
+		Collections.shuffle(expected, new Random(67));
+		assertNotEquals(elements, expected);
+
+		List<String> list = new UniqueList<>(elements);
+		Collections.shuffle(list, new Random(67));
+		assertEquals(expected, list);
+	}
+
+	/**
+	 * Test that {@link Collections#rotate(List, int)}, which calls
+	 * {@code displaced = list.set(i, displaced)} along each cycle, rotates the list, in one cycle
+	 * (distance 1 and -1) and in several (distance 2 and 3 of six elements), before and after the
+	 * fix of #67
+	 */
+	@Test
+	public void testCollectionsRotate()
+	{
+		List<String> elements = Arrays.asList("a", "b", "c", "d", "e", "f");
+		List<String> list;
+
+		list = new UniqueList<>(elements);
+		Collections.rotate(list, 1);
+		assertEquals(Arrays.asList("f", "a", "b", "c", "d", "e"), list);
+
+		list = new UniqueList<>(elements);
+		Collections.rotate(list, -1);
+		assertEquals(Arrays.asList("b", "c", "d", "e", "f", "a"), list);
+
+		list = new UniqueList<>(elements);
+		Collections.rotate(list, 2);
+		assertEquals(Arrays.asList("e", "f", "a", "b", "c", "d"), list);
+
+		list = new UniqueList<>(elements);
+		Collections.rotate(list, 3);
+		assertEquals(Arrays.asList("d", "e", "f", "a", "b", "c"), list);
+	}
+
+	/**
+	 * Test the method set of the list iterator with an element the list holds at another index: [a,
+	 * b] with next(), next() and set(a) gives [a, a], and previous() returns a twice (#67).
+	 * <p>
+	 * The fix of #67 changes the result: [b, a], set swaps as {@link UniqueList#set(int, Object)}
+	 * does, and previous() returns a and b.
+	 */
+	@Test
+	public void testListIteratorSetWithElementHeldAtAnotherIndex()
+	{
+		List<String> list = new UniqueList<>(Arrays.asList("a", "b"));
+		ListIterator<String> iterator = list.listIterator();
+		iterator.next();
+		iterator.next();
+
+		iterator.set("a");
+		assertEquals(Arrays.asList("a", "a"), list);
+		assertEquals("a", iterator.previous());
+		assertEquals("a", iterator.previous());
+	}
+
+	/**
+	 * Test the method add of the list iterator with an element the list holds before the cursor:
+	 * [a, b, c] with next() and add(a) gives [b, a, c], and the following next() returns c, it
+	 * skips b against the contract of ListIterator.add; [a, b, c, d] with next(), next() and add(a)
+	 * gives [b, c, a, d], previousIndex() is 2 (#67).
+	 * <p>
+	 * The fix of #67 changes the result: a ends immediately before the element next() would return,
+	 * [a, b, c] and next() returns b; [b, a, c, d] and previousIndex() is 1.
+	 */
+	@Test
+	public void testListIteratorAddWithElementHeldBeforeTheCursor()
+	{
+		List<String> list = new UniqueList<>(Arrays.asList("a", "b", "c"));
+		ListIterator<String> iterator = list.listIterator();
+		assertEquals("a", iterator.next());
+
+		iterator.add("a");
+		assertEquals(Arrays.asList("b", "a", "c"), list);
+		assertEquals("c", iterator.next());
+
+		list = new UniqueList<>(Arrays.asList("a", "b", "c", "d"));
+		iterator = list.listIterator();
+		iterator.next();
+		iterator.next();
+
+		iterator.add("a");
+		assertEquals(Arrays.asList("b", "c", "a", "d"), list);
+		assertEquals(2, iterator.previousIndex());
+		assertEquals("a", iterator.previous());
+	}
+
+	/**
+	 * Test the method add of the list iterator at the end of the list with an element the list
+	 * holds: [a, b, c] with a list iterator at its end and add(a) gives [b, c, a] and leaves the
+	 * cursor behind the end, nextIndex() is 4, hasNext() is true, and next() throws a
+	 * NoSuchElementException (#67).
+	 * <p>
+	 * The fix of #67 changes the result: nextIndex() is 3, hasNext() is false, and previous()
+	 * returns a.
+	 */
+	@Test
+	public void testListIteratorAddAtTheEndWithElementHeldBeforeTheCursor()
+	{
+		List<String> list = new UniqueList<>(Arrays.asList("a", "b", "c"));
+		ListIterator<String> iterator = list.listIterator(3);
+
+		iterator.add("a");
+		assertEquals(Arrays.asList("b", "c", "a"), list);
+		assertEquals(4, iterator.nextIndex());
+		assertTrue(iterator.hasNext());
+		assertThrows(NoSuchElementException.class, iterator::next);
+	}
+
+	/**
+	 * Test the method add of the list iterator with a new element, with an element the list holds
+	 * behind the cursor and with the element next() would return: the new element is inserted
+	 * before the cursor, the one behind the cursor moves to before the cursor, and next() returns
+	 * the element it would have returned; the element next() would return stays where it is and the
+	 * cursor moves behind it, so previous() returns it. Before and after the fix of #67.
+	 */
+	@Test
+	public void testListIteratorAddWithNewElementOrElementHeldAtOrBehindTheCursor()
+	{
+		List<String> list = new UniqueList<>(Arrays.asList("a", "c"));
+		ListIterator<String> iterator = list.listIterator();
+		iterator.next();
+
+		iterator.add("b");
+		assertEquals(Arrays.asList("a", "b", "c"), list);
+		assertEquals(2, iterator.nextIndex());
+		assertEquals("c", iterator.next());
+
+		list = new UniqueList<>(Arrays.asList("a", "b", "c", "d"));
+		iterator = list.listIterator();
+		iterator.next();
+
+		iterator.add("d");
+		assertEquals(Arrays.asList("a", "d", "b", "c"), list);
+		assertEquals(2, iterator.nextIndex());
+		assertEquals("b", iterator.next());
+
+		list = new UniqueList<>(Arrays.asList("a", "b", "c"));
+		iterator = list.listIterator();
+		iterator.next();
+
+		iterator.add("b");
+		assertEquals(Arrays.asList("a", "b", "c"), list);
+		assertEquals(2, iterator.nextIndex());
+		assertEquals("b", iterator.previous());
+	}
+
+	/**
+	 * Test the list iterator forward and backward over the whole list: next(), previous(), the
+	 * indexes and the NoSuchElementException at both ends, as ArrayList's list iterator gives them
+	 */
+	@Test
+	public void testListIteratorWalksForwardAndBackward()
+	{
+		List<String> list = new UniqueList<>(Arrays.asList("a", "b", "c"));
+		ListIterator<String> iterator = list.listIterator();
+
+		assertFalse(iterator.hasPrevious());
+		assertEquals(-1, iterator.previousIndex());
+		assertThrows(NoSuchElementException.class, iterator::previous);
+		assertEquals("a", iterator.next());
+		assertTrue(iterator.hasPrevious());
+		assertEquals("b", iterator.next());
+		assertEquals(2, iterator.nextIndex());
+		assertEquals(1, iterator.previousIndex());
+		assertTrue(iterator.hasNext());
+		assertEquals("c", iterator.next());
+		assertFalse(iterator.hasNext());
+		assertThrows(NoSuchElementException.class, iterator::next);
+		assertEquals("c", iterator.previous());
+		assertEquals("b", iterator.previous());
+		assertEquals("a", iterator.previous());
+		assertFalse(iterator.hasPrevious());
+		assertTrue(iterator.hasNext());
+	}
+
+	/**
+	 * Test the method {@link UniqueList#listIterator(int)}: the iterator starts at the given index,
+	 * the index size() included, and an index out of range throws an IndexOutOfBoundsException with
+	 * the message of ArrayList
+	 */
+	@Test
+	public void testListIteratorWithIndex()
+	{
+		List<String> list = new UniqueList<>(Arrays.asList("a", "b", "c"));
+
+		ListIterator<String> iterator = list.listIterator(2);
+		assertEquals(2, iterator.nextIndex());
+		assertEquals("b", iterator.previous());
+
+		iterator = list.listIterator(3);
+		assertFalse(iterator.hasNext());
+		assertEquals("c", iterator.previous());
+
+		IndexOutOfBoundsException exception = assertThrows(IndexOutOfBoundsException.class,
+			() -> list.listIterator(4));
+		assertEquals("Index: 4, Size: 3", exception.getMessage());
+		exception = assertThrows(IndexOutOfBoundsException.class, () -> list.listIterator(-1));
+		assertEquals("Index: -1, Size: 3", exception.getMessage());
+	}
+
+	/**
+	 * Test the method remove of the list iterator: it removes the element last returned by next()
+	 * or previous(), the following next() returns the element behind it, and without an element
+	 * returned since the last remove it throws an IllegalStateException
+	 */
+	@Test
+	public void testListIteratorRemove()
+	{
+		List<String> list = new UniqueList<>(Arrays.asList("a", "b", "c"));
+		ListIterator<String> iterator = list.listIterator();
+		assertThrows(IllegalStateException.class, iterator::remove);
+
+		assertEquals("a", iterator.next());
+		iterator.remove();
+		assertEquals(Arrays.asList("b", "c"), list);
+		assertThrows(IllegalStateException.class, iterator::remove);
+		assertEquals(0, iterator.nextIndex());
+		assertEquals("b", iterator.next());
+
+		assertEquals("c", iterator.next());
+		assertEquals("c", iterator.previous());
+		iterator.remove();
+		assertEquals(Arrays.asList("b"), list);
+		assertFalse(iterator.hasNext());
+	}
+
+	/**
+	 * Test the method set of the list iterator with a new element: it replaces the element last
+	 * returned, and without an element returned, or after add, it throws an IllegalStateException
+	 */
+	@Test
+	public void testListIteratorSetWithNewElement()
+	{
+		List<String> list = new UniqueList<>(Arrays.asList("a", "b"));
+		ListIterator<String> iterator = list.listIterator();
+		assertThrows(IllegalStateException.class, () -> iterator.set("x"));
+
+		assertEquals("a", iterator.next());
+		iterator.set("x");
+		assertEquals(Arrays.asList("x", "b"), list);
+
+		iterator.add("y");
+		assertThrows(IllegalStateException.class, () -> iterator.set("z"));
+		assertThrows(IllegalStateException.class, iterator::remove);
+		assertEquals(Arrays.asList("x", "y", "b"), list);
+		assertEquals("b", iterator.next());
+	}
+
+	/**
+	 * Test that the list iterator fails fast: after a structural modification of the list that is
+	 * not made through the iterator, next(), previous(), set, remove and add throw a
+	 * ConcurrentModificationException, as ArrayList's list iterator does
+	 */
+	@Test
+	public void testListIteratorFailsFast()
+	{
+		List<String> list = new UniqueList<>(Arrays.asList("a", "b"));
+
+		ListIterator<String> forNext = list.listIterator();
+		list.add("c");
+		assertThrows(ConcurrentModificationException.class, forNext::next);
+
+		ListIterator<String> forPrevious = list.listIterator(1);
+		list.add("d");
+		assertThrows(ConcurrentModificationException.class, forPrevious::previous);
+
+		ListIterator<String> forSet = list.listIterator();
+		forSet.next();
+		list.remove("d");
+		assertThrows(ConcurrentModificationException.class, () -> forSet.set("x"));
+
+		ListIterator<String> forRemove = list.listIterator();
+		forRemove.next();
+		list.remove("c");
+		assertThrows(ConcurrentModificationException.class, forRemove::remove);
+
+		ListIterator<String> forAdd = list.listIterator();
+		list.add("c");
+		assertThrows(ConcurrentModificationException.class, () -> forAdd.add("x"));
+		assertEquals(Arrays.asList("a", "b", "c"), list);
+	}
+
+	/**
+	 * Test the method {@link UniqueList#replaceAll(java.util.function.UnaryOperator)} with an
+	 * operator that gives the same value for every element: [a, b, c] becomes [x, x, x] (#67).
+	 * <p>
+	 * The fix of #67 changes the result: an IllegalArgumentException, and the list stays [a, b, c].
+	 */
+	@Test
+	public void testReplaceAllWithEqualValues()
+	{
+		List<String> list = new UniqueList<>(Arrays.asList("a", "b", "c"));
+
+		list.replaceAll(element -> "x");
+		assertEquals(Arrays.asList("x", "x", "x"), list);
+	}
+
+	/**
+	 * Test the method {@link UniqueList#replaceAll(java.util.function.UnaryOperator)} with
+	 * operators that give distinct values: each element is replaced by its value, also where the
+	 * value equals another element of the list, as a to b, b to c and c to a
+	 */
+	@Test
+	public void testReplaceAllWithDistinctValues()
+	{
+		List<String> list = new UniqueList<>(Arrays.asList("a", "b", "c"));
+
+		list.replaceAll(String::toUpperCase);
+		assertEquals(Arrays.asList("A", "B", "C"), list);
+
+		list = new UniqueList<>(Arrays.asList("a", "b", "c"));
+		list.replaceAll(element -> element.equals("a") ? "b" : element.equals("b") ? "c" : "a");
+		assertEquals(Arrays.asList("b", "c", "a"), list);
+	}
+
+	/**
+	 * Test the method {@link UniqueList#replaceAll(java.util.function.UnaryOperator)} with a null
+	 * operator: it throws a NullPointerException, on an empty list too, as List.replaceAll says
+	 */
+	@Test
+	public void testReplaceAllWithNullOperator()
+	{
+		List<String> list = new UniqueList<>();
+
+		assertThrows(NullPointerException.class, () -> list.replaceAll(null));
+	}
+
+	/**
+	 * Test the method {@link UniqueList#replaceAll(java.util.function.UnaryOperator)} with an
+	 * operator that removes an element of the list: it throws a ConcurrentModificationException, as
+	 * ArrayList does, also where the removal ends the iteration over the list
+	 */
+	@Test
+	public void testReplaceAllWithOperatorThatChangesTheList()
+	{
+		List<String> list = new UniqueList<>(Arrays.asList("a", "b"));
+
+		assertThrows(ConcurrentModificationException.class, () -> list.replaceAll(element -> {
+			list.remove("b");
+			return element.toUpperCase();
+		}));
 	}
 }
