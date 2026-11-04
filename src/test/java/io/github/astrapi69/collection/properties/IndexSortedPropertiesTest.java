@@ -26,14 +26,17 @@ package io.github.astrapi69.collection.properties;
 
 import static org.junit.jupiter.api.Assertions.*;
 
+import java.io.IOException;
 import java.util.ArrayList;
 import java.util.Comparator;
+import java.util.Iterator;
 import java.util.Properties;
 
 import org.junit.jupiter.api.Test;
 
 import io.github.astrapi69.collection.list.ListFactory;
 import io.github.astrapi69.comparator.NullCheckComparator;
+import io.github.astrapi69.io.SerializedObjectExtensions;
 
 /**
  * The unit test class for the class {@link IndexSortedProperties}.
@@ -693,6 +696,64 @@ public class IndexSortedPropertiesTest
 		expected = 0;
 		actual = properties.indexOf("1");
 		assertEquals(expected, actual);
+	}
+
+	/**
+	 * Test the method {@link IndexSortedProperties#keySet()}: removing a key through the set or its
+	 * iterator removes it from the index, too, as the set removes it with
+	 * {@link IndexSortedProperties#remove(Object)}
+	 */
+	@Test
+	public void testKeySetRemoveUpdatesTheIndex()
+	{
+		final IndexSortedProperties properties = IndexSortedProperties.of();
+		properties.setProperty("A", "1");
+		properties.setProperty("B", "2");
+		properties.setProperty("C", "3");
+
+		assertTrue(properties.keySet().remove("B"));
+		assertEquals("1", properties.get(0));
+		assertEquals("3", properties.get(1));
+		assertNull(properties.get(2));
+
+		final Iterator<Object> iterator = properties.keySet().iterator();
+		assertEquals("A", iterator.next());
+		iterator.remove();
+		assertEquals("3", properties.get(0));
+		assertNull(properties.get(1));
+		assertEquals(0, properties.indexOf("3"));
+	}
+
+	/**
+	 * Test the serialization of an {@link IndexSortedProperties}: the comparator, a lambda, is not
+	 * part of its serialized form, so it serializes; the copy has the entries and the index of the
+	 * original, and sorts a key put into it later into its own index with a comparator of its own
+	 *
+	 * @throws IOException
+	 *             Signals that an I/O exception has occurred
+	 * @throws ClassNotFoundException
+	 *             is thrown when a class of the serialized object is not found
+	 */
+	@Test
+	public void testSerialization() throws IOException, ClassNotFoundException
+	{
+		final IndexSortedProperties properties = IndexSortedProperties.of();
+		properties.setProperty("C", "3");
+		properties.setProperty("B", "2");
+
+		final IndexSortedProperties copy = (IndexSortedProperties)SerializedObjectExtensions
+			.toObject(SerializedObjectExtensions.toByteArray(properties));
+		assertEquals(properties, copy);
+		assertEquals("2", copy.get(0));
+		assertEquals("3", copy.get(1));
+		assertNull(copy.get(2));
+
+		copy.setProperty("A", "1");
+		assertEquals("1", copy.get(0));
+		assertEquals("2", copy.get(1));
+		assertEquals("3", copy.get(2));
+		assertEquals(0, copy.indexOf("1"));
+		assertNull(properties.get(2));
 	}
 
 }
