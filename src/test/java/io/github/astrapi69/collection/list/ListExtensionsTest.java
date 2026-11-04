@@ -1250,31 +1250,28 @@ public class ListExtensionsTest
 
 	/**
 	 * Test method for {@link ListExtensions#removeLastValues(List, int)}: the values the result
-	 * holds. Pins what the method returns today: for [A, B, C, D, E, F] and 2 it removes the first
-	 * two values and returns [C, D, E, F]. The fix of #43 changes the result to [A, B, C, D]
+	 * holds. For [A, B, C, D, E, F] and 2 the method returns [A, B, C, D], the list without its
+	 * last two values (#43)
 	 */
 	@Test
 	public void testRemoveLastValuesResult()
 	{
 		final List<String> list = ListFactory.newArrayList("A", "B", "C", "D", "E", "F");
 
-		assertEquals(ListFactory.newArrayList("C", "D", "E", "F"),
+		assertEquals(ListFactory.newArrayList("A", "B", "C", "D"),
 			ListExtensions.removeLastValues(list, 2));
 	}
 
 	/**
 	 * Test method for {@link ListExtensions#removeLastValues(List, int)} with as many values to
-	 * remove as the list holds. Pins what the method does today: it throws an
-	 * {@link IllegalArgumentException}, whose message says that it is thrown for more values than
-	 * the list holds. The fix of #43 changes the result to an empty list
+	 * remove as the list holds: the method removes all of them and returns an empty list (#43)
 	 */
 	@Test
 	public void testRemoveLastValuesWithSize()
 	{
 		final List<String> list = ListFactory.newArrayList("A", "B", "C", "D", "E", "F");
 
-		Assertions.assertThrows(IllegalArgumentException.class,
-			() -> ListExtensions.removeLastValues(list, list.size()));
+		assertEquals(Collections.emptyList(), ListExtensions.removeLastValues(list, list.size()));
 	}
 
 	/**
@@ -1365,16 +1362,6 @@ public class ListExtensionsTest
 
 		ListExtensions.sortByProperty(persons, Person::getName, true);
 		// Sorted Persons by name in ascending order...
-		assertEquals(0, persons.indexOf(obelix),
-			"Index of person 'obelix' should be <0> but was <" + persons.indexOf(obelix) + ">.");
-		assertEquals(1, persons.indexOf(miraculix),
-			"Index of person 'miraculix' should be <1> but was <" + persons.indexOf(miraculix)
-				+ ">.");
-		assertEquals(2, persons.indexOf(asterix),
-			"Index of person 'asterix' should be <2> but was <" + persons.indexOf(asterix) + ">.");
-
-		ListExtensions.sortByProperty(persons, Person::getName, false);
-		// Sorted Persons by name in descending order...
 		assertEquals(0, persons.indexOf(asterix),
 			"Index of person 'asterix' should be <0> but was <" + persons.indexOf(asterix) + ">.");
 		assertEquals(1, persons.indexOf(miraculix),
@@ -1382,11 +1369,9 @@ public class ListExtensionsTest
 				+ ">.");
 		assertEquals(2, persons.indexOf(obelix),
 			"Index of person 'obelix' should be <2> but was <" + persons.indexOf(obelix) + ">.");
-		// set a null value...
-		asterix.setName(null);
 
-		ListExtensions.sortByProperty(persons, Person::getName, true);
-		// Sorted Persons by name in ascending order with a null value...
+		ListExtensions.sortByProperty(persons, Person::getName, false);
+		// Sorted Persons by name in descending order...
 		assertEquals(0, persons.indexOf(obelix),
 			"Index of person 'obelix' should be <0> but was <" + persons.indexOf(obelix) + ">.");
 		assertEquals(1, persons.indexOf(miraculix),
@@ -1394,13 +1379,24 @@ public class ListExtensionsTest
 				+ ">.");
 		assertEquals(2, persons.indexOf(asterix),
 			"Index of person 'asterix' should be <2> but was <" + persons.indexOf(asterix) + ">.");
+		// set a null value...
+		asterix.setName(null);
+
+		ListExtensions.sortByProperty(persons, Person::getName, true);
+		// Sorted Persons by name in ascending order with a null value...
+		assertEquals(0, persons.indexOf(asterix),
+			"Index of person 'asterix' should be <0> but was <" + persons.indexOf(asterix) + ">.");
+		assertEquals(1, persons.indexOf(miraculix),
+			"Index of person 'miraculix' should be <1> but was <" + persons.indexOf(miraculix)
+				+ ">.");
+		assertEquals(2, persons.indexOf(obelix),
+			"Index of person 'obelix' should be <2> but was <" + persons.indexOf(obelix) + ">.");
 	}
 
 	/**
 	 * Test the method {@link ListExtensions#sortByProperty(List, Function, boolean)} with ascending
-	 * true. Pins what the method does today: it sorts the persons by name in descending order,
-	 * [obelix, miraculix, asterix]. The fix of #43 changes the result to the ascending order,
-	 * [asterix, miraculix, obelix]
+	 * true: the method sorts the persons by name in ascending order, [asterix, miraculix, obelix]
+	 * (#43)
 	 */
 	@Test
 	public void testSortByPropertyWithAscendingTrue()
@@ -1411,14 +1407,13 @@ public class ListExtensionsTest
 		final List<Person> persons = ListFactory.newArrayList(obelix, asterix, miraculix);
 
 		ListExtensions.sortByProperty(persons, Person::getName, true);
-		assertEquals(ListFactory.newArrayList(obelix, miraculix, asterix), persons);
+		assertEquals(ListFactory.newArrayList(asterix, miraculix, obelix), persons);
 	}
 
 	/**
 	 * Test the method {@link ListExtensions#sortByProperty(List, Function, boolean)} with ascending
-	 * false. Pins what the method does today: it sorts the persons by name in ascending order,
-	 * [asterix, miraculix, obelix]. The fix of #43 changes the result to the descending order,
-	 * [obelix, miraculix, asterix]
+	 * false: the method sorts the persons by name in descending order, [obelix, miraculix, asterix]
+	 * (#43)
 	 */
 	@Test
 	public void testSortByPropertyWithAscendingFalse()
@@ -1429,7 +1424,7 @@ public class ListExtensionsTest
 		final List<Person> persons = ListFactory.newArrayList(obelix, asterix, miraculix);
 
 		ListExtensions.sortByProperty(persons, Person::getName, false);
-		assertEquals(ListFactory.newArrayList(asterix, miraculix, obelix), persons);
+		assertEquals(ListFactory.newArrayList(obelix, miraculix, asterix), persons);
 	}
 
 	private static Person newPerson(final String name)
