@@ -25,7 +25,7 @@
 package io.github.astrapi69.collection.set;
 
 import static org.junit.jupiter.api.Assertions.assertEquals;
-import static org.junit.jupiter.api.Assertions.assertTrue;
+import static org.junit.jupiter.api.Assertions.assertFalse;
 
 import java.util.Arrays;
 import java.util.Collection;
@@ -186,8 +186,8 @@ public class IndexableSetTest
 
 	/**
 	 * Test the method {@link IndexableSet#add(Object)}, inherited from {@link InsertionOrderSet},
-	 * with an element the set holds already: the element moves to the last index, and today the
-	 * method returns true (#41); the fix of #41 changes the result to false
+	 * with an element the set holds already: the element moves to the last index, and the method
+	 * returns false (#41)
 	 */
 	@Test
 	public void testAddWithContainedElement()
@@ -196,15 +196,15 @@ public class IndexableSetTest
 		set.add("a");
 		set.add("b");
 
-		assertTrue(set.add("a"));
+		assertFalse(set.add("a"));
 		assertEquals(1, set.getIndex("a"));
 		assertEquals("b", set.get(0));
 	}
 
 	/**
 	 * Test the method {@link IndexableSet#addAll(Collection)}, inherited from
-	 * {@link InsertionOrderSet}, with an element the set holds already: today it returns true
-	 * (#41), although the set holds no new element; the fix of #41 changes the result to false
+	 * {@link InsertionOrderSet}, with an element the set holds already: it returns false, as the
+	 * set holds no new element (#41)
 	 */
 	@Test
 	public void testAddAllWithContainedElement()
@@ -212,14 +212,14 @@ public class IndexableSetTest
 		final IndexableSet<String> set = new IndexableSet<>();
 		set.add("a");
 
-		assertTrue(set.addAll(Arrays.asList("a")));
+		assertFalse(set.addAll(Arrays.asList("a")));
 		assertEquals(1, set.size());
 	}
 
 	/**
 	 * Test the method {@link IndexableSet#getIndex(Object)} with a set that holds null and "a":
-	 * today it throws a NullPointerException as soon as its loop reaches null, for "a" and for null
-	 * (#41); the fix of #41 changes the result to the indexes 1 and 0
+	 * getIndex("a") gives 1, getIndex(null) gives 0, and an element the set does not hold gives -1
+	 * (#41)
 	 */
 	@Test
 	public void testGetIndexWithNullElement()
@@ -228,8 +228,9 @@ public class IndexableSetTest
 		set.add(null);
 		set.add("a");
 
-		Assertions.assertThrows(NullPointerException.class, () -> set.getIndex("a"));
-		Assertions.assertThrows(NullPointerException.class, () -> set.getIndex(null));
+		assertEquals(1, set.getIndex("a"));
+		assertEquals(0, set.getIndex(null));
+		assertEquals(-1, set.getIndex("b"));
 	}
 
 }
