@@ -26,6 +26,9 @@ package io.github.astrapi69.collection.list;
 
 import static org.junit.jupiter.api.Assertions.*;
 
+import java.util.Arrays;
+import java.util.Collection;
+import java.util.Collections;
 import java.util.List;
 
 import org.junit.jupiter.api.Test;
@@ -140,5 +143,80 @@ public class UniqueListTest
 		list.add("Caesar");
 		list.addAll(1, addition);
 		assertEquals(list.size(), 2);
+	}
+
+	/**
+	 * Test the method {@link UniqueList#add(Object)} with a new element, which it appends and
+	 * returns true for, and with an element the list already contains, which it leaves out and
+	 * returns false for
+	 */
+	@Test
+	public void testAddNewAndContainedElement()
+	{
+		List<String> list = new UniqueList<>();
+
+		assertTrue(list.add("Leonidas"));
+		assertTrue(list.add("Berta"));
+		assertFalse(list.add("Leonidas"));
+		assertEquals(Arrays.asList("Leonidas", "Berta"), list);
+	}
+
+	/**
+	 * Test the method {@link UniqueList#addAll(Collection)} with a collection of new elements and
+	 * one the list already contains: the new ones are appended in the order of the collection and
+	 * the method returns true
+	 */
+	@Test
+	public void testAddAllWithNewElements()
+	{
+		List<String> list = new UniqueList<>();
+		list.add("Emil");
+
+		assertTrue(list.addAll(Arrays.asList("Anton", "Emil", "Berta")));
+		assertEquals(Arrays.asList("Emil", "Anton", "Berta"), list);
+	}
+
+	/**
+	 * Test the method {@link UniqueList#addAll(Collection)} with an empty collection, which leaves
+	 * the list unchanged and returns false
+	 */
+	@Test
+	public void testAddAllWithEmptyCollection()
+	{
+		List<String> list = new UniqueList<>();
+		list.add("Emil");
+
+		assertFalse(list.addAll(Collections.emptyList()));
+		assertEquals(Arrays.asList("Emil"), list);
+	}
+
+	/**
+	 * Test the method {@link UniqueList#addAll(int, Collection)} with a collection of new elements:
+	 * they are inserted at the given index in the order of the collection, the element that was at
+	 * the index follows them, and the method returns true
+	 */
+	@Test
+	public void testAddAllWithIndexAndNewElements()
+	{
+		List<String> list = new UniqueList<>();
+		list.add("Emil");
+		list.add("Caesar");
+
+		assertTrue(list.addAll(1, Arrays.asList("Anton", "Berta")));
+		assertEquals(Arrays.asList("Emil", "Anton", "Berta", "Caesar"), list);
+	}
+
+	/**
+	 * Test the method {@link UniqueList#addAll(int, Collection)} with an empty collection, which
+	 * leaves the list unchanged and returns false
+	 */
+	@Test
+	public void testAddAllWithIndexAndEmptyCollection()
+	{
+		List<String> list = new UniqueList<>();
+		list.add("Emil");
+
+		assertFalse(list.addAll(0, Collections.emptyList()));
+		assertEquals(Arrays.asList("Emil"), list);
 	}
 }
