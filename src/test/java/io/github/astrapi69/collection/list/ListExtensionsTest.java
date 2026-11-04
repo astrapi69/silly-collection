@@ -1249,6 +1249,35 @@ public class ListExtensionsTest
 	}
 
 	/**
+	 * Test method for {@link ListExtensions#removeLastValues(List, int)}: the values the result
+	 * holds. Pins what the method returns today: for [A, B, C, D, E, F] and 2 it removes the first
+	 * two values and returns [C, D, E, F]. The fix of #43 changes the result to [A, B, C, D]
+	 */
+	@Test
+	public void testRemoveLastValuesResult()
+	{
+		final List<String> list = ListFactory.newArrayList("A", "B", "C", "D", "E", "F");
+
+		assertEquals(ListFactory.newArrayList("C", "D", "E", "F"),
+			ListExtensions.removeLastValues(list, 2));
+	}
+
+	/**
+	 * Test method for {@link ListExtensions#removeLastValues(List, int)} with as many values to
+	 * remove as the list holds. Pins what the method does today: it throws an
+	 * {@link IllegalArgumentException}, whose message says that it is thrown for more values than
+	 * the list holds. The fix of #43 changes the result to an empty list
+	 */
+	@Test
+	public void testRemoveLastValuesWithSize()
+	{
+		final List<String> list = ListFactory.newArrayList("A", "B", "C", "D", "E", "F");
+
+		Assertions.assertThrows(IllegalArgumentException.class,
+			() -> ListExtensions.removeLastValues(list, list.size()));
+	}
+
+	/**
 	 * Test the method {@link ListExtensions#revertOrder(List)}
 	 */
 	@Test
@@ -1365,6 +1394,50 @@ public class ListExtensionsTest
 				+ ">.");
 		assertEquals(2, persons.indexOf(asterix),
 			"Index of person 'asterix' should be <2> but was <" + persons.indexOf(asterix) + ">.");
+	}
+
+	/**
+	 * Test the method {@link ListExtensions#sortByProperty(List, Function, boolean)} with ascending
+	 * true. Pins what the method does today: it sorts the persons by name in descending order,
+	 * [obelix, miraculix, asterix]. The fix of #43 changes the result to the ascending order,
+	 * [asterix, miraculix, obelix]
+	 */
+	@Test
+	public void testSortByPropertyWithAscendingTrue()
+	{
+		final Person obelix = newPerson("obelix");
+		final Person asterix = newPerson("asterix");
+		final Person miraculix = newPerson("miraculix");
+		final List<Person> persons = ListFactory.newArrayList(obelix, asterix, miraculix);
+
+		ListExtensions.sortByProperty(persons, Person::getName, true);
+		assertEquals(ListFactory.newArrayList(obelix, miraculix, asterix), persons);
+	}
+
+	/**
+	 * Test the method {@link ListExtensions#sortByProperty(List, Function, boolean)} with ascending
+	 * false. Pins what the method does today: it sorts the persons by name in ascending order,
+	 * [asterix, miraculix, obelix]. The fix of #43 changes the result to the descending order,
+	 * [obelix, miraculix, asterix]
+	 */
+	@Test
+	public void testSortByPropertyWithAscendingFalse()
+	{
+		final Person obelix = newPerson("obelix");
+		final Person asterix = newPerson("asterix");
+		final Person miraculix = newPerson("miraculix");
+		final List<Person> persons = ListFactory.newArrayList(obelix, asterix, miraculix);
+
+		ListExtensions.sortByProperty(persons, Person::getName, false);
+		assertEquals(ListFactory.newArrayList(asterix, miraculix, obelix), persons);
+	}
+
+	private static Person newPerson(final String name)
+	{
+		final Person person = new Person();
+		person.setGender(Gender.MALE);
+		person.setName(name);
+		return person;
 	}
 
 	/**
