@@ -25,6 +25,10 @@
 package io.github.astrapi69.collection.set;
 
 import static org.junit.jupiter.api.Assertions.assertEquals;
+import static org.junit.jupiter.api.Assertions.assertTrue;
+
+import java.util.Arrays;
+import java.util.Collection;
 
 import org.junit.jupiter.api.Assertions;
 import org.junit.jupiter.api.Test;
@@ -178,6 +182,54 @@ public class IndexableSetTest
 		Assertions.assertThrows(IndexOutOfBoundsException.class, () -> {
 			set.get(0);
 		});
+	}
+
+	/**
+	 * Test the method {@link IndexableSet#add(Object)}, inherited from {@link InsertionOrderSet},
+	 * with an element the set holds already: the element moves to the last index, and today the
+	 * method returns true (#41); the fix of #41 changes the result to false
+	 */
+	@Test
+	public void testAddWithContainedElement()
+	{
+		final IndexableSet<String> set = new IndexableSet<>();
+		set.add("a");
+		set.add("b");
+
+		assertTrue(set.add("a"));
+		assertEquals(1, set.getIndex("a"));
+		assertEquals("b", set.get(0));
+	}
+
+	/**
+	 * Test the method {@link IndexableSet#addAll(Collection)}, inherited from
+	 * {@link InsertionOrderSet}, with an element the set holds already: today it returns true
+	 * (#41), although the set holds no new element; the fix of #41 changes the result to false
+	 */
+	@Test
+	public void testAddAllWithContainedElement()
+	{
+		final IndexableSet<String> set = new IndexableSet<>();
+		set.add("a");
+
+		assertTrue(set.addAll(Arrays.asList("a")));
+		assertEquals(1, set.size());
+	}
+
+	/**
+	 * Test the method {@link IndexableSet#getIndex(Object)} with a set that holds null and "a":
+	 * today it throws a NullPointerException as soon as its loop reaches null, for "a" and for null
+	 * (#41); the fix of #41 changes the result to the indexes 1 and 0
+	 */
+	@Test
+	public void testGetIndexWithNullElement()
+	{
+		final IndexableSet<String> set = new IndexableSet<>();
+		set.add(null);
+		set.add("a");
+
+		Assertions.assertThrows(NullPointerException.class, () -> set.getIndex("a"));
+		Assertions.assertThrows(NullPointerException.class, () -> set.getIndex(null));
 	}
 
 }
