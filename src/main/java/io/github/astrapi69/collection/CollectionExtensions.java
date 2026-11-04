@@ -266,7 +266,21 @@ public final class CollectionExtensions
 	}
 
 	/**
-	 * Creates a new generic array from the given {@link Collection} object
+	 * Creates a new generic array from the given {@link Collection} object, with the elements in
+	 * the iteration order of the collection.
+	 * <p>
+	 * The component type of the array is the most specific common superclass of the non-null
+	 * elements, found by walking up their class hierarchy with {@link Class#getSuperclass()};
+	 * interfaces are not considered. If every element is null, the component type is
+	 * {@link Object}. So [null, "a"] gives a {@code String[]} that holds null and "a", [1, 2.5] and
+	 * [2.5, 1] give a {@code Number[]}, and ["a", 1] gives an {@code Object[]}. Elements of one
+	 * class give an array of that class.
+	 * <p>
+	 * The result is a {@code T[]} only if that superclass is {@code T} or a subclass of it. A
+	 * caller whose {@code T} is an interface, or a class more specific than that superclass, gets a
+	 * {@link ClassCastException} where it assigns the result to a {@code T[]}: a
+	 * {@code List<Comparable<?>>} of 1 and "a" gives an {@code Object[]}, and so does a
+	 * {@code List<String>} that holds only null.
 	 *
 	 * @param <T>
 	 *            the generic type of the objects in the {@link Collection} object
@@ -282,9 +296,39 @@ public final class CollectionExtensions
 			return null;
 		}
 
-		List<T> list = toList(collection);
 		@SuppressWarnings("unchecked")
-		T[] array = (T[])Array.newInstance(list.get(0).getClass(), list.size());
-		return list.toArray(array);
+		T[] array = (T[])Array.newInstance(commonSuperclass(collection), collection.size());
+		return collection.toArray(array);
+	}
+
+	/**
+	 * Finds the most specific common superclass of the non-null elements of the given
+	 * {@link Collection} object by walking up the class hierarchy with
+	 * {@link Class#getSuperclass()}; interfaces are not considered
+	 *
+	 * @param collection
+	 *            the collection
+	 * @return the most specific common superclass of the non-null elements, or {@link Object} if
+	 *         every element is null
+	 */
+	private static Class<?> commonSuperclass(final Collection<?> collection)
+	{
+		Class<?> common = null;
+		for (final Object element : collection)
+		{
+			if (element != null)
+			{
+				final Class<?> elementClass = element.getClass();
+				if (common == null)
+				{
+					common = elementClass;
+				}
+				while (!common.isAssignableFrom(elementClass))
+				{
+					common = common.getSuperclass();
+				}
+			}
+		}
+		return common == null ? Object.class : common;
 	}
 }

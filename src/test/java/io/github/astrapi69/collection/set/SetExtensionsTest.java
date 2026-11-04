@@ -24,12 +24,16 @@
  */
 package io.github.astrapi69.collection.set;
 
+import static org.junit.jupiter.api.Assertions.assertArrayEquals;
 import static org.junit.jupiter.api.Assertions.assertEquals;
 import static org.junit.jupiter.api.Assertions.assertNotNull;
+import static org.junit.jupiter.api.Assertions.assertThrows;
 import static org.junit.jupiter.api.Assertions.assertTrue;
 
 import java.util.Arrays;
 import java.util.Collection;
+import java.util.HashSet;
+import java.util.LinkedHashSet;
 import java.util.Set;
 
 import org.junit.jupiter.api.Test;
@@ -62,8 +66,10 @@ public class SetExtensionsTest
 	}
 
 	/**
-	 * Test the method {@link SetExtensions#toArray(Set)} that throws an
-	 * <code>IllegalArgumentException</code>
+	 * Test the method {@link SetExtensions#toArray(Set)} with an empty set: the result is an empty
+	 * {@code Object[]}, whatever the type of the elements, so that a caller that assigns it to a
+	 * {@code String[]} gets a {@link ClassCastException}. The fix of #64 keeps this result and
+	 * documents it
 	 */
 	@Test
 	public void testToArrayWithException()
@@ -71,6 +77,52 @@ public class SetExtensionsTest
 		Object[] array = SetExtensions.toArray(SetFactory.newTreeSet());
 		assertNotNull(array);
 		assertTrue(array.length == 0);
+		assertEquals(Object[].class, array.getClass());
+		assertThrows(ClassCastException.class, () -> {
+			String[] strings = SetExtensions.toArray(new HashSet<String>());
+		});
+	}
+
+	/**
+	 * Test the method {@link SetExtensions#toArray(Set)} with null: it throws the
+	 * {@link IllegalArgumentException} of {@code Argument.notNull}. The fix of #64 keeps this
+	 * result and names the exception in the Javadoc
+	 */
+	@Test
+	public void testToArrayWithNullSet()
+	{
+		assertThrows(IllegalArgumentException.class, () -> SetExtensions.toArray(null));
+	}
+
+	/**
+	 * Test the method {@link SetExtensions#toArray(Set)} with null as first element: the component
+	 * type is the class of the non-null elements, the result a {@code String[]} that holds null and
+	 * "a". Before the fix of #64 the method threw a {@link NullPointerException}
+	 */
+	@Test
+	public void testToArrayWithNullFirstElement()
+	{
+		final Set<String> set = new LinkedHashSet<>(Arrays.asList(null, "a"));
+
+		final String[] actual = SetExtensions.toArray(set);
+		assertEquals(String[].class, actual.getClass());
+		assertArrayEquals(new String[] { null, "a" }, actual);
+	}
+
+	/**
+	 * Test the method {@link SetExtensions#toArray(Set)} with elements of different classes: the
+	 * component type is their most specific common superclass, a {@code Number[]} for [2.5, 1], in
+	 * the iteration order of the set. Before the fix of #64 the component type was the class of the
+	 * first element, {@code Double}, and storing 1 threw an {@link ArrayStoreException}
+	 */
+	@Test
+	public void testToArrayWithElementsOfDifferentClasses()
+	{
+		final Set<Number> set = new LinkedHashSet<>(Arrays.asList(2.5, 1));
+
+		final Number[] actual = SetExtensions.toArray(set);
+		assertEquals(Number[].class, actual.getClass());
+		assertArrayEquals(new Number[] { 2.5, 1 }, actual);
 	}
 
 	/**
