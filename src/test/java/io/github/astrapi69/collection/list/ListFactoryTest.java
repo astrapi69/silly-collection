@@ -24,6 +24,7 @@
  */
 package io.github.astrapi69.collection.list;
 
+import static org.junit.jupiter.api.Assertions.assertEquals;
 import static org.junit.jupiter.api.Assertions.assertNotNull;
 import static org.junit.jupiter.api.Assertions.assertTrue;
 
@@ -68,6 +69,20 @@ public class ListFactoryTest
 		assertTrue(newCharacterArrayList.get(1).equals('b'));
 		assertTrue(newCharacterArrayList.get(2).equals('c'));
 		assertTrue(newCharacterArrayList.get(3).equals('d'));
+	}
+
+	/**
+	 * Test the method {@link ListFactory#newCharacterArrayList(Collection, char...)} without
+	 * characters and with null instead of characters: the list holds the characters of the given
+	 * collection only
+	 */
+	@Test
+	public void testNewCharacterArrayListWithoutCharacters()
+	{
+		final List<Character> characters = ListFactory.newArrayList('a', 'b');
+		final List<Character> expected = ListFactory.newArrayList('a', 'b');
+		assertEquals(expected, ListFactory.newCharacterArrayList(characters));
+		assertEquals(expected, ListFactory.newCharacterArrayList(characters, (char[])null));
 	}
 
 	/**

@@ -25,12 +25,17 @@ description = "$rootProject.name"
 // import gradle files
 apply from: "gradle/apply-gradle-files.gradle"
 
-// Mutation-score floor the CI build fails below: .github/workflows/gradle.yml
-// runs `./gradlew pitest` after the build. Measured 87 % (625 of 721 mutants killed) on 2026-10-17; the floor leaves a margin of twelve mutants.
-// Kept here, not in gradle/mutation-testing.gradle, so that the floor sits in
-// the file a reader (and awesome-well-tested's check) looks at.
+// Mutation-score floor the CI build fails below: .github/workflows/gradle.yml runs `./gradlew pitest`
+// after the build; PIT rounds the score half up to a whole percent before it compares. Measured
+// 97.5 % (703 of 721 mutants killed) on 2026-11-04 (#36). The floor is that score minus about two
+// points, rounded down: a few mutants more that survive, such as those of a new method whose tests
+// are not complete yet, do not fail the build at once, a drop of more than about two points does.
+// With the 721 mutants of today it fails from 40 survivors on; 18 survive, 14 of them equivalent,
+// the other 4 point at bugs and at Javadoc that contradicts the code (#41, #43, #47).
+// Kept here, not in gradle/mutation-testing.gradle, so that the floor sits in the file a reader
+// (and awesome-well-tested's check) looks at.
 pitest {
-    mutationThreshold = 85
+    mutationThreshold = 95
 }
 
 java {

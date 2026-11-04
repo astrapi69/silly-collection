@@ -152,6 +152,18 @@ public class ArrayFactoryTest
 	}
 
 	/**
+	 * Test the method {@link ArrayFactory#newByteArray(int[])} with null instead of an array: the
+	 * result is an empty array
+	 */
+	@Test
+	public void testNewByteArrayWithIntArrayNull()
+	{
+		final byte[] expected = new byte[0];
+		final byte[] actual = ArrayFactory.newByteArray((int[])null);
+		assertArrayEquals(expected, actual);
+	}
+
+	/**
 	 * Test method for {@link ArrayFactory#newCharArray(char[])}.
 	 */
 	@Test
@@ -275,6 +287,18 @@ public class ArrayFactoryTest
 		Assertions.assertThrows(IllegalArgumentException.class, () -> {
 			ArrayFactory.newRangeArray(9, 8);
 		});
+	}
+
+	/**
+	 * Test the method {@link ArrayFactory#newRangeArray(int, int)} where start and end are equal:
+	 * the range holds this one number
+	 */
+	@Test
+	public void testNewRangeArrayWithEqualStartAndEnd()
+	{
+		final Integer[] expected = { 5 };
+		final Integer[] actual = ArrayFactory.newRangeArray(5, 5);
+		assertArrayEquals(expected, actual);
 	}
 
 	/**

@@ -24,6 +24,7 @@
  */
 package io.github.astrapi69.collection.set;
 
+import static org.junit.jupiter.api.Assertions.assertEquals;
 import static org.junit.jupiter.api.Assertions.assertNotNull;
 import static org.junit.jupiter.api.Assertions.assertTrue;
 
@@ -73,7 +74,8 @@ public class SetExtensionsTest
 	}
 
 	/**
-	 * Test for method {@link SetExtensions#toSet(Collection)}
+	 * Test the method {@link SetExtensions#toSet(Collection)}: the new set holds the elements of
+	 * the collection
 	 */
 	@Test
 	public void testToSet()
@@ -89,6 +91,23 @@ public class SetExtensionsTest
 
 		final Set<String> set = SetExtensions.toSet(nameList);
 		assertNotNull(set);
+		assertEquals(SetFactory.newHashSet("Anton", "Alex", "Berta", "Brad", "Caesar", "Leonardo"),
+			set);
+	}
+
+	/**
+	 * Test the method {@link SetExtensions#toSet(Collection)} with a collection that holds an
+	 * element twice, with an empty collection and with null: the set holds each element once, and
+	 * an empty or a null collection gives an empty set, as the collection is optional for
+	 * {@link SetFactory#newHashSet(Collection, Object...)} that it delegates to
+	 */
+	@Test
+	public void testToSetWithDuplicatesEmptyAndNull()
+	{
+		assertEquals(SetFactory.newHashSet("Anton", "Alex"),
+			SetExtensions.toSet(ListFactory.newArrayList("Anton", "Alex", "Anton")));
+		assertTrue(SetExtensions.toSet(ListFactory.<String> newArrayList()).isEmpty());
+		assertTrue(SetExtensions.toSet(null).isEmpty());
 	}
 
 	/**

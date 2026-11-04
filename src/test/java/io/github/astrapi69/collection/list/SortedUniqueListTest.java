@@ -28,6 +28,7 @@ import static org.junit.jupiter.api.Assertions.*;
 
 import java.util.Arrays;
 import java.util.Collection;
+import java.util.Collections;
 import java.util.Comparator;
 import java.util.List;
 
@@ -187,7 +188,7 @@ public class SortedUniqueListTest
 		assertEquals(list.size(), 4);
 
 		addition = ListFactory.newArrayList();
-		list = new SortedList<>();
+		list = new SortedUniqueList<>();
 		list.add("Emil");
 		list.add("Caesar");
 		list.addAll(addition);
@@ -268,5 +269,80 @@ public class SortedUniqueListTest
 		list.add("cherry");
 		list.setComparator(Comparator.reverseOrder());
 		assertEquals(Arrays.asList("cherry", "banana", "apple"), list);
+	}
+
+	/**
+	 * Test the method {@link SortedUniqueList#addAll(Collection)} with a collection of new elements
+	 * and ones the list already contains: the new ones are inserted in the order of the comparator
+	 * and the method returns true
+	 */
+	@Test
+	public void testAddAllWithNewElements()
+	{
+		List<String> list = new SortedUniqueList<>(Comparator.naturalOrder());
+		list.add("Emil");
+
+		assertTrue(list.addAll(Arrays.asList("Emil", "Caesar", "Anton", "Emil")));
+		assertEquals(Arrays.asList("Anton", "Caesar", "Emil"), list);
+	}
+
+	/**
+	 * Test the method {@link SortedUniqueList#addAll(Collection)} with a collection of elements the
+	 * list already contains, which leaves the list unchanged and returns false
+	 */
+	@Test
+	public void testAddAllWithContainedElements()
+	{
+		List<String> list = new SortedUniqueList<>(Comparator.naturalOrder());
+		list.add("Anton");
+		list.add("Emil");
+
+		assertFalse(list.addAll(Arrays.asList("Emil", "Anton")));
+		assertEquals(Arrays.asList("Anton", "Emil"), list);
+	}
+
+	/**
+	 * Test the method {@link SortedUniqueList#addAll(Collection)} with an empty collection, which
+	 * leaves the list unchanged and returns false
+	 */
+	@Test
+	public void testAddAllWithEmptyCollection()
+	{
+		List<String> list = new SortedUniqueList<>(Comparator.naturalOrder());
+		list.add("Emil");
+
+		assertFalse(list.addAll(Collections.emptyList()));
+		assertEquals(Arrays.asList("Emil"), list);
+	}
+
+	/**
+	 * Test the method {@link SortedUniqueList#addAll(int, Collection)} with a collection of new
+	 * elements and one the list already contains: as with every add method of the class, the new
+	 * ones are inserted in the order of the comparator and not at the given index, and the method
+	 * returns true
+	 */
+	@Test
+	public void testAddAllWithIndexAndNewElements()
+	{
+		List<String> list = new SortedUniqueList<>(Comparator.naturalOrder());
+		list.add("Emil");
+
+		assertTrue(list.addAll(0, Arrays.asList("Emil", "Caesar", "Anton")));
+		assertEquals(Arrays.asList("Anton", "Caesar", "Emil"), list);
+	}
+
+	/**
+	 * Test the method {@link SortedUniqueList#addAll(int, Collection)} with a collection of
+	 * elements the list already contains, which leaves the list unchanged and returns false
+	 */
+	@Test
+	public void testAddAllWithIndexAndContainedElements()
+	{
+		List<String> list = new SortedUniqueList<>(Comparator.naturalOrder());
+		list.add("Anton");
+		list.add("Emil");
+
+		assertFalse(list.addAll(0, Arrays.asList("Emil", "Anton")));
+		assertEquals(Arrays.asList("Anton", "Emil"), list);
 	}
 }

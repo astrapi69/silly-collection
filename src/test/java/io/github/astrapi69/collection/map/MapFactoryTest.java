@@ -25,9 +25,14 @@
 package io.github.astrapi69.collection.map;
 
 import static org.junit.jupiter.api.Assertions.assertEquals;
+import static org.junit.jupiter.api.Assertions.assertInstanceOf;
 import static org.junit.jupiter.api.Assertions.assertNotNull;
+import static org.junit.jupiter.api.Assertions.assertNull;
+import static org.junit.jupiter.api.Assertions.assertSame;
 import static org.junit.jupiter.api.Assertions.assertThrows;
+import static org.junit.jupiter.api.Assertions.assertTrue;
 
+import java.util.ArrayList;
 import java.util.Comparator;
 import java.util.HashMap;
 import java.util.List;
@@ -36,6 +41,7 @@ import java.util.Random;
 import java.util.TreeMap;
 import java.util.concurrent.ConcurrentHashMap;
 
+import org.apache.commons.collections4.map.LazyMap;
 import org.junit.jupiter.api.Test;
 import org.meanbean.test.BeanTester;
 
@@ -201,7 +207,8 @@ public class MapFactoryTest
 	}
 
 	/**
-	 * Test for the Method {@link MapFactory#newHashMap(int)}
+	 * Test the method {@link MapFactory#newHashMap(int)}: the new map is an empty {@link HashMap},
+	 * the type its Javadoc names
 	 */
 	@Test
 	public void testNewHashMapWithInitialCapacity()
@@ -210,6 +217,8 @@ public class MapFactoryTest
 		initialCapacity = 10;
 		final Map<Object, Object> hashMap = MapFactory.newHashMap(initialCapacity);
 		assertNotNull(hashMap);
+		assertInstanceOf(HashMap.class, hashMap);
+		assertTrue(hashMap.isEmpty());
 	}
 
 	/**
@@ -333,23 +342,29 @@ public class MapFactoryTest
 	}
 
 	/**
-	 * Test for the Method {@link MapFactory#newInsertionOrderMap()}.
+	 * Test the method {@link MapFactory#newInsertionOrderMap()}: the new map is an empty
+	 * {@link InsertionOrderMap}, the type its Javadoc names
 	 */
 	@Test
 	public void testNewInsertionOrderMap()
 	{
 		final Map<Integer, String> map = MapFactory.newInsertionOrderMap();
 		assertNotNull(map);
+		assertInstanceOf(InsertionOrderMap.class, map);
+		assertTrue(map.isEmpty());
 	}
 
 	/**
-	 * Test method for {@link MapFactory#newInsertionOrderMap(int)}.
+	 * Test the method {@link MapFactory#newInsertionOrderMap(int)}: the new map is an empty
+	 * {@link InsertionOrderMap}, the type its Javadoc names
 	 */
 	@Test
 	public void testNewInsertionOrderMapInt()
 	{
 		Map<String, String> insertionOrderMap = MapFactory.newInsertionOrderMap(4);
 		assertNotNull(insertionOrderMap);
+		assertInstanceOf(InsertionOrderMap.class, insertionOrderMap);
+		assertTrue(insertionOrderMap.isEmpty());
 	}
 
 	/**
@@ -431,27 +446,45 @@ public class MapFactoryTest
 	}
 
 	/**
-	 * Test for the Method {@link MapFactory#newLazyTreeMap()}.
+	 * Test the method {@link MapFactory#newLazyTreeMap()}: the new map is an empty {@link LazyMap},
+	 * the type its Javadoc names, that creates a value for a key it does not hold yet, and as it
+	 * encapsulates a {@link TreeMap} it holds its keys in their natural order
 	 */
 	@Test
 	public void testNewLazyTreeMap()
 	{
-		final Map<Integer, String> treeMap = MapFactory.newLazyTreeMap();
-		assertNotNull(treeMap);
+		final Map<String, Object> lazyMap = MapFactory.newLazyTreeMap();
+		assertNotNull(lazyMap);
+		assertInstanceOf(LazyMap.class, lazyMap);
+		assertTrue(lazyMap.isEmpty());
+		assertNotNull(lazyMap.get("b"));
+		assertNotNull(lazyMap.get("a"));
+		assertEquals(ListFactory.newArrayList("a", "b"), new ArrayList<>(lazyMap.keySet()));
 	}
 
 	/**
-	 * Test for the Method {@link MapFactory#newLazyTreeMap(Comparator)}.
+	 * Test the method {@link MapFactory#newLazyTreeMap(Comparator)}: the new map is an empty
+	 * {@link LazyMap}, the type its Javadoc names, that creates a value for a key it does not hold
+	 * yet and holds its keys in the order of the given comparator
 	 */
 	@Test
 	public void testNewLazyTreeMapComparator()
 	{
-		final Map<Integer, String> treeMap = MapFactory.newLazyTreeMap((o1, o2) -> o1 - o2);
-		assertNotNull(treeMap);
+		final Map<Integer, Object> lazyMap = MapFactory.newLazyTreeMap(Comparator.reverseOrder());
+		assertNotNull(lazyMap);
+		assertInstanceOf(LazyMap.class, lazyMap);
+		assertTrue(lazyMap.isEmpty());
+		assertNotNull(lazyMap.get(1));
+		assertNotNull(lazyMap.get(3));
+		assertNotNull(lazyMap.get(2));
+		assertEquals(ListFactory.newArrayList(3, 2, 1), new ArrayList<>(lazyMap.keySet()));
 	}
 
 	/**
-	 * Test method for {@link MapFactory#newLazyTreeMap(TreeMap)}.
+	 * Test the method {@link MapFactory#newLazyTreeMap(TreeMap)}: the new {@link LazyMap}, the type
+	 * its Javadoc names, encapsulates the given {@link TreeMap} instead of copying it, so it holds
+	 * the entries of the given map, and the value it creates for a key it does not hold yet goes
+	 * into the given map
 	 */
 	@Test
 	public void testNewLazyTreeMapTreeMap()
@@ -463,6 +496,14 @@ public class MapFactoryTest
 		map.put("5", "value");
 		Map<String, String> lazyMap = MapFactory.newLazyTreeMap(map);
 		assertNotNull(lazyMap);
+		assertInstanceOf(LazyMap.class, lazyMap);
+		assertEquals(map, lazyMap);
+		// new scenario...
+		final TreeMap<String, Object> treeMap = new TreeMap<>();
+		final Map<String, Object> lazyTreeMap = MapFactory.newLazyTreeMap(treeMap);
+		final Object created = lazyTreeMap.get("a");
+		assertNotNull(created);
+		assertSame(created, treeMap.get("a"));
 	}
 
 	/**
@@ -590,23 +631,30 @@ public class MapFactoryTest
 	}
 
 	/**
-	 * Test for the Method {@link MapFactory#newTreeMap()}.
+	 * Test the method {@link MapFactory#newTreeMap()}: the new map is an empty {@link TreeMap}, the
+	 * type its Javadoc names, without a comparator, so it orders its keys by their natural order
 	 */
 	@Test
 	public void testNewTreeMap()
 	{
 		final Map<Integer, String> treeMap = MapFactory.newTreeMap();
 		assertNotNull(treeMap);
+		assertNull(assertInstanceOf(TreeMap.class, treeMap).comparator());
+		assertTrue(treeMap.isEmpty());
 	}
 
 	/**
-	 * Test for the Method {@link MapFactory#newTreeMap(Comparator)}.
+	 * Test the method {@link MapFactory#newTreeMap(Comparator)}: the new map is an empty
+	 * {@link TreeMap}, the type its Javadoc names, that orders its keys by the given comparator
 	 */
 	@Test
 	public void testNewTreeMapComparator()
 	{
-		final Map<Integer, String> treeMap = MapFactory.newTreeMap((o1, o2) -> o1 - o2);
+		final Comparator<Integer> comparator = Comparator.reverseOrder();
+		final Map<Integer, String> treeMap = MapFactory.newTreeMap(comparator);
 		assertNotNull(treeMap);
+		assertSame(comparator, assertInstanceOf(TreeMap.class, treeMap).comparator());
+		assertTrue(treeMap.isEmpty());
 	}
 
 	/**

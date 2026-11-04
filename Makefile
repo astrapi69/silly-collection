@@ -1,7 +1,7 @@
 .PHONY: build build-stacktrace build-warning central-drop central-list central-upload \
 	central-upload-repository clean \
 	dependencies dependency-updates jacoco-coverage jacoco-report jar javadoc \
-	license-format publish publish-local release spotless-apply \
+	license-format pitest publish publish-local release spotless-apply \
 	spotless-check spotless-java spotless-misc tag-release test \
 	version-catalog-format version-catalog-update
 
@@ -44,6 +44,10 @@ jacoco-coverage:
 
 jacoco-report:
 	./gradlew jacocoTestReport
+
+# PIT mutation testing, fails below mutationThreshold in build.gradle
+pitest:
+	./gradlew pitest
 
 jar:
 	./gradlew jar

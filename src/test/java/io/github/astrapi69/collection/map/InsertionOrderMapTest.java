@@ -25,6 +25,7 @@
 package io.github.astrapi69.collection.map;
 
 import static org.junit.jupiter.api.Assertions.assertEquals;
+import static org.junit.jupiter.api.Assertions.assertNull;
 
 import java.util.HashMap;
 import java.util.LinkedHashMap;
@@ -197,6 +198,23 @@ public class InsertionOrderMapTest
 
 		}
 		map.clear();
+	}
+
+	/**
+	 * Test the method {@link InsertionOrderMap#put(Object, Object)}: as its Javadoc and the
+	 * {@link Map} contract say, it returns the previous value of the key, or null if the key had no
+	 * mapping or was mapped to null
+	 */
+	@Test
+	public void testPutReturnsThePreviousValue()
+	{
+		final Map<String, String> map = new InsertionOrderMap<>();
+		assertNull(map.put("1", "value1"));
+		assertNull(map.put("2", "value2"));
+		assertEquals("value1", map.put("1", "value3"));
+		// new scenario...
+		assertNull(map.put("3", null));
+		assertNull(map.put("3", "value4"));
 	}
 
 	/**

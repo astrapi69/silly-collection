@@ -13,6 +13,10 @@ on:
   pull_request:
     branches: [ master, develop ]
 
+# the build reads the repository only; publish-badges, which writes, asks for that itself
+permissions:
+  contents: read
+
 jobs:
   build:
 
@@ -30,9 +34,11 @@ jobs:
         uses: gradle/actions/setup-gradle@v3
       - name: Execute Gradle build
         run: ./gradlew build
+      - uses: codecov/codecov-action@v4
+        with:
+          token: ${{ secrets.CODECOV_TOKEN }} # not required for public repos
       - name: Mutation testing (PIT, fails below mutationThreshold in build.gradle)
-        run: |
-          ./gradlew pitest
+        run: ./gradlew pitest
       - name: Mutation context (awesome-well-tested docs/mutation-context.md)
         # The context that makes the score comparable: tool and version, mutator set,
         # scope, the full result breakdown, the tool's score and the strict score. The
@@ -58,6 +64,76 @@ jobs:
           name: mutation-context
           path: build/reports/pitest/mutation-context.json
           if-no-files-found: ignore
-      - uses: codecov/codecov-action@v4
+      # also when pitest failed the floor: PIT writes its report before it checks the threshold, and a
+      # badge that kept the last passing score would hide exactly that failure
+      - name: Mutation score badge
+        id: badge
+        if: ${{ !cancelled() && github.event_name == 'push' && (github.ref_name == 'develop' || github.ref_name == 'master') && hashFiles('build/reports/pitest/mutations.xml') != '' }}
+        run: >-
+          python3 -I .github/scripts/mutation-score-badge.py build/reports/pitest/mutations.xml
+          "$RUNNER_TEMP/badges/mutation-score-$GITHUB_REF_NAME.json"
+      - name: Hand the badge to publish-badges
+        if: ${{ !cancelled() && steps.badge.outcome == 'success' }}
+        uses: actions/upload-artifact@v7
         with:
-          token: ${{ secrets.CODECOV_TOKEN }} # not required for public repos
+          name: badges
+          path: ${{ runner.temp }}/badges/
+          retention-days: 1
+
+    outputs:
+      badge: ${{ steps.badge.outcome }}
+
+  # Publishes the badge of a push to develop or master on the gh-pages branch, where the shields.io
+  # endpoint badge of README.md reads it. A job of its own, so that write access goes to a job that
+  # runs nothing of the build, and never to a pull request. It runs whenever the build made a badge,
+  # also when the build failed afterwards
+  publish-badges:
+    needs: build
+    if: ${{ !cancelled() && needs.build.outputs.badge == 'success' }}
+
+    runs-on: ubuntu-latest
+
+    permissions:
+      contents: write # the push to gh-pages
+
+    # one publish per branch at a time; a newer push replaces a waiting one, which loses nothing, as
+    # its badge is the newer one. develop and master may publish at the same time: the loop below
+    # takes the other one's commit and tries again
+    concurrency:
+      group: gh-pages-${{ github.ref_name }}
+      cancel-in-progress: false
+
+    steps:
+      - name: Checkout sources
+        uses: actions/checkout@v4
+      - name: Take the badge of the build
+        uses: actions/download-artifact@v8
+        with:
+          name: badges
+          path: ${{ runner.temp }}/badges
+      - name: Publish the badge on gh-pages
+        run: |
+          git config user.name "github-actions[bot]"
+          git config user.email "41898282+github-actions[bot]@users.noreply.github.com"
+          for attempt in 1 2 3; do
+            # the first run creates the branch, without history; a later one adds to it, never forced
+            if git ls-remote --exit-code --heads origin gh-pages > /dev/null; then
+              git fetch --depth 1 origin +gh-pages:refs/remotes/origin/gh-pages
+              git switch --force-create gh-pages origin/gh-pages
+            else
+              git switch --orphan gh-pages
+            fi
+            mkdir -p badges
+            cp "$RUNNER_TEMP"/badges/*.json badges/
+            git add badges
+            if git diff --cached --quiet; then
+              echo "The badge is unchanged"
+              exit 0
+            fi
+            git commit --message "Mutation score badge of $GITHUB_REF_NAME at $GITHUB_SHA"
+            if git push origin gh-pages; then
+              exit 0
+            fi
+            echo "gh-pages moved while publishing (attempt $attempt), publishing again on top of it"
+          done
+          exit 1

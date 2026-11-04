@@ -38,6 +38,7 @@ import java.util.List;
 import java.util.Map;
 import java.util.Optional;
 import java.util.Set;
+import java.util.stream.Collectors;
 import java.util.stream.Stream;
 
 import org.junit.jupiter.api.Test;
@@ -508,6 +509,31 @@ public class ArrayExtensionsTest
 		numberSet.forEach(i -> {
 			assertTrue(ArrayExtensions.contains(numbers, i));
 		});
+	}
+
+	/**
+	 * Test the method {@link ArrayExtensions#asSet(Object[])} with a duplicate element: the set
+	 * holds every given element once
+	 */
+	@Test
+	public void testAsSetWithDuplicateElement()
+	{
+		final Set<String> expected = SetFactory.newHashSet("1", "2", "3");
+		final Set<String> actual = ArrayExtensions.asSet("1", "2", "3", "2");
+		assertEquals(expected, actual);
+	}
+
+	/**
+	 * Test the method {@link ArrayExtensions#asStream(Object[])}: the stream delivers all given
+	 * elements in their order
+	 */
+	@Test
+	public void testAsStreamDeliversAllElementsInOrder()
+	{
+		final List<String> expected = ListFactory.newArrayList("1", "2", "3");
+		final List<String> actual = ArrayExtensions.asStream("1", "2", "3")
+			.collect(Collectors.toList());
+		assertEquals(expected, actual);
 	}
 
 	/**
@@ -1151,6 +1177,19 @@ public class ArrayExtensionsTest
 	}
 
 	/**
+	 * Test the method {@link ArrayExtensions#splitInChunks(byte[], int)} with a length that is a
+	 * multiple of the chunk size: every chunk is full
+	 */
+	@Test
+	public void testSplitInChunksWithLengthMultipleOfChunkSize()
+	{
+		final byte[] bytes = { 1, 2, 3, 4, 5, 6 };
+		final byte[][] expected = { { 1, 2, 3 }, { 4, 5, 6 } };
+		final byte[][] actual = ArrayExtensions.splitInChunks(bytes, 3);
+		assertArrayEquals(expected, actual);
+	}
+
+	/**
 	 * Test for method {@link ArrayExtensions#toList(Object[])}
 	 */
 	@Test
@@ -1193,6 +1232,19 @@ public class ArrayExtensionsTest
 		actual = ArrayExtensions.concatenate(null, null);
 		expected = null;
 		assertArrayEquals(actual, expected);
+	}
+
+	/**
+	 * Test the method {@link ArrayExtensions#concatenate(Object[], Object[])} with an empty and
+	 * with a null array of elements: the result holds the elements of the existing array
+	 */
+	@Test
+	public void testConcatenateWithoutElements()
+	{
+		final Integer[] expected = { 1, 2, 3 };
+		final Integer[] existingArray = { 1, 2, 3 };
+		assertArrayEquals(expected, ArrayExtensions.concatenate(existingArray, new Integer[0]));
+		assertArrayEquals(expected, ArrayExtensions.concatenate(existingArray, null));
 	}
 
 	/**
