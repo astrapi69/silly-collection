@@ -39,7 +39,9 @@ import java.util.function.UnaryOperator;
  * {@link java.util.ArrayList#subList(int, int)} it wraps, and refuses every other change with an
  * {@link UnsupportedOperationException}. {@code reversed()} of the two sorted lists returns it too,
  * around the view of {@link List#reversed()}, which removes through the removal methods of the list
- * as well; the reasons for the reversed view are on {@link SortedList#reversed()}.
+ * as well; the reasons for the reversed view are on {@link SortedList#reversed()}. The
+ * {@code subList} of the reversed view of a {@link UniqueList} returns it around the view of
+ * List.reversed of a {@code subList} of the list, in the order of the reversed view.
  * <p>
  * The view of ArrayList writes the backing array directly in set and replaceAll, past the checks of
  * these lists, so that a {@link UniqueList} held an element twice and a sorted list left the order
