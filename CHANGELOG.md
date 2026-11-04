@@ -13,18 +13,19 @@ BREAKING:
 
 FIXED:
 
-- `set(int, E)`, `replaceAll` and the `set` of the list iterator of `SortedList` and `SortedUniqueList` with a
-  comparator keep its order: they replace an element in place where the new one keeps the order at its index, and
-  otherwise throw `UnsupportedOperationException`, as `TreeSet.addFirst` does ("explicit positioning is not
-  supported"), and the list does not change. They wrote any element at any index, so that the list left the order
-  of its comparator. `replaceAll` computes all values first and replaces none if one of them breaks the order; a
-  `SortedUniqueList` throws `IllegalArgumentException` for an element it holds at another index, and for two equal
-  values, before it checks the order. The `add` of their list iterator throws `UnsupportedOperationException`, with
-  and without a comparator; it sorted the element in, wherever the cursor stood (#78).
-  **Note:** `Collections.swap`, `reverse`, `shuffle` and `rotate` on a `SortedList` with a comparator throw
-  `UnsupportedOperationException` where they would break the order, and on a `SortedUniqueList` with one
-  `IllegalArgumentException`, before the list changes. They set one element after another, so on a `SortedList`
-  the elements set before the refusal stay set: `Collections.reverse` of `[a, b]` throws and leaves `[a, a]`
+- `set(int, E)` and the `set` of the list iterator of `SortedList` and `SortedUniqueList` with a comparator throw
+  `UnsupportedOperationException`, whatever the arguments, as `TreeSet.addFirst` does ("explicit positioning is not
+  supported"), and the list does not change; `replaceAll` replaces the elements in place where the values keep the
+  order of the comparator, and otherwise throws `UnsupportedOperationException` and replaces none. They wrote any
+  element at any index, so that the list left the order of its comparator and a `SortedUniqueList` could hold an
+  element twice. `replaceAll` computes all values first; on a `SortedUniqueList` two equal values throw
+  `IllegalArgumentException`. The `add` of their list iterator throws `UnsupportedOperationException`, with and
+  without a comparator; it sorted the element in, wherever the cursor stood. Without a comparator `SortedList.set`
+  replaces in place, as before (#78).
+  **Note:** `Collections.swap`, `reverse`, `shuffle`, `rotate`, `fill`, `copy` and `replaceAll` throw
+  `UnsupportedOperationException` on a sorted list with a comparator, at their first write, and the list does not
+  change; they reordered it as an `ArrayList`. To replace an element, `remove(i)` it and `add(e)` the new one; to
+  reorder, work on a copy, `new ArrayList<>(list)`
 
 CHANGED:
 
