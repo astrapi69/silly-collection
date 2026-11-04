@@ -690,6 +690,23 @@ public class MapFactoryTest
 	}
 
 	/**
+	 * Test the method {@link MapFactory#newTreeMap(Comparator, java.util.Collection)} with keys
+	 * that are not {@link Comparable}, ordered by the given comparator. Pins the result of today, a
+	 * {@link ClassCastException}, which #44 reports as a bug: the fix of #44 changes it to a
+	 * {@link TreeMap} that holds the pairs in the order of the comparator
+	 */
+	@Test
+	public void testNewTreeMapComparatorListOfKeyValuePairsWithKeysNotComparable()
+	{
+		final Comparator<Class<?>> comparator = Comparator.comparing(Class::getName);
+		final List<KeyValuePair<Class<?>, String>> keyValuePairs = ListFactory.newArrayList(
+			KeyValuePair.<Class<?>, String> builder().key(String.class).value("string").build(),
+			KeyValuePair.<Class<?>, String> builder().key(Integer.class).value("integer").build());
+		assertThrows(ClassCastException.class,
+			() -> MapFactory.newTreeMap(comparator, keyValuePairs));
+	}
+
+	/**
 	 * Test method for {@link MapFactory#newTreeMap(Map)}.
 	 */
 	@Test
@@ -722,6 +739,21 @@ public class MapFactoryTest
 			KeyValuePair.<String, String> builder().key("5").value("value").build());
 		assertNotNull(treeMap);
 		assertEquals(4, treeMap.size());
+	}
+
+	/**
+	 * Test the method {@link MapFactory#newTreeMap(Comparator, KeyValuePair...)} with keys that are
+	 * not {@link Comparable}, ordered by the given comparator. Pins the result of today, a
+	 * {@link ClassCastException}, which #44 reports as a bug: the fix of #44 changes it to a
+	 * {@link TreeMap} that holds the pairs in the order of the comparator
+	 */
+	@Test
+	public void testNewTreeMapObjectsWithKeysNotComparable()
+	{
+		final Comparator<Class<?>> comparator = Comparator.comparing(Class::getName);
+		assertThrows(ClassCastException.class, () -> MapFactory.newTreeMap(comparator,
+			KeyValuePair.<Class<?>, String> builder().key(String.class).value("string").build(),
+			KeyValuePair.<Class<?>, String> builder().key(Integer.class).value("integer").build()));
 	}
 
 	/**

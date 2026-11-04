@@ -27,6 +27,7 @@ package io.github.astrapi69.collection.map;
 import static org.junit.jupiter.api.Assertions.assertArrayEquals;
 import static org.junit.jupiter.api.Assertions.assertEquals;
 import static org.junit.jupiter.api.Assertions.assertNull;
+import static org.junit.jupiter.api.Assertions.assertThrows;
 import static org.junit.jupiter.api.Assertions.assertTrue;
 
 import java.util.AbstractMap;
@@ -124,6 +125,54 @@ public class MapExtensionsTest
 	}
 
 	/**
+	 * Test the method {@link MapExtensions#getKeyFromValue(Map, Object)} with a value that no entry
+	 * holds. Pins the result of today, the last key of the map, which #44 reports as a bug: the fix
+	 * of #44 changes it to null
+	 */
+	@Test
+	public void testGetKeyFromValueWithoutMatch()
+	{
+		String actual;
+		String expected;
+		final Map<String, String> map = MapFactory.newLinkedHashMap();
+		map.put("1", "novalue");
+		map.put("2", "somevalue");
+		actual = MapExtensions.getKeyFromValue(map, "missing");
+		expected = "2";
+		assertEquals(expected, actual);
+	}
+
+	/**
+	 * Test the method {@link MapExtensions#getKeyFromValue(Map, Object)} with a map that holds null
+	 * as the value of an entry before the one that holds the value. Pins the result of today, a
+	 * {@link NullPointerException}, which #44 reports as a bug: the fix of #44 changes it to the
+	 * key of the value
+	 */
+	@Test
+	public void testGetKeyFromValueWithNullValueInMap()
+	{
+		final Map<String, String> map = MapFactory.newLinkedHashMap();
+		map.put("1", null);
+		map.put("2", "value");
+		assertThrows(NullPointerException.class, () -> MapExtensions.getKeyFromValue(map, "value"));
+	}
+
+	/**
+	 * Test the method {@link MapExtensions#getKeyFromValue(Map, Object)} with null as the value to
+	 * look for. Pins the result of today, a {@link NullPointerException}, which #44 reports as a
+	 * bug: the fix of #44 changes it to the first key mapped to null
+	 */
+	@Test
+	public void testGetKeyFromValueWithNullValue()
+	{
+		final Map<String, String> map = MapFactory.newLinkedHashMap();
+		map.put("1", "value");
+		map.put("2", null);
+		map.put("3", null);
+		assertThrows(NullPointerException.class, () -> MapExtensions.getKeyFromValue(map, null));
+	}
+
+	/**
 	 * Test for the Method {@link MapExtensions#getKeysFromValue(Map, Object)}.
 	 */
 	@Test
@@ -159,6 +208,36 @@ public class MapExtensionsTest
 		map.put("1", "novalue");
 		map.put("2", "value");
 		assertTrue(MapExtensions.getKeysFromValue(map, "missing").isEmpty());
+	}
+
+	/**
+	 * Test the method {@link MapExtensions#getKeysFromValue(Map, Object)} with a map that holds
+	 * null as the value of an entry. Pins the result of today, a {@link NullPointerException},
+	 * which #44 reports as a bug: the fix of #44 changes it to the keys of the value
+	 */
+	@Test
+	public void testGetKeysFromValueWithNullValueInMap()
+	{
+		final Map<String, String> map = MapFactory.newLinkedHashMap();
+		map.put("1", null);
+		map.put("2", "value");
+		assertThrows(NullPointerException.class,
+			() -> MapExtensions.getKeysFromValue(map, "value"));
+	}
+
+	/**
+	 * Test the method {@link MapExtensions#getKeysFromValue(Map, Object)} with null as the value to
+	 * look for. Pins the result of today, a {@link NullPointerException}, which #44 reports as a
+	 * bug: the fix of #44 changes it to the keys mapped to null
+	 */
+	@Test
+	public void testGetKeysFromValueWithNullValue()
+	{
+		final Map<String, String> map = MapFactory.newLinkedHashMap();
+		map.put("1", null);
+		map.put("2", "value");
+		map.put("3", null);
+		assertThrows(NullPointerException.class, () -> MapExtensions.getKeysFromValue(map, null));
 	}
 
 	/**
