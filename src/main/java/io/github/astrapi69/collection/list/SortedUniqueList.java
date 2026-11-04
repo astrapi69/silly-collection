@@ -118,7 +118,15 @@ public class SortedUniqueList<E> extends ArrayList<E>
 	}
 
 	/**
-	 * {@inheritDoc}
+	 * Adds the given element as every add method of this class does: unless this list contains it
+	 * already, at its place in the order of the comparator of this list, or at its end if this list
+	 * has no comparator. The given index is ignored and not checked; any index is accepted, a
+	 * negative one too.
+	 *
+	 * @param index
+	 *            ignored
+	 * @param element
+	 *            the element to add
 	 */
 	@Override
 	public void add(int index, E element)
@@ -141,7 +149,16 @@ public class SortedUniqueList<E> extends ArrayList<E>
 	}
 
 	/**
-	 * {@inheritDoc}
+	 * Adds the elements of the given collection as every add method of this class does: each one
+	 * that this list does not contain yet at its place in the order of the comparator of this list,
+	 * or at its end if this list has no comparator. The given index is ignored and not checked; any
+	 * index is accepted, a negative one too.
+	 *
+	 * @param index
+	 *            ignored
+	 * @param collection
+	 *            the collection with the elements to add
+	 * @return true if at least one element was added, otherwise false
 	 */
 	@Override
 	public boolean addAll(int index, Collection<? extends E> collection)

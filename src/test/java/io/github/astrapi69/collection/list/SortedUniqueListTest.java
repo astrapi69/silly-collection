@@ -257,6 +257,26 @@ public class SortedUniqueListTest
 	}
 
 	/**
+	 * Test the method {@link SortedUniqueList#add(Object)} with a comparator that holds "a" and
+	 * "A", and "b" and "B", equal, which equals does not: each goes in next to the element the
+	 * comparator holds it equal to, and the method returns true. The list stays unique by equals:
+	 * an element it contains is not added again, and the method returns false (#40)
+	 */
+	@Test
+	public void testAddWithComparatorInconsistentWithEquals()
+	{
+		List<String> list = new SortedUniqueList<>(String.CASE_INSENSITIVE_ORDER);
+		list.add("a");
+		list.add("b");
+
+		assertTrue(list.add("A"));
+		assertTrue(list.add("B"));
+		assertFalse(list.add("a"));
+		assertFalse(list.add("B"));
+		assertEquals(Arrays.asList("A", "a", "B", "b"), list);
+	}
+
+	/**
 	 * Test method for {@link SortedUniqueList#setComparator(Comparator)}.
 	 */
 	@Test
@@ -344,5 +364,47 @@ public class SortedUniqueListTest
 
 		assertFalse(list.addAll(0, Arrays.asList("Emil", "Anton")));
 		assertEquals(Arrays.asList("Anton", "Emil"), list);
+	}
+
+	/**
+	 * Test the method {@link SortedUniqueList#add(int, Object)} with a negative index and one past
+	 * the end of the list: the index is ignored and not checked, and an element the list does not
+	 * contain yet goes in at its place in the order of the comparator, or at the end of a list
+	 * without one (#40)
+	 */
+	@Test
+	public void testAddWithIndexOutOfRange()
+	{
+		List<String> list = new SortedUniqueList<>();
+		list.add(-1, "Caesar");
+		list.add(5, "Anton");
+		list.add(-1, "Caesar");
+		assertEquals(Arrays.asList("Caesar", "Anton"), list);
+
+		list = new SortedUniqueList<>(Comparator.naturalOrder());
+		list.add(-1, "Caesar");
+		list.add(5, "Anton");
+		list.add(5, "Caesar");
+		assertEquals(Arrays.asList("Anton", "Caesar"), list);
+	}
+
+	/**
+	 * Test the method {@link SortedUniqueList#addAll(int, Collection)} with a negative index and
+	 * one past the end of the list: the index is ignored and not checked, the elements the list
+	 * does not contain yet go in at their place in the order of the comparator, or at the end of a
+	 * list without one, and the method returns true (#40)
+	 */
+	@Test
+	public void testAddAllWithIndexOutOfRange()
+	{
+		List<String> list = new SortedUniqueList<>();
+		assertTrue(list.addAll(-1, Arrays.asList("Caesar", "Anton")));
+		assertTrue(list.addAll(5, Arrays.asList("Anton", "Berta")));
+		assertEquals(Arrays.asList("Caesar", "Anton", "Berta"), list);
+
+		list = new SortedUniqueList<>(Comparator.naturalOrder());
+		assertTrue(list.addAll(-1, Arrays.asList("Caesar", "Anton")));
+		assertTrue(list.addAll(5, Arrays.asList("Anton", "Berta")));
+		assertEquals(Arrays.asList("Anton", "Berta", "Caesar"), list);
 	}
 }

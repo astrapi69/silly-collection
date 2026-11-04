@@ -243,6 +243,23 @@ public class SortedListTest
 	}
 
 	/**
+	 * Test the method {@link SortedList#add(Object)} with a comparator that holds "a" and "A", and
+	 * "b" and "B", equal, which equals does not: each goes in next to the element the comparator
+	 * holds it equal to, and the method returns true (#40)
+	 */
+	@Test
+	public void testAddWithComparatorInconsistentWithEquals()
+	{
+		List<String> list = new SortedList<>(String.CASE_INSENSITIVE_ORDER);
+		list.add("a");
+		list.add("b");
+
+		assertTrue(list.add("A"));
+		assertTrue(list.add("B"));
+		assertEquals(Arrays.asList("A", "a", "B", "b"), list);
+	}
+
+	/**
 	 * Test the method {@link SortedList#addAll(Collection)} with a collection of elements: they are
 	 * inserted in the order of the comparator and the method returns true
 	 */
@@ -297,6 +314,45 @@ public class SortedListTest
 
 		assertFalse(list.addAll(0, Collections.emptyList()));
 		assertEquals(Arrays.asList("Emil"), list);
+	}
+
+	/**
+	 * Test the method {@link SortedList#add(int, Object)} with a negative index and one past the
+	 * end of the list: the index is ignored and not checked, and the element goes in at its place
+	 * in the order of the comparator, or at the end of a list without one (#40)
+	 */
+	@Test
+	public void testAddWithIndexOutOfRange()
+	{
+		List<String> list = new SortedList<>();
+		list.add(-1, "Caesar");
+		list.add(5, "Anton");
+		assertEquals(Arrays.asList("Caesar", "Anton"), list);
+
+		list = new SortedList<>(Comparator.naturalOrder());
+		list.add(-1, "Caesar");
+		list.add(5, "Anton");
+		assertEquals(Arrays.asList("Anton", "Caesar"), list);
+	}
+
+	/**
+	 * Test the method {@link SortedList#addAll(int, Collection)} with a negative index and one past
+	 * the end of the list: the index is ignored and not checked, the elements go in at their place
+	 * in the order of the comparator, or at the end of a list without one, and the method returns
+	 * true (#40)
+	 */
+	@Test
+	public void testAddAllWithIndexOutOfRange()
+	{
+		List<String> list = new SortedList<>();
+		assertTrue(list.addAll(-1, Arrays.asList("Caesar", "Anton")));
+		assertTrue(list.addAll(5, Arrays.asList("Berta")));
+		assertEquals(Arrays.asList("Caesar", "Anton", "Berta"), list);
+
+		list = new SortedList<>(Comparator.naturalOrder());
+		assertTrue(list.addAll(-1, Arrays.asList("Caesar", "Anton")));
+		assertTrue(list.addAll(5, Arrays.asList("Berta")));
+		assertEquals(Arrays.asList("Anton", "Berta", "Caesar"), list);
 	}
 
 	/**

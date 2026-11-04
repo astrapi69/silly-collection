@@ -1538,6 +1538,21 @@ public class ListExtensionsTest
 	}
 
 	/**
+	 * Test method for {@link ListExtensions#getIndexToInsert(List, Object, java.util.Comparator)}
+	 * with an element that the comparator holds equal to an element of the list, but equals does
+	 * not: the method returns the index of the element that binarySearch finds, whatever contains
+	 * says (#40)
+	 */
+	@Test
+	public void testGetIndexToInsertWithComparatorInconsistentWithEquals()
+	{
+		List<String> list = ListFactory.newArrayList("a", "b");
+
+		assertEquals(0, ListExtensions.getIndexToInsert(list, "A", String.CASE_INSENSITIVE_ORDER));
+		assertEquals(1, ListExtensions.getIndexToInsert(list, "B", String.CASE_INSENSITIVE_ORDER));
+	}
+
+	/**
 	 * Test method for {@link ListExtensions} with {@link BeanTester}
 	 */
 	@Test

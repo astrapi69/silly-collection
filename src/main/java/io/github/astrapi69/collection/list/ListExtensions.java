@@ -912,18 +912,20 @@ public final class ListExtensions
 	 * @param <T>
 	 *            the generic type
 	 * @param list
-	 *            the list
+	 *            the list, sorted in the order of the given comparator
 	 * @param element
 	 *            the element for resolve the index to add
 	 * @param comparator
 	 *            the comparator
-	 * @return the index of the given element in the given list
+	 * @return the index of an element of the given list that the given comparator holds equal to
+	 *         the given element, whether equals does or not, otherwise the index of the first
+	 *         element greater than the given element, or the size of the list if there is none
 	 */
 	public static <T> int getIndexToInsert(List<? extends T> list, T element,
 		Comparator<? super T> comparator)
 	{
 		int indexToInsert = Collections.binarySearch(list, element, comparator);
-		if (!list.contains(element))
+		if (indexToInsert < 0)
 		{
 			indexToInsert = -indexToInsert - 1;
 		}
