@@ -171,10 +171,10 @@ KNOWN ISSUES, for 29.0:
   uniqueness, and `SortedList.addAll` of the list itself throws a `ConcurrentModificationException` (#77)
 - changes through a `subList` of `UniqueList`, `SortedList` and `SortedUniqueList` can break the list or the view
   (#78)
-- on a JDK 21 or later runtime, `UniqueList.reversed().add(i, e)` with an element the list holds puts it one place
-  too early in the view, as the JDK's reversed view expects the list to grow; the list stays unique. The methods of
-  `SequencedCollection` behave as follows there: `addFirst` and `addLast` of `SortedList` and `SortedUniqueList` sort
-  the element in, and `UniqueList.addLast` leaves a held element where it is (#87)
+- on a JDK 21 or later runtime, `UniqueList.reversed().add(i, e)` with 0 < i < size and an element the list holds
+  puts it one place too early in the view, as the JDK's reversed view expects the list to grow; the list stays
+  unique. The methods of `SequencedCollection` behave as follows there: `addFirst` and `addLast` of `SortedList` and
+  `SortedUniqueList` sort the element in, and `UniqueList.addLast` leaves a held element where it is (#87)
 - `setComparator` of `SortedList` and `SortedUniqueList` keeps the new comparator when the sort with it throws, on
   any runtime (#87)
 

@@ -437,10 +437,13 @@ public class UniqueList<E> extends ArrayList<E>
 	 * the view grow, so the index {@code size()} does not exist after it and {@code get(size())}
 	 * cannot return the element; {@code addLast(e)} of the view moves the element to its end;</li>
 	 * <li>the add of a list iterator of the view with an element this list holds before the cursor
-	 * or at it: {@link ListIterator#add(Object)} says that a following {@code next()} is unaffected
-	 * and that {@code nextIndex()} grows by one, which cannot hold for an element that is before
-	 * the cursor already, nor for the one {@code next()} would return; an element behind the cursor
-	 * moves to it;</li>
+	 * or at it. This deviates from the list iterator of this list, see {@link #listIterator(int)},
+	 * which moves such an element (#67): {@link ListIterator#add(Object)} says that a following
+	 * {@code next()} is unaffected and that {@code nextIndex()} grows by one, and a move of an
+	 * element at or before the cursor cannot keep that. An element before the cursor is before it
+	 * already, so that {@code nextIndex()} would stay; the element {@code next()} would return
+	 * would have to come before the cursor, so that {@code next()} would skip it. An element behind
+	 * the cursor moves to it and keeps the contract;</li>
 	 * <li>set, add, addAll, replaceAll and sort through a {@code subList} of the view, and the set
 	 * and add of its list iterators, as on the view of {@link #subList(int, int)}.</li>
 	 * </ul>

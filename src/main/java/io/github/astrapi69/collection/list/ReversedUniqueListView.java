@@ -96,8 +96,10 @@ import java.util.function.UnaryOperator;
  * the index {@code size()} does not exist after it and {@code get(size())} cannot return the
  * element. {@code addLast(e)} moves the element to the end of the view.</li>
  * <li>{@code add(e)} of the list iterator with an element the list holds before the cursor or at
- * it: {@link ListIterator#add(Object)} says that a following {@code next()} is unaffected and that
- * {@code nextIndex()} grows by one. An element before the cursor is before it already, so that
+ * it. This deviates from the list iterator of {@link UniqueList#listIterator(int)}, which moves
+ * such an element (#67): {@link ListIterator#add(Object)} says that a following {@code next()} is
+ * unaffected and that {@code nextIndex()} grows by one, and a move of an element at or before the
+ * cursor cannot keep that. An element before the cursor is before it already, so that
  * {@code nextIndex()} would stay; the element {@code next()} would return would have to come before
  * the cursor, so that {@code next()} would skip it. An element behind the cursor moves to the
  * cursor and keeps the contract.</li>
@@ -428,7 +430,10 @@ final class ReversedUniqueListView<E> extends AbstractList<E> implements RandomA
 	 * {@link #set(int, Object)}, {@link #remove(int)} and {@link #add(int, Object)} of this view,
 	 * and keeps the contract of {@link ListIterator}: its add inserts a new element, or moves one
 	 * the list holds behind the cursor, immediately before the element {@code next()} would return,
-	 * which a following {@code next()} returns, and {@code nextIndex()} grows by one.
+	 * which a following {@code next()} returns, and {@code nextIndex()} grows by one. Its add
+	 * refuses an element the list holds at or before the cursor with an
+	 * {@link UnsupportedOperationException}, where the list iterator of
+	 * {@link UniqueList#listIterator(int)} moves it (#67): a move there cannot keep that contract.
 	 *
 	 * @param index
 	 *            the index of the first element that {@code next()} returns
@@ -677,7 +682,9 @@ final class ReversedUniqueListView<E> extends AbstractList<E> implements RandomA
 		 *             cursor already, so that {@code nextIndex()} would not grow, or it is the one
 		 *             {@code next()} would return, which would skip it, where the contract of
 		 *             {@link ListIterator#add(Object)} says that a following {@code next()} is
-		 *             unaffected and {@code nextIndex()} grows by one
+		 *             unaffected and {@code nextIndex()} grows by one; a deviation from the list
+		 *             iterator of {@link UniqueList#listIterator(int)}, which moves such an element
+		 *             (#67)
 		 */
 		@Override
 		public void add(E element)
