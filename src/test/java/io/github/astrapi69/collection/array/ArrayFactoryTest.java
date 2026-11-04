@@ -322,6 +322,48 @@ public class ArrayFactoryTest
 	}
 
 	/**
+	 * Test the factory methods of the primitive types with a given array: today they return the
+	 * given array itself. The fix of #75 changes the result: a new array with the same values.
+	 */
+	@Test
+	public void testNewPrimitiveArrayWithGivenArray()
+	{
+		final boolean[] booleans = { true, false };
+		Assertions.assertSame(booleans, ArrayFactory.newBooleanArray(booleans));
+		final byte[] bytes = { 1, 2 };
+		Assertions.assertSame(bytes, ArrayFactory.newByteArray(bytes));
+		final char[] chars = { 'a', 'b' };
+		Assertions.assertSame(chars, ArrayFactory.newCharArray(chars));
+		final double[] doubles = { 1.0D, 2.0D };
+		Assertions.assertSame(doubles, ArrayFactory.newDoubleArray(doubles));
+		final float[] floats = { 1.0F, 2.0F };
+		Assertions.assertSame(floats, ArrayFactory.newFloatArray(floats));
+		final int[] ints = { 1, 2 };
+		Assertions.assertSame(ints, ArrayFactory.newIntArray(ints));
+		final long[] longs = { 1L, 2L };
+		Assertions.assertSame(longs, ArrayFactory.newLongArray(longs));
+		final short[] shorts = { 1, 2 };
+		Assertions.assertSame(shorts, ArrayFactory.newShortArray(shorts));
+	}
+
+	/**
+	 * Test the factory methods of the primitive types with null instead of an array: the result is
+	 * null.
+	 */
+	@Test
+	public void testNewPrimitiveArrayWithNull()
+	{
+		Assertions.assertNull(ArrayFactory.newBooleanArray((boolean[])null));
+		Assertions.assertNull(ArrayFactory.newByteArray((byte[])null));
+		Assertions.assertNull(ArrayFactory.newCharArray((char[])null));
+		Assertions.assertNull(ArrayFactory.newDoubleArray((double[])null));
+		Assertions.assertNull(ArrayFactory.newFloatArray((float[])null));
+		Assertions.assertNull(ArrayFactory.newIntArray((int[])null));
+		Assertions.assertNull(ArrayFactory.newLongArray((long[])null));
+		Assertions.assertNull(ArrayFactory.newShortArray((short[])null));
+	}
+
+	/**
 	 * Test method for {@link ArrayFactory#newSubArray(Object[], int, int)}
 	 */
 	@Test
