@@ -31,6 +31,7 @@ import java.util.Collection;
 import java.util.Collections;
 import java.util.Comparator;
 import java.util.ConcurrentModificationException;
+import java.util.Iterator;
 import java.util.List;
 import java.util.ListIterator;
 import java.util.Random;
@@ -465,10 +466,10 @@ public class SortedUniqueListTest
 	}
 
 	/**
-	 * Test the method {@link SortedUniqueList#set(int, Object)} with an element the list holds at
-	 * another index, in front of and behind the given one, with and without a comparator: it throws
-	 * an IllegalArgumentException, and the list does not change; set(0, c) and set(2, a) of [a, b,
-	 * c], and set(0, a) of [b, a] without a comparator (#77)
+	 * Test the method {@link SortedUniqueList#set(int, Object)} with a comparator and an element
+	 * the list holds at another index, in front of and behind the given one: it throws an
+	 * IllegalArgumentException, and the list does not change; set(0, c) and set(2, a) of [a, b, c]
+	 * (#77)
 	 */
 	@Test
 	public void testSetWithElementHeldAtAnotherIndex()
@@ -481,10 +482,50 @@ public class SortedUniqueListTest
 			+ " 0 too", exception.getMessage());
 		assertThrows(IllegalArgumentException.class, () -> list.set(2, "a"));
 		assertEquals(Arrays.asList("a", "b", "c"), list);
+	}
 
-		List<String> withoutComparator = new SortedUniqueList<>(Arrays.asList("b", "a"));
-		assertThrows(IllegalArgumentException.class, () -> withoutComparator.set(0, "a"));
-		assertEquals(Arrays.asList("b", "a"), withoutComparator);
+	/**
+	 * Test the method {@link SortedUniqueList#set(int, Object)} without a comparator and with an
+	 * element the list holds at another index, in front of and behind the given one: it throws an
+	 * IllegalArgumentException, and the list does not change; set(0, c) and set(2, a) of [a, b, c]
+	 * (#77).
+	 * <p>
+	 * The fix that makes a list without a comparator swap changes the result: the two elements
+	 * swap, set(0, c) returns a and set(2, a) returns c, and both give [c, b, a].
+	 */
+	@Test
+	public void testSetWithoutComparatorAndElementHeldAtAnotherIndex()
+	{
+		List<String> list = new SortedUniqueList<>(Arrays.asList("a", "b", "c"));
+		assertThrows(IllegalArgumentException.class, () -> list.set(0, "c"));
+		assertEquals(Arrays.asList("a", "b", "c"), list);
+
+		List<String> other = new SortedUniqueList<>(Arrays.asList("a", "b", "c"));
+		assertThrows(IllegalArgumentException.class, () -> other.set(2, "a"));
+		assertEquals(Arrays.asList("a", "b", "c"), other);
+	}
+
+	/**
+	 * Test the method {@link SortedUniqueList#set(int, Object)} without a comparator while an
+	 * iterator runs over the list: set(0, c) of [a, b, c] after the first next() throws an
+	 * IllegalArgumentException, and the iterator goes on with b and c (#77).
+	 * <p>
+	 * The fix that makes a list without a comparator swap changes the result: the list becomes [c,
+	 * b, a], which is no structural modification, and the iterator goes on with b and a without a
+	 * ConcurrentModificationException.
+	 */
+	@Test
+	public void testSetWithoutComparatorWhileAnIteratorRuns()
+	{
+		List<String> list = new SortedUniqueList<>(Arrays.asList("a", "b", "c"));
+		Iterator<String> iterator = list.iterator();
+		assertEquals("a", iterator.next());
+
+		assertThrows(IllegalArgumentException.class, () -> list.set(0, "c"));
+		assertEquals("b", iterator.next());
+		assertEquals("c", iterator.next());
+		assertFalse(iterator.hasNext());
+		assertEquals(Arrays.asList("a", "b", "c"), list);
 	}
 
 	/**
@@ -815,28 +856,34 @@ public class SortedUniqueListTest
 	}
 
 	/**
-	 * Test {@link Collections#swap(List, int, int)}, {@link Collections#reverse(List)},
-	 * {@link Collections#shuffle(List, Random)} and {@link Collections#rotate(List, int)} on a
-	 * {@link SortedUniqueList} without a comparator: set refuses an element the list holds at
-	 * another index without a comparator too, so each of them throws an IllegalArgumentException
-	 * before the list changes, and the list stays [a, b, c, d]; a swap of an index with itself
-	 * works (#77)
+	 * Test {@link Collections#swap(List, int, int)}, {@link Collections#reverse(List)} of an even
+	 * and of an odd size, {@link Collections#shuffle(List, Random)} and
+	 * {@link Collections#rotate(List, int)} in one cycle (distance 1 and -1) and in several
+	 * (distance 2 and 3 of six elements) on a {@link SortedUniqueList} without a comparator: set
+	 * refuses an element the list holds at another index, so each of them throws an
+	 * IllegalArgumentException before the list changes; a swap of an index with itself works (#77).
+	 * <p>
+	 * The fix that makes a list without a comparator swap changes the result: each of them works as
+	 * on a {@link UniqueList}.
 	 */
 	@Test
 	public void testCollectionsAlgorithmsWithoutComparator()
 	{
-		List<String> elements = Arrays.asList("a", "b", "c", "d");
+		List<String> elements = Arrays.asList("a", "b", "c", "d", "e", "f");
 		List<String> list = new SortedUniqueList<>(elements);
+		List<String> odd = new SortedUniqueList<>(Arrays.asList("a", "b", "c"));
 
-		assertThrows(IllegalArgumentException.class, () -> Collections.swap(list, 0, 3));
-		assertEquals(elements, list);
+		assertThrows(IllegalArgumentException.class, () -> Collections.swap(list, 0, 5));
 		assertThrows(IllegalArgumentException.class, () -> Collections.reverse(list));
-		assertEquals(elements, list);
+		assertThrows(IllegalArgumentException.class, () -> Collections.reverse(odd));
 		assertThrows(IllegalArgumentException.class,
 			() -> Collections.shuffle(list, new Random(77)));
-		assertEquals(elements, list);
 		assertThrows(IllegalArgumentException.class, () -> Collections.rotate(list, 1));
+		assertThrows(IllegalArgumentException.class, () -> Collections.rotate(list, -1));
+		assertThrows(IllegalArgumentException.class, () -> Collections.rotate(list, 2));
+		assertThrows(IllegalArgumentException.class, () -> Collections.rotate(list, 3));
 		assertEquals(elements, list);
+		assertEquals(Arrays.asList("a", "b", "c"), odd);
 
 		Collections.swap(list, 1, 1);
 		assertEquals(elements, list);
