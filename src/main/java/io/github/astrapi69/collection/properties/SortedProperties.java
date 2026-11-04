@@ -24,12 +24,13 @@
  */
 package io.github.astrapi69.collection.properties;
 
+import java.util.AbstractSet;
 import java.util.Collections;
 import java.util.Comparator;
 import java.util.Enumeration;
+import java.util.Iterator;
 import java.util.Properties;
 import java.util.Set;
-import java.util.TreeSet;
 import java.util.Vector;
 
 import io.github.astrapi69.collection.list.VectorExtensions;
@@ -43,8 +44,12 @@ public class SortedProperties extends Properties
 
 	/** The Constant serialVersionUID. */
 	private static final long serialVersionUID = 1L;
-	/** The {@link Comparator} object. */
-	private Comparator<Object> comparator;
+	/**
+	 * The {@link Comparator} object. It is not part of the serialized form, as the default one is a
+	 * lambda, which does not serialize: {@link #getComparator()} creates it again with
+	 * {@link #newComparator()} when it is needed
+	 */
+	private transient Comparator<Object> comparator;
 
 	/**
 	 * Instantiates a new {@link SortedProperties}.
@@ -138,19 +143,21 @@ public class SortedProperties extends Properties
 
 	/**
 	 * {@inheritDoc}
+	 * <p>
+	 * The set iterates the keys in the order of the {@link Comparator} of this
+	 * {@link SortedProperties}.
 	 */
 	@Override
 	public Set<Object> keySet()
 	{
-		final Set<Object> set = new TreeSet<>(getComparator());
-		set.addAll(super.keySet());
-		return set;
+		return new SortedKeySet();
 	}
 
 	/**
 	 * Factory method for creating a new {@link Comparator} for sort this {@link SortedProperties}.
-	 * This method is invoked in the methods keys and can be overridden so users can provide their
-	 * own version of a {@link Comparator}.
+	 * This method is invoked when the {@link Comparator} is needed first, also after a
+	 * deserialization, and can be overridden so users can provide their own version of a
+	 * {@link Comparator}.
 	 *
 	 * @return the new {@link Comparator}.
 	 */
@@ -162,13 +169,103 @@ public class SortedProperties extends Properties
 
 	/**
 	 * {@inheritDoc}
+	 * <p>
+	 * The enumeration lists the keys in the order of the {@link Comparator} of this
+	 * {@link SortedProperties}.
 	 */
 	@Override
 	public Enumeration<?> propertyNames()
 	{
-		final Set<Object> set = new TreeSet<>(getComparator());
-		set.addAll(super.keySet());
-		return Collections.enumeration(set);
+		final Vector<?> names = VectorExtensions.toVector(super.propertyNames());
+		Collections.sort(names, getComparator());
+		return names.elements();
+	}
+
+	/**
+	 * The keys of this {@link SortedProperties} as a {@link Set} backed by it, as
+	 * {@link java.util.Map#keySet()} specifies: it iterates the keys in the order of the
+	 * {@link Comparator}, reflects every change of the properties, and removing a key through the
+	 * set or its {@link Iterator} removes its entry; it does not support {@link #add(Object)} and
+	 * {@link #addAll(java.util.Collection)}. Each removal goes through
+	 * {@link SortedProperties#remove(Object)} or {@link SortedProperties#clear()}, so that a
+	 * subclass that overrides them sees it
+	 */
+	private final class SortedKeySet extends AbstractSet<Object>
+	{
+
+		/**
+		 * {@inheritDoc}
+		 * <p>
+		 * The iterator walks a sorted copy of the keys of the moment it is created.
+		 */
+		@Override
+		public Iterator<Object> iterator()
+		{
+			final Iterator<Object> keys = Collections.list(keys()).iterator();
+			return new Iterator<>()
+			{
+				private Object current;
+
+				@Override
+				public boolean hasNext()
+				{
+					return keys.hasNext();
+				}
+
+				@Override
+				public Object next()
+				{
+					current = keys.next();
+					return current;
+				}
+
+				@Override
+				public void remove()
+				{
+					// throws an IllegalStateException if next() was not called since the last
+					// remove()
+					keys.remove();
+					SortedProperties.this.remove(current);
+				}
+			};
+		}
+
+		/**
+		 * {@inheritDoc}
+		 */
+		@Override
+		public int size()
+		{
+			return SortedProperties.this.size();
+		}
+
+		/**
+		 * {@inheritDoc}
+		 */
+		@Override
+		public boolean contains(final Object key)
+		{
+			return containsKey(key);
+		}
+
+		/**
+		 * {@inheritDoc}
+		 */
+		@Override
+		public boolean remove(final Object key)
+		{
+			return SortedProperties.this.remove(key) != null;
+		}
+
+		/**
+		 * {@inheritDoc}
+		 */
+		@Override
+		public void clear()
+		{
+			SortedProperties.this.clear();
+		}
+
 	}
 
 }

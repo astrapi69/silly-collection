@@ -24,6 +24,8 @@
  */
 package io.github.astrapi69.collection.set;
 
+import java.util.Objects;
+
 /**
  * The class {@link IndexableSet}
  *
@@ -80,7 +82,7 @@ public class IndexableSet<E> extends InsertionOrderSet<E>
 		int index = 0;
 		for (E entry : this)
 		{
-			if (entry.equals(element))
+			if (Objects.equals(entry, element))
 			{
 				return index;
 			}

@@ -1,5 +1,10 @@
+
 test {
     useJUnitPlatform()
+}
+
+jacoco {
+    toolVersion = '0.8.15'
 }
 
 jacocoTestReport {
@@ -9,4 +14,27 @@ jacocoTestReport {
     }
 }
 
+// Coverage floor the build fails below (#38). Measured on 2026-11-04 by the release gate of 28.3:
+// 1247 of 1247 lines, 546 of 558 branches, 97.8 %. The floor is each measure minus about two points,
+// rounded down, as for the mutation score in build.gradle: a few lines or branches that a new method's
+// tests do not reach yet do not fail the build at once, a drop of more than about two points does.
+jacocoTestCoverageVerification {
+    violationRules {
+        rule {
+            limit {
+                counter = 'LINE'
+                value = 'COVEREDRATIO'
+                minimum = 0.98
+            }
+            limit {
+                counter = 'BRANCH'
+                value = 'COVEREDRATIO'
+                minimum = 0.95
+            }
+        }
+    }
+}
+
+jacocoTestCoverageVerification.dependsOn test
 check.dependsOn jacocoTestReport
+check.dependsOn jacocoTestCoverageVerification

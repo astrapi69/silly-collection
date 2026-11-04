@@ -24,6 +24,7 @@
  */
 package io.github.astrapi69.collection;
 
+import java.lang.reflect.Array;
 import java.util.ArrayList;
 import java.util.Arrays;
 import java.util.Collection;
@@ -33,6 +34,7 @@ import java.util.concurrent.atomic.AtomicInteger;
 import java.util.stream.Collectors;
 
 import org.apache.commons.collections4.CollectionUtils;
+
 
 /**
  * The class {@link CollectionExtensions} is an extension class for use with {@link Collection}
@@ -154,7 +156,11 @@ public final class CollectionExtensions
 	}
 
 	/**
-	 * Compare the given two {@link Collection} objects in equality.
+	 * Compare the given two {@link Collection} objects in equality. They are equal if both are
+	 * null, or if they hold equal elements with the same cardinality, whatever their order: each
+	 * element occurs in the one as often as in the other, so [1, 1, 2] and [1, 2, 2] are not equal.
+	 * The elements compare by their {@link Object#equals(Object)} method, so arrays compare by
+	 * identity and not by their content.
 	 *
 	 * @param <T>
 	 *            the generic type of the elements
@@ -162,15 +168,15 @@ public final class CollectionExtensions
 	 *            the one
 	 * @param other
 	 *            the other
-	 * @return true, if the given two {@link Collection} objects are equal otherwise false
+	 * @return true, if both given {@link Collection} objects are null or hold equal elements with
+	 *         the same cardinality, whatever their order, otherwise false
 	 */
 	public static <T> boolean isEqualCollection(Collection<T> one, Collection<T> other)
 	{
 		Optional<Boolean> optionalEvaluation = preconditionOfEqualCollection(one, other);
 		if (optionalEvaluation.isPresent())
 			return optionalEvaluation.get();
-		Collection<T> retainAll = CollectionUtils.retainAll(one, other);
-		return retainAll.isEmpty() || one.containsAll(other) && other.containsAll(one);
+		return CollectionUtils.isEqualCollection(one, other);
 	}
 
 	/**
@@ -180,7 +186,7 @@ public final class CollectionExtensions
 	 *            the generic type
 	 * @param collection
 	 *            The collection to check
-	 * @return true if the given {@link Collection} is null or empty otherwise false
+	 * @return true if the given {@link Collection} is neither null nor empty otherwise false
 	 */
 	public static <T> boolean isNotEmpty(final Collection<T> collection)
 	{
@@ -235,13 +241,16 @@ public final class CollectionExtensions
 	}
 
 	/**
-	 * Creates a new {@link List} from the given {@link Collection} object
+	 * Returns the given {@link Collection} object as a {@link List}: the collection itself if it is
+	 * a {@link List}, otherwise a new {@link ArrayList} with the elements of the collection
 	 *
 	 * @param <T>
 	 *            the generic type of the objects in the {@link Collection} object
 	 * @param collection
 	 *            the collection to transform
-	 * @return the new {@link List} created from the given {@link Collection} object
+	 * @return the given collection itself if it is a {@link List}, otherwise a new
+	 *         {@link ArrayList} created from the given {@link Collection} object, or null if the
+	 *         given collection is null
 	 */
 	public static <T> List<T> toList(final Collection<T> collection)
 	{
@@ -254,5 +263,72 @@ public final class CollectionExtensions
 			return (List<T>)collection;
 		}
 		return new ArrayList<>(collection);
+	}
+
+	/**
+	 * Creates a new generic array from the given {@link Collection} object, with the elements in
+	 * the iteration order of the collection.
+	 * <p>
+	 * The component type of the array is the most specific common superclass of the non-null
+	 * elements, found by walking up their class hierarchy with {@link Class#getSuperclass()};
+	 * interfaces are not considered. If every element is null, the component type is
+	 * {@link Object}. So [null, "a"] gives a {@code String[]} that holds null and "a", [1, 2.5] and
+	 * [2.5, 1] give a {@code Number[]}, and ["a", 1] gives an {@code Object[]}. Elements of one
+	 * class give an array of that class.
+	 * <p>
+	 * The result is a {@code T[]} only if that superclass is {@code T} or a subclass of it. A
+	 * caller whose {@code T} is an interface, or a class more specific than that superclass, gets a
+	 * {@link ClassCastException} where it assigns the result to a {@code T[]}: a
+	 * {@code List<Comparable<?>>} of 1 and "a" gives an {@code Object[]}, and so does a
+	 * {@code List<String>} that holds only null.
+	 *
+	 * @param <T>
+	 *            the generic type of the objects in the {@link Collection} object
+	 * @param collection
+	 *            the collection to transform
+	 * @return the new generic array created from the given {@link Collection} object, or null if
+	 *         the collection is null or empty
+	 */
+	public static <T> T[] toArray(final Collection<T> collection)
+	{
+		if (collection == null || collection.isEmpty())
+		{
+			return null;
+		}
+
+		@SuppressWarnings("unchecked")
+		T[] array = (T[])Array.newInstance(commonSuperclass(collection), collection.size());
+		return collection.toArray(array);
+	}
+
+	/**
+	 * Finds the most specific common superclass of the non-null elements of the given
+	 * {@link Collection} object by walking up the class hierarchy with
+	 * {@link Class#getSuperclass()}; interfaces are not considered
+	 *
+	 * @param collection
+	 *            the collection
+	 * @return the most specific common superclass of the non-null elements, or {@link Object} if
+	 *         every element is null
+	 */
+	private static Class<?> commonSuperclass(final Collection<?> collection)
+	{
+		Class<?> common = null;
+		for (final Object element : collection)
+		{
+			if (element != null)
+			{
+				final Class<?> elementClass = element.getClass();
+				if (common == null)
+				{
+					common = elementClass;
+				}
+				while (!common.isAssignableFrom(elementClass))
+				{
+					common = common.getSuperclass();
+				}
+			}
+		}
+		return common == null ? Object.class : common;
 	}
 }

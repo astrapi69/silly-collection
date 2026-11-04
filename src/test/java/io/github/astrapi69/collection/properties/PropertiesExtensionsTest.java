@@ -24,10 +24,7 @@
  */
 package io.github.astrapi69.collection.properties;
 
-import static org.junit.jupiter.api.Assertions.assertEquals;
-import static org.junit.jupiter.api.Assertions.assertFalse;
-import static org.junit.jupiter.api.Assertions.assertNotNull;
-import static org.junit.jupiter.api.Assertions.assertTrue;
+import static org.junit.jupiter.api.Assertions.*;
 
 import java.io.File;
 import java.io.FileNotFoundException;
@@ -36,6 +33,8 @@ import java.io.IOException;
 import java.io.InputStream;
 import java.io.OutputStream;
 import java.net.URL;
+import java.nio.file.Path;
+import java.util.ArrayList;
 import java.util.Collections;
 import java.util.List;
 import java.util.Map;
@@ -44,10 +43,10 @@ import java.util.Properties;
 
 import org.junit.jupiter.api.Assertions;
 import org.junit.jupiter.api.Test;
+import org.junit.jupiter.api.io.TempDir;
 import org.meanbean.test.BeanTester;
 
 import io.github.astrapi69.collection.list.ListFactory;
-import io.github.astrapi69.file.delete.DeleteFileExtensions;
 import io.github.astrapi69.io.StringOutputStream;
 
 /**
@@ -57,6 +56,13 @@ import io.github.astrapi69.io.StringOutputStream;
  */
 public class PropertiesExtensionsTest
 {
+
+	/**
+	 * The directory every test writes its files into, so that no test leaves a file behind in the
+	 * working directory, also when it fails before its end
+	 */
+	@TempDir
+	Path directory;
 
 
 	/**
@@ -93,13 +99,12 @@ public class PropertiesExtensionsTest
 	{
 		final Properties properties = new Properties();
 		properties.setProperty("foo", "bar");
-		File propertiesFile = new File(".", "output3.properties");
+		File propertiesFile = new File(directory.toFile(), "output3.properties");
 		PropertiesExtensions.export(properties, propertiesFile);
 
 		final Properties propertiesOutput = PropertiesExtensions.loadProperties(propertiesFile);
 		assertNotNull(propertiesOutput);
 		assertEquals(properties, propertiesOutput);
-		DeleteFileExtensions.delete(propertiesFile);
 	}
 
 
@@ -118,7 +123,7 @@ public class PropertiesExtensionsTest
 	{
 		final Properties properties = new Properties();
 		properties.setProperty("foo", "bar");
-		File propertiesFile = new File(".", "output2.properties");
+		File propertiesFile = new File(directory.toFile(), "output2.properties");
 		try (OutputStream outputStream = new FileOutputStream(propertiesFile))
 		{
 			PropertiesExtensions.export(properties, outputStream, null, null, false, false);
@@ -126,7 +131,6 @@ public class PropertiesExtensionsTest
 		final Properties propertiesOutput = PropertiesExtensions.loadProperties(propertiesFile);
 		assertNotNull(propertiesOutput);
 		assertEquals(properties, propertiesOutput);
-		DeleteFileExtensions.delete(propertiesFile);
 	}
 
 	/**
@@ -142,7 +146,7 @@ public class PropertiesExtensionsTest
 	{
 		final Properties properties = new Properties();
 		properties.setProperty("foo", "bar");
-		File propertiesFile = new File(".", "output2.properties");
+		File propertiesFile = new File(directory.toFile(), "output2.properties");
 		try (OutputStream outputStream = new FileOutputStream(propertiesFile))
 		{
 			PropertiesExtensions.export(properties, outputStream);
@@ -150,7 +154,6 @@ public class PropertiesExtensionsTest
 		final Properties propertiesOutput = PropertiesExtensions.loadProperties(propertiesFile);
 		assertNotNull(propertiesOutput);
 		assertEquals(properties, propertiesOutput);
-		propertiesFile.delete();
 	}
 
 	/**
@@ -166,7 +169,7 @@ public class PropertiesExtensionsTest
 	{
 		final Properties properties = new Properties();
 		properties.setProperty("foo", "bar");
-		File propertiesFile = new File(".", "output2.properties");
+		File propertiesFile = new File(directory.toFile(), "output2.properties");
 		try (OutputStream outputStream = new FileOutputStream(propertiesFile))
 		{
 			PropertiesExtensions.export(properties, outputStream, "Foo comment");
@@ -174,7 +177,6 @@ public class PropertiesExtensionsTest
 		final Properties propertiesOutput = PropertiesExtensions.loadProperties(propertiesFile);
 		assertNotNull(propertiesOutput);
 		assertEquals(properties, propertiesOutput);
-		propertiesFile.delete();
 	}
 
 	/**
@@ -193,7 +195,7 @@ public class PropertiesExtensionsTest
 	{
 		final Properties properties = new Properties();
 		properties.setProperty("foo", "bar");
-		File propertiesFile = new File(".", "output1.xml");
+		File propertiesFile = new File(directory.toFile(), "output1.xml");
 		try (OutputStream outputStream = new FileOutputStream(propertiesFile))
 		{
 			PropertiesExtensions.export(properties, outputStream, null, null, true, true);
@@ -202,7 +204,6 @@ public class PropertiesExtensionsTest
 			true);
 		assertNotNull(propertiesOutput);
 		assertEquals(properties, propertiesOutput);
-		DeleteFileExtensions.delete(propertiesFile);
 	}
 
 	/**
@@ -222,7 +223,7 @@ public class PropertiesExtensionsTest
 	{
 		final Properties properties = new Properties();
 		properties.setProperty("foo", "bar");
-		File propertiesFile = new File(".", "output2.xml");
+		File propertiesFile = new File(directory.toFile(), "output2.xml");
 		try (OutputStream outputStream = new FileOutputStream(propertiesFile))
 		{
 			PropertiesExtensions.export(properties, outputStream, null, null, false, true);
@@ -231,7 +232,6 @@ public class PropertiesExtensionsTest
 			true);
 		assertNotNull(propertiesOutput);
 		assertEquals(properties, propertiesOutput);
-		propertiesFile.delete();
 	}
 
 	/**
@@ -258,6 +258,28 @@ public class PropertiesExtensionsTest
 			ListFactory.newArrayList("com", "foo.redundant.value"));
 		assertEquals(redundantValues.get("OK"),
 			ListFactory.newArrayList("com.example.gui.window.buttons.ok", "foo.bar"));
+	}
+
+	/**
+	 * Test the method {@link PropertiesExtensions#findRedundantValues(Properties)} at the boundary:
+	 * a value that one key has is not redundant, a value that two keys share is
+	 */
+	@Test
+	public void testFindRedundantValuesNeedsTwoKeys()
+	{
+		final Properties properties = new Properties();
+		properties.setProperty("single", "once");
+		properties.setProperty("first", "twice");
+		properties.setProperty("second", "twice");
+
+		final Map<String, List<String>> redundantValues = PropertiesExtensions
+			.findRedundantValues(properties);
+
+		assertEquals(1, redundantValues.size());
+		assertFalse(redundantValues.containsKey("once"));
+		final List<String> keys = new ArrayList<>(redundantValues.get("twice"));
+		Collections.sort(keys);
+		assertEquals(ListFactory.newArrayList("first", "second"), keys);
 	}
 
 	/**
@@ -333,6 +355,54 @@ public class PropertiesExtensionsTest
 	}
 
 	/**
+	 * Test the method {@link PropertiesExtensions#getMatchedPrefixLists(Properties)} puts all keys
+	 * with the same prefix in front of their last dot into the one list of that prefix
+	 */
+	@Test
+	public void testGetMatchedPrefixListsGroupsTheKeysOfOnePrefix()
+	{
+		final Properties properties = new Properties();
+		properties.setProperty("com.example.gui.window.buttons.ok", "OK");
+		properties.setProperty("com.example.gui.window.buttons.cancel", "Cancel");
+		properties.setProperty("com.example.gui.window.title", "Hello");
+
+		final Map<String, List<String>> matchedPrefixLists = PropertiesExtensions
+			.getMatchedPrefixLists(properties);
+
+		assertEquals(2, matchedPrefixLists.size());
+		final List<String> buttons = new ArrayList<>(
+			matchedPrefixLists.get("com.example.gui.window.buttons"));
+		Collections.sort(buttons);
+		assertEquals(ListFactory.newArrayList("com.example.gui.window.buttons.cancel",
+			"com.example.gui.window.buttons.ok"), buttons);
+		assertEquals(ListFactory.newArrayList("com.example.gui.window.title"),
+			matchedPrefixLists.get("com.example.gui.window"));
+	}
+
+	/**
+	 * Test the method {@link PropertiesExtensions#getMatchedPrefixLists(Properties)} at the
+	 * boundary of the last dot: a key whose last dot is its first character has nothing in front of
+	 * it and is its own prefix, like a key without a dot, while a dot at the second character
+	 * leaves a prefix of one character
+	 */
+	@Test
+	public void testGetMatchedPrefixListsWithTheLastDotAtTheStart()
+	{
+		final Properties properties = new Properties();
+		properties.setProperty(".hidden", "x");
+		properties.setProperty("a.b", "y");
+		properties.setProperty("plain", "z");
+
+		final Map<String, List<String>> matchedPrefixLists = PropertiesExtensions
+			.getMatchedPrefixLists(properties);
+
+		assertEquals(3, matchedPrefixLists.size());
+		assertEquals(ListFactory.newArrayList(".hidden"), matchedPrefixLists.get(".hidden"));
+		assertEquals(ListFactory.newArrayList("a.b"), matchedPrefixLists.get("a"));
+		assertEquals(ListFactory.newArrayList("plain"), matchedPrefixLists.get("plain"));
+	}
+
+	/**
 	 * Test for method {@link PropertiesExtensions#getPropertyParameters(String)}.
 	 */
 	@Test
@@ -370,7 +440,7 @@ public class PropertiesExtensionsTest
 	public void testLoadPropertiesNotFound() throws IOException
 	{
 		Assertions.assertThrows(FileNotFoundException.class, () -> {
-			PropertiesExtensions.loadProperties(new File("foo.properties"));
+			PropertiesExtensions.loadProperties(new File(directory.toFile(), "foo.properties"));
 		});
 	}
 
@@ -384,21 +454,19 @@ public class PropertiesExtensionsTest
 	@Test
 	public void testToPropertiesFile() throws IOException
 	{
-		File propertiesFile = new File("output1.properties");
-		try (OutputStream outputStream = new FileOutputStream(propertiesFile);)
+		File propertiesFile = new File(directory.toFile(), "output1.properties");
+		final URL resource = getClass().getClassLoader().getResource("resources.properties");
+		final File propertiesInputFile = new File(resource.getFile());
+		try (OutputStream outputStream = new FileOutputStream(propertiesFile);
+			InputStream inputStream = resource.openStream())
 		{
-			final URL resource = getClass().getClassLoader().getResource("resources.properties");
-			final File propertiesInputFile = new File(resource.getFile());
-			PropertiesExtensions.toPropertiesFile(outputStream, resource.openStream(), null);
-			final Properties propertiesInput = PropertiesExtensions
-				.loadProperties(propertiesInputFile);
-			assertNotNull(propertiesInput);
-			final Properties propertiesOutput = PropertiesExtensions.loadProperties(propertiesFile);
-			assertNotNull(propertiesOutput);
-			assertEquals(propertiesInput, propertiesOutput);
+			PropertiesExtensions.toPropertiesFile(outputStream, inputStream, null);
 		}
-		propertiesFile.delete();
-
+		final Properties propertiesInput = PropertiesExtensions.loadProperties(propertiesInputFile);
+		assertNotNull(propertiesInput);
+		final Properties propertiesOutput = PropertiesExtensions.loadProperties(propertiesFile);
+		assertNotNull(propertiesOutput);
+		assertEquals(propertiesInput, propertiesOutput);
 	}
 
 	/**
@@ -411,14 +479,13 @@ public class PropertiesExtensionsTest
 	public void testToPropertiesFileFileString() throws IOException
 	{
 		URL resource;
-		final File propertiesFile = new File("SigninPanel.properties");
+		final File propertiesFile = new File(directory.toFile(), "SigninPanel.properties");
 		resource = getClass().getClassLoader().getResource("SigninPanel.properties.xml");
 		final File xmlFile = new File(resource.getFile());
 		PropertiesExtensions.toProperties(propertiesFile, xmlFile, "a comment");
 		final Properties properties = PropertiesExtensions.loadProperties(propertiesFile);
 		assertNotNull(properties);
 		assertTrue(properties.size() == 4);
-		propertiesFile.delete();
 	}
 
 	/**
@@ -431,9 +498,9 @@ public class PropertiesExtensionsTest
 	public void testToXmlFileFileStringString() throws IOException
 	{
 		URL resource;
-		final File xmlOutputFile = new File("login.properties.xml");
-		final File propertiesOutputFile = new File("login.properties");
-		final File propertiesFile = new File("SigninPanel.properties");
+		final File xmlOutputFile = new File(directory.toFile(), "login.properties.xml");
+		final File propertiesOutputFile = new File(directory.toFile(), "login.properties");
+		final File propertiesFile = new File(directory.toFile(), "SigninPanel.properties");
 		resource = getClass().getClassLoader().getResource("SigninPanel.properties.xml");
 		final File xmlFile = new File(resource.getFile());
 		PropertiesExtensions.toProperties(propertiesFile, xmlFile, "a comment");
@@ -448,10 +515,6 @@ public class PropertiesExtensionsTest
 		properties = PropertiesExtensions.loadProperties(propertiesOutputFile);
 		assertNotNull(properties);
 		assertTrue(properties.size() == 4);
-		// clean up...
-		DeleteFileExtensions.delete(xmlOutputFile);
-		DeleteFileExtensions.delete(propertiesOutputFile);
-		DeleteFileExtensions.delete(propertiesFile);
 	}
 
 	/**

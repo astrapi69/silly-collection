@@ -1,11 +1,14 @@
+
+
 # Overview
 
 <div style="text-align: center">
 
 [![Java CI with Gradle](https://github.com/astrapi69/silly-collection/actions/workflows/gradle.yml/badge.svg)](https://github.com/astrapi69/silly-collection/actions/workflows/gradle.yml)
 [![Coverage Status](https://codecov.io/gh/astrapi69/silly-collection/branch/develop/graph/badge.svg)](https://codecov.io/gh/astrapi69/silly-collection)
+[![Mutation Score](https://img.shields.io/endpoint?url=https%3A%2F%2Fraw.githubusercontent.com%2Fastrapi69%2Fsilly-collection%2Fgh-pages%2Fbadges%2Fmutation-score-develop.json)](https://pitest.org/)
 [![Open Issues](https://img.shields.io/github/issues/astrapi69/silly-collection.svg?style=flat)](https://github.com/astrapi69/silly-collection/issues)
-[![Maven Central](https://maven-badges.herokuapp.com/maven-central/io.github.astrapi69/silly-collection/badge.svg)](https://maven-badges.herokuapp.com/maven-central/io.github.astrapi69/silly-collection)
+[![Maven Central](https://img.shields.io/maven-central/v/io.github.astrapi69/silly-collection)](https://central.sonatype.com/artifact/io.github.astrapi69/silly-collection)
 [![Javadocs](http://www.javadoc.io/badge/io.github.astrapi69/silly-collection.svg)](http://www.javadoc.io/doc/io.github.astrapi69/silly-collection)
 [![MIT license](http://img.shields.io/badge/license-MIT-brightgreen.svg?style=flat)](http://opensource.org/licenses/MIT)
 [![Donate](https://img.shields.io/badge/donate-❤-ff2244.svg)](https://www.paypal.com/cgi-bin/webscr?cmd=_s-xclick&hosted_button_id=GVBTWLRAZ7HB8)
@@ -23,16 +26,14 @@ Utility library for collections, comparators and iterator classes.
 
 ## Maven dependency
 
-Maven dependency is now on sonatype. Check
-out [sonatype repository](https://oss.sonatype.org/index.html#nexus-search;gav~io.github.astrapi69~silly-collection~~~)
-for all snapshots and releases.
+The library is on Maven Central. Check out [Maven Central](https://central.sonatype.com/artifact/io.github.astrapi69/silly-collection) for the latest release.
 
-Replace the variable ${latestVersion} with the current latest version: [![Maven Central](https://maven-badges.herokuapp.com/maven-central/io.github.astrapi69/silly-collection/badge.svg)](https://maven-badges.herokuapp.com/maven-central/io.github.astrapi69/silly-collection)
+Replace the variable ${latestVersion} with the current latest version: [![Maven Central](https://img.shields.io/maven-central/v/io.github.astrapi69/silly-collection)](https://central.sonatype.com/artifact/io.github.astrapi69/silly-collection)
 
 Add the following maven dependency to your project `pom.xml` if you want to import the core
 functionality of silly-collection:
 
-Than you can add the dependency to your dependencies:
+Then you can add the dependency to your dependencies:
 
     <properties>
             ...
@@ -83,69 +84,27 @@ dependencies {
 }
 ```
 
-# Donations
+## Quality
 
-This project is kept as an open source product and relies on contributions to remain being
-developed. If you like this library, please consider a donation
+As of 28.3, measured by its release gate (JDK 17, the tree of `RELEASE-28.3`); each release takes
+the numbers of its own gate:
 
-over paypal: <br><br>
-<a href="https://www.paypal.com/cgi-bin/webscr?cmd=_s-xclick&hosted_button_id=MJ7V43GU2H386" target="_blank">
-<img src="https://www.paypalobjects.com/en_US/GB/i/btn/btn_donateCC_LG.gif" alt="PayPal this" title="PayPal – The safer, easier way to pay online!" style="border: none" />
-</a>
-<br><br>
-or over bitcoin(BTC) with this address:
+| | |
+|---|---|
+| tests | 518 in 24 test classes; 3 are skipped: two `BeanTester` tests that wait for a factory method, and a benchmark |
+| line and branch coverage (JaCoCo) | 1247 of 1247 lines, 546 of 558 branches; the build fails below 98% of the lines or 95% of the branches (`jacocoTestCoverageVerification` in `gradle/testing.gradle`) |
+| mutation score (PIT) | 781 of 794 mutants killed, 98%; the build fails below 95% (`mutationThreshold` in `build.gradle`). The 13 survivors are equivalent: ten conditions whose edge case gives the same result either way, such as `0 < elements.length` before adding no elements, and three `return true` mutants of `add` methods that always return true, as `ArrayList.add` does |
 
-bc1ql2y99q7e8psndhcc3gferk03esw3qqf677rhjy
+The CI build runs both checks on every pull request, and publishes the mutation score of `develop`
+as the badge above.
 
-<img
-src="https://github.com/astrapi69/jgeohash/blob/master/src/main/resources/img/bc1ql2y99q7e8psndhcc3gferk03esw3qqf677rhjy.png"
-alt="Donation Bitcoin Wallet" width="250"/>
+## Support this project
 
-or over FIO with this address:
+If silly-collection is useful to you, a star on [GitHub](https://github.com/astrapi69/silly-collection) helps others find it.
+Sharing it or reporting a bug helps just as much.
 
-FIO7tFMUVAA9cHiPPqKMfMXiSxHrbpiFyRYqTketNuM67aULuwjop
-
-<img
-src="https://github.com/astrapi69/jgeohash/blob/master/src/main/resources/img/FIO7tFMUVAA9cHiPPqKMfMXiSxHrbpiFyRYqTketNuM67aULuwjop.png"
-alt="Donation FIO Wallet" width="250"/>
-
-or over Ethereum(ETH) with:
-
-0xc057D159D3C8f3311E73568b334FF6fE82EB2b7D
-
-<img
-src="https://github.com/astrapi69/jgeohash/blob/master/src/main/resources/img/0xc057D159D3C8f3311E73568b334FF6fE82EB2b7D.png"
-alt="Donation Ethereum Wallet" width="250"/>
-
-or over Ethereum Classic(ETC) with:
-
-0xF708cA86D86C246B69c3F4BAe431eBbe0c2bfddD
-
-<img
-src="https://github.com/astrapi69/jgeohash/blob/master/src/main/resources/img/0xF708cA86D86C246B69c3F4BAe431eBbe0c2bfddD.png"
-alt="Donation Ethereum Classic Wallet" width="250"/>
-
-or over Dogecoin(DOGE) with:
-
-D5yi4Um8cpakd6yPRm2hGWuQ5nrVzhSSW1
-
-<img
-src="https://github.com/astrapi69/jgeohash/blob/master/src/main/resources/img/D5yi4Um8cpakd6yPRm2hGWuQ5nrVzhSSW1.png"
-alt="Donation Dogecoin Wallet" width="250"/>
-
-or over Monero(XMR) with:
-
-49bqeRQ7Bf49oJFVC72pqpe5hFbb62pfXDYPdLsadGGF81KZW2ZfrPZ8PbAVu5X2v1TYAspeczMya3cYQysNS4usRRPQHVw
-
-<img
-src="https://github.com/astrapi69/jgeohash/blob/master/src/main/resources/img/49bqeRQ7Bf49oJFVC72pqpe5hFbb62pfXDYPdLsadGGF81KZW2ZfrPZ8PbAVu5X2v1TYAspeczMya3cYQysNS4usRRPQHVw.png"
-alt="Donation Monero Wallet" width="250"/>
-
-or over flattr:
-
-<a href="https://flattr.com/submit/auto?fid=r7vp62&url=https%3A%2F%2Fgithub.com%2Fastrapi69%2Fsilly-collection" target="_blank">
-<img src="http://api.flattr.com/button/flattr-badge-large.png" alt="Flattr this" title="Flattr this" style="border: none" />
-</a>
+If you would like to contribute financially, the channels are on the repository's Sponsor button, which
+reads [.github/FUNDING.yml](.github/FUNDING.yml): GitHub Sponsors, Liberapay, Ko-fi and PayPal.
 
 ## License
 
@@ -167,6 +126,33 @@ Release version numbers will be incremented in the following format:
 For detailed information on versioning for this project you can visit
 this [wiki page](https://github.com/lightblueseas/mvn-parent-projects/wiki/Simplified-Semantic-Versioning)
 .
+
+## Releasing
+
+What a release consists of, in the order it is run:
+
+1. **No open issue** but those of a later milestone: every issue of the release's milestone is
+   closed, and a finding on the way is fixed in the release or, if it changes what callers rely
+   on, assigned to the next major release.
+2. **One pull request** with the CHANGELOG entry and `projectVersion` without `-SNAPSHOT`
+   (`docs: changelog for X.Y, and the version that carries it`), the full build green on it.
+3. **The release gate** on that pull request's tree: the tests, `pitest` with its floor and
+   `jacocoTestCoverageVerification` with its floor in one run, `--rerun-tasks --no-build-cache`, on
+   JDK 17, the toolchain of the build; the class files are of Java 17 (major version 61), and the
+   resolved dependencies hold no `-SNAPSHOT`. Its numbers go into the CHANGELOG entry and into the
+   Quality section above, in the same pull request, before it is merged.
+4. **Tag the merge commit** with `./gradlew tagRelease` (`make tag-release`), which names it
+   `RELEASE-X.Y`, once its tree is the tree of the gate, and push the tag. `publish.yml` uploads to
+   the Central Portal, where the maintainer releases it. A pushed tag is never moved or deleted; a
+   failed run is fixed on the branch and run again.
+5. **Verify on Central**: the jar, pom, `.module`, `-sources.jar` and `-javadoc.jar`, their sha1, and
+   `gpg --verify` on the `.asc`.
+6. **GitHub release** from the CHANGELOG entry.
+7. **`master` follows the release** by a merge of the tag: on `master`,
+   `git merge --no-ff "RELEASE-X.Y^{commit}" -m "Merge tag RELEASE-X.Y into master"`. Before
+   `master` is pushed, `git diff RELEASE-X.Y master` has to be empty; if it is not, nothing is
+   pushed. Never a force push: `master` is always the latest release, nothing else.
+8. **Open the next cycle**: `projectVersion` to the next `-SNAPSHOT`.
 
 ## Want to Help and improve it? ###
 
@@ -202,9 +188,9 @@ Open Source:
 
 ## Credits
 
-|**Nexus Sonatype repositories**|
+|**Maven Central**|
 |     :---:      |
-|[![sonatype repository](https://img.shields.io/nexus/r/https/oss.sonatype.org/io.github.astrapi69/silly-collection.svg?style=for-the-badge)](https://oss.sonatype.org/index.html#nexus-search;gav~io.github.astrapi69~silly-collection~~~)|
+|[![Maven Central](https://img.shields.io/maven-central/v/io.github.astrapi69/silly-collection?style=for-the-badge)](https://central.sonatype.com/artifact/io.github.astrapi69/silly-collection)|
 |Special thanks to [sonatype repository](https://www.sonatype.com) for providing a free maven repository service for open source projects|
 |     <img width=1000/>     |
 
@@ -213,3 +199,12 @@ Open Source:
 |[![Javadocs](http://www.javadoc.io/badge/io.github.astrapi69/silly-collection.svg)](http://www.javadoc.io/doc/io.github.astrapi69/silly-collection)|
 |Special thanks to [javadoc.io](http://www.javadoc.io) for providing a free javadoc documentation for open source projects|
 |     <img width=1000/>     |
+
+## Git hooks
+
+The repository's git hooks live in `.githooks`: `commit-msg` where present, and `pre-commit`, which refuses a
+commit whose files Spotless would format. Activate them once per clone or worktree:
+
+```bash
+git config core.hooksPath .githooks
+```

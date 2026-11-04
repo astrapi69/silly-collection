@@ -26,6 +26,8 @@ package io.github.astrapi69.collection.array;
 
 import static org.junit.jupiter.api.Assertions.assertArrayEquals;
 import static org.junit.jupiter.api.Assertions.assertEquals;
+import static org.junit.jupiter.api.Assertions.assertNotSame;
+import static org.junit.jupiter.api.Assertions.assertNull;
 import static org.junit.jupiter.api.Assertions.assertTrue;
 
 import java.util.Arrays;
@@ -64,6 +66,38 @@ public class ArrayFactoryTest
 	}
 
 	/**
+	 * Test for method {@link ArrayFactory#newArray(Object...)} with a given array: the result is a
+	 * new array with the elements of the given array, also for an empty one, and a write to the
+	 * result does not change the array of the caller. Before the fix of #62 the method returned the
+	 * given array itself
+	 */
+	@Test
+	public void testNewArrayWithGivenArray()
+	{
+		final String[] given = { "a", "b" };
+		final String[] actual = ArrayFactory.newArray(given);
+		assertNotSame(given, actual);
+		assertArrayEquals(given, actual);
+		actual[0] = "z";
+		assertEquals("a", given[0]);
+
+		final String[] empty = new String[0];
+		final String[] actualEmpty = ArrayFactory.newArray(empty);
+		assertNotSame(empty, actualEmpty);
+		assertArrayEquals(empty, actualEmpty);
+	}
+
+	/**
+	 * Test for method {@link ArrayFactory#newArray(Object...)} with null: the result is null, as
+	 * before the fix of #62
+	 */
+	@Test
+	public void testNewArrayWithNull()
+	{
+		assertNull(ArrayFactory.newArray((String[])null));
+	}
+
+	/**
 	 * Test for method {@link ArrayFactory#newArray(Object[], Object[])}
 	 */
 	@Test
@@ -84,6 +118,52 @@ public class ArrayFactoryTest
 		actual = ArrayFactory.newArray(null, 1, 2, 3);
 		expected = ArrayFactory.newArray(numbers);
 		assertArrayEquals(actual, expected);
+	}
+
+	/**
+	 * Test for method {@link ArrayFactory#newArray(Object[], Object[])} without elements: the
+	 * result is a new array with the elements of the existing array, for empty elements as for
+	 * null. Before the fix of #62 the method returned the existing array itself
+	 */
+	@Test
+	public void testNewArrayWithExistingArrayAndNoElements()
+	{
+		final String[] existing = { "a", "b" };
+		String[] actual;
+
+		actual = ArrayFactory.newArray(existing, new String[0]);
+		assertNotSame(existing, actual);
+		assertArrayEquals(existing, actual);
+
+		actual = ArrayFactory.newArray(existing, (String[])null);
+		assertNotSame(existing, actual);
+		assertArrayEquals(existing, actual);
+	}
+
+	/**
+	 * Test for method {@link ArrayFactory#newArray(Object[], Object[])} without an existing array:
+	 * the result is a new array with the given elements. Before the fix of #62 the method returned
+	 * the elements array itself
+	 */
+	@Test
+	public void testNewArrayWithoutExistingArray()
+	{
+		final String[] elements = { "a", "b" };
+		final String[] actual = ArrayFactory.newArray((String[])null, elements);
+		assertNotSame(elements, actual);
+		assertArrayEquals(elements, actual);
+	}
+
+	/**
+	 * Test for method {@link ArrayFactory#newArray(Object[], Object[])} without an existing array
+	 * and without elements: the result is null, for empty elements as for null, as before the fix
+	 * of #62
+	 */
+	@Test
+	public void testNewArrayWithoutExistingArrayAndNoElements()
+	{
+		assertNull(ArrayFactory.newArray((String[])null, new String[0]));
+		assertNull(ArrayFactory.newArray((String[])null, (String[])null));
 	}
 
 	/**
@@ -149,6 +229,18 @@ public class ArrayFactoryTest
 		expected = new byte[0];
 		actual = ArrayFactory.newByteArray(new int[0]);
 		assertTrue(Arrays.equals(actual, expected));
+	}
+
+	/**
+	 * Test the method {@link ArrayFactory#newByteArray(int[])} with null instead of an array: the
+	 * result is an empty array
+	 */
+	@Test
+	public void testNewByteArrayWithIntArrayNull()
+	{
+		final byte[] expected = new byte[0];
+		final byte[] actual = ArrayFactory.newByteArray((int[])null);
+		assertArrayEquals(expected, actual);
 	}
 
 	/**
@@ -267,14 +359,30 @@ public class ArrayFactoryTest
 	}
 
 	/**
-	 * Test the method {@link ArrayFactory#newRangeArray(int, int)} where end is smaller then start
+	 * Test the method {@link ArrayFactory#newRangeArray(int, int)} where end is smaller than start:
+	 * the message of the exception says that end must not be less than start
 	 */
 	@Test
 	public void testNewRangeArrayException()
 	{
-		Assertions.assertThrows(IllegalArgumentException.class, () -> {
-			ArrayFactory.newRangeArray(9, 8);
-		});
+		final IllegalArgumentException exception = Assertions
+			.assertThrows(IllegalArgumentException.class, () -> {
+				ArrayFactory.newRangeArray(9, 8);
+			});
+		assertEquals("Parameter end must not be less than parameter start.",
+			exception.getMessage());
+	}
+
+	/**
+	 * Test the method {@link ArrayFactory#newRangeArray(int, int)} where start and end are equal:
+	 * the range holds this one number
+	 */
+	@Test
+	public void testNewRangeArrayWithEqualStartAndEnd()
+	{
+		final Integer[] expected = { 5 };
+		final Integer[] actual = ArrayFactory.newRangeArray(5, 5);
+		assertArrayEquals(expected, actual);
 	}
 
 	/**
@@ -291,6 +399,56 @@ public class ArrayFactoryTest
 		expected = new short[0];
 		actual = ArrayFactory.newShortArray();
 		assertTrue(Arrays.equals(actual, expected));
+	}
+
+	/**
+	 * Test the factory methods of the primitive types with a given array: the result is a new array
+	 * with the same values, not the given array itself (#75).
+	 */
+	@Test
+	public void testNewPrimitiveArrayWithGivenArray()
+	{
+		final boolean[] booleans = { true, false };
+		Assertions.assertNotSame(booleans, ArrayFactory.newBooleanArray(booleans));
+		Assertions.assertArrayEquals(booleans, ArrayFactory.newBooleanArray(booleans));
+		final byte[] bytes = { 1, 2 };
+		Assertions.assertNotSame(bytes, ArrayFactory.newByteArray(bytes));
+		Assertions.assertArrayEquals(bytes, ArrayFactory.newByteArray(bytes));
+		final char[] chars = { 'a', 'b' };
+		Assertions.assertNotSame(chars, ArrayFactory.newCharArray(chars));
+		Assertions.assertArrayEquals(chars, ArrayFactory.newCharArray(chars));
+		final double[] doubles = { 1.0D, 2.0D };
+		Assertions.assertNotSame(doubles, ArrayFactory.newDoubleArray(doubles));
+		Assertions.assertArrayEquals(doubles, ArrayFactory.newDoubleArray(doubles));
+		final float[] floats = { 1.0F, 2.0F };
+		Assertions.assertNotSame(floats, ArrayFactory.newFloatArray(floats));
+		Assertions.assertArrayEquals(floats, ArrayFactory.newFloatArray(floats));
+		final int[] ints = { 1, 2 };
+		Assertions.assertNotSame(ints, ArrayFactory.newIntArray(ints));
+		Assertions.assertArrayEquals(ints, ArrayFactory.newIntArray(ints));
+		final long[] longs = { 1L, 2L };
+		Assertions.assertNotSame(longs, ArrayFactory.newLongArray(longs));
+		Assertions.assertArrayEquals(longs, ArrayFactory.newLongArray(longs));
+		final short[] shorts = { 1, 2 };
+		Assertions.assertNotSame(shorts, ArrayFactory.newShortArray(shorts));
+		Assertions.assertArrayEquals(shorts, ArrayFactory.newShortArray(shorts));
+	}
+
+	/**
+	 * Test the factory methods of the primitive types with null instead of an array: the result is
+	 * null.
+	 */
+	@Test
+	public void testNewPrimitiveArrayWithNull()
+	{
+		Assertions.assertNull(ArrayFactory.newBooleanArray((boolean[])null));
+		Assertions.assertNull(ArrayFactory.newByteArray((byte[])null));
+		Assertions.assertNull(ArrayFactory.newCharArray((char[])null));
+		Assertions.assertNull(ArrayFactory.newDoubleArray((double[])null));
+		Assertions.assertNull(ArrayFactory.newFloatArray((float[])null));
+		Assertions.assertNull(ArrayFactory.newIntArray((int[])null));
+		Assertions.assertNull(ArrayFactory.newLongArray((long[])null));
+		Assertions.assertNull(ArrayFactory.newShortArray((short[])null));
 	}
 
 	/**

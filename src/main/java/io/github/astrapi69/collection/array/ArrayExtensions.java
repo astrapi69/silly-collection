@@ -28,6 +28,7 @@ import java.lang.reflect.Array;
 import java.util.Arrays;
 import java.util.List;
 import java.util.Map;
+import java.util.Objects;
 import java.util.Optional;
 import java.util.Set;
 import java.util.stream.Collectors;
@@ -148,15 +149,25 @@ public final class ArrayExtensions
 	}
 
 	/**
-	 * Returns a concatenated array from given arrays
+	 * Returns a concatenated array from given arrays.
+	 * <p>
+	 * If the given elements are null or empty, the existing array itself is returned, also when it
+	 * is null: {@code concatenate(null, new Integer[0])} returns null and
+	 * {@code concatenate(new Integer[0], null)} returns the given empty array. Otherwise, if the
+	 * existing array is null, the elements array itself is returned. In all other cases the result
+	 * is a new array of the component type of the existing array, with the elements of the existing
+	 * array followed by the given elements.
+	 * </p>
 	 *
 	 * @param <T>
 	 *            the generic type
 	 * @param existingArray
-	 *            the existing array
+	 *            the existing array, may be null
 	 * @param elements
-	 *            the element that will be concatenated
-	 * @return a new concatenated array from given arrays
+	 *            the elements that will be concatenated, may be null
+	 * @return the existing array itself if the given elements are null or empty, else the elements
+	 *         array itself if the existing array is null, else a new concatenated array from the
+	 *         given arrays
 	 */
 	@SuppressWarnings("unchecked")
 	public static <T> T[] concatenate(T[] existingArray, T[] elements)
@@ -577,7 +588,7 @@ public final class ArrayExtensions
 	}
 
 	/**
-	 * Checks if the given array has a next element from the given element
+	 * Checks if the given array has a previous element from the given element
 	 *
 	 * @param <T>
 	 *            the generic type
@@ -720,32 +731,97 @@ public final class ArrayExtensions
 	}
 
 	/**
-	 * Removes the first element of the array
+	 * Joins two arrays of the same type into a single array.
+	 * <p>
+	 * This method combines the elements of the two input arrays {@code array1} and {@code array2}
+	 * into a new array. If either of the arrays is {@code null}, the other array is returned. If
+	 * both arrays are {@code null}, the result is {@code null}. The resulting array is of the same
+	 * component type as the first array, and it contains all elements from both input arrays.
+	 * </p>
+	 *
+	 * @param <T>
+	 *            the component type of the arrays
+	 * @param array1
+	 *            the first array, may be {@code null}
+	 * @param array2
+	 *            the second array, may be {@code null}
+	 * @return a new array containing all elements of {@code array1} and {@code array2}, or one of
+	 *         the arrays if the other is {@code null}
+	 * @throws IllegalArgumentException
+	 *             if the component types of the two arrays are incompatible
+	 * @throws ArrayStoreException
+	 *             if an incompatible element is found when copying the arrays
+	 */
+	@SafeVarargs
+	public static <T> T[] join(final T[] array1, final T... array2)
+	{
+		if (array1 == null)
+		{
+			return array2;
+		}
+		if (array2 == null)
+		{
+			return array1;
+		}
+		final Class<?> type1 = array1.getClass().getComponentType();
+		final Class<?> type2 = array2.getClass().getComponentType();
+		if (!type1.isAssignableFrom(type2))
+		{
+			throw new IllegalArgumentException(
+				"Cannot store " + type2.getName() + " in an array of " + type1.getName());
+		}
+		@SuppressWarnings("unchecked") // OK, because array is of type T
+		final T[] joinedArray = (T[])Array.newInstance(type1, array1.length + array2.length);
+		System.arraycopy(array1, 0, joinedArray, 0, array1.length);
+		System.arraycopy(array2, 0, joinedArray, array1.length, array2.length);
+		return joinedArray;
+	}
+
+
+	/**
+	 * Creates a new array from the given array without the elements at the given indexes.
+	 * <p>
+	 * The indexes refer to the given array and may be given in any order. Each distinct index
+	 * removes one element: an index given twice removes the element at this index once, so
+	 * {@code remove({ 0, 1, 2, 3 }, 1, 1)} returns {@code { 0, 2, 3 }}. Neither the given array nor
+	 * the given indexes array is changed.
+	 * </p>
 	 *
 	 * @param <T>
 	 *            the generic type of the objects in the array
 	 * @param array
 	 *            the origin array
 	 * @param indexes
-	 *            the indexes to remove
-	 * @return the new created array with the elements from the given indexes
+	 *            the indexes of the elements to remove, in any order
+	 * @return the new created array without the elements at the given indexes
+	 * @throws IndexOutOfBoundsException
+	 *             if one of the given indexes is negative or not less than the length of the given
+	 *             array, with the message of {@link Objects#checkIndex(int, int)} for the length of
+	 *             the given array; the given array is unchanged then too
 	 */
 	public static <T> T[] remove(final T[] array, int... indexes)
 	{
 		Argument.notNull(array, "array");
 		List<T> list = ListFactory.newArrayList(array);
-		final int lastIndex = indexes.length - 1;
-		Arrays.sort(indexes);
-		for (int i = lastIndex; -1 < i; i--)
+		// a sorted copy without duplicates, the indexes array of the caller stays as it is
+		final int[] distinctIndexes = Arrays.stream(indexes).distinct().sorted().toArray();
+		// every index is checked against the given array before any removal, so that the message
+		// names the length of the given array
+		for (final int index : distinctIndexes)
 		{
-			int index = indexes[i];
-			list.remove(index);
+			Objects.checkIndex(index, array.length);
+		}
+		// from the highest index down, so that a removal does not move the elements still to remove
+		for (int i = distinctIndexes.length - 1; -1 < i; i--)
+		{
+			list.remove(distinctIndexes[i]);
 		}
 		return list.toArray(Arrays.copyOf(array, list.size()));
 	}
 
 	/**
-	 * Removes the first element of the array
+	 * Creates a new array from the given array without all of its elements that are also contained
+	 * in the given array to remove
 	 *
 	 * @param <T>
 	 *            the generic type of the objects in the array
@@ -753,7 +829,7 @@ public final class ArrayExtensions
 	 *            the origin array
 	 * @param arrayToRemove
 	 *            the array to remove
-	 * @return the new created array with the elements
+	 * @return the new created array without the elements of the given array to remove
 	 */
 	public static <T> T[] removeAll(final T[] array, final T[] arrayToRemove)
 	{
@@ -774,6 +850,8 @@ public final class ArrayExtensions
 	 * @param original
 	 *            the origin array
 	 * @return the new created array without the first element
+	 * @throws IndexOutOfBoundsException
+	 *             if the given array is empty
 	 */
 	public static <T> T[] removeFirst(final T[] original)
 	{
@@ -782,62 +860,94 @@ public final class ArrayExtensions
 	}
 
 	/**
-	 * Removes the given suffix array from the first given array
+	 * Creates a new array from the given array without the given suffix, if the given array ends
+	 * with it.
+	 * <p>
+	 * The array ends with the suffix if its last elements equal those of the suffix, in their
+	 * order, compared with {@link Objects#equals(Object, Object)}; an empty suffix is a suffix of
+	 * every array. Otherwise, also for a suffix longer than the array, the result is a copy of the
+	 * given array, as {@code StringUtils.removeEnd} of Apache Commons Lang does for strings. The
+	 * result is always a new array of the component type of the given array; neither of the given
+	 * arrays is changed.
+	 * </p>
 	 *
 	 * @param <T>
 	 *            the generic type of the objects in the arrays
 	 *
 	 * @param array
-	 *            the array
+	 *            the array, not null
 	 * @param suffix
-	 *            the suffix
-	 * @return the resulted array
+	 *            the suffix to remove, not null
+	 * @return a new array without the suffix, or a copy of the given array if it does not end with
+	 *         the suffix
+	 * @throws IllegalArgumentException
+	 *             if the given array or suffix is null
 	 */
 	public static <T> T[] removeFromEnd(final T[] array, T[] suffix)
 	{
-		return Arrays.copyOf(array, array.length - suffix.length);
+		Argument.notNull(array, "array");
+		Argument.notNull(suffix, "suffix");
+		final int end = array.length - suffix.length;
+		if (end < 0 || !Arrays.equals(array, end, array.length, suffix, 0, suffix.length))
+		{
+			return array.clone();
+		}
+		return Arrays.copyOf(array, end);
 	}
 
 	/**
-	 * Removes the given prefix array from the first given array
+	 * Creates a new array from the given array without the given prefix, if the given array starts
+	 * with it.
+	 * <p>
+	 * The array starts with the prefix if its first elements equal those of the prefix, in their
+	 * order, compared with {@link Objects#equals(Object, Object)}; an empty prefix is a prefix of
+	 * every array. Otherwise, also for a prefix longer than the array, the result is a copy of the
+	 * given array, as {@code StringUtils.removeStart} of Apache Commons Lang does for strings. The
+	 * result is always a new array of the component type of the given array; neither of the given
+	 * arrays is changed.
+	 * </p>
 	 *
 	 * @param <T>
 	 *            the generic type of the objects in the arrays
 	 *
 	 * @param array
-	 *            the array
+	 *            the array, not null
 	 * @param prefix
-	 *            the prefix
-	 * @return the resulted array
+	 *            the prefix to remove, not null
+	 * @return a new array without the prefix, or a copy of the given array if it does not start
+	 *         with the prefix
+	 * @throws IllegalArgumentException
+	 *             if the given array or prefix is null
 	 */
-	@SuppressWarnings("unchecked")
 	public static <T> T[] removeFromStart(final T[] array, final T[] prefix)
 	{
 		Argument.notNull(array, "array");
 		Argument.notNull(prefix, "prefix");
-		if (0 < array.length)
+		if (array.length < prefix.length
+			|| !Arrays.equals(array, 0, prefix.length, prefix, 0, prefix.length))
 		{
-			T[] result = (T[])ArrayFactory.newArray(array[0].getClass(),
-				array.length - prefix.length);
-			System.arraycopy(array, prefix.length, result, 0, result.length);
-			return result;
+			return array.clone();
 		}
-		return array;
+		return Arrays.copyOfRange(array, prefix.length, array.length);
 	}
 
 	/**
-	 * Removes the first element of the array
+	 * Creates a new array cloned from the given array with the difference that the last element is
+	 * removed
 	 *
 	 * @param <T>
 	 *            the generic type of the objects in the array
 	 * @param original
 	 *            the origin array
-	 * @return the new created array without the first element
+	 * @return the new created array without the last element
+	 * @throws IndexOutOfBoundsException
+	 *             if the given array is empty, as {@link #removeFirst(Object[])} does
 	 */
 	public static <T> T[] removeLast(final T[] original)
 	{
 		Argument.notNull(original, "original");
-		return Arrays.copyOf(original, original.length - 1);
+		final int lastIndex = Objects.checkIndex(original.length - 1, original.length);
+		return Arrays.copyOf(original, lastIndex);
 	}
 
 	/**

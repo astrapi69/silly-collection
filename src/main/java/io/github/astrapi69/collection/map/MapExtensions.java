@@ -31,6 +31,7 @@ import java.util.LinkedHashMap;
 import java.util.List;
 import java.util.Map;
 import java.util.Map.Entry;
+import java.util.Objects;
 import java.util.Properties;
 import java.util.stream.Collectors;
 import java.util.stream.Stream;
@@ -64,26 +65,27 @@ public final class MapExtensions
 	 * @param map
 	 *            The Map.
 	 * @param value
-	 *            The value.
-	 * @return Returns the first key from the given value or null if nothing found.
+	 *            The value to look for. The values compare by
+	 *            {@link Objects#equals(Object, Object)}, so null finds a key mapped to null.
+	 * @return Returns the first key from the given value, in the iteration order of the map, or
+	 *         null if nothing found.
 	 */
 	public static <K, V> K getKeyFromValue(final Map<K, V> map, final V value)
 	{
 		Argument.notNull(map, "map");
-		K key = null;
 		for (final Entry<K, V> entry : map.entrySet())
 		{
-			key = entry.getKey();
-			if (map.get(key).equals(value))
+			if (Objects.equals(entry.getValue(), value))
 			{
-				break;
+				return entry.getKey();
 			}
 		}
-		return key;
+		return null;
 	}
 
 	/**
-	 * Returns a Collection from all founded keys from the given value or null if nothing found.
+	 * Returns a Collection from all founded keys from the given value or an empty Collection if
+	 * nothing found.
 	 *
 	 * @param <K>
 	 *            the generic type of the key
@@ -92,7 +94,8 @@ public final class MapExtensions
 	 * @param map
 	 *            The Map.
 	 * @param value
-	 *            The value.
+	 *            The value to look for. The values compare by
+	 *            {@link Objects#equals(Object, Object)}, so null finds the keys mapped to null.
 	 * @return Returns the key from the given value or an empty Collection if nothing found.
 	 */
 	public static <K, V> Collection<K> getKeysFromValue(final Map<K, V> map, final V value)
@@ -102,7 +105,7 @@ public final class MapExtensions
 		for (final Entry<K, V> entry : map.entrySet())
 		{
 			final V val = entry.getValue();
-			if (val.equals(value))
+			if (Objects.equals(val, value))
 			{
 				final K key = entry.getKey();
 				keys.add(key);

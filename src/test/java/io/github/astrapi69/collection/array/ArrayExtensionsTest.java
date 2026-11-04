@@ -26,7 +26,10 @@ package io.github.astrapi69.collection.array;
 
 import static org.junit.jupiter.api.Assertions.assertArrayEquals;
 import static org.junit.jupiter.api.Assertions.assertEquals;
+import static org.junit.jupiter.api.Assertions.assertNotNull;
+import static org.junit.jupiter.api.Assertions.assertNotSame;
 import static org.junit.jupiter.api.Assertions.assertNull;
+import static org.junit.jupiter.api.Assertions.assertSame;
 import static org.junit.jupiter.api.Assertions.assertThrows;
 import static org.junit.jupiter.api.Assertions.assertTrue;
 
@@ -37,6 +40,7 @@ import java.util.List;
 import java.util.Map;
 import java.util.Optional;
 import java.util.Set;
+import java.util.stream.Collectors;
 import java.util.stream.Stream;
 
 import org.junit.jupiter.api.Test;
@@ -56,6 +60,80 @@ import io.github.astrapi69.collection.set.SetFactory;
  */
 public class ArrayExtensionsTest
 {
+
+	/**
+	 * Test joining two non-null arrays. Verifies that the result contains all elements of both
+	 * input arrays.
+	 */
+	@Test
+	void testJoinWithBothArraysNotNull()
+	{
+		String[] array1 = { "A", "B", "C" };
+		String[] array2 = { "D", "E" };
+		String[] result = ArrayExtensions.join(array1, array2);
+
+		assertNotNull(result, "The resulting array should not be null.");
+		assertArrayEquals(new String[] { "A", "B", "C", "D", "E" }, result,
+			"The arrays should be joined correctly.");
+	}
+
+	/**
+	 * Test joining when the first array is null. Verifies that the second array is returned.
+	 */
+	@Test
+	void testJoinWithFirstArrayNull()
+	{
+		String[] array1 = null;
+		String[] array2 = { "D", "E" };
+		String[] result = ArrayExtensions.join(array1, array2);
+
+		assertNotNull(result, "The resulting array should not be null.");
+		assertArrayEquals(array2, result,
+			"The result should be the second array when the first is null.");
+	}
+
+	/**
+	 * Test joining when the second array is null. Verifies that the first array is returned.
+	 */
+	@Test
+	void testJoinWithSecondArrayNull()
+	{
+		String[] array1 = { "A", "B", "C" };
+		String[] array2 = null;
+		String[] result = ArrayExtensions.join(array1, array2);
+
+		assertNotNull(result, "The resulting array should not be null.");
+		assertArrayEquals(array1, result,
+			"The result should be the first array when the second is null.");
+	}
+
+	/**
+	 * Test joining when both arrays are null. Verifies that the result is null.
+	 */
+	@Test
+	void testJoinWithBothArraysNull()
+	{
+		String[] array1 = null;
+		String[] array2 = null;
+		String[] result = ArrayExtensions.join(array1, array2);
+
+		assertNull(result, "The result should be null when both arrays are null.");
+	}
+
+	/**
+	 * Test joining two arrays with incompatible types. Verifies that an
+	 * {@link IllegalArgumentException} is thrown when trying to join arrays of incompatible types.
+	 */
+	@Test
+	void testJoinWithIncompatibleTypes()
+	{
+		Integer[] array1 = { 1, 2, 3 };
+		String[] array2 = { "A", "B" };
+
+		assertThrows(IllegalArgumentException.class, () -> {
+			ArrayExtensions.join(array1, array2);
+		}, "An IllegalArgumentException should be thrown for incompatible types.");
+	}
 
 	/**
 	 * Test for the Method {@link ArrayExtensions#toSet(Object[])}
@@ -433,6 +511,31 @@ public class ArrayExtensionsTest
 		numberSet.forEach(i -> {
 			assertTrue(ArrayExtensions.contains(numbers, i));
 		});
+	}
+
+	/**
+	 * Test the method {@link ArrayExtensions#asSet(Object[])} with a duplicate element: the set
+	 * holds every given element once
+	 */
+	@Test
+	public void testAsSetWithDuplicateElement()
+	{
+		final Set<String> expected = SetFactory.newHashSet("1", "2", "3");
+		final Set<String> actual = ArrayExtensions.asSet("1", "2", "3", "2");
+		assertEquals(expected, actual);
+	}
+
+	/**
+	 * Test the method {@link ArrayExtensions#asStream(Object[])}: the stream delivers all given
+	 * elements in their order
+	 */
+	@Test
+	public void testAsStreamDeliversAllElementsInOrder()
+	{
+		final List<String> expected = ListFactory.newArrayList("1", "2", "3");
+		final List<String> actual = ArrayExtensions.asStream("1", "2", "3")
+			.collect(Collectors.toList());
+		assertEquals(expected, actual);
 	}
 
 	/**
@@ -968,6 +1071,18 @@ public class ArrayExtensionsTest
 	}
 
 	/**
+	 * Test method for {@link ArrayExtensions#removeFirst(Object[])} with an empty array: it throws
+	 * an {@link IndexOutOfBoundsException}, as before the fix of #63
+	 */
+	@Test
+	public void testRemoveFirstOfAnEmptyArray()
+	{
+		final IndexOutOfBoundsException exception = assertThrows(IndexOutOfBoundsException.class,
+			() -> ArrayExtensions.removeFirst(new String[0]));
+		assertEquals("Index 0 out of bounds for length 0", exception.getMessage());
+	}
+
+	/**
 	 * Test method for {@link ArrayExtensions#removeFromEnd(Object[], Object[])}
 	 */
 	@Test
@@ -1010,6 +1125,146 @@ public class ArrayExtensionsTest
 	}
 
 	/**
+	 * Test method for {@link ArrayExtensions#removeFromStart(Object[], Object[])} with elements of
+	 * different classes: the result has the component type of the given array, the {@code Number[]}
+	 * {1, 2.5, 3} without the prefix {1} gives the {@code Number[]} {2.5, 3}. Before the fix of #64
+	 * the component type was the class of the first element, {@code Integer}, and copying 2.5 threw
+	 * an {@link ArrayStoreException}
+	 */
+	@Test
+	public void testRemoveFromStartWithElementsOfDifferentClasses()
+	{
+		final Number[] array = { 1, 2.5, 3 };
+
+		final Number[] actual = ArrayExtensions.removeFromStart(array, new Number[] { 1 });
+		assertEquals(Number[].class, actual.getClass());
+		assertArrayEquals(new Number[] { 2.5, 3 }, actual);
+	}
+
+	/**
+	 * Test method for {@link ArrayExtensions#removeFromStart(Object[], Object[])} with null as
+	 * first element: the {@code String[]} {null, "a", "b"} without the prefix {null} gives the
+	 * {@code String[]} {"a", "b"}. Before the fix of #64 the method took the class of the first
+	 * element as component type and threw a {@link NullPointerException}
+	 */
+	@Test
+	public void testRemoveFromStartWithNullFirstElement()
+	{
+		final String[] array = { null, "a", "b" };
+
+		final String[] actual = ArrayExtensions.removeFromStart(array, new String[] { null });
+		assertEquals(String[].class, actual.getClass());
+		assertArrayEquals(new String[] { "a", "b" }, actual);
+	}
+
+	/**
+	 * Test method for {@link ArrayExtensions#removeFromStart(Object[], Object[])} with an
+	 * {@code Object[]} that holds strings: the result has the component type of the given array, it
+	 * is the {@code Object[]} {"b", "c"}. Before the fix of #64 the result was a {@code String[]},
+	 * the class of the first element
+	 */
+	@Test
+	public void testRemoveFromStartOfAnObjectArrayOfStrings()
+	{
+		final Object[] array = { "a", "b", "c" };
+
+		final Object[] actual = ArrayExtensions.removeFromStart(array, new Object[] { "a" });
+		assertArrayEquals(new Object[] { "b", "c" }, actual);
+		assertEquals(Object[].class, actual.getClass());
+	}
+
+	/**
+	 * Test method for {@link ArrayExtensions#removeFromStart(Object[], Object[])} and
+	 * {@link ArrayExtensions#removeFromEnd(Object[], Object[])} with a prefix or suffix that does
+	 * not match: the result is a copy of the given array (#76). Before the fix of #76 both removed
+	 * as many elements as the prefix or suffix has, whatever they are
+	 */
+	@Test
+	public void testRemoveFromStartAndEndWithAPrefixOrSuffixThatDoesNotMatch()
+	{
+		final Integer[] array = { 1, 2, 3 };
+
+		final Integer[] withoutPrefix = ArrayExtensions.removeFromStart(array, new Integer[] { 9 });
+		assertArrayEquals(new Integer[] { 1, 2, 3 }, withoutPrefix);
+		assertNotSame(array, withoutPrefix);
+		final Integer[] withoutSuffix = ArrayExtensions.removeFromEnd(array, new Integer[] { 9 });
+		assertArrayEquals(new Integer[] { 1, 2, 3 }, withoutSuffix);
+		assertNotSame(array, withoutSuffix);
+		// a prefix or suffix that matches in part only does not match either
+		assertArrayEquals(new Integer[] { 1, 2, 3 },
+			ArrayExtensions.removeFromStart(array, new Integer[] { 1, 9 }));
+		assertArrayEquals(new Integer[] { 1, 2, 3 },
+			ArrayExtensions.removeFromEnd(array, new Integer[] { 9, 3 }));
+		assertArrayEquals(new Integer[] { 1, 2, 3 }, array);
+	}
+
+	/**
+	 * Test method for {@link ArrayExtensions#removeFromStart(Object[], Object[])} and
+	 * {@link ArrayExtensions#removeFromEnd(Object[], Object[])} with a prefix or suffix longer than
+	 * the array: the result is a copy of the given array, as a longer prefix or suffix does not
+	 * match (#76). Before the fix of #76 both threw a {@link NegativeArraySizeException}
+	 */
+	@Test
+	public void testRemoveFromStartAndEndWithALongerPrefixOrSuffix()
+	{
+		final Integer[] array = { 1 };
+
+		assertArrayEquals(new Integer[] { 1 },
+			ArrayExtensions.removeFromStart(array, new Integer[] { 1, 2 }));
+		assertArrayEquals(new Integer[] { 1 },
+			ArrayExtensions.removeFromEnd(array, new Integer[] { 1, 2 }));
+	}
+
+	/**
+	 * Test method for {@link ArrayExtensions#removeFromStart(Object[], Object[])} with an empty
+	 * array: the result is a new empty array (#76). Before the fix of #76 it was the given array
+	 * itself
+	 */
+	@Test
+	public void testRemoveFromStartOfAnEmptyArray()
+	{
+		final Integer[] empty = { };
+
+		final Integer[] actual = ArrayExtensions.removeFromStart(empty, new Integer[] { 1 });
+		assertArrayEquals(new Integer[] { }, actual);
+		assertNotSame(empty, actual);
+	}
+
+	/**
+	 * Test method for {@link ArrayExtensions#removeFromEnd(Object[], Object[])} with null: it
+	 * throws an {@link IllegalArgumentException} for a null array and a null suffix, as
+	 * {@link ArrayExtensions#removeFromStart(Object[], Object[])} does (#76). Before the fix of #76
+	 * it threw a {@link NullPointerException}
+	 */
+	@Test
+	public void testRemoveFromEndWithNull()
+	{
+		assertThrows(IllegalArgumentException.class,
+			() -> ArrayExtensions.removeFromEnd(null, new Integer[] { 1 }));
+		assertThrows(IllegalArgumentException.class,
+			() -> ArrayExtensions.removeFromEnd(new Integer[] { 1 }, null));
+	}
+
+	/**
+	 * Test method for {@link ArrayExtensions#removeFromStart(Object[], Object[])} and
+	 * {@link ArrayExtensions#removeFromEnd(Object[], Object[])} with a prefix or suffix as long as
+	 * the array, and with null elements that match: the result is an empty array, and the array
+	 * without the null at its start or its end, as before the fix of #76
+	 */
+	@Test
+	public void testRemoveFromStartAndEndWithTheWholeArrayAndWithNullElements()
+	{
+		final Integer[] array = { 1, 2 };
+
+		assertArrayEquals(new Integer[] { }, ArrayExtensions.removeFromStart(array, array));
+		assertArrayEquals(new Integer[] { }, ArrayExtensions.removeFromEnd(array, array));
+		assertArrayEquals(new String[] { "a" },
+			ArrayExtensions.removeFromEnd(new String[] { "a", null }, new String[] { null }));
+		assertArrayEquals(new String[] { "a" },
+			ArrayExtensions.removeFromStart(new String[] { null, "a" }, new String[] { null }));
+	}
+
+	/**
 	 * Test method for {@link ArrayExtensions#removeLast(Object[])}
 	 */
 	@Test
@@ -1023,6 +1278,19 @@ public class ArrayExtensionsTest
 		actual = ArrayExtensions.removeLast(source);
 		expected = ArrayFactory.newArray("1", "2", "3");
 		assertArrayEquals(actual, expected);
+	}
+
+	/**
+	 * Test method for {@link ArrayExtensions#removeLast(Object[])} with an empty array: it throws
+	 * an {@link IndexOutOfBoundsException}, as {@link ArrayExtensions#removeFirst(Object[])} does.
+	 * Before the fix of #63 it threw a {@link NegativeArraySizeException}
+	 */
+	@Test
+	public void testRemoveLastOfAnEmptyArray()
+	{
+		final IndexOutOfBoundsException exception = assertThrows(IndexOutOfBoundsException.class,
+			() -> ArrayExtensions.removeLast(new String[0]));
+		assertEquals("Index -1 out of bounds for length 0", exception.getMessage());
 	}
 
 	/**
@@ -1053,6 +1321,87 @@ public class ArrayExtensionsTest
 	}
 
 	/**
+	 * Test method for {@link ArrayExtensions#remove(Object[], int...)} with unsorted indexes: the
+	 * indexes array of the caller stays { 2, 0 }. Before the fix of #63 the method sorted it to {
+	 * 0, 2 }
+	 */
+	@Test
+	public void testRemoveWithUnsortedIndexes()
+	{
+		final Integer[] array = { 0, 1, 2, 3 };
+		final int[] indexes = { 2, 0 };
+
+		assertArrayEquals(new Integer[] { 1, 3 }, ArrayExtensions.remove(array, indexes));
+		assertArrayEquals(new int[] { 2, 0 }, indexes);
+	}
+
+	/**
+	 * Test method for {@link ArrayExtensions#remove(Object[], int...)} with an index given twice:
+	 * it removes the element at the index once, { 0, 1, 2, 3 } without 1 and 1 gives { 0, 2, 3 }.
+	 * Before the fix of #63 the method also removed the element that moved there and gave { 0, 3 }
+	 */
+	@Test
+	public void testRemoveWithAnIndexTwice()
+	{
+		final Integer[] array = { 0, 1, 2, 3 };
+
+		assertArrayEquals(new Integer[] { 0, 2, 3 }, ArrayExtensions.remove(array, 1, 1));
+	}
+
+	/**
+	 * Test method for {@link ArrayExtensions#remove(Object[], int...)} with the last index given
+	 * twice: it removes the last element once, { 0, 1, 2, 3 } without 3 and 3 gives { 0, 1, 2 }.
+	 * Before the fix of #63 the method threw an {@link IndexOutOfBoundsException}, as the second 3
+	 * was out of range after the first one was removed
+	 */
+	@Test
+	public void testRemoveWithTheLastIndexTwice()
+	{
+		final Integer[] array = { 0, 1, 2, 3 };
+
+		assertArrayEquals(new Integer[] { 0, 1, 2 }, ArrayExtensions.remove(array, 3, 3));
+	}
+
+	/**
+	 * Test method for {@link ArrayExtensions#remove(Object[], int...)} with an index out of range:
+	 * it throws an {@link IndexOutOfBoundsException} with the message of
+	 * {@link java.util.ArrayList#remove(int)}, and the given array is unchanged, as before the fix
+	 * of #63
+	 */
+	@Test
+	public void testRemoveWithAnIndexOutOfRange()
+	{
+		final Integer[] array = { 0, 1, 2, 3 };
+		IndexOutOfBoundsException exception;
+
+		exception = assertThrows(IndexOutOfBoundsException.class,
+			() -> ArrayExtensions.remove(array, 1, 4));
+		assertEquals("Index 4 out of bounds for length 4", exception.getMessage());
+
+		exception = assertThrows(IndexOutOfBoundsException.class,
+			() -> ArrayExtensions.remove(array, -1));
+		assertEquals("Index -1 out of bounds for length 4", exception.getMessage());
+
+		assertArrayEquals(new Integer[] { 0, 1, 2, 3 }, array);
+	}
+
+	/**
+	 * Test method for {@link ArrayExtensions#remove(Object[], int...)} with a negative index and
+	 * another one: the message names the length of the given array, 4 (#76). Before the fix of #76
+	 * it named the length of the list after the other index was removed, 3
+	 */
+	@Test
+	public void testRemoveWithANegativeIndexAndAnother()
+	{
+		final Integer[] array = { 0, 1, 2, 3 };
+
+		final IndexOutOfBoundsException exception = assertThrows(IndexOutOfBoundsException.class,
+			() -> ArrayExtensions.remove(array, -1, 2));
+		assertEquals("Index -1 out of bounds for length 4", exception.getMessage());
+		assertArrayEquals(new Integer[] { 0, 1, 2, 3 }, array);
+	}
+
+	/**
 	 * Test for method {@link ArrayExtensions#splitInChunks(byte[], int)}
 	 */
 	@Test
@@ -1073,6 +1422,19 @@ public class ArrayExtensionsTest
 		expected = 12;
 		actual = splitedBytes.length;
 		assertEquals(expected, actual);
+	}
+
+	/**
+	 * Test the method {@link ArrayExtensions#splitInChunks(byte[], int)} with a length that is a
+	 * multiple of the chunk size: every chunk is full
+	 */
+	@Test
+	public void testSplitInChunksWithLengthMultipleOfChunkSize()
+	{
+		final byte[] bytes = { 1, 2, 3, 4, 5, 6 };
+		final byte[][] expected = { { 1, 2, 3 }, { 4, 5, 6 } };
+		final byte[][] actual = ArrayExtensions.splitInChunks(bytes, 3);
+		assertArrayEquals(expected, actual);
 	}
 
 	/**
@@ -1118,6 +1480,38 @@ public class ArrayExtensionsTest
 		actual = ArrayExtensions.concatenate(null, null);
 		expected = null;
 		assertArrayEquals(actual, expected);
+	}
+
+	/**
+	 * Test the method {@link ArrayExtensions#concatenate(Object[], Object[])} with an empty and
+	 * with a null array of elements: the result holds the elements of the existing array
+	 */
+	@Test
+	public void testConcatenateWithoutElements()
+	{
+		final Integer[] expected = { 1, 2, 3 };
+		final Integer[] existingArray = { 1, 2, 3 };
+		assertArrayEquals(expected, ArrayExtensions.concatenate(existingArray, new Integer[0]));
+		assertArrayEquals(expected, ArrayExtensions.concatenate(existingArray, null));
+	}
+
+	/**
+	 * Test the method {@link ArrayExtensions#concatenate(Object[], Object[])} where the second
+	 * array is null or empty, or the first array is null: the result is a given array itself, not a
+	 * copy of it. Only with elements in the second array and a first array that is not null is the
+	 * result a new array
+	 */
+	@Test
+	public void testConcatenateReturnsAGivenArrayItself()
+	{
+		final Integer[] existingArray = { 1, 2, 3 };
+		final Integer[] emptyArray = new Integer[0];
+		assertSame(existingArray, ArrayExtensions.concatenate(existingArray, emptyArray));
+		assertSame(existingArray, ArrayExtensions.concatenate(existingArray, null));
+		assertSame(emptyArray, ArrayExtensions.concatenate(emptyArray, null));
+		assertNull(ArrayExtensions.concatenate(null, emptyArray));
+		assertSame(existingArray, ArrayExtensions.concatenate(null, existingArray));
+		assertNotSame(existingArray, ArrayExtensions.concatenate(emptyArray, existingArray));
 	}
 
 	/**

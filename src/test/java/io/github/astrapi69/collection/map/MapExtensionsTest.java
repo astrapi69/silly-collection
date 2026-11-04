@@ -26,12 +26,15 @@ package io.github.astrapi69.collection.map;
 
 import static org.junit.jupiter.api.Assertions.assertArrayEquals;
 import static org.junit.jupiter.api.Assertions.assertEquals;
+import static org.junit.jupiter.api.Assertions.assertNull;
 import static org.junit.jupiter.api.Assertions.assertTrue;
 
 import java.util.AbstractMap;
+import java.util.ArrayList;
 import java.util.Collection;
 import java.util.Comparator;
 import java.util.HashMap;
+import java.util.IdentityHashMap;
 import java.util.List;
 import java.util.Map;
 import java.util.Map.Entry;
@@ -60,6 +63,7 @@ public class MapExtensionsTest
 
 	private void assertMapToArray(Map<String, String> map, String[][] twoDimArray)
 	{
+		assertEquals(twoDimArray.length, map.size());
 		int count = 0;
 		for (final Entry<String, String> entry : map.entrySet())
 		{
@@ -93,6 +97,86 @@ public class MapExtensionsTest
 	}
 
 	/**
+	 * Test the method {@link MapExtensions#getKeyFromValue(Map, Object)} with values that come
+	 * before the last entry, one of them held by two keys: the first key in the iteration order of
+	 * the map that holds the value is returned
+	 */
+	@Test
+	public void testGetKeyFromValueReturnsTheFirstKey()
+	{
+		final Map<String, String> map = MapFactory.newLinkedHashMap();
+		map.put("1", "novalue");
+		map.put("2", "value");
+		map.put("3", "othervalue");
+		map.put("4", "value");
+		assertEquals("2", MapExtensions.getKeyFromValue(map, "value"));
+		assertEquals("1", MapExtensions.getKeyFromValue(map, "novalue"));
+	}
+
+	/**
+	 * Test the method {@link MapExtensions#getKeyFromValue(Map, Object)} with an empty map: no key
+	 * is found, so null is returned
+	 */
+	@Test
+	public void testGetKeyFromValueWithEmptyMap()
+	{
+		assertNull(MapExtensions.getKeyFromValue(MapFactory.newLinkedHashMap(), "value"));
+	}
+
+	/**
+	 * Test the method {@link MapExtensions#getKeyFromValue(Map, Object)} with a value that no entry
+	 * holds: no key is found, so null is returned (#44)
+	 */
+	@Test
+	public void testGetKeyFromValueWithoutMatch()
+	{
+		String actual;
+		String expected;
+		final Map<String, String> map = MapFactory.newLinkedHashMap();
+		map.put("1", "novalue");
+		map.put("2", "somevalue");
+		actual = MapExtensions.getKeyFromValue(map, "missing");
+		expected = null;
+		assertEquals(expected, actual);
+	}
+
+	/**
+	 * Test the method {@link MapExtensions#getKeyFromValue(Map, Object)} with a map that holds null
+	 * as the value of an entry before the one that holds the value: the key of the value is
+	 * returned (#44)
+	 */
+	@Test
+	public void testGetKeyFromValueWithNullValueInMap()
+	{
+		String actual;
+		String expected;
+		final Map<String, String> map = MapFactory.newLinkedHashMap();
+		map.put("1", null);
+		map.put("2", "value");
+		actual = MapExtensions.getKeyFromValue(map, "value");
+		expected = "2";
+		assertEquals(expected, actual);
+	}
+
+	/**
+	 * Test the method {@link MapExtensions#getKeyFromValue(Map, Object)} with null as the value to
+	 * look for: the first key mapped to null is returned (#44)
+	 */
+	@Test
+	public void testGetKeyFromValueWithNullValue()
+	{
+		String actual;
+		String expected;
+		final Map<String, String> map = MapFactory.newLinkedHashMap();
+		map.put("1", "value");
+		map.put("2", null);
+		map.put("3", null);
+		actual = MapExtensions.getKeyFromValue(map, null);
+		expected = "2";
+		assertEquals(expected, actual);
+	}
+
+	/**
 	 * Test for the Method {@link MapExtensions#getKeysFromValue(Map, Object)}.
 	 */
 	@Test
@@ -109,11 +193,60 @@ public class MapExtensionsTest
 		map.put("4", "value");
 		map.put("5", "value");
 		final Collection<String> foundedKeys = MapExtensions.getKeysFromValue(map, value);
+		assertEquals(expected.size(), foundedKeys.size());
 		for (final String key : foundedKeys)
 		{
 			assertTrue(expected.contains(key), "Key should be in the expected List.");
 
 		}
+	}
+
+	/**
+	 * Test the method {@link MapExtensions#getKeysFromValue(Map, Object)} with a value that no
+	 * entry holds: an empty collection is returned, as its return tag says
+	 */
+	@Test
+	public void testGetKeysFromValueWithoutMatch()
+	{
+		final Map<String, String> map = MapFactory.newLinkedHashMap();
+		map.put("1", "novalue");
+		map.put("2", "value");
+		assertTrue(MapExtensions.getKeysFromValue(map, "missing").isEmpty());
+	}
+
+	/**
+	 * Test the method {@link MapExtensions#getKeysFromValue(Map, Object)} with a map that holds
+	 * null as the value of an entry: the keys of the value are returned (#44)
+	 */
+	@Test
+	public void testGetKeysFromValueWithNullValueInMap()
+	{
+		Set<String> actual;
+		Set<String> expected;
+		final Map<String, String> map = MapFactory.newLinkedHashMap();
+		map.put("1", null);
+		map.put("2", "value");
+		actual = SetFactory.newHashSet(MapExtensions.getKeysFromValue(map, "value"));
+		expected = SetFactory.newHashSet("2");
+		assertEquals(expected, actual);
+	}
+
+	/**
+	 * Test the method {@link MapExtensions#getKeysFromValue(Map, Object)} with null as the value to
+	 * look for: the keys mapped to null are returned (#44)
+	 */
+	@Test
+	public void testGetKeysFromValueWithNullValue()
+	{
+		Set<String> actual;
+		Set<String> expected;
+		final Map<String, String> map = MapFactory.newLinkedHashMap();
+		map.put("1", null);
+		map.put("2", "value");
+		map.put("3", null);
+		actual = SetFactory.newHashSet(MapExtensions.getKeysFromValue(map, null));
+		expected = SetFactory.newHashSet("1", "3");
+		assertEquals(expected, actual);
 	}
 
 	/**
@@ -361,7 +494,8 @@ public class MapExtensionsTest
 	}
 
 	/**
-	 * Test for the Method {@link MapExtensions#sortByValue(Map, boolean)}
+	 * Test the method {@link MapExtensions#sortByValue(Map, boolean)}: the entries come in the
+	 * natural order of the values, and in the reversed order if the flag is true
 	 */
 	@Test
 	public void testSortByValue()
@@ -383,6 +517,7 @@ public class MapExtensionsTest
 		expected.put("23", "3");
 		expected.put("13", "4");
 		assertEquals(expected, actual);
+		assertEquals(new ArrayList<>(expected.keySet()), new ArrayList<>(actual.keySet()));
 		// new scenario...
 		actual = MapExtensions.sortByValue(map, true);
 		expected = MapFactory.newLinkedHashMap();
@@ -391,10 +526,66 @@ public class MapExtensionsTest
 		expected.put("21", "2");
 		expected.put("5", "1");
 		assertEquals(expected, actual);
+		assertEquals(new ArrayList<>(expected.keySet()), new ArrayList<>(actual.keySet()));
 	}
 
 	/**
-	 * Test for the Method {@link MapExtensions#sortByKey(Map, Comparator)}
+	 * Test the method {@link MapExtensions#sortByValue(Map, boolean)} with an
+	 * {@link IdentityHashMap} that holds two keys that are equal but not the same: the sorted map
+	 * holds the key once instead of dropping it. Both keys hold the same value, because the Javadoc
+	 * does not say which of two values would be kept.
+	 */
+	@Test
+	public void testSortByValueWithEqualKeys()
+	{
+		Map<String, Integer> actual;
+		Map<String, Integer> expected;
+		final Map<String, Integer> map = new IdentityHashMap<>();
+		// two keys that are equal but not the same
+		map.put(new String("a"), 1);
+		map.put(new String("a"), 1);
+		map.put("b", 2);
+		// new scenario...
+		actual = MapExtensions.sortByValue(map, false);
+		expected = MapFactory.newLinkedHashMap();
+		expected.put("a", 1);
+		expected.put("b", 2);
+		assertEquals(expected, actual);
+		assertEquals(new ArrayList<>(expected.keySet()), new ArrayList<>(actual.keySet()));
+		// new scenario...
+		actual = MapExtensions.sortByValue(map, true);
+		expected = MapFactory.newLinkedHashMap();
+		expected.put("b", 2);
+		expected.put("a", 1);
+		assertEquals(expected, actual);
+		assertEquals(new ArrayList<>(expected.keySet()), new ArrayList<>(actual.keySet()));
+	}
+
+	/**
+	 * Test the method {@link MapExtensions#sortByKey(Map, Comparator)} with an
+	 * {@link IdentityHashMap} that holds two keys that are equal but not the same: the sorted map
+	 * holds the key once instead of dropping it. Both keys hold the same value, because the Javadoc
+	 * does not say which of two values would be kept.
+	 */
+	@Test
+	public void testSortByKeyWithEqualKeys()
+	{
+		final Map<String, Integer> map = new IdentityHashMap<>();
+		// two keys that are equal but not the same
+		map.put(new String("a"), 1);
+		map.put(new String("a"), 1);
+		map.put("b", 2);
+		final Map<String, Integer> actual = MapExtensions.sortByKey(map, Comparator.naturalOrder());
+		final Map<String, Integer> expected = MapFactory.newLinkedHashMap();
+		expected.put("a", 1);
+		expected.put("b", 2);
+		assertEquals(expected, actual);
+		assertEquals(new ArrayList<>(expected.keySet()), new ArrayList<>(actual.keySet()));
+	}
+
+	/**
+	 * Test the method {@link MapExtensions#sortByKey(Map, Comparator)}: the entries come in the
+	 * order of the keys that the given comparator defines
 	 */
 	@Test
 	public void testSortByKey()
@@ -416,6 +607,7 @@ public class MapExtensionsTest
 		expected.put("3", "23");
 		expected.put("4", "13");
 		assertEquals(expected, actual);
+		assertEquals(new ArrayList<>(expected.keySet()), new ArrayList<>(actual.keySet()));
 		// new scenario...
 		actual = MapExtensions.sortByKey(map, Comparator.reverseOrder());
 		expected = MapFactory.newLinkedHashMap();
@@ -424,10 +616,12 @@ public class MapExtensionsTest
 		expected.put("2", "21");
 		expected.put("1", "5");
 		assertEquals(expected, actual);
+		assertEquals(new ArrayList<>(expected.keySet()), new ArrayList<>(actual.keySet()));
 	}
 
 	/**
-	 * Test for the Method {@link MapExtensions#sortByKey(Map, Comparator)}
+	 * Test the method {@link MapExtensions#sortByKey(Map, Comparator)} with integer keys: the
+	 * entries come in the order of the keys that the given comparator defines
 	 */
 	@Test
 	public void testSortByKeyWithInteger()
@@ -449,6 +643,7 @@ public class MapExtensionsTest
 		expected.put(3, "23");
 		expected.put(4, "13");
 		assertEquals(expected, actual);
+		assertEquals(new ArrayList<>(expected.keySet()), new ArrayList<>(actual.keySet()));
 		// new scenario...
 		actual = MapExtensions.sortByKey(map, Comparator.reverseOrder());
 		expected = MapFactory.newLinkedHashMap();
@@ -457,6 +652,7 @@ public class MapExtensionsTest
 		expected.put(2, "21");
 		expected.put(1, "5");
 		assertEquals(expected, actual);
+		assertEquals(new ArrayList<>(expected.keySet()), new ArrayList<>(actual.keySet()));
 	}
 
 	/**
@@ -601,7 +797,8 @@ public class MapExtensionsTest
 	}
 
 	/**
-	 * Test for the Method {@link MapExtensions#sortByValue(Map, Comparator)}
+	 * Test the method {@link MapExtensions#sortByValue(Map, Comparator)}: the entries come in the
+	 * order of the values that the given comparator defines
 	 */
 	@Test
 	public void testSortByValueWithComparator()
@@ -623,6 +820,7 @@ public class MapExtensionsTest
 		expected.put("23", "3");
 		expected.put("13", "4");
 		assertEquals(expected, actual);
+		assertEquals(new ArrayList<>(expected.keySet()), new ArrayList<>(actual.keySet()));
 		// new scenario...
 		actual = MapExtensions.sortByValue(map, Comparator.reverseOrder());
 		expected = MapFactory.newLinkedHashMap();
@@ -631,6 +829,7 @@ public class MapExtensionsTest
 		expected.put("21", "2");
 		expected.put("5", "1");
 		assertEquals(expected, actual);
+		assertEquals(new ArrayList<>(expected.keySet()), new ArrayList<>(actual.keySet()));
 	}
 
 	/**
@@ -646,7 +845,8 @@ public class MapExtensionsTest
 	}
 
 	/**
-	 * Test for the Method {@link MapExtensions#toMap(String[][])}.
+	 * Test the method {@link MapExtensions#toMap(String[][])}: the map holds one entry for each row
+	 * of the array, in the order of the rows, and nothing for an empty array
 	 */
 	@Test
 	public void testToMap()
@@ -655,6 +855,8 @@ public class MapExtensionsTest
 				{ "2", "value2" } };
 		final Map<String, String> map = MapExtensions.toMap(twoDimArray);
 		assertMapToArray(map, twoDimArray);
+		// new scenario...
+		assertTrue(MapExtensions.toMap(new String[0][]).isEmpty());
 	}
 
 	/**

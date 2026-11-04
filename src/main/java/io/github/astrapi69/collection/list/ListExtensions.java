@@ -389,7 +389,7 @@ public final class ListExtensions
 	}
 
 	/**
-	 * Checks if the given {@link List} has a next element from the given element
+	 * Checks if the given {@link List} has a previous element from the given element
 	 *
 	 * @param <T>
 	 *            the generic type
@@ -611,13 +611,15 @@ public final class ListExtensions
 	 *            The Vector with the received Messages.
 	 * @param remove
 	 *            How much to remove.
-	 * @return the list
+	 * @return the given list without its last values
+	 * @throws IllegalArgumentException
+	 *             if remove is greater than the size of the given list
 	 */
 	public static <T> List<T> removeLastValues(final List<T> v, final int remove)
 	{
-		if (remove < v.size())
+		if (remove <= v.size())
 		{
-			return v.subList(remove, v.size());
+			return v.subList(0, v.size() - remove);
 		}
 		throw new IllegalArgumentException("You cannot remove "
 			+ "more element than in the ArrayList exists. \nSize from ArrayList:" + v.size() + "\n"
@@ -727,7 +729,7 @@ public final class ListExtensions
 	{
 		Comparator comparator = Comparator.comparing(beanPropertyFunction,
 			Comparator.nullsFirst(Comparator.naturalOrder()));
-		if (ascending)
+		if (!ascending)
 		{
 			comparator = comparator.reversed();
 		}
@@ -775,30 +777,48 @@ public final class ListExtensions
 	}
 
 	/**
-	 * To array.
+	 * Creates a new array from the given {@link List}, with the elements in the order of the list.
+	 * <p>
+	 * The component type of the array is the most specific common superclass of the non-null
+	 * elements, found by walking up their class hierarchy with {@link Class#getSuperclass()};
+	 * interfaces are not considered. If every element is null, the component type is
+	 * {@link Object}. So [null, "a"] gives a {@code String[]} that holds null and "a", [1, 2.5] and
+	 * [2.5, 1] give a {@code Number[]}, and ["a", 1] gives an {@code Object[]}. Elements of one
+	 * class give an array of that class. See {@link CollectionExtensions#toArray(Collection)}.
+	 * <p>
+	 * The result is a {@code T[]} only if that superclass is {@code T} or a subclass of it. A
+	 * caller whose {@code T} is an interface, or a class more specific than that superclass, gets a
+	 * {@link ClassCastException} where it assigns the result to a {@code T[]}: a
+	 * {@code List<Comparable<?>>} of 1 and "a" gives an {@code Object[]}, and so does a
+	 * {@code List<String>} that holds only null.
 	 *
 	 * @param <T>
 	 *            the generic type
 	 * @param list
 	 *            the list
-	 * @return the array or null if the list is empty
+	 * @return the new array with the elements of the given list
+	 * @throws IllegalArgumentException
+	 *             if the given list is null or empty
 	 */
-	@SuppressWarnings("unchecked")
 	public static <T> T[] toArray(final List<T> list)
 	{
 		Check.get().notNull(list, "list").notEmpty(list, "list");
-		T[] newArray = (T[])ArrayFactory.newArray(list.get(0).getClass(), list.size());
-		return list.toArray(newArray);
+		return CollectionExtensions.toArray(list);
 	}
 
 	/**
-	 * To array.
+	 * Returns a new array with the given elements, as {@link ArrayFactory#newArray(Object...)}
+	 * does.
+	 * <p>
+	 * The result is a new array, also when no elements are given: a copy of the given array, so
+	 * that a write to the result does not change the array of the caller. Null gives null.
+	 * </p>
 	 *
 	 * @param <T>
 	 *            the generic type
 	 * @param elements
-	 *            the elements
-	 * @return the t[]
+	 *            the elements, may be null
+	 * @return a new array with the given elements, or null if the given elements are null
 	 */
 	@SafeVarargs
 	public static <T> T[] toArray(final T... elements)
@@ -829,14 +849,14 @@ public final class ListExtensions
 	}
 
 	/**
-	 * Converts the given enumeration to a Vector.
+	 * Converts the given enumeration to an ArrayList.
 	 *
 	 * @param <T>
 	 *            the generic type
 	 * @param enumeration
 	 *            The Enumeration to convert.
 	 *
-	 * @return A new Vector with the content of the given Enumeration.
+	 * @return A new ArrayList with the content of the given Enumeration.
 	 */
 	public static <T> List<T> toList(final Enumeration<T> enumeration)
 	{
@@ -910,18 +930,20 @@ public final class ListExtensions
 	 * @param <T>
 	 *            the generic type
 	 * @param list
-	 *            the list
+	 *            the list, sorted in the order of the given comparator
 	 * @param element
 	 *            the element for resolve the index to add
 	 * @param comparator
 	 *            the comparator
-	 * @return the index of the given element in the given list
+	 * @return the index of an element of the given list that the given comparator holds equal to
+	 *         the given element, whether equals does or not, otherwise the index of the first
+	 *         element greater than the given element, or the size of the list if there is none
 	 */
 	public static <T> int getIndexToInsert(List<? extends T> list, T element,
 		Comparator<? super T> comparator)
 	{
 		int indexToInsert = Collections.binarySearch(list, element, comparator);
-		if (!list.contains(element))
+		if (indexToInsert < 0)
 		{
 			indexToInsert = -indexToInsert - 1;
 		}
