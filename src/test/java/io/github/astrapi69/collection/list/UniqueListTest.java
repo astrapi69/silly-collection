@@ -449,21 +449,19 @@ public class UniqueListTest
 
 	/**
 	 * Test the method {@link UniqueList#set(int, Object)} with an element the list holds at another
-	 * index: [a, b, c].set(0, c) returns a and gives [c, b, c], and [a, b, c].set(2, a) returns c
-	 * and gives [a, b, a], a duplicate each time (#67).
-	 * <p>
-	 * The fix of #67 changes the result: the two elements swap, both calls give [c, b, a].
+	 * index, before and behind the given one: the two elements swap, [a, b, c].set(0, c) returns a
+	 * and gives [c, b, a], and [a, b, c].set(2, a) returns c and gives [c, b, a] too (#67)
 	 */
 	@Test
 	public void testSetWithElementHeldAtAnotherIndex()
 	{
 		List<String> list = new UniqueList<>(Arrays.asList("a", "b", "c"));
 		assertEquals("a", list.set(0, "c"));
-		assertEquals(Arrays.asList("c", "b", "c"), list);
+		assertEquals(Arrays.asList("c", "b", "a"), list);
 
 		list = new UniqueList<>(Arrays.asList("a", "b", "c"));
 		assertEquals("c", list.set(2, "a"));
-		assertEquals(Arrays.asList("a", "b", "a"), list);
+		assertEquals(Arrays.asList("c", "b", "a"), list);
 	}
 
 	/**
@@ -507,10 +505,8 @@ public class UniqueListTest
 	/**
 	 * Test the method {@link UniqueList#set(int, Object)} while an iterator runs over the list: set
 	 * is no structural modification, the iterator goes on without a
-	 * ConcurrentModificationException; [a, b, c].set(0, c) after the first next() gives [c, b, c],
-	 * and the iterator returns b and c (#67).
-	 * <p>
-	 * The fix of #67 changes the result: [c, b, a], and the iterator returns b and a.
+	 * ConcurrentModificationException; [a, b, c].set(0, c) after the first next() gives [c, b, a],
+	 * and the iterator returns b and a (#67)
 	 */
 	@Test
 	public void testSetWhileAnIteratorRuns()
@@ -521,9 +517,9 @@ public class UniqueListTest
 
 		list.set(0, "c");
 		assertEquals("b", iterator.next());
-		assertEquals("c", iterator.next());
+		assertEquals("a", iterator.next());
 		assertFalse(iterator.hasNext());
-		assertEquals(Arrays.asList("c", "b", "c"), list);
+		assertEquals(Arrays.asList("c", "b", "a"), list);
 	}
 
 	/**
@@ -608,11 +604,9 @@ public class UniqueListTest
 	}
 
 	/**
-	 * Test the method set of the list iterator with an element the list holds at another index: [a,
-	 * b] with next(), next() and set(a) gives [a, a], and previous() returns a twice (#67).
-	 * <p>
-	 * The fix of #67 changes the result: [b, a], set swaps as {@link UniqueList#set(int, Object)}
-	 * does, and previous() returns a and b.
+	 * Test the method set of the list iterator with an element the list holds at another index: it
+	 * swaps as {@link UniqueList#set(int, Object)} does, [a, b] with next(), next() and set(a)
+	 * gives [b, a], and previous() returns a and b (#67)
 	 */
 	@Test
 	public void testListIteratorSetWithElementHeldAtAnotherIndex()
@@ -623,19 +617,17 @@ public class UniqueListTest
 		iterator.next();
 
 		iterator.set("a");
-		assertEquals(Arrays.asList("a", "a"), list);
+		assertEquals(Arrays.asList("b", "a"), list);
 		assertEquals("a", iterator.previous());
-		assertEquals("a", iterator.previous());
+		assertEquals("b", iterator.previous());
 	}
 
 	/**
-	 * Test the method add of the list iterator with an element the list holds before the cursor:
-	 * [a, b, c] with next() and add(a) gives [b, a, c], and the following next() returns c, it
-	 * skips b against the contract of ListIterator.add; [a, b, c, d] with next(), next() and add(a)
-	 * gives [b, c, a, d], previousIndex() is 2 (#67).
-	 * <p>
-	 * The fix of #67 changes the result: a ends immediately before the element next() would return,
-	 * [a, b, c] and next() returns b; [b, a, c, d] and previousIndex() is 1.
+	 * Test the method add of the list iterator with an element the list holds before the cursor: it
+	 * ends immediately before the element next() would return, and the following next() returns
+	 * that element, as the contract of ListIterator.add says; [a, b, c] with next() and add(a)
+	 * stays [a, b, c] and next() returns b, [a, b, c, d] with next(), next() and add(a) gives [b,
+	 * a, c, d], and previous() returns a at the index 1 (#67)
 	 */
 	@Test
 	public void testListIteratorAddWithElementHeldBeforeTheCursor()
@@ -645,8 +637,9 @@ public class UniqueListTest
 		assertEquals("a", iterator.next());
 
 		iterator.add("a");
-		assertEquals(Arrays.asList("b", "a", "c"), list);
-		assertEquals("c", iterator.next());
+		assertEquals(Arrays.asList("a", "b", "c"), list);
+		assertEquals(1, iterator.nextIndex());
+		assertEquals("b", iterator.next());
 
 		list = new UniqueList<>(Arrays.asList("a", "b", "c", "d"));
 		iterator = list.listIterator();
@@ -654,19 +647,15 @@ public class UniqueListTest
 		iterator.next();
 
 		iterator.add("a");
-		assertEquals(Arrays.asList("b", "c", "a", "d"), list);
-		assertEquals(2, iterator.previousIndex());
+		assertEquals(Arrays.asList("b", "a", "c", "d"), list);
+		assertEquals(1, iterator.previousIndex());
 		assertEquals("a", iterator.previous());
 	}
 
 	/**
 	 * Test the method add of the list iterator at the end of the list with an element the list
-	 * holds: [a, b, c] with a list iterator at its end and add(a) gives [b, c, a] and leaves the
-	 * cursor behind the end, nextIndex() is 4, hasNext() is true, and next() throws a
-	 * NoSuchElementException (#67).
-	 * <p>
-	 * The fix of #67 changes the result: nextIndex() is 3, hasNext() is false, and previous()
-	 * returns a.
+	 * holds: [a, b, c] with a list iterator at its end and add(a) gives [b, c, a], and the cursor
+	 * stays at the end, nextIndex() is 3, hasNext() is false, and previous() returns a (#67)
 	 */
 	@Test
 	public void testListIteratorAddAtTheEndWithElementHeldBeforeTheCursor()
@@ -676,9 +665,9 @@ public class UniqueListTest
 
 		iterator.add("a");
 		assertEquals(Arrays.asList("b", "c", "a"), list);
-		assertEquals(4, iterator.nextIndex());
-		assertTrue(iterator.hasNext());
-		assertThrows(NoSuchElementException.class, iterator::next);
+		assertEquals(3, iterator.nextIndex());
+		assertFalse(iterator.hasNext());
+		assertEquals("a", iterator.previous());
 	}
 
 	/**
@@ -856,18 +845,24 @@ public class UniqueListTest
 	}
 
 	/**
-	 * Test the method {@link UniqueList#replaceAll(java.util.function.UnaryOperator)} with an
-	 * operator that gives the same value for every element: [a, b, c] becomes [x, x, x] (#67).
-	 * <p>
-	 * The fix of #67 changes the result: an IllegalArgumentException, and the list stays [a, b, c].
+	 * Test the method {@link UniqueList#replaceAll(java.util.function.UnaryOperator)} with
+	 * operators that give two equal values: it throws an IllegalArgumentException and replaces no
+	 * element, the list stays [a, b, c], also where the equal values come last (#67)
 	 */
 	@Test
 	public void testReplaceAllWithEqualValues()
 	{
 		List<String> list = new UniqueList<>(Arrays.asList("a", "b", "c"));
 
-		list.replaceAll(element -> "x");
-		assertEquals(Arrays.asList("x", "x", "x"), list);
+		IllegalArgumentException exception = assertThrows(IllegalArgumentException.class,
+			() -> list.replaceAll(element -> "x"));
+		assertEquals("The operator gives the value x for two elements of this list",
+			exception.getMessage());
+		assertEquals(Arrays.asList("a", "b", "c"), list);
+
+		assertThrows(IllegalArgumentException.class,
+			() -> list.replaceAll(element -> element.equals("a") ? "A" : "B"));
+		assertEquals(Arrays.asList("a", "b", "c"), list);
 	}
 
 	/**
