@@ -841,4 +841,182 @@ public class SortedListTest
 		Collections.rotate(list, 1);
 		assertEquals(Arrays.asList("d", "a", "b", "c"), list);
 	}
+
+	/**
+	 * Test set and replaceAll of the view of {@link SortedList#subList(int, int)} and of a view of
+	 * it: they are ArrayList's and write the backing array, so the list leaves the order of its
+	 * comparator; [a, b, c, d].subList(1, 3).set(0, z) gives [a, z, c, d], replaceAll(toUpperCase)
+	 * of the view gives [a, B, C, d], and set(0, z) of subList(0, 1) of the view gives [a, z, c, d]
+	 * (#78).
+	 * <p>
+	 * The fix of #78 changes the result: each throws an UnsupportedOperationException, and the list
+	 * does not change.
+	 */
+	@Test
+	public void testSubListSetAndReplaceAll()
+	{
+		List<String> elements = Arrays.asList("a", "b", "c", "d");
+		List<String> list;
+
+		list = new SortedList<>(elements, Comparator.naturalOrder());
+		list.subList(1, 3).set(0, "z");
+		assertEquals(Arrays.asList("a", "z", "c", "d"), list);
+
+		list = new SortedList<>(elements, Comparator.naturalOrder());
+		list.subList(1, 3).replaceAll(String::toUpperCase);
+		assertEquals(Arrays.asList("a", "B", "C", "d"), list);
+
+		list = new SortedList<>(elements, Comparator.naturalOrder());
+		list.subList(1, 3).subList(0, 1).set(0, "z");
+		assertEquals(Arrays.asList("a", "z", "c", "d"), list);
+	}
+
+	/**
+	 * Test the add methods of the view of {@link SortedList#subList(int, int)} and of a view of it:
+	 * they call the add methods of the list, which put the element at its sorted place, and add
+	 * one, or the size of the collection, to the size of the view, also where the element went
+	 * outside it; [a, c, e] with add(z) on subList(0, 1) gives the list [a, c, e, z] and the view
+	 * [a, c], which shows c from outside it. add(0, e), addAll([e]), addAll(0, [e]), and add(e) of
+	 * subList(0, 1) of the view, put e at the end of [a, b, c, d], and the view [b, c] then shows
+	 * [b, c, d] (#78).
+	 * <p>
+	 * The fix of #78 changes the result: each throws an UnsupportedOperationException, with an
+	 * empty collection too, and neither the list nor the view changes.
+	 */
+	@Test
+	public void testSubListAdd()
+	{
+		List<String> list = new SortedList<>(Arrays.asList("a", "c", "e"),
+			Comparator.naturalOrder());
+		List<String> view = list.subList(0, 1);
+		view.add("z");
+		assertEquals(Arrays.asList("a", "c", "e", "z"), list);
+		assertEquals(Arrays.asList("a", "c"), view);
+
+		List<String> elements = Arrays.asList("a", "b", "c", "d");
+		List<String> expected = Arrays.asList("a", "b", "c", "d", "e");
+
+		list = new SortedList<>(elements, Comparator.naturalOrder());
+		view = list.subList(1, 3);
+		view.add(0, "e");
+		assertEquals(expected, list);
+		assertEquals(Arrays.asList("b", "c", "d"), view);
+
+		list = new SortedList<>(elements, Comparator.naturalOrder());
+		list.subList(1, 3).addAll(Arrays.asList("e"));
+		assertEquals(expected, list);
+
+		list = new SortedList<>(elements, Comparator.naturalOrder());
+		list.subList(1, 3).addAll(0, Arrays.asList("e"));
+		assertEquals(expected, list);
+
+		list = new SortedList<>(elements, Comparator.naturalOrder());
+		assertFalse(list.subList(1, 3).addAll(Collections.emptyList()));
+		list.subList(1, 3).subList(0, 1).add("e");
+		assertEquals(expected, list);
+	}
+
+	/**
+	 * Test sort of the view of {@link SortedList#subList(int, int)}, and
+	 * {@link Collections#reverse(List)} and {@link Collections#swap(List, int, int)}, which work
+	 * through its set: they reorder the elements inside the view against the comparator of the
+	 * list, [a, b, c, d] gives [a, c, b, d] with each (#78).
+	 * <p>
+	 * The fix of #78 changes the result: each throws an UnsupportedOperationException, and the list
+	 * does not change.
+	 */
+	@Test
+	public void testSubListSort()
+	{
+		List<String> elements = Arrays.asList("a", "b", "c", "d");
+		List<String> list;
+
+		list = new SortedList<>(elements, Comparator.naturalOrder());
+		list.subList(1, 3).sort(Comparator.reverseOrder());
+		assertEquals(Arrays.asList("a", "c", "b", "d"), list);
+
+		list = new SortedList<>(elements, Comparator.naturalOrder());
+		Collections.reverse(list.subList(1, 3));
+		assertEquals(Arrays.asList("a", "c", "b", "d"), list);
+
+		list = new SortedList<>(elements, Comparator.naturalOrder());
+		Collections.swap(list.subList(1, 3), 0, 1);
+		assertEquals(Arrays.asList("a", "c", "b", "d"), list);
+	}
+
+	/**
+	 * Test set and add of the list iterator of the view of {@link SortedList#subList(int, int)}:
+	 * set calls set(int, E) of the list, which sorts the element in, [a, b, c, d] with next() and
+	 * set(z) on subList(1, 3) gives [a, c, d, z], and as that is a structural modification the view
+	 * throws a ConcurrentModificationException afterwards; add calls add(int, E) of the view, the
+	 * iterator of listIterator(1) with add(e) gives [a, b, c, d, e] and the view [b, c, d] (#78).
+	 * <p>
+	 * The fix of #78 changes the result: set and add throw an UnsupportedOperationException, and
+	 * neither the list nor the view changes.
+	 */
+	@Test
+	public void testSubListListIteratorSetAndAdd()
+	{
+		List<String> elements = Arrays.asList("a", "b", "c", "d");
+
+		List<String> list = new SortedList<>(elements, Comparator.naturalOrder());
+		List<String> view = list.subList(1, 3);
+		ListIterator<String> iterator = view.listIterator();
+		assertEquals("b", iterator.next());
+		iterator.set("z");
+		assertEquals(Arrays.asList("a", "c", "d", "z"), list);
+		assertThrows(ConcurrentModificationException.class, view::size);
+
+		list = new SortedList<>(elements, Comparator.naturalOrder());
+		List<String> other = list.subList(1, 3);
+		ListIterator<String> fromIndex = other.listIterator(1);
+		fromIndex.add("e");
+		assertEquals(Arrays.asList("a", "b", "c", "d", "e"), list);
+		assertEquals(Arrays.asList("b", "c", "d"), other);
+	}
+
+	/**
+	 * Test that the view of {@link SortedList#subList(int, int)} reads as the view of
+	 * ArrayList.subList reads; before and after the fix of #78
+	 */
+	@Test
+	public void testSubListReads()
+	{
+		SubListViewAssertions
+			.assertReads(elements -> new SortedList<>(elements, Comparator.naturalOrder()));
+	}
+
+	/**
+	 * Test that the view of {@link SortedList#subList(int, int)} removes as the view of
+	 * ArrayList.subList removes, so that the list stays in the order of its comparator; before and
+	 * after the fix of #78
+	 */
+	@Test
+	public void testSubListRemoves()
+	{
+		SubListViewAssertions
+			.assertRemoves(elements -> new SortedList<>(elements, Comparator.naturalOrder()));
+	}
+
+	/**
+	 * Test that subList(from, to).clear() removes the range from a {@link SortedList}; before and
+	 * after the fix of #78
+	 */
+	@Test
+	public void testSubListClearRemovesTheRange()
+	{
+		SubListViewAssertions.assertClearRemovesTheRange(
+			elements -> new SortedList<>(elements, Comparator.naturalOrder()));
+	}
+
+	/**
+	 * Test that the view of a view of {@link SortedList#subList(int, int)} reads and removes as the
+	 * view does; before and after the fix of #78
+	 */
+	@Test
+	public void testSubListOfSubListRemoves()
+	{
+		SubListViewAssertions.assertSubListOfSubListRemoves(
+			elements -> new SortedList<>(elements, Comparator.naturalOrder()));
+	}
 }
