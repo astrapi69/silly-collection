@@ -26,6 +26,7 @@ package io.github.astrapi69.collection;
 
 import static org.junit.jupiter.api.Assertions.assertArrayEquals;
 import static org.junit.jupiter.api.Assertions.assertEquals;
+import static org.junit.jupiter.api.Assertions.assertFalse;
 import static org.junit.jupiter.api.Assertions.assertNotNull;
 import static org.junit.jupiter.api.Assertions.assertNull;
 import static org.junit.jupiter.api.Assertions.assertTrue;
@@ -129,6 +130,17 @@ public class CollectionExtensionsTest
 	}
 
 	/**
+	 * Test the method {@link CollectionExtensions#containsAtLeastOne(Collection, Object[])} without
+	 * objects to look for: the result is false
+	 */
+	@Test
+	public void testContainsAtLeastOneWithoutObjects()
+	{
+		final Collection<Integer> someNumbers = ListFactory.newArrayList(22, 33, 25, 45);
+		assertFalse(CollectionExtensions.containsAtLeastOne(someNumbers));
+	}
+
+	/**
 	 * Test method for {@link CollectionExtensions#difference(Collection, Collection)}
 	 */
 	@Test
@@ -197,6 +209,18 @@ public class CollectionExtensionsTest
 		actual = CollectionExtensions.isEqualCollection(one, other);
 		assertEquals(expected, actual);
 
+	}
+
+	/**
+	 * Test the method {@link CollectionExtensions#isEqualCollection(Collection, Collection)} with
+	 * two collections of the same size that share some but not all of their elements
+	 */
+	@Test
+	public void testIsEqualCollectionWithPartlyDifferentElements()
+	{
+		final List<Integer> one = ListFactory.newArrayList(1, 2, 3);
+		final List<Integer> other = ListFactory.newArrayList(1, 2, 4);
+		assertFalse(CollectionExtensions.isEqualCollection(one, other));
 	}
 
 	/**

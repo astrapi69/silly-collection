@@ -24,6 +24,7 @@
  */
 package io.github.astrapi69.collection.list;
 
+import static org.junit.jupiter.api.Assertions.assertEquals;
 import static org.junit.jupiter.api.Assertions.assertTrue;
 
 import java.util.Enumeration;
@@ -58,6 +59,22 @@ public class VectorExtensionsTest
 		{
 			assertTrue(expectedValues.contains(actual));
 		}
+	}
+
+	/**
+	 * Test the method {@link VectorExtensions#toVector(Enumeration)}: the vector holds all elements
+	 * of the enumeration in their order
+	 */
+	@Test
+	public void testToVectorKeepsAllElementsInOrder()
+	{
+		final Vector<String> expected = new Vector<>();
+		expected.add("C");
+		expected.add("D");
+		expected.add("A");
+		expected.add("B");
+		final Vector<String> actual = VectorExtensions.toVector(expected.elements());
+		assertEquals(expected, actual);
 	}
 
 	/**

@@ -147,6 +147,51 @@ public class ListExtensionsTest
 	}
 
 	/**
+	 * Characterization: pins that {@link ListExtensions#subList(List, int, int)} returns a
+	 * modifiable empty list of its own, not a view of the original list, where fromIndex equals the
+	 * size of the list: adding to the result leaves the original list unchanged
+	 */
+	@Test
+	public void testSubListFromIndexEqualsSizeIsNoView()
+	{
+		List<Integer> original = ListFactory.newArrayList(1, 2, 3, 4, 5);
+		List<Integer> actual = ListExtensions.subList(original, 5, 7);
+		actual.add(6);
+		assertEquals(ListFactory.newArrayList(6), actual);
+		assertEquals(ListFactory.newArrayList(1, 2, 3, 4, 5), original);
+	}
+
+	/**
+	 * Characterization: pins that {@link ListExtensions#subList(List, int, int)} returns a
+	 * modifiable empty list of its own, not a view of the original list, where toIndex is zero and
+	 * fromIndex is negative: adding to the result leaves the original list unchanged
+	 */
+	@Test
+	public void testSubListToIndexZeroIsNoView()
+	{
+		List<Integer> original = ListFactory.newArrayList(1, 2, 3, 4, 5);
+		List<Integer> actual = ListExtensions.subList(original, -1, 0);
+		actual.add(0);
+		assertEquals(ListFactory.newArrayList(0), actual);
+		assertEquals(ListFactory.newArrayList(1, 2, 3, 4, 5), original);
+	}
+
+	/**
+	 * Characterization: pins that {@link ListExtensions#subList(List, int, int)} returns a
+	 * modifiable empty list of its own, not a view of the original list, where fromIndex equals
+	 * toIndex: adding to the result leaves the original list unchanged
+	 */
+	@Test
+	public void testSubListFromIndexEqualsToIndexIsNoView()
+	{
+		List<Integer> original = ListFactory.newArrayList(1, 2, 3, 4, 5);
+		List<Integer> actual = ListExtensions.subList(original, 3, 3);
+		actual.add(42);
+		assertEquals(ListFactory.newArrayList(42), actual);
+		assertEquals(ListFactory.newArrayList(1, 2, 3, 4, 5), original);
+	}
+
+	/**
 	 * Test method for {@link ListExtensions#getFirst(List)}
 	 */
 	@Test
@@ -310,6 +355,22 @@ public class ListExtensionsTest
 		expected.add(ListFactory.newArrayList(1, 3, 4, 5, 6, 7));
 		expected.add(ListFactory.newArrayList(2, 3, 4, 5, 6, 7));
 		assertTrue(CollectionExtensions.isEqualCollection(actual, expected));
+	}
+
+	/**
+	 * Test the method {@link ListExtensions#getAllCombinations(List, int)} where the combination
+	 * size equals the number of values: the only combination holds all values in their order
+	 */
+	@Test
+	public void testGetAllCombinationsWithSizeOfAllValues()
+	{
+		// the search drops every branch that has too few values left to fill the combination, which
+		// leaves one path for 32 of 32 values; without that it would run through 2^32 branches
+		List<Integer> values = ListFactory.newRangeList(1, 32);
+		List<List<Integer>> expected = ListFactory.newArrayList();
+		expected.add(ListFactory.newRangeList(1, 32));
+		List<List<Integer>> actual = ListExtensions.getAllCombinations(values, 32);
+		assertEquals(expected, actual);
 	}
 
 	/**
@@ -691,6 +752,18 @@ public class ListExtensionsTest
 	}
 
 	/**
+	 * Test the method {@link ListExtensions#isFirst(List, Object)} with an element that is not the
+	 * first one and with an element that is not in the list
+	 */
+	@Test
+	public void testIsFirstWithOtherElements()
+	{
+		final List<String> search = ListFactory.newArrayList("Leonidas", "Berta", "Caesar");
+		assertFalse(ListExtensions.isFirst(search, "Berta"));
+		assertFalse(ListExtensions.isFirst(search, "Foo"));
+	}
+
+	/**
 	 * Test method for {@link ListExtensions#isLast(List, Object)}
 	 */
 	@Test
@@ -752,6 +825,17 @@ public class ListExtensionsTest
 	}
 
 	/**
+	 * Test the method {@link ListExtensions#isAfter(List, Object, Object)} with the same element
+	 * twice: an element is not after itself
+	 */
+	@Test
+	public void testIsAfterWithSameElement()
+	{
+		final List<String> list = ListFactory.newArrayList("Content", "Donate", "Diagnostic");
+		assertFalse(ListExtensions.isAfter(list, "Donate", "Donate"));
+	}
+
+	/**
 	 * Test method for {@link ListExtensions#isBefore(List, Object, Object)}
 	 */
 	@Test
@@ -782,6 +866,33 @@ public class ListExtensionsTest
 		actual = ListExtensions.isBefore(list, "foo", diagnostic);
 		expected = false;
 		assertEquals(expected, actual);
+	}
+
+	/**
+	 * Test the method {@link ListExtensions#isBefore(List, Object, Object)} with the same element
+	 * twice: an element is not before itself
+	 */
+	@Test
+	public void testIsBeforeWithSameElement()
+	{
+		final List<String> list = ListFactory.newArrayList("Content", "Donate", "Diagnostic");
+		assertFalse(ListExtensions.isBefore(list, "Donate", "Donate"));
+	}
+
+	/**
+	 * Test the method {@link ListExtensions#isBefore(List, Object, Object)} with null for the list,
+	 * the element or the element to check: each throws a {@link NullPointerException}
+	 */
+	@Test
+	public void testIsBeforeWithNull()
+	{
+		final List<String> list = ListFactory.newArrayList("Content", "Donate", "Diagnostic");
+		Assertions.assertThrows(NullPointerException.class,
+			() -> ListExtensions.isBefore(null, "Donate", "Content"));
+		Assertions.assertThrows(NullPointerException.class,
+			() -> ListExtensions.isBefore(list, null, "Content"));
+		Assertions.assertThrows(NullPointerException.class,
+			() -> ListExtensions.isBefore(list, "Donate", null));
 	}
 
 	/**
@@ -886,6 +997,19 @@ public class ListExtensionsTest
 	}
 
 	/**
+	 * Test the method {@link ListExtensions#rearrange(List, Object, int)} with the first element of
+	 * the list: it is moved to the given index
+	 */
+	@Test
+	public void testRearrangeFirstElement()
+	{
+		final List<String> list = ListFactory.newArrayList("Anton", "Berta", "Caesar", "Dora");
+		final List<String> expected = ListFactory.newArrayList("Berta", "Caesar", "Anton", "Dora");
+		final List<String> actual = ListExtensions.rearrange(list, "Anton", 2);
+		assertEquals(expected, actual);
+	}
+
+	/**
 	 * Test method for {@link ListExtensions#relocate(List, Object, int)}
 	 */
 	@Test
@@ -925,6 +1049,21 @@ public class ListExtensionsTest
 		ListExtensions.relocate(list, "foo", 1);
 		index = list.indexOf("foo");
 		assertEquals(index, -1);
+	}
+
+	/**
+	 * Test the method {@link ListExtensions#relocate(List, Object, int)} with an element that
+	 * already has the given index: the list is not modified, so even an unmodifiable list is
+	 * accepted
+	 */
+	@Test
+	public void testRelocateToCurrentIndex()
+	{
+		final List<String> expected = ListFactory.newArrayList("Anton", "Berta", "Caesar");
+		final List<String> list = Collections
+			.unmodifiableList(ListFactory.newArrayList("Anton", "Berta", "Caesar"));
+		ListExtensions.relocate(list, "Berta", 1);
+		assertEquals(expected, list);
 	}
 
 	/**
@@ -1288,6 +1427,19 @@ public class ListExtensionsTest
 	}
 
 	/**
+	 * Test the method {@link ListExtensions#toList(Enumeration)}: the list holds all elements of
+	 * the enumeration in their order
+	 */
+	@Test
+	public void testToListEnumerationKeepsAllElementsInOrder()
+	{
+		final List<String> expected = ListFactory.newArrayList("1", "2", "3");
+		final Enumeration<String> enumeration = Collections.enumeration(expected);
+		final List<String> actual = ListExtensions.toList(enumeration);
+		assertEquals(expected, actual);
+	}
+
+	/**
 	 * Test the method {@link ListExtensions#toList(Set)}
 	 */
 	@Test
@@ -1302,6 +1454,19 @@ public class ListExtensionsTest
 		{
 			assertTrue(set.contains(item));
 		}
+	}
+
+	/**
+	 * Test the method {@link ListExtensions#toList(Set)}: the list holds all elements of the set in
+	 * the iteration order of the set
+	 */
+	@Test
+	public void testToListSetKeepsAllElementsInOrder()
+	{
+		final Set<String> set = SetFactory.newLinkedHashSet("foo", "bar", "baz");
+		final List<String> expected = ListFactory.newArrayList("foo", "bar", "baz");
+		final List<String> actual = ListExtensions.toList(set);
+		assertEquals(expected, actual);
 	}
 
 	/**
