@@ -777,7 +777,20 @@ public final class ListExtensions
 	}
 
 	/**
-	 * To array.
+	 * Creates a new array from the given {@link List}, with the elements in the order of the list.
+	 * <p>
+	 * The component type of the array is the most specific common superclass of the non-null
+	 * elements, found by walking up their class hierarchy with {@link Class#getSuperclass()};
+	 * interfaces are not considered. If every element is null, the component type is
+	 * {@link Object}. So [null, "a"] gives a {@code String[]} that holds null and "a", [1, 2.5] and
+	 * [2.5, 1] give a {@code Number[]}, and ["a", 1] gives an {@code Object[]}. Elements of one
+	 * class give an array of that class. See {@link CollectionExtensions#toArray(Collection)}.
+	 * <p>
+	 * The result is a {@code T[]} only if that superclass is {@code T} or a subclass of it. A
+	 * caller whose {@code T} is an interface, or a class more specific than that superclass, gets a
+	 * {@link ClassCastException} where it assigns the result to a {@code T[]}: a
+	 * {@code List<Comparable<?>>} of 1 and "a" gives an {@code Object[]}, and so does a
+	 * {@code List<String>} that holds only null.
 	 *
 	 * @param <T>
 	 *            the generic type
@@ -787,12 +800,10 @@ public final class ListExtensions
 	 * @throws IllegalArgumentException
 	 *             if the given list is null or empty
 	 */
-	@SuppressWarnings("unchecked")
 	public static <T> T[] toArray(final List<T> list)
 	{
 		Check.get().notNull(list, "list").notEmpty(list, "list");
-		T[] newArray = (T[])ArrayFactory.newArray(list.get(0).getClass(), list.size());
-		return list.toArray(newArray);
+		return CollectionExtensions.toArray(list);
 	}
 
 	/**

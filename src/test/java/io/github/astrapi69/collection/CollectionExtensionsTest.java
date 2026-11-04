@@ -84,25 +84,26 @@ public class CollectionExtensionsTest
 	}
 
 	/**
-	 * Test method for {@link CollectionExtensions#toArray(Collection)} with null as first element.
-	 * Pins what the method does today: it takes the class of the first element as component type
-	 * and throws a {@link NullPointerException}. The fix of #64 changes the result to a
-	 * {@code String[]} that holds null and "a"
+	 * Test method for {@link CollectionExtensions#toArray(Collection)} with null as first element:
+	 * the component type is the class of the non-null elements, the result a {@code String[]} that
+	 * holds null and "a". Before the fix of #64 the method threw a {@link NullPointerException}
 	 */
 	@Test
 	public void testToArrayWithNullFirstElement()
 	{
 		final List<String> list = new ArrayList<>(Arrays.asList(null, "a"));
 
-		assertThrows(NullPointerException.class, () -> CollectionExtensions.toArray(list));
+		final String[] actual = CollectionExtensions.toArray(list);
+		assertEquals(String[].class, actual.getClass());
+		assertArrayEquals(new String[] { null, "a" }, actual);
 	}
 
 	/**
 	 * Test method for {@link CollectionExtensions#toArray(Collection)} with elements of different
-	 * classes. Pins what the method does today: the component type is the class of the first
-	 * element, {@code Integer} for [1, 2.5] and {@code Double} for [2.5, 1], and storing the other
-	 * element throws an {@link ArrayStoreException}. The fix of #64 changes the result to a
-	 * {@code Number[]} in both orders
+	 * classes: the component type is their most specific common superclass, a {@code Number[]} for
+	 * [1, 2.5] and for [2.5, 1], in the order of the list. Before the fix of #64 the component type
+	 * was the class of the first element, and storing the other element threw an
+	 * {@link ArrayStoreException}
 	 */
 	@Test
 	public void testToArrayWithElementsOfDifferentClasses()
@@ -110,37 +111,53 @@ public class CollectionExtensionsTest
 		final List<Number> integerFirst = new ArrayList<>(Arrays.asList(1, 2.5));
 		final List<Number> doubleFirst = new ArrayList<>(Arrays.asList(2.5, 1));
 
-		assertThrows(ArrayStoreException.class, () -> CollectionExtensions.toArray(integerFirst));
-		assertThrows(ArrayStoreException.class, () -> CollectionExtensions.toArray(doubleFirst));
+		Number[] actual = CollectionExtensions.toArray(integerFirst);
+		assertEquals(Number[].class, actual.getClass());
+		assertArrayEquals(new Number[] { 1, 2.5 }, actual);
+
+		actual = CollectionExtensions.toArray(doubleFirst);
+		assertEquals(Number[].class, actual.getClass());
+		assertArrayEquals(new Number[] { 2.5, 1 }, actual);
 	}
 
 	/**
 	 * Test method for {@link CollectionExtensions#toArray(Collection)} with elements whose only
-	 * common superclass is {@link Object}, 1 and "a" in a {@code List<Comparable<?>>}. Pins what
-	 * the method does today: the component type is {@code Integer}, and storing "a" throws an
-	 * {@link ArrayStoreException}. The fix of #64 changes the result to an {@code Object[]}, which
-	 * a caller cannot assign to a {@code Comparable<?>[]}
+	 * common superclass is {@link Object}, 1 and "a" in a {@code List<Comparable<?>>}: interfaces
+	 * are not considered, the result is an {@code Object[]}, and a caller that assigns it to a
+	 * {@code Comparable<?>[]} gets a {@link ClassCastException}, as the Javadoc says. Before the
+	 * fix of #64 the component type was {@code Integer}, and storing "a" threw an
+	 * {@link ArrayStoreException}
 	 */
 	@Test
 	public void testToArrayWithElementsWithoutCommonSuperclass()
 	{
 		final List<Comparable<?>> list = new ArrayList<>(Arrays.asList(1, "a"));
 
-		assertThrows(ArrayStoreException.class, () -> CollectionExtensions.toArray(list));
+		final Object[] actual = CollectionExtensions.toArray(list);
+		assertEquals(Object[].class, actual.getClass());
+		assertArrayEquals(new Object[] { 1, "a" }, actual);
+		assertThrows(ClassCastException.class, () -> {
+			Comparable<?>[] comparables = CollectionExtensions.toArray(list);
+		});
 	}
 
 	/**
-	 * Test method for {@link CollectionExtensions#toArray(Collection)} with null elements only.
-	 * Pins what the method does today: it throws a {@link NullPointerException}. The fix of #64
-	 * changes the result to an {@code Object[]} that holds two nulls, which a caller cannot assign
-	 * to a {@code String[]}
+	 * Test method for {@link CollectionExtensions#toArray(Collection)} with null elements only: the
+	 * result is an {@code Object[]} that holds two nulls, and a caller that assigns it to a
+	 * {@code String[]} gets a {@link ClassCastException}, as the Javadoc says. Before the fix of
+	 * #64 the method threw a {@link NullPointerException}
 	 */
 	@Test
 	public void testToArrayWithNullElementsOnly()
 	{
 		final List<String> list = new ArrayList<>(Arrays.asList(null, null));
 
-		assertThrows(NullPointerException.class, () -> CollectionExtensions.toArray(list));
+		final Object[] actual = CollectionExtensions.toArray(list);
+		assertEquals(Object[].class, actual.getClass());
+		assertArrayEquals(new Object[] { null, null }, actual);
+		assertThrows(ClassCastException.class, () -> {
+			String[] strings = CollectionExtensions.toArray(list);
+		});
 	}
 
 	/**

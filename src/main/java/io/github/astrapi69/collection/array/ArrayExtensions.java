@@ -858,7 +858,8 @@ public final class ArrayExtensions
 	}
 
 	/**
-	 * Removes the given prefix array from the first given array
+	 * Removes the given prefix array from the first given array. The resulted array has the
+	 * component type of the given array
 	 *
 	 * @param <T>
 	 *            the generic type of the objects in the arrays
@@ -876,7 +877,7 @@ public final class ArrayExtensions
 		Argument.notNull(prefix, "prefix");
 		if (0 < array.length)
 		{
-			T[] result = (T[])ArrayFactory.newArray(array[0].getClass(),
+			T[] result = (T[])ArrayFactory.newArray(array.getClass().getComponentType(),
 				array.length - prefix.length);
 			System.arraycopy(array, prefix.length, result, 0, result.length);
 			return result;

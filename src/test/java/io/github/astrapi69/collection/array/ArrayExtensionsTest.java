@@ -1114,40 +1114,42 @@ public class ArrayExtensionsTest
 
 	/**
 	 * Test method for {@link ArrayExtensions#removeFromStart(Object[], Object[])} with elements of
-	 * different classes. Pins what the method does today: the component type of the result is the
-	 * class of the first element, {@code Integer} for the {@code Number[]} {1, 2.5, 3}, and copying
-	 * 2.5 throws an {@link ArrayStoreException}. The fix of #64 changes the result to the
-	 * {@code Number[]} {2.5, 3}
+	 * different classes: the result has the component type of the given array, the {@code Number[]}
+	 * {1, 2.5, 3} without the prefix {1} gives the {@code Number[]} {2.5, 3}. Before the fix of #64
+	 * the component type was the class of the first element, {@code Integer}, and copying 2.5 threw
+	 * an {@link ArrayStoreException}
 	 */
 	@Test
 	public void testRemoveFromStartWithElementsOfDifferentClasses()
 	{
 		final Number[] array = { 1, 2.5, 3 };
 
-		assertThrows(ArrayStoreException.class,
-			() -> ArrayExtensions.removeFromStart(array, new Number[] { 1 }));
+		final Number[] actual = ArrayExtensions.removeFromStart(array, new Number[] { 1 });
+		assertEquals(Number[].class, actual.getClass());
+		assertArrayEquals(new Number[] { 2.5, 3 }, actual);
 	}
 
 	/**
 	 * Test method for {@link ArrayExtensions#removeFromStart(Object[], Object[])} with null as
-	 * first element. Pins what the method does today: it takes the class of the first element as
-	 * component type and throws a {@link NullPointerException}. The fix of #64 changes the result
-	 * to the {@code String[]} {"a", "b"}
+	 * first element: the {@code String[]} {null, "a", "b"} without the prefix {null} gives the
+	 * {@code String[]} {"a", "b"}. Before the fix of #64 the method took the class of the first
+	 * element as component type and threw a {@link NullPointerException}
 	 */
 	@Test
 	public void testRemoveFromStartWithNullFirstElement()
 	{
 		final String[] array = { null, "a", "b" };
 
-		assertThrows(NullPointerException.class,
-			() -> ArrayExtensions.removeFromStart(array, new String[] { null }));
+		final String[] actual = ArrayExtensions.removeFromStart(array, new String[] { null });
+		assertEquals(String[].class, actual.getClass());
+		assertArrayEquals(new String[] { "a", "b" }, actual);
 	}
 
 	/**
 	 * Test method for {@link ArrayExtensions#removeFromStart(Object[], Object[])} with an
-	 * {@code Object[]} that holds strings. Pins what the method does today: the result is a
-	 * {@code String[]}, the class of the first element, not an array of the component type of the
-	 * given array. The fix of #64 changes the result to the {@code Object[]} {"b", "c"}
+	 * {@code Object[]} that holds strings: the result has the component type of the given array, it
+	 * is the {@code Object[]} {"b", "c"}. Before the fix of #64 the result was a {@code String[]},
+	 * the class of the first element
 	 */
 	@Test
 	public void testRemoveFromStartOfAnObjectArrayOfStrings()
@@ -1156,7 +1158,7 @@ public class ArrayExtensionsTest
 
 		final Object[] actual = ArrayExtensions.removeFromStart(array, new Object[] { "a" });
 		assertArrayEquals(new Object[] { "b", "c" }, actual);
-		assertEquals(String[].class, actual.getClass());
+		assertEquals(Object[].class, actual.getClass());
 	}
 
 	/**

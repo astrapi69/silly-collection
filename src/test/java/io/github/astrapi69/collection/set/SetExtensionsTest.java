@@ -24,6 +24,7 @@
  */
 package io.github.astrapi69.collection.set;
 
+import static org.junit.jupiter.api.Assertions.assertArrayEquals;
 import static org.junit.jupiter.api.Assertions.assertEquals;
 import static org.junit.jupiter.api.Assertions.assertNotNull;
 import static org.junit.jupiter.api.Assertions.assertThrows;
@@ -94,31 +95,34 @@ public class SetExtensionsTest
 	}
 
 	/**
-	 * Test the method {@link SetExtensions#toArray(Set)} with null as first element. Pins what the
-	 * method does today: it takes the class of the first element as component type and throws a
-	 * {@link NullPointerException}. The fix of #64 changes the result to a {@code String[]} that
-	 * holds null and "a"
+	 * Test the method {@link SetExtensions#toArray(Set)} with null as first element: the component
+	 * type is the class of the non-null elements, the result a {@code String[]} that holds null and
+	 * "a". Before the fix of #64 the method threw a {@link NullPointerException}
 	 */
 	@Test
 	public void testToArrayWithNullFirstElement()
 	{
 		final Set<String> set = new LinkedHashSet<>(Arrays.asList(null, "a"));
 
-		assertThrows(NullPointerException.class, () -> SetExtensions.toArray(set));
+		final String[] actual = SetExtensions.toArray(set);
+		assertEquals(String[].class, actual.getClass());
+		assertArrayEquals(new String[] { null, "a" }, actual);
 	}
 
 	/**
-	 * Test the method {@link SetExtensions#toArray(Set)} with elements of different classes. Pins
-	 * what the method does today: the component type is the class of the first element,
-	 * {@code Double} for [2.5, 1], and storing 1 throws an {@link ArrayStoreException}. The fix of
-	 * #64 changes the result to a {@code Number[]} in the iteration order of the set, [2.5, 1]
+	 * Test the method {@link SetExtensions#toArray(Set)} with elements of different classes: the
+	 * component type is their most specific common superclass, a {@code Number[]} for [2.5, 1], in
+	 * the iteration order of the set. Before the fix of #64 the component type was the class of the
+	 * first element, {@code Double}, and storing 1 threw an {@link ArrayStoreException}
 	 */
 	@Test
 	public void testToArrayWithElementsOfDifferentClasses()
 	{
 		final Set<Number> set = new LinkedHashSet<>(Arrays.asList(2.5, 1));
 
-		assertThrows(ArrayStoreException.class, () -> SetExtensions.toArray(set));
+		final Number[] actual = SetExtensions.toArray(set);
+		assertEquals(Number[].class, actual.getClass());
+		assertArrayEquals(new Number[] { 2.5, 1 }, actual);
 	}
 
 	/**
