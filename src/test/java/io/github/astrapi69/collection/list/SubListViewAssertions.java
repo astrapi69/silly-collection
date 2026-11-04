@@ -84,6 +84,7 @@ final class SubListViewAssertions
 		assertEquals("c", iterator.next());
 		assertFalse(iterator.hasNext());
 		ListIterator<String> listIterator = view.listIterator(2);
+		assertEquals(2, listIterator.nextIndex());
 		assertEquals(1, listIterator.previousIndex());
 		assertEquals("c", listIterator.previous());
 		assertEquals("b", listIterator.previous());

@@ -37,18 +37,20 @@ import java.util.function.UnaryOperator;
 
 /**
  * The class {@link SortedList} extends the {@link ArrayList} and keeps its elements in the order of
- * its comparator: every method that puts an element into the list puts it at its place in that
- * order, the add methods whatever index they are given, and {@link #set(int, Object)} and
- * {@link #replaceAll(UnaryOperator)} too. What would put an element at a position the caller
- * chooses, or reorder the list against its comparator, throws an
- * {@link UnsupportedOperationException}: {@link #sort(Comparator)}, which
- * {@link Collections#sort(List)} calls, the set and add of its list iterator, and
- * {@link #addFirst(Object)} and {@link #addLast(Object)}, as in a {@link java.util.SortedSet}. The
- * views of {@link #subList(int, int)} and {@link #reversed()} read and remove, and refuse to set,
- * add, replace or sort. {@link #setComparator(Comparator)} changes the order.
+ * its comparator: the add methods put an element at its place in that order, whatever index they
+ * are given, and {@link #set(int, Object)}, {@link #replaceAll(UnaryOperator)} and the set of its
+ * list iterator replace an element in place where the new one keeps that order. What would put an
+ * element at a position the caller chooses, or reorder the list against its comparator, throws an
+ * {@link UnsupportedOperationException}, as in a {@link java.util.SortedSet}: the order of the
+ * comparator determines the position of the elements, so explicit positioning is not supported.
+ * That is set and replaceAll where the new element does not keep the order,
+ * {@link #sort(Comparator)}, which {@link Collections#sort(List)} calls, the add of its list
+ * iterator, and {@link #addFirst(Object)} and {@link #addLast(Object)}. The views of
+ * {@link #subList(int, int)} and {@link #reversed()} read and remove, and refuse to set, add,
+ * replace or sort. {@link #setComparator(Comparator)} changes the order.
  * <p>
- * A list without a comparator has no order to keep: its add methods append at the end, and set and
- * replaceAll replace in place, as in {@link ArrayList}.
+ * A list without a comparator has no order to keep: its add methods append at the end, and set,
+ * replaceAll and the set of its list iterator replace in place, as in {@link ArrayList}.
  * <p>
  * The list may hold an element more than once; {@link SortedUniqueList} holds each element once.
  *
@@ -67,11 +69,13 @@ public class SortedList<E> extends ArrayList<E>
 		+ " removes only; set and add through the list itself";
 
 	/**
-	 * The message of the {@link UnsupportedOperationException} of {@link #addFirst(Object)} and
-	 * {@link #addLast(Object)}
+	 * The message of the {@link UnsupportedOperationException} of {@link #addFirst(Object)},
+	 * {@link #addLast(Object)} and the add of the list iterator, and the start of the one of
+	 * {@link #set(int, Object)} and {@link #replaceAll(UnaryOperator)}, as
+	 * {@link java.util.TreeSet#addFirst(Object)} says it
 	 */
-	private static final String SEQUENCED_REFUSAL = "The comparator of a SortedList determines the"
-		+ " position of its elements, so explicit positioning is not supported";
+	private static final String POSITIONING_REFUSAL = "The comparator of a SortedList determines"
+		+ " the position of its elements, so explicit positioning is not supported";
 
 	/**
 	 * The message of the {@link UnsupportedOperationException} of the view of {@link #reversed()}
@@ -84,13 +88,6 @@ public class SortedList<E> extends ArrayList<E>
 	 */
 	private static final String SORT_REFUSAL = "A SortedList keeps the order of its comparator;"
 		+ " setComparator(Comparator) changes it";
-
-	/**
-	 * The message of the {@link UnsupportedOperationException} of the set and add of the list
-	 * iterator
-	 */
-	private static final String LIST_ITERATOR_REFUSAL = "A SortedList puts an element at its"
-		+ " place in the order of its comparator, not at the position of a list iterator";
 
 	/**
 	 * the comparator for sort this list object
@@ -242,69 +239,117 @@ public class SortedList<E> extends ArrayList<E>
 	}
 
 	/**
-	 * Replaces the element at the given index with the given element so that this list stays in the
-	 * order of its comparator: the element at the index is removed, and the given one is added as
-	 * {@link #add(Object)} adds it, at its place in that order, which need not be the given index;
-	 * {@code [a, c, e]} becomes {@code [c, d, e]} with {@code set(0, d)}. A sorted list cannot hold
-	 * an element at an index of the caller's choice, and a set that refused would break the
-	 * algorithms of {@link Collections} that work through it.
+	 * Replaces the element at the given index with the given element where it keeps the order of
+	 * the comparator of this list, and throws an {@link UnsupportedOperationException} where it
+	 * does not.
 	 * <p>
-	 * Those algorithms, {@link Collections#swap(List, int, int)},
-	 * {@link Collections#reverse(List)}, {@link Collections#shuffle(List, java.util.Random)} and
-	 * {@link Collections#rotate(List, int)}, therefore leave this list in the order of its
-	 * comparator: with a comparator consistent with equals they leave it as it was.
+	 * <b>With a comparator</b> the element keeps the order if this list stays in that order with
+	 * the element at the index: the element in front of the index, if there is one, compares less
+	 * than or equal to it, and the element behind the index, if there is one, greater than or
+	 * equal. Then it replaces the element at the index, as {@link ArrayList#set(int, Object)} does;
+	 * {@code [a, c, e]} becomes {@code [a, d, e]} with {@code set(1, d)}. Otherwise this method
+	 * throws an {@link UnsupportedOperationException}, and this list does not change; with
+	 * {@code set(0, d)} for instance. The encounter order induced by the comparator of this list
+	 * determines the position of elements, so explicit positioning is not supported, as
+	 * {@link java.util.TreeSet#addFirst(Object)} says; {@link #add(Object)} puts an element at its
+	 * place. Set does not move the element to its place itself, as
+	 * {@link java.util.List#set(int, Object)} replaces the element "at the specified position", and
+	 * a following {@code get(index)} is to return the given element.
 	 * <p>
-	 * The index is checked as {@link ArrayList#set(int, Object)} checks it, before this list
-	 * changes. If the comparator throws, as the natural order does for null, the removed element is
-	 * put back at the index, and this list is as it was. As the element can move, set with a
-	 * comparator is a structural modification: an iterator that runs over this list throws a
-	 * {@link ConcurrentModificationException} at its next step.
+	 * The comparator compares the element with the neighbours of the index only: if this list is
+	 * not in its order, as after an element changed so that the comparator orders it elsewhere, set
+	 * keeps the order of the neighbours. A list of one element takes any element. If the comparator
+	 * throws, as the natural order does for null, this list does not change either. The replacement
+	 * is no structural modification, as in ArrayList: an iterator that runs over this list goes on.
 	 * <p>
-	 * Without a comparator this list has no order to keep: the element at the index is replaced, as
-	 * in {@link ArrayList#set(int, Object)}, which is no structural modification, and the
-	 * algorithms of {@link Collections} work as on an {@link ArrayList}.
+	 * The algorithms of {@link Collections} that set one element after another throw at the first
+	 * set that does not keep the order, and the elements they set before stay set.
+	 * {@link Collections#swap(List, int, int) Collections.swap(list, i, j)} calls {@code set(j,
+	 * get(i))} and then {@code set(i, previous)}: two elements the comparator holds equal swap, and
+	 * so does an index with itself; for two elements it does not hold equal it throws. This list
+	 * then does not change, unless every element between the two indexes is equal to the one at
+	 * {@code i} by the comparator, as for two neighbours: then the first set keeps the order, the
+	 * second throws, and this list holds the element of {@code i} at both indexes and has lost the
+	 * element of {@code j}; {@code [a, b]} becomes {@code [a, a]} with {@code swap(list, 0, 1)}.
+	 * {@link Collections#reverse(List)} and {@link Collections#shuffle(List, java.util.Random)}
+	 * swap, and the first swap that throws ends them; reverse throws at its first swap if the first
+	 * and the last element are not equal by the comparator. {@link Collections#rotate(List, int)}
+	 * sets each element at its new index, one after another: {@code [a, b, c, d]} with
+	 * {@code rotate(list, 1)} sets a at 1, b at 2 and c at 3, which keep the order, throws for d at
+	 * 0 and leaves {@code [a, a, b, c]}. {@link Collections#sort(List)} throws before any change,
+	 * as {@link #sort(Comparator)} does.
+	 * <p>
+	 * <b>Without a comparator</b> this list has no order to keep: the element at the index is
+	 * replaced, as in {@link ArrayList#set(int, Object)}, and the algorithms of {@link Collections}
+	 * work as on an {@link ArrayList}.
+	 * <p>
+	 * In both cases the index is checked first, as {@link ArrayList#set(int, Object)} checks it.
 	 *
 	 * @param index
 	 *            the index of the element to replace
 	 * @param element
-	 *            the element to sort in, or to store at the index if this list has no comparator
+	 *            the element to store at the index
 	 * @return the element previously at the index, as {@link java.util.List#set(int, Object)}
 	 *         returns it
 	 * @throws IndexOutOfBoundsException
 	 *             if the index is out of range ({@code index < 0 || index >= size()}), with the
 	 *             message of {@link ArrayList#set(int, Object)}
+	 * @throws UnsupportedOperationException
+	 *             if this list has a comparator and the element does not keep its order at the
+	 *             index
 	 */
 	@Override
 	public E set(int index, E element)
 	{
-		if (comparator == null)
+		Objects.checkIndex(index, size());
+		if (comparator != null && !keepsTheOrder(index, element))
 		{
-			return super.set(index, element);
+			throw new UnsupportedOperationException(POSITIONING_REFUSAL + ": the element " + element
+				+ " at the index " + index + " would break its order");
 		}
-		E previous = super.remove(index);
-		try
-		{
-			super.add(ListExtensions.getIndexToInsert(this, element, comparator), element);
-		}
-		catch (RuntimeException exception)
-		{
-			super.add(index, previous);
-			throw exception;
-		}
-		return previous;
+		return super.set(index, element);
 	}
 
 	/**
-	 * Replaces each element of this list with the value the given operator gives for it so that
-	 * this list stays in the order of its comparator: the operator is applied to every element
-	 * first, in the order of this list, then the values are sorted with the comparator and stored;
-	 * {@code [a, c, e]} becomes {@code [c, e, f]} with the operator that gives f for a. The values
-	 * are sorted as {@link ArrayList#sort(Comparator)} sorts, stably: values the comparator holds
-	 * equal keep the order of the elements they replace. If the operator or the comparator throws,
-	 * no element is replaced.
+	 * Checks whether this list stays in the order of its comparator with the given element at the
+	 * given index: the element in front of the index, if there is one, compares less than or equal
+	 * to it, and the element behind the index, if there is one, greater than or equal
+	 *
+	 * @param index
+	 *            the index, in range
+	 * @param element
+	 *            the element to check
+	 * @return true if the element keeps the order at the index
+	 */
+	private boolean keepsTheOrder(int index, E element)
+	{
+		return (index == 0 || comparator.compare(get(index - 1), element) <= 0)
+			&& (index == size() - 1 || comparator.compare(element, get(index + 1)) <= 0);
+	}
+
+	/**
+	 * Replaces each element of this list with the value the given operator gives for it, each value
+	 * at the index of the element it replaces, as {@link ArrayList#replaceAll(UnaryOperator)} does,
+	 * where the values keep the order of the comparator of this list, and throws an
+	 * {@link UnsupportedOperationException} where they do not. It follows {@link #set(int, Object)}
+	 * for all elements at once, and is failure-atomic: an exception leaves this list as it was.
 	 * <p>
-	 * Without a comparator each element is replaced by its value at its index, as in
-	 * {@link ArrayList#replaceAll(UnaryOperator)}.
+	 * The operator is applied to every element first, in the order of this list. <b>With a
+	 * comparator</b> the values keep the order if each compares greater than or equal to the one in
+	 * front of it; then they are stored, {@code [a, c, e]} becomes {@code [aa, cc, ee]} with the
+	 * operator that doubles each element. Otherwise this method throws an
+	 * {@link UnsupportedOperationException}, as set does, and no element is replaced:
+	 * {@code [a, c, e]} stays as it is with the operator that gives f for a. Element by element, as
+	 * the default of {@link java.util.List#replaceAll(UnaryOperator)} sets them through the list
+	 * iterator, the result would depend on the order of the sets, and a refusal would leave the
+	 * values in front of it stored: {@code [a, b]} with the operator that gives c for a and d for b
+	 * would throw at the first value, c in front of b, although {@code [c, d]} keeps the order.
+	 * <p>
+	 * <b>Without a comparator</b> each element is replaced by its value at its index, as in
+	 * {@link ArrayList#replaceAll(UnaryOperator)}, after all values are computed.
+	 * <p>
+	 * In both cases an operator that throws, or that changes this list structurally, leaves this
+	 * list as it was, and so does a comparator that throws, as the natural order does for null.
 	 *
 	 * @param operator
 	 *            the operator to apply to each element
@@ -312,6 +357,8 @@ public class SortedList<E> extends ArrayList<E>
 	 *             if the operator is null, on an empty list too
 	 * @throws ConcurrentModificationException
 	 *             if the operator changes this list structurally
+	 * @throws UnsupportedOperationException
+	 *             if this list has a comparator and the values do not keep its order
 	 */
 	@Override
 	public void replaceAll(UnaryOperator<E> operator)
@@ -329,10 +376,31 @@ public class SortedList<E> extends ArrayList<E>
 		}
 		if (comparator != null)
 		{
-			values.sort(comparator);
+			requireTheOrder(values);
 		}
 		Iterator<E> value = values.iterator();
 		super.replaceAll(element -> value.next());
+	}
+
+	/**
+	 * Checks that the given values are in the order of the comparator of this list: each compares
+	 * greater than or equal to the one in front of it
+	 *
+	 * @param values
+	 *            the values, each at the index of the element it is to replace
+	 * @throws UnsupportedOperationException
+	 *             if a value compares less than the one in front of it
+	 */
+	private void requireTheOrder(List<E> values)
+	{
+		for (int index = 1; index < values.size(); index++)
+		{
+			if (comparator.compare(values.get(index - 1), values.get(index)) > 0)
+			{
+				throw new UnsupportedOperationException(POSITIONING_REFUSAL + ": the value "
+					+ values.get(index) + " at the index " + index + " would break its order");
+			}
+		}
 	}
 
 	/**
@@ -365,21 +433,33 @@ public class SortedList<E> extends ArrayList<E>
 	@Override
 	public ListIterator<E> listIterator()
 	{
-		return new ReadAndRemoveListIterator<>(super.listIterator(), LIST_ITERATOR_REFUSAL);
+		return new AddRefusingListIterator<>(super.listIterator(), POSITIONING_REFUSAL);
 	}
 
 	/**
-	 * Returns a list iterator over the elements of this list, starting at the given index. It walks
-	 * and removes as the list iterator of {@link ArrayList#listIterator(int)} does, and is
-	 * fail-fast as that one.
+	 * Returns a list iterator over the elements of this list, starting at the given index. It
+	 * walks, removes and sets as the list iterator of {@link ArrayList#listIterator(int)} does, and
+	 * is fail-fast as that one.
 	 * <p>
-	 * Its {@link ListIterator#set(Object)} and {@link ListIterator#add(Object)} throw an
-	 * {@link UnsupportedOperationException}, with a comparator and without one. Both put an element
-	 * at the position of the cursor, as the contract of {@link ListIterator} says, where this list
-	 * puts it at its place in the order of its comparator, or at the end: the cursor would no
-	 * longer stand in front of the element {@code next()} returns, and {@code next()} would skip an
-	 * element. {@link #set(int, Object)} and {@link #add(Object)} of this list sort an element in.
-	 * {@link #iterator()} is the one of {@link ArrayList}, which has neither set nor add.
+	 * Its {@link ListIterator#set(Object)} replaces the element last returned by {@code next()} or
+	 * {@code previous()} through {@link #set(int, Object)} of this list, at the index of that
+	 * element, as the list iterator of {@link java.util.AbstractList#listIterator()} does: with the
+	 * same semantics, it replaces in place where the element keeps the order of the comparator and
+	 * throws an {@link UnsupportedOperationException} where it does not, and without a comparator
+	 * it replaces in place. As that set is no structural modification, the cursor stays where it
+	 * is.
+	 * <p>
+	 * Its {@link ListIterator#add(Object)} throws an {@link UnsupportedOperationException}, with a
+	 * comparator and without one: the comparator of this list determines the position of its
+	 * elements, so explicit positioning is not supported, as
+	 * {@link java.util.TreeSet#addFirst(Object)} says. The add of a list iterator inserts the
+	 * element immediately before the cursor, as the contract of {@link ListIterator} says, where
+	 * {@link #add(Object)} of this list puts it at its place in the order of its comparator, or at
+	 * the end: the cursor would no longer stand in front of the element {@code next()} returns, and
+	 * {@code next()} would skip an element. It throws without a comparator too, as
+	 * {@link #addFirst(Object)} does, so that what this list supports does not depend on whether
+	 * {@link #setComparator(Comparator)} was called. {@link #iterator()} is the one of
+	 * {@link ArrayList}, which has neither set nor add.
 	 *
 	 * @param index
 	 *            the index of the first element that {@code next()} returns
@@ -391,7 +471,7 @@ public class SortedList<E> extends ArrayList<E>
 	@Override
 	public ListIterator<E> listIterator(int index)
 	{
-		return new ReadAndRemoveListIterator<>(super.listIterator(index), LIST_ITERATOR_REFUSAL);
+		return new AddRefusingListIterator<>(super.listIterator(index), POSITIONING_REFUSAL);
 	}
 
 	/**
@@ -446,7 +526,7 @@ public class SortedList<E> extends ArrayList<E>
 	@Override
 	public void addFirst(E element)
 	{
-		throw new UnsupportedOperationException(SEQUENCED_REFUSAL);
+		throw new UnsupportedOperationException(POSITIONING_REFUSAL);
 	}
 
 	/**
@@ -462,20 +542,20 @@ public class SortedList<E> extends ArrayList<E>
 	@Override
 	public void addLast(E element)
 	{
-		throw new UnsupportedOperationException(SEQUENCED_REFUSAL);
+		throw new UnsupportedOperationException(POSITIONING_REFUSAL);
 	}
 
 	/**
 	 * Returns a view of this list in the reverse order, as {@link List#reversed()} does, that reads
 	 * and removes and refuses every other change, as the view of {@link #subList(int, int)} does.
 	 * <p>
-	 * The view of List.reversed writes through add(int, E) and set of this list, which sort the
-	 * element in, and its addFirst and addLast go through add(int, E) as well, past the refusal of
-	 * {@link #addFirst(Object)} and {@link #addLast(Object)}: the positions a reversed view
-	 * promises, an element added first or last, cannot hold in a sorted list. Reading,
-	 * {@code remove}, {@code clear}, {@code removeIf}, {@code removeAll} and {@code retainAll}
-	 * through the view work and keep the order; set, add, addFirst, addLast, addAll, replaceAll and
-	 * sort through it, and the set and add of its list iterators, throw an
+	 * The view of List.reversed writes through add(int, E) of this list, which sorts the element
+	 * in, and through its set, and its addFirst and addLast go through add(int, E) as well, past
+	 * the refusal of {@link #addFirst(Object)} and {@link #addLast(Object)}: the positions a
+	 * reversed view promises, an element added first or last, cannot hold in a sorted list.
+	 * Reading, {@code remove}, {@code clear}, {@code removeIf}, {@code removeAll} and
+	 * {@code retainAll} through the view work and keep the order; set, add, addFirst, addLast,
+	 * addAll, replaceAll and sort through it, and the set and add of its list iterators, throw an
 	 * {@link UnsupportedOperationException}.
 	 *
 	 * @return a view of this list in the reverse order that reads and removes

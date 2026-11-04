@@ -11,6 +11,21 @@ BREAKING:
   project below 25; such a project stays on 28.3 until it moves to JDK 25 itself. The projects of the family it
   concerns are listed on #51
 
+FIXED:
+
+- `set(int, E)`, `replaceAll` and the `set` of the list iterator of `SortedList` and `SortedUniqueList` with a
+  comparator keep its order: they replace an element in place where the new one keeps the order at its index, and
+  otherwise throw `UnsupportedOperationException`, as `TreeSet.addFirst` does ("explicit positioning is not
+  supported"), and the list does not change. They wrote any element at any index, so that the list left the order
+  of its comparator. `replaceAll` computes all values first and replaces none if one of them breaks the order; a
+  `SortedUniqueList` throws `IllegalArgumentException` for an element it holds at another index, and for two equal
+  values, before it checks the order. The `add` of their list iterator throws `UnsupportedOperationException`, with
+  and without a comparator; it sorted the element in, wherever the cursor stood (#78).
+  **Note:** `Collections.swap`, `reverse`, `shuffle` and `rotate` on a `SortedList` with a comparator throw
+  `UnsupportedOperationException` where they would break the order, and on a `SortedUniqueList` with one
+  `IllegalArgumentException`, before the list changes. They set one element after another, so on a `SortedList`
+  the elements set before the refusal stay set: `Collections.reverse` of `[a, b]` throws and leaves `[a, a]`
+
 CHANGED:
 
 - CI, the dependency submission and publishing build on JDK 25 (`gradle.yml`, `dependency-submission.yml`,
