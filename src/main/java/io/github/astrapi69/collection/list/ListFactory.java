@@ -103,6 +103,12 @@ public final class ListFactory
 	/**
 	 * Factory method for create new {@link UniqueList} from the given optional collection and the
 	 * given optional elements.
+	 * <p>
+	 * The list holds the elements of the collection first, then the given elements, each element
+	 * once where it comes first. It is a {@link UniqueList}, so its {@code add(int, E)} inserts at
+	 * the index, or moves an element the list holds there, as {@link UniqueList#add(int, Object)}
+	 * says. A caller who wants a {@link SortedUniqueList} calls
+	 * {@link #newSortedUniqueList(Collection, Object...)}.
 	 *
 	 * @param <T>
 	 *            the generic type of the elements
@@ -118,12 +124,12 @@ public final class ListFactory
 		final List<T> list;
 		if (CollectionExtensions.isNotEmpty(collection))
 		{
-			list = new SortedUniqueList<>(collection);
+			list = new UniqueList<>(collection);
 			Collections.addAll(list, elements);
 		}
 		else
 		{
-			list = new SortedUniqueList<>();
+			list = new UniqueList<>();
 			Collections.addAll(list, elements);
 		}
 		return list;
@@ -132,6 +138,11 @@ public final class ListFactory
 	/**
 	 * Factory method for create new {@link UniqueList} from the given optional collection and the
 	 * given optional elements.
+	 * <p>
+	 * The list holds the given elements, each element once where it comes first. It is a
+	 * {@link UniqueList}, so its {@code add(int, E)} inserts at the index, or moves an element the
+	 * list holds there, as {@link UniqueList#add(int, Object)} says. A caller who wants a
+	 * {@link SortedUniqueList} calls {@link #newSortedUniqueList(Object...)}.
 	 *
 	 * @param <T>
 	 *            the generic type of the elements
