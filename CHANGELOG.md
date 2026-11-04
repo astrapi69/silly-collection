@@ -9,6 +9,22 @@ CHANGED:
 - publishing as in the rest of the family (#31): the Central Portal through the nmcp settings plugin, a release
   waiting for the maintainer (USER_MANAGED), the signing subkey through GPG_KEY_ID, a refused upload when only half
   of the key is set, and uploads only from CI, a release only from its RELEASE-* tag
+- mutation testing (#36): the tests kill 703 of the 721 mutants of PIT 1.30.0 with its default mutators, 97.5%, up
+  from 625, 87%, and the CI build fails below 95% (`mutationThreshold` in `build.gradle`, 85% before; PIT rounds the
+  score half up to a whole percent before it compares). Of the 18 that survive, 14 are equivalent; the other 4 point
+  at bugs and at Javadoc that contradicts the code (#41, #43, #47). The README's mutation score badge shows the score
+  of `develop`, which CI publishes on the `gh-pages` branch from each push to it, also when the score fails the
+  floor; a push to `master` publishes master's. `make pitest` runs PIT
+- the tests that PIT found weak check what `add` and `addAll` of the list classes return, the boundaries at their
+  exact value, the content and order of results that were checked by their size, the types the factories document,
+  the order of the sorted maps, and the index of `IndexSortedProperties` after `put`, `remove` and `clear`; two
+  constructor tests whose loops never ran check what they are named for (#36). The bugs found on the way are
+  #39 to #47
+- the tests of `PropertiesExtensionsTest` write their files into a temporary directory, no longer into the working
+  directory, where a run of PIT left five of them behind (#36)
+- the test runtime class path no longer holds this project's own jar: file-worker depends on an older
+  silly-collection, which Gradle resolved to this project, so `test` needed `mustRunAfter(jar)` and
+  `./gradlew build pitest` failed Gradle's validation (#36); the cycle itself is #37
 
 Version 28.2
 -------------
