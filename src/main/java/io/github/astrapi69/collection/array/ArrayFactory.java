@@ -61,33 +61,55 @@ public final class ArrayFactory
 
 	/**
 	 * Factory method for create new array from the given optional elements.
+	 * <p>
+	 * The result is a new array, also when no elements are given: a copy of the given array, so
+	 * that a write to the result does not change the array of the caller. Null gives null.
+	 * </p>
 	 *
 	 * @param <T>
 	 *            the generic type of the elements
 	 * @param elements
-	 *            the optional elements that will be in the returned array.
-	 * @return the new array
+	 *            the optional elements that will be in the returned array, may be null
+	 * @return a new array with the given elements, or null if the given elements are null
 	 */
 	@SafeVarargs
 	public static <T> T[] newArray(final T... elements)
 	{
-		return elements;
+		return elements == null ? null : elements.clone();
 	}
 
 	/**
 	 * Factory method for create a new array from an existing array and the given optional elements.
+	 * <p>
+	 * The result is a new array with the elements of the existing array followed by the given
+	 * elements, as {@link ArrayExtensions#concatenate(Object[], Object[])} gives them, but never
+	 * one of the given arrays itself: if no elements are given (null or empty), a copy of the
+	 * existing array; if the existing array is null, a copy of the elements array. The result is
+	 * null if the existing array is null and no elements are given.
+	 * </p>
 	 *
 	 * @param <T>
 	 *            the generic type of the elements
 	 * @param existingArray
-	 *            the existing array
+	 *            the existing array, may be null
 	 * @param elements
-	 *            the optional elements that will be in the returned array.
-	 * @return the new array
+	 *            the optional elements that will be in the returned array, may be null
+	 * @return a new array with the elements of the existing array followed by the given elements,
+	 *         or null if the existing array is null and no elements are given
 	 */
 	@SafeVarargs
 	public static <T> T[] newArray(T[] existingArray, final T... elements)
 	{
+		// the two cases in which concatenate hands back one of the given arrays itself, see its
+		// Javadoc: here they give a copy
+		if (elements == null || elements.length == 0)
+		{
+			return newArray(existingArray);
+		}
+		if (existingArray == null)
+		{
+			return newArray(elements);
+		}
 		return ArrayExtensions.concatenate(existingArray, elements);
 	}
 

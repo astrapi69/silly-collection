@@ -28,8 +28,8 @@ import static org.junit.jupiter.api.Assertions.assertArrayEquals;
 import static org.junit.jupiter.api.Assertions.assertEquals;
 import static org.junit.jupiter.api.Assertions.assertFalse;
 import static org.junit.jupiter.api.Assertions.assertNotNull;
+import static org.junit.jupiter.api.Assertions.assertNotSame;
 import static org.junit.jupiter.api.Assertions.assertNull;
-import static org.junit.jupiter.api.Assertions.assertSame;
 import static org.junit.jupiter.api.Assertions.assertTrue;
 
 import java.util.ArrayList;
@@ -1515,20 +1515,22 @@ public class ListExtensionsTest
 	}
 
 	/**
-	 * Test the method {@link ListExtensions#toArray(Object...)} with a given array. Pins what the
-	 * method returns today: the given array itself. The fix of #62 changes the result to a new
-	 * array with the elements of the given array
+	 * Test the method {@link ListExtensions#toArray(Object...)} with a given array: the result is a
+	 * new array with the elements of the given array. Before the fix of #62 the method returned the
+	 * given array itself
 	 */
 	@Test
 	public void testToArrayWithGivenArray()
 	{
 		final String[] given = { "a", "b" };
-		assertSame(given, ListExtensions.toArray(given));
+		final String[] actual = ListExtensions.toArray(given);
+		assertNotSame(given, actual);
+		assertArrayEquals(given, actual);
 	}
 
 	/**
-	 * Test the method {@link ListExtensions#toArray(Object...)} with null. Pins what the method
-	 * returns today: null. The fix of #62 keeps this result
+	 * Test the method {@link ListExtensions#toArray(Object...)} with null: the result is null, as
+	 * before the fix of #62
 	 */
 	@Test
 	public void testToArrayWithNull()
