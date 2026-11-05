@@ -25,14 +25,18 @@
 package io.github.astrapi69.collection.map;
 
 import static org.junit.jupiter.api.Assertions.assertEquals;
-import static org.junit.jupiter.api.Assertions.assertNull;
 
-import java.util.HashMap;
+import java.util.ArrayList;
+import java.util.Arrays;
 import java.util.LinkedHashMap;
+import java.util.List;
 import java.util.Map;
-import java.util.Map.Entry;
+import java.util.function.Supplier;
+import java.util.stream.Stream;
 
-import org.junit.jupiter.api.Test;
+import org.junit.jupiter.params.ParameterizedTest;
+import org.junit.jupiter.params.provider.CsvSource;
+import org.junit.jupiter.params.provider.MethodSource;
 
 /**
  * The unit test class for the class {@link InsertionOrderMap}.
@@ -43,256 +47,129 @@ public class InsertionOrderMapTest
 {
 
 	/**
-	 * Test the no argument constructor of {@link InsertionOrderMap}.
+	 * Puts the keys 1 to 4 with the values value1 to value4 into the given map, in this order
+	 *
+	 * @param map
+	 *            the map
+	 * @return the given map
 	 */
-	@Test
-	public void testInsertionOrderMap()
+	static Map<String, String> oneToFour(final Map<String, String> map)
 	{
-		final String[][] expected = { { "1", "value1" }, { "3", "value3" }, { "4", "value4" },
-				{ "2", "value5" } };
-		int count = 0;
-		final Map<String, String> map = new InsertionOrderMap<>();
-
-		// Add some elements
 		map.put("1", "value1");
 		map.put("2", "value2");
 		map.put("3", "value3");
 		map.put("4", "value4");
-		/*
-		 * Note that insertion order is affected if a key is re-inserted into the map.
-		 */
-		map.put("2", "value5");
-		for (final Entry<String, String> entry : map.entrySet())
-		{
-			final Object key = entry.getKey();
-			final Object value = entry.getValue();
-			final String expectedKey = expected[count][0];
-			final String expectedValue = expected[count][1];
-			assertEquals(key.toString(), expectedKey);
-			assertEquals(value.toString(), expectedValue);
-			count++;
-		}
-		map.forEach((key, value) -> System.out.println("[" + key + "=" + value + "]"));
-		map.clear();
+		return map;
 	}
 
 	/**
-	 * Test the constructor with the initial capacity of {@link InsertionOrderMap}.
+	 * A map made by a constructor and filled with four entries, and the order of its keys before
+	 * and after the key 2 is put again with a new value
+	 *
+	 * @param description
+	 *            the name of the case
+	 * @param map
+	 *            makes the filled map
+	 * @param keys
+	 *            the order of the keys of the filled map
+	 * @param keysAfterPutAgain
+	 *            the order of the keys after the key 2 is put again
 	 */
-	@Test
-	public void testInsertionOrderMapInt()
+	record OrderCase(String description, Supplier<Map<String, String>> map, List<String> keys,
+		List<String> keysAfterPutAgain) {
+		@Override
+		public String toString()
+		{
+			return description;
+		}
+	}
+
+	/**
+	 * The cases of {@link #testOrder(OrderCase)}: each constructor of {@link InsertionOrderMap},
+	 * and a {@link LinkedHashMap} for the difference, which keeps the place of a key that is put
+	 * again
+	 *
+	 * @return the cases
+	 */
+	static Stream<OrderCase> orders()
 	{
-		/* Shows that the elements are ordered in insertion-order from the Map. */
-		final Map<String, String> map = new InsertionOrderMap<>(4);
-
-		// Add some elements
-		map.put("1", "value1");
-		map.put("2", "value2");
-		map.put("3", "value3");
-		map.put("4", "value4");
-		final String[][] expected = { { "1", "value1" }, { "2", "value2" }, { "3", "value3" },
-				{ "4", "value4" } };
-		int count = 0;
-		for (final Entry<String, String> entry : map.entrySet())
-		{
-			final Object key = entry.getKey();
-			final Object value = entry.getValue();
-			final String expectedKey = expected[count][0];
-			final String expectedValue = expected[count][1];
-			assertEquals(key.toString(), expectedKey);
-			assertEquals(value.toString(), expectedValue);
-			count++;
-		}
-		map.clear();
+		final List<String> oneToFour = List.of("1", "2", "3", "4");
+		final List<String> twoMoved = List.of("1", "3", "4", "2");
+		return Stream.of(
+			new OrderCase("InsertionOrderMap(): 2 moves to the end",
+				() -> oneToFour(new InsertionOrderMap<>()), oneToFour, twoMoved),
+			new OrderCase("InsertionOrderMap(4): 2 moves to the end",
+				() -> oneToFour(new InsertionOrderMap<>(4)), oneToFour, twoMoved),
+			new OrderCase("InsertionOrderMap(4, 4f): 2 moves to the end",
+				() -> oneToFour(new InsertionOrderMap<>(4, 4f)), oneToFour, twoMoved),
+			new OrderCase("InsertionOrderMap(4, 4f, true), access order: 2 moves to the end",
+				() -> oneToFour(new InsertionOrderMap<>(4, 4f, true)), oneToFour, twoMoved),
+			new OrderCase(
+				"InsertionOrderMap(map of 2, 3, 1, 4): the order of the given map, 2 moves to the end",
+				() -> {
+					final Map<String, String> given = new LinkedHashMap<>();
+					given.put("2", "value2");
+					given.put("3", "value3");
+					given.put("1", "value1");
+					given.put("4", "value4");
+					return new InsertionOrderMap<>(given);
+				}, List.of("2", "3", "1", "4"), List.of("3", "1", "4", "2")),
+			new OrderCase("LinkedHashMap, for the difference: 2 keeps its place",
+				() -> oneToFour(new LinkedHashMap<>()), oneToFour, oneToFour));
 	}
 
 	/**
-	 * Test the constructor with the initial capacity and the load factor of
-	 * {@link InsertionOrderMap}.
+	 * Test for the constructors of {@link InsertionOrderMap} and its method
+	 * {@link InsertionOrderMap#put(Object, Object)}: the keys come in the order they were put, and
+	 * a key that is put again with a new value moves to the end, which a {@link LinkedHashMap} does
+	 * not do
+	 *
+	 * @param order
+	 *            the map and the orders of its keys
 	 */
-	@Test
-	public void testInsertionOrderMapIntFloat()
+	@ParameterizedTest(name = "{0}")
+	@MethodSource("orders")
+	public void testOrder(final OrderCase order)
 	{
-		/* Shows that the elements are ordered in insertion-order from the Map. */
-		final Map<String, String> map = new InsertionOrderMap<>(4, 4f);
-
-		// Add some elements
-		map.put("1", "value1");
-		map.put("2", "value2");
-		map.put("3", "value3");
-		map.put("4", "value4");
-		final String[][] expected = { { "1", "value1" }, { "2", "value2" }, { "3", "value3" },
-				{ "4", "value4" } };
-		int count = 0;
-		for (final Entry<String, String> entry : map.entrySet())
-		{
-			final Object key = entry.getKey();
-			final Object value = entry.getValue();
-			final String expectedKey = expected[count][0];
-			final String expectedValue = expected[count][1];
-			assertEquals(key.toString(), expectedKey);
-			assertEquals(value.toString(), expectedValue);
-			count++;
-		}
-		map.clear();
+		final Map<String, String> map = order.map().get();
+		assertEquals(order.keys(), new ArrayList<>(map.keySet()));
+		assertEquals("value2", map.put("2", "value5"));
+		assertEquals(order.keysAfterPutAgain(), new ArrayList<>(map.keySet()));
+		assertEquals("value5", map.get("2"));
 	}
 
 	/**
-	 * Test the constructor with the initial capacity, load factor and the ordering mode of
-	 * {@link InsertionOrderMap}.
+	 * Test for method {@link InsertionOrderMap#put(Object, Object)} on a map of 1 = value1, 3 =
+	 * null, 4 = value4: as its Javadoc and the {@link Map} contract say, it returns the previous
+	 * value of the key, or null if the key had no mapping or was mapped to null, and the key comes
+	 * last afterwards
+	 *
+	 * @param description
+	 *            the name of the case
+	 * @param key
+	 *            the key to put
+	 * @param value
+	 *            the value to put, may be null
+	 * @param previous
+	 *            the value put returns, may be null
+	 * @param keys
+	 *            the order of the keys afterwards, separated by a space
 	 */
-	@Test
-	public void testInsertionOrderMapIntFloatBoolean()
-	{
-		/* Shows that the elements are ordered in insertion-order from the Map. */
-		final Map<String, String> map = new InsertionOrderMap<>(4, 4f, true);
-
-		// Add some elements
-		map.put("1", "value1");
-		map.put("2", "value2");
-		map.put("3", "value3");
-		map.put("4", "value4");
-		final String[][] expected = { { "1", "value1" }, { "2", "value2" }, { "3", "value3" },
-				{ "4", "value4" } };
-		int count = 0;
-		for (final Entry<String, String> entry : map.entrySet())
-		{
-			final Object key = entry.getKey();
-			final Object value = entry.getValue();
-			final String expectedKey = expected[count][0];
-			final String expectedValue = expected[count][1];
-			assertEquals(key.toString(), expectedKey);
-			assertEquals(value.toString(), expectedValue);
-			count++;
-		}
-		map.clear();
-	}
-
-	/**
-	 * Test the constructor with a map of {@link InsertionOrderMap}.
-	 */
-	@Test
-	public void testInsertionOrderMapMapOfQextendsKQextendsV()
-	{
-		final Map<String, String> map3 = new HashMap<>();
-		// Add some elements
-		map3.put("1", "value1");
-		map3.put("2", "value2");
-		map3.put("3", "value3");
-		map3.put("4", "value4");
-		/* Shows that the elements are ordered in insertion-order from the Map. */
-		final Map<String, String> map = new InsertionOrderMap<>(map3);
-
-		final String[][] expected = { { "1", "value1" }, { "2", "value2" }, { "3", "value3" },
-				{ "4", "value4" } };
-		int count = 0;
-		for (final Entry<String, String> entry : map.entrySet())
-		{
-			final Object key = entry.getKey();
-			final Object value = entry.getValue();
-			final String expectedKey = expected[count][0];
-			final String expectedValue = expected[count][1];
-			assertEquals(key.toString(), expectedKey);
-			assertEquals(value.toString(), expectedValue);
-			count++;
-
-		}
-		map.clear();
-	}
-
-	/**
-	 * Test the method {@link InsertionOrderMap#put(Object, Object)}: as its Javadoc and the
-	 * {@link Map} contract say, it returns the previous value of the key, or null if the key had no
-	 * mapping or was mapped to null
-	 */
-	@Test
-	public void testPutReturnsThePreviousValue()
+	@ParameterizedTest(name = "{0}", quoteTextArguments = false)
+	@CsvSource(value = { "the new key 2: null, 2 last | 2 | value2 | | 1 3 4 2",
+			"the new key 2 with null: null, 2 last | 2 | | | 1 3 4 2",
+			"1, which holds value1: value1, 1 last | 1 | value5 | value1 | 3 4 1",
+			"3, which holds null: null, 3 last | 3 | value5 | | 1 4 3" }, delimiter = '|')
+	public void testPutReturnsThePreviousValue(final String description, final String key,
+		final String value, final String previous, final String keys)
 	{
 		final Map<String, String> map = new InsertionOrderMap<>();
-		assertNull(map.put("1", "value1"));
-		assertNull(map.put("2", "value2"));
-		assertEquals("value1", map.put("1", "value3"));
-		// new scenario...
-		assertNull(map.put("3", null));
-		assertNull(map.put("3", "value4"));
-	}
-
-	/**
-	 * Test the LinkedHashMap to show the difference.
-	 */
-	@Test
-	public void testLinkedHashMap()
-	{
-		/* Shows that the elements are ordered in insertion-order from the Map. */
-		final Map<String, String> map = new LinkedHashMap<>();
-
-		// Add some elements
 		map.put("1", "value1");
-		map.put("2", "value2");
-		map.put("3", "value3");
+		map.put("3", null);
 		map.put("4", "value4");
-		final String[][] expected = { { "1", "value1" }, { "2", "value2" }, { "3", "value3" },
-				{ "4", "value4" } };
-		int count = 0;
-		for (final Entry<String, String> entry : map.entrySet())
-		{
-			final Object key = entry.getKey();
-			final Object value = entry.getValue();
-			final String expectedKey = expected[count][0];
-			final String expectedValue = expected[count][1];
-			assertEquals(key.toString(), expectedKey);
-			assertEquals(value.toString(), expectedValue);
-			count++;
-
-		}
-		map.clear();
-		/*
-		 * Note that insertion order is not affected if a key is re-inserted into the map.
-		 */
-
-		final Map<String, String> map2 = new LinkedHashMap<>();
-
-		// Add some elements
-		map2.put("1", "value1");
-		map2.put("2", "value2");
-		map2.put("3", "value3");
-		map2.put("4", "value4");
-		map2.put("2", "value5");
-		expected[1][1] = "value5";
-		count = 0;
-		for (final Entry<String, String> entry : map2.entrySet())
-		{
-			final Object key = entry.getKey();
-			final Object value = entry.getValue();
-			final String expectedKey = expected[count][0];
-			final String expectedValue = expected[count][1];
-			assertEquals(key.toString(), expectedKey);
-			assertEquals(value.toString(), expectedValue);
-			count++;
-		}
-		map2.clear();
-		/*
-		 * Constructs an HashMap instance with the same mappings as the specified map.
-		 */
-		final Map<String, String> map3 = new HashMap<>();
-		// Add some elements
-		map3.put("1", "value1");
-		map3.put("2", "value2");
-		map3.put("3", "value3");
-		map3.put("4", "value4");
-		map3.put("2", "value5");
-		System.out.println("----------initHashMap--------------");
-
-		map3.forEach((key, value) -> System.out.println("[" + key + "=" + value + "]"));
-
-		System.out.println("------------------------");
-		System.out.println("----------Map linkedMap = new LinkedHashMap(map3);--------------");
-		final Map<String, String> linkedMap = new LinkedHashMap<>(map3);
-
-		linkedMap.forEach((key, value) -> System.out.println("[" + key + "=" + value + "]"));
-
-		System.out.println("---------initInsertionOrderMap---------------");
-		map3.clear();
+		assertEquals(previous, map.put(key, value));
+		assertEquals(value, map.get(key));
+		assertEquals(Arrays.asList(keys.split(" ")), new ArrayList<>(map.keySet()));
 	}
 
 }
