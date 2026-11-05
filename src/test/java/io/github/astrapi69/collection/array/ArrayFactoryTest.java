@@ -407,26 +407,38 @@ public class ArrayFactoryTest
 	}
 
 	/**
-	 * Test for method {@link ArrayFactory#newRangeArray(int, int)} where the end is less than the
-	 * start: the message of the exception says that end must not be less than start
+	 * Test for method {@link ArrayFactory#newRangeArray(int, int)} with a range it throws for, and
+	 * the exception with its message: an end less than the start. At the end of the int values it
+	 * throws today, as its counter and its length overflow (#113): from Integer.MAX_VALUE - 1 and
+	 * from Integer.MAX_VALUE to Integer.MAX_VALUE the counter passes Integer.MAX_VALUE and writes
+	 * beyond the array, and a range of more than Integer.MAX_VALUE numbers gets a length of 0 or a
+	 * negative one. The fix of #113 changes these four rows
 	 *
 	 * @param description
 	 *            the name of the case
 	 * @param start
 	 *            the start
 	 * @param end
-	 *            the end, less than the start
+	 *            the end
+	 * @param exception
+	 *            the class of the exception
+	 * @param message
+	 *            the message of the exception
 	 */
 	@ParameterizedTest(name = "{0}", quoteTextArguments = false)
-	@CsvSource({ "9 to 8: the end one less than the start, 9, 8",
-			"9 to -9: the end far less than the start, 9, -9" })
-	public void testNewRangeArrayWithEndLessThanStart(final String description, final int start,
-		final int end)
+	@CsvSource({
+			"9 to 8: the end one less than the start, 9, 8, java.lang.IllegalArgumentException, Parameter end must not be less than parameter start.",
+			"9 to -9: the end far less than the start, 9, -9, java.lang.IllegalArgumentException, Parameter end must not be less than parameter start.",
+			"Integer.MAX_VALUE - 1 to Integer.MAX_VALUE: today the counter overflows (#113), 2147483646, 2147483647, java.lang.ArrayIndexOutOfBoundsException, Index 2 out of bounds for length 2",
+			"Integer.MAX_VALUE to Integer.MAX_VALUE: today the counter overflows (#113), 2147483647, 2147483647, java.lang.ArrayIndexOutOfBoundsException, Index 1 out of bounds for length 1",
+			"Integer.MIN_VALUE to Integer.MAX_VALUE: today the length overflows to 0 (#113), -2147483648, 2147483647, java.lang.ArrayIndexOutOfBoundsException, Index 0 out of bounds for length 0",
+			"0 to Integer.MAX_VALUE: today the length overflows to a negative (#113), 0, 2147483647, java.lang.NegativeArraySizeException, -2147483648" })
+	public void testNewRangeArrayThrows(final String description, final int start, final int end,
+		final Class<? extends RuntimeException> exception, final String message)
 	{
-		final IllegalArgumentException exception = assertThrows(IllegalArgumentException.class,
+		final RuntimeException actual = assertThrows(exception,
 			() -> ArrayFactory.newRangeArray(start, end));
-		assertEquals("Parameter end must not be less than parameter start.",
-			exception.getMessage());
+		assertEquals(message, actual.getMessage());
 	}
 
 	/**
