@@ -24,17 +24,28 @@
  */
 package io.github.astrapi69.collection.properties;
 
-import static org.junit.jupiter.api.Assertions.*;
+import static org.junit.jupiter.api.Assertions.assertEquals;
+import static org.junit.jupiter.api.Assertions.assertNull;
+import static org.junit.jupiter.api.Assertions.assertTrue;
 
 import java.io.IOException;
 import java.io.StringReader;
+import java.io.UncheckedIOException;
 import java.util.ArrayList;
+import java.util.Arrays;
 import java.util.Comparator;
 import java.util.Iterator;
 import java.util.List;
+import java.util.Map;
 import java.util.Properties;
+import java.util.function.Function;
+import java.util.function.Supplier;
+import java.util.stream.Stream;
 
 import org.junit.jupiter.api.Test;
+import org.junit.jupiter.params.ParameterizedTest;
+import org.junit.jupiter.params.provider.Arguments;
+import org.junit.jupiter.params.provider.MethodSource;
 
 import io.github.astrapi69.collection.list.ListFactory;
 import io.github.astrapi69.comparator.NullCheckComparator;
@@ -49,725 +60,506 @@ public class IndexSortedPropertiesTest
 {
 
 	/**
-	 * Test for method {@link IndexSortedProperties#clear()}: it removes the entries, and their keys
-	 * from the index
+	 * Properties of the given keys and values
+	 *
+	 * @param keysAndValues
+	 *            the keys and values, one after the other
+	 * @return the properties
 	 */
-	@Test
-	public void testClear()
+	static Properties propertiesOf(final String... keysAndValues)
 	{
-		final Properties unsortedProperties = new Properties();
-		unsortedProperties.put("B", "2");
-		unsortedProperties.put("C", "3");
-		unsortedProperties.put("A", "1");
-		unsortedProperties.put("D", "4");
-		unsortedProperties.put("E", "5");
-
-		final IndexSortedProperties properties = IndexSortedProperties.of();
-		properties.putAll(unsortedProperties);
-		int expected;
-		int actual;
-		expected = 4;
-		actual = properties.indexOf("5");
-		assertEquals(expected, actual);
-		expected = 3;
-		actual = properties.indexOf("4");
-		assertEquals(expected, actual);
-		expected = 2;
-		actual = properties.indexOf("3");
-		assertEquals(expected, actual);
-		expected = 1;
-		actual = properties.indexOf("2");
-		assertEquals(expected, actual);
-		expected = 0;
-		actual = properties.indexOf("1");
-		assertEquals(expected, actual);
-
-		properties.clear();
-		actual = properties.size();
-		expected = 0;
-		assertEquals(expected, actual);
-		assertNull(properties.get(0));
-		assertEquals(-1, properties.indexOf("1"));
-	}
-
-	/**
-	 * Test the method {@link IndexSortedProperties#clear()} empties both the properties and the
-	 * index, so that the first key put afterwards is the first one in the index
-	 */
-	@Test
-	public void testClearEmptiesPropertiesAndIndex()
-	{
-		final IndexSortedProperties properties = IndexSortedProperties.of();
-		properties.setProperty("B", "2");
-		properties.setProperty("A", "1");
-
-		properties.clear();
-		assertTrue(properties.isEmpty());
-		assertNull(properties.getProperty("A"));
-		assertNull(properties.get(0));
-		assertEquals(-1, properties.indexOf("1"));
-
-		properties.setProperty("C", "3");
-		assertEquals("3", properties.get(0));
-		assertNull(properties.get(1));
-		assertEquals(0, properties.indexOf("3"));
-	}
-
-	/**
-	 * Test the method {@link IndexSortedProperties#clear()} on an empty object, whose index is
-	 * empty, too
-	 */
-	@Test
-	public void testClearWhenEmpty()
-	{
-		final IndexSortedProperties properties = IndexSortedProperties.of();
-		properties.clear();
-		assertTrue(properties.isEmpty());
-		assertNull(properties.get(0));
-	}
-
-	/**
-	 * Test for constructor of the class {@link IndexSortedProperties}: the given properties are its
-	 * defaults, which {@link Properties#getProperty(String)} finds and the index does not hold, as
-	 * {@link IndexSortedProperties#keySet()} does not; the index holds the keys of the entries put
-	 * into the object, sorted with its comparator
-	 */
-	@Test
-	public void testConstructor()
-	{
-		final Properties unsortedProperties = new Properties();
-		unsortedProperties.put("B", "2");
-		unsortedProperties.put("C", "3");
-		unsortedProperties.put("A", "1");
-		unsortedProperties.put("D", "4");
-
-		IndexSortedProperties sortedProperties = new IndexSortedProperties(unsortedProperties);
-		assertEquals("1", sortedProperties.getProperty("A"));
-		assertNull(sortedProperties.getProperty(0));
-
-		// the same entries put into the object: the index holds their keys A, B, C, D, and
-		// getProperty(int) returns the value of the key at an index
-		sortedProperties.putAll(unsortedProperties);
-		int count = 0;
-		while (sortedProperties.getProperty(count) != null)
+		final Properties properties = new Properties();
+		for (int i = 0; i < keysAndValues.length; i += 2)
 		{
-			assertTrue(count < 4, "the index holds more than the four keys of the entries");
-			final String value = sortedProperties.getProperty(count);
-			if (count == 0)
-			{
-				assertEquals("1", value);
-			}
-			if (count == 1)
-			{
-				assertEquals("2", value);
-			}
-			if (count == 2)
-			{
-				assertEquals("3", value);
-			}
-			if (count == 3)
-			{
-				assertEquals("4", value);
-			}
-			count++;
+			properties.setProperty(keysAndValues[i], keysAndValues[i + 1]);
 		}
-		assertEquals(4, count);
+		return properties;
+	}
 
-		// Add a reverse comparator.
-		sortedProperties = new IndexSortedProperties(unsortedProperties)
+	/**
+	 * The properties B = 2, C = 3, A = 1, D = 4, E = 5
+	 *
+	 * @return new properties
+	 */
+	static Properties aToE()
+	{
+		return propertiesOf("B", "2", "C", "3", "A", "1", "D", "4", "E", "5");
+	}
+
+	/**
+	 * The properties B = 2, C = 3, A = 1, D = 4
+	 *
+	 * @return new properties
+	 */
+	static Properties aToD()
+	{
+		return propertiesOf("B", "2", "C", "3", "A", "1", "D", "4");
+	}
+
+	/**
+	 * The comparator in the reverse order of the string form
+	 */
+	static final Comparator<Object> DESCENDING = (o1, o2) -> o2.toString().compareTo(o1.toString());
+
+	/**
+	 * The comparator in the order of the string form
+	 */
+	static final Comparator<Object> ASCENDING = NullCheckComparator
+		.of((final Object o1, final Object o2) -> o1.toString().compareTo(o2.toString()));
+
+	/**
+	 * Puts all entries of the given map into the given properties with
+	 * {@link IndexSortedProperties#putAll(Map)}
+	 *
+	 * @param properties
+	 *            the properties
+	 * @param map
+	 *            the entries
+	 * @return the given properties
+	 */
+	static IndexSortedProperties putAll(final IndexSortedProperties properties, final Map<?, ?> map)
+	{
+		properties.putAll(map);
+		return properties;
+	}
+
+	/**
+	 * Asserts that the index of the given properties holds the given values in their order:
+	 * {@link IndexSortedProperties#get(int)} and {@link IndexSortedProperties#getProperty(int)}
+	 * give them, {@link IndexSortedProperties#indexOf(Object)} finds them at their index, and an
+	 * index out of range, the size or -1, gives null
+	 *
+	 * @param values
+	 *            the values in the order of the index, all different
+	 * @param properties
+	 *            the properties
+	 */
+	static void assertIndex(final List<String> values, final IndexSortedProperties properties)
+	{
+		assertEquals(values.size(), properties.size(), "size");
+		for (int index = 0; index < values.size(); index++)
 		{
-			/**
-			 * The serialVersionUID
-			 */
+			assertEquals(values.get(index), properties.get(index), "get(" + index + ")");
+			assertEquals(values.get(index), properties.getProperty(index),
+				"getProperty(" + index + ")");
+			assertEquals(index, properties.indexOf(values.get(index)),
+				"indexOf(" + values.get(index) + ")");
+		}
+		assertNull(properties.get(values.size()), "get(size)");
+		assertNull(properties.getProperty(values.size()), "getProperty(size)");
+		assertNull(properties.get(-1), "get(-1)");
+		assertNull(properties.getProperty(-1), "getProperty(-1)");
+		assertEquals(-1, properties.indexOf("6"), "indexOf(6), a value of no key");
+	}
+
+	/**
+	 * An {@link IndexSortedProperties} made and filled in some way, the values of its index and
+	 * values that getProperty finds by their key
+	 *
+	 * @param description
+	 *            the name of the case
+	 * @param properties
+	 *            makes the properties
+	 * @param values
+	 *            the values in the order of the index
+	 * @param found
+	 *            keys and values that {@link Properties#getProperty(String)} finds, those of the
+	 *            defaults too
+	 */
+	record Construction(String description, Supplier<IndexSortedProperties> properties,
+		List<String> values, Map<String, String> found) {
+		@Override
+		public String toString()
+		{
+			return description;
+		}
+	}
+
+	/**
+	 * The cases of {@link #testConstruction(Construction)}
+	 *
+	 * @return the cases
+	 */
+	static Stream<Construction> constructions()
+	{
+		final List<String> oneToFive = List.of("1", "2", "3", "4", "5");
+		final List<String> oneToFour = List.of("1", "2", "3", "4");
+		return Stream.of(
+			new Construction("of(), putAll of A to E: 1 to 5",
+				() -> putAll(IndexSortedProperties.of(), aToE()), oneToFive, Map.of()),
+			new Construction("new IndexSortedProperties(), setProperty B, C, A, D, E: 1 to 5",
+				() -> {
+					final IndexSortedProperties properties = new IndexSortedProperties();
+					properties.setProperty("B", "2");
+					properties.setProperty("C", "3");
+					properties.setProperty("A", "1");
+					properties.setProperty("D", "4");
+					properties.setProperty("E", "5");
+					return properties;
+				}, oneToFive, Map.of()),
+			new Construction("of(defaults A to E), nothing put: empty, getProperty finds E",
+				() -> IndexSortedProperties.of(aToE()), List.of(), Map.of("E", "5")),
+			new Construction("of(defaults A to E), putAll of them: 1 to 5",
+				() -> putAll(IndexSortedProperties.of(aToE()), aToE()), oneToFive, Map.of()),
+			new Construction("new IndexSortedProperties(defaults A to D), nothing put: empty",
+				() -> new IndexSortedProperties(aToD()), List.of(), Map.of("A", "1")),
+			new Construction("new IndexSortedProperties(defaults A to D), putAll of them: 1 to 4",
+				() -> putAll(new IndexSortedProperties(aToD()), aToD()), oneToFour, Map.of()),
+			new Construction("a reverse newComparator, defaults A to D, nothing put: empty",
+				() -> reversed(aToD()), List.of(), Map.of("A", "1")),
+			new Construction("a reverse newComparator, defaults A to D, putAll of them: 4 to 1",
+				() -> putAll(reversed(aToD()), aToD()), List.of("4", "3", "2", "1"), Map.of()),
+			new Construction(
+				"new IndexSortedProperties(defaults A to D), setProperty E: 5 alone, the defaults by key",
+				() -> {
+					final IndexSortedProperties properties = new IndexSortedProperties(aToD());
+					properties.setProperty("E", "5");
+					return properties;
+				}, List.of("5"), Map.of("A", "1", "E", "5")),
+			new Construction("of(defaults A to E, ascending), nothing put: empty",
+				() -> IndexSortedProperties.of(aToE(), ASCENDING), List.of(), Map.of("E", "5")),
+			new Construction("of(defaults A to E, ascending), putAll of them: 1 to 5",
+				() -> putAll(IndexSortedProperties.of(aToE(), ASCENDING), aToE()), oneToFive,
+				Map.of()),
+			new Construction("of(defaults A to E, ascending, false), nothing put: empty",
+				() -> IndexSortedProperties.of(aToE(), ASCENDING, false), List.of(),
+				Map.of("E", "5")),
+			new Construction("of(defaults A to E, ascending, false), putAll of them: 1 to 5",
+				() -> putAll(IndexSortedProperties.of(aToE(), ASCENDING, false), aToE()), oneToFive,
+				Map.of()),
+			new Construction(
+				"defaults that iterate C, B, A, nothing put: empty, getProperty finds A",
+				() -> new IndexSortedProperties(descendingDefaults()), List.of(), Map.of("A", "1")),
+			new Construction(
+				"defaults that iterate C, B, A, putAll of them: 1, 2, 3, sorted by the index",
+				() -> putAll(new IndexSortedProperties(descendingDefaults()), descendingDefaults()),
+				List.of("1", "2", "3"), Map.of()),
+			new Construction("of(defaults A, C, descending), putAll of them: 3, 1",
+				() -> putAll(IndexSortedProperties.of(propertiesOf("A", "1", "C", "3"), DESCENDING),
+					propertiesOf("A", "1", "C", "3")),
+				List.of("3", "1"), Map.of()),
+			new Construction("of(defaults A, C, descending), putAll of them, then B: 3, 2, 1",
+				() -> withB(
+					putAll(IndexSortedProperties.of(propertiesOf("A", "1", "C", "3"), DESCENDING),
+						propertiesOf("A", "1", "C", "3"))),
+				List.of("3", "2", "1"), Map.of()),
+			new Construction(
+				"of(defaults A, C, descending, true), nothing put: empty, getProperty finds A",
+				() -> IndexSortedProperties.of(propertiesOf("A", "1", "C", "3"), DESCENDING, true),
+				List.of(), Map.of("A", "1")),
+			new Construction("of(defaults A, C, descending, true), putAll of them, then B: 3, 2, 1",
+				() -> withB(putAll(
+					IndexSortedProperties.of(propertiesOf("A", "1", "C", "3"), DESCENDING, true),
+					propertiesOf("A", "1", "C", "3"))),
+				List.of("3", "2", "1"), Map.of()),
+			new Construction("defaults A, B, put C: 3 alone, getProperty finds A", () -> {
+				final IndexSortedProperties properties = new IndexSortedProperties(
+					propertiesOf("A", "1", "B", "2"));
+				properties.put("C", "3");
+				return properties;
+			}, List.of("3"), Map.of("A", "1")),
+			new Construction("defaults A, B, putAll of C: 3 alone, getProperty finds A",
+				() -> putAll(new IndexSortedProperties(propertiesOf("A", "1", "B", "2")),
+					propertiesOf("C", "3")),
+				List.of("3"), Map.of("A", "1")),
+			new Construction("of(), put A = 1 and A = 2, a key twice: 2 alone", () -> {
+				final IndexSortedProperties properties = IndexSortedProperties.of();
+				properties.put("A", "1");
+				properties.put("A", "2");
+				return properties;
+			}, List.of("2"), Map.of()),
+			new Construction("of(), put A twice, remove A, put B = 3: 3 alone", () -> {
+				final IndexSortedProperties properties = IndexSortedProperties.of();
+				properties.put("A", "1");
+				properties.put("A", "2");
+				properties.remove("A");
+				properties.put("B", "3");
+				return properties;
+			}, List.of("3"), Map.of()),
+			new Construction("of(), load of B=2, A=1, A=3, a key twice: 3, 2", () -> {
+				final IndexSortedProperties properties = IndexSortedProperties.of();
+				try
+				{
+					properties.load(new StringReader("B=2\nA=1\nA=3\n"));
+				}
+				catch (final IOException exception)
+				{
+					throw new UncheckedIOException(exception);
+				}
+				return properties;
+			}, List.of("3", "2"), Map.of()),
+			new Construction("of(), clear() when empty: empty", () -> {
+				final IndexSortedProperties properties = IndexSortedProperties.of();
+				properties.clear();
+				return properties;
+			}, List.of(), Map.of()));
+	}
+
+	/**
+	 * An {@link IndexSortedProperties} with the given defaults whose newComparator() sorts the keys
+	 * in the reverse order of their string form
+	 *
+	 * @param defaults
+	 *            the defaults
+	 * @return the new properties
+	 */
+	static IndexSortedProperties reversed(final Properties defaults)
+	{
+		return new IndexSortedProperties(defaults)
+		{
 			private static final long serialVersionUID = 1L;
 
 			@Override
 			protected Comparator<Object> newComparator()
 			{
-
-				return NullCheckComparator.of(
-					(final Object o1, final Object o2) -> o2.toString().compareTo(o1.toString()),
-					false);
+				return NullCheckComparator.of(DESCENDING, false);
 			}
 		};
-		assertNull(sortedProperties.getProperty(0));
-
-		sortedProperties.putAll(unsortedProperties);
-		count = 0;
-		while (sortedProperties.getProperty(count) != null)
-		{
-			assertTrue(count < 4, "the index holds more than the four keys of the entries");
-			final String value = sortedProperties.getProperty(count);
-			if (count == 0)
-			{
-				assertEquals("4", value);
-			}
-			if (count == 1)
-			{
-				assertEquals("3", value);
-			}
-			if (count == 2)
-			{
-				assertEquals("2", value);
-			}
-			if (count == 3)
-			{
-				assertEquals("1", value);
-			}
-			count++;
-		}
-		assertEquals(4, count);
 	}
 
 	/**
-	 * Test the constructor {@link IndexSortedProperties#IndexSortedProperties(Properties)} leaves
-	 * the keys of the given defaults out of the index, and that
-	 * {@link IndexSortedProperties#putAll(java.util.Map)} sorts the keys it puts into the index,
-	 * whatever order the given map iterates them in
+	 * A {@link SortedProperties} A = 1, B = 2, C = 3 that iterates its keys in descending order, C,
+	 * B, A
+	 *
+	 * @return the new properties
 	 */
-	@Test
-	public void testConstructorLeavesTheKeysOfTheDefaultsOutOfTheIndex()
+	static SortedProperties descendingDefaults()
 	{
-		final SortedProperties defaults = SortedProperties.of(new Properties(),
-			(o1, o2) -> o2.toString().compareTo(o1.toString()));
+		final SortedProperties defaults = SortedProperties.of(new Properties(), DESCENDING);
 		defaults.setProperty("A", "1");
 		defaults.setProperty("B", "2");
 		defaults.setProperty("C", "3");
-		// the defaults iterate their keys in descending order
-		assertEquals(ListFactory.newArrayList("C", "B", "A"), new ArrayList<>(defaults.keySet()));
-
-		final IndexSortedProperties properties = new IndexSortedProperties(defaults);
-		assertEquals("1", properties.getProperty("A"));
-		assertNull(properties.getProperty(0));
-
-		properties.putAll(defaults);
-		assertEquals("1", properties.getProperty(0));
-		assertEquals("2", properties.getProperty(1));
-		assertEquals("3", properties.getProperty(2));
-		assertNull(properties.getProperty(3));
+		return defaults;
 	}
 
 	/**
-	 * Test for method {@link IndexSortedProperties#of()} and
-	 * {@link IndexSortedProperties#of(Properties)}: the given properties are the defaults, whose
-	 * values the index does not find, and the index holds the entries put into the object
+	 * Sets the property B = 2 of the given properties
+	 *
+	 * @param properties
+	 *            the properties
+	 * @return the given properties
 	 */
-	@Test
-	public void testFactoryMethods()
+	static IndexSortedProperties withB(final IndexSortedProperties properties)
 	{
-		final IndexSortedProperties indexSortedProperties = IndexSortedProperties.of();
-		assertNotNull(indexSortedProperties);
-
-
-		final Properties unsortedProperties = new Properties();
-		unsortedProperties.put("B", "2");
-		unsortedProperties.put("C", "3");
-		unsortedProperties.put("A", "1");
-		unsortedProperties.put("D", "4");
-		unsortedProperties.put("E", "5");
-
-		final IndexSortedProperties properties = IndexSortedProperties.of(unsortedProperties);
-		assertEquals("5", properties.getProperty("E"));
-		assertEquals(-1, properties.indexOf("5"));
-
-		properties.putAll(unsortedProperties);
-		int expected;
-		int actual;
-		expected = 4;
-		actual = properties.indexOf("5");
-		assertEquals(expected, actual);
-		expected = 3;
-		actual = properties.indexOf("4");
-		assertEquals(expected, actual);
-		expected = 2;
-		actual = properties.indexOf("3");
-		assertEquals(expected, actual);
-		expected = 1;
-		actual = properties.indexOf("2");
-		assertEquals(expected, actual);
-		expected = 0;
-		actual = properties.indexOf("1");
-		assertEquals(expected, actual);
-
-	}
-
-	/**
-	 * Test for method {@link IndexSortedProperties#of(Properties, Comparator)} and
-	 * {@link IndexSortedProperties#of(Properties, Comparator, boolean)}: the given properties are
-	 * the defaults, whose values the index does not find, and the index holds the entries put into
-	 * the object
-	 */
-	@Test
-	public void testFactoryMethodsWithComparator()
-	{
-
-		int expected;
-		int actual;
-		final Properties unsortedProperties = new Properties();
-		unsortedProperties.put("B", "2");
-		unsortedProperties.put("C", "3");
-		unsortedProperties.put("A", "1");
-		unsortedProperties.put("D", "4");
-		unsortedProperties.put("E", "5");
-
-		IndexSortedProperties properties = IndexSortedProperties.of(unsortedProperties,
-			NullCheckComparator
-				.of((final Object o1, final Object o2) -> o1.toString().compareTo(o2.toString())));
-		assertEquals(-1, properties.indexOf("5"));
-		properties.putAll(unsortedProperties);
-		expected = 4;
-		actual = properties.indexOf("5");
-		assertEquals(expected, actual);
-		expected = 3;
-		actual = properties.indexOf("4");
-		assertEquals(expected, actual);
-		expected = 2;
-		actual = properties.indexOf("3");
-		assertEquals(expected, actual);
-		expected = 1;
-		actual = properties.indexOf("2");
-		assertEquals(expected, actual);
-		expected = 0;
-		actual = properties.indexOf("1");
-		assertEquals(expected, actual);
-
-		properties = IndexSortedProperties.of(unsortedProperties,
-			NullCheckComparator
-				.of((final Object o1, final Object o2) -> o1.toString().compareTo(o2.toString())),
-			false);
-		assertEquals(-1, properties.indexOf("5"));
-		properties.putAll(unsortedProperties);
-		expected = 4;
-		actual = properties.indexOf("5");
-		assertEquals(expected, actual);
-		expected = 3;
-		actual = properties.indexOf("4");
-		assertEquals(expected, actual);
-		expected = 2;
-		actual = properties.indexOf("3");
-		assertEquals(expected, actual);
-		expected = 1;
-		actual = properties.indexOf("2");
-		assertEquals(expected, actual);
-		expected = 0;
-		actual = properties.indexOf("1");
-		assertEquals(expected, actual);
-
-	}
-
-	/**
-	 * Test the factory method {@link IndexSortedProperties#of(Properties, Comparator)} sorts the
-	 * index with the given comparator, the keys put with putAll as well as a key put later; the
-	 * keys of the defaults are not in the index
-	 */
-	@Test
-	public void testOfWithComparatorSortsTheIndexWithIt()
-	{
-		final Properties defaults = new Properties();
-		defaults.setProperty("A", "1");
-		defaults.setProperty("C", "3");
-
-		final IndexSortedProperties properties = IndexSortedProperties.of(defaults,
-			(o1, o2) -> o2.toString().compareTo(o1.toString()));
-		assertNull(properties.get(0));
-
-		properties.putAll(defaults);
-		assertEquals("3", properties.get(0));
-		assertEquals("1", properties.get(1));
-
 		properties.setProperty("B", "2");
-		assertEquals("3", properties.get(0));
-		assertEquals("2", properties.get(1));
-		assertEquals("1", properties.get(2));
+		return properties;
 	}
 
 	/**
-	 * Test the factory method {@link IndexSortedProperties#of(Properties, Comparator, boolean)}
-	 * sorts the index with the given comparator, the keys of the defaults left out, and that its
-	 * comparator puts null after any other key when the flag nullIsGreaterThan is true
+	 * Test for the constructors, the factory methods, a subclass that overrides
+	 * {@link IndexSortedProperties#newComparator()}, and the ways to fill them: the index holds
+	 * exactly the keys of the entries, sorted with the comparator, and not the keys of the
+	 * defaults, whose values {@link Properties#getProperty(String)} finds and
+	 * {@link IndexSortedProperties#indexOf(Object)} does not
+	 *
+	 * @param construction
+	 *            the properties, the values of the index and the values found by key
 	 */
-	@Test
-	public void testOfWithComparatorAndNullIsGreaterThan()
+	@ParameterizedTest(name = "{0}")
+	@MethodSource("constructions")
+	public void testConstruction(final Construction construction)
 	{
-		final Properties defaults = new Properties();
-		defaults.setProperty("A", "1");
-		defaults.setProperty("C", "3");
+		final IndexSortedProperties properties = construction.properties().get();
+		assertIndex(construction.values(), properties);
+		construction.found().forEach((key, value) -> {
+			assertEquals(value, properties.getProperty(key), "getProperty(" + key + ")");
+			if (!construction.values().contains(value))
+			{
+				assertEquals(-1, properties.indexOf(value), "indexOf(" + value + ")");
+			}
+		});
+	}
 
-		final IndexSortedProperties properties = IndexSortedProperties.of(defaults,
-			(o1, o2) -> o2.toString().compareTo(o1.toString()), true);
-		assertNull(properties.get(0));
+	/**
+	 * A change of the properties A = 1, B = 2, C = 3, what it returns and the values of the index
+	 * afterwards
+	 *
+	 * @param description
+	 *            the name of the case
+	 * @param change
+	 *            the change
+	 * @param result
+	 *            what it returns, null for nothing
+	 * @param values
+	 *            the values in the order of the index afterwards
+	 */
+	record Change(String description, Function<IndexSortedProperties, Object> change, Object result,
+		List<String> values) {
+		@Override
+		public String toString()
+		{
+			return description;
+		}
+	}
 
-		properties.putAll(defaults);
-		assertEquals("3", properties.get(0));
-		assertEquals("1", properties.get(1));
+	/**
+	 * The cases of {@link #testChange(Change)}
+	 *
+	 * @return the cases
+	 */
+	static Stream<Change> changes()
+	{
+		final List<String> unchanged = List.of("1", "2", "3");
+		final List<String> withD = List.of("1", "2", "3", "4");
+		return Stream.of(
+			new Change("put(A, 10), a key there: 1, the index holds A once",
+				properties -> properties.put("A", "10"), "1", List.of("10", "2", "3")),
+			new Change("put(D, 4), a new key: null", properties -> properties.put("D", "4"), null,
+				withD),
+			new Change("setProperty(A, 10): 1", properties -> properties.setProperty("A", "10"),
+				"1", List.of("10", "2", "3")),
+			new Change("putAll of D = 4 and A = 10: both in the index",
+				properties -> putAll(properties, propertiesOf("D", "4", "A", "10")).size(), 4,
+				List.of("10", "2", "3", "4")),
+			new Change("remove(A): 1", properties -> properties.remove("A"), "1",
+				List.of("2", "3")),
+			new Change("remove(X), not a key: null, all stay", properties -> properties.remove("X"),
+				null, unchanged),
+			new Change("remove(A), remove(B), remove(C) and remove(C) again: 1, 2, 3, null",
+				properties -> Arrays.asList(properties.remove("A"), properties.remove("B"),
+					properties.remove("C"), properties.remove("C")),
+				Arrays.asList("1", "2", "3", null), List.of()),
+			new Change("remove(B, 2): true", properties -> properties.remove("B", "2"), true,
+				List.of("1", "3")),
+			new Change("remove(B, 3), another value: false, B stays",
+				properties -> properties.remove("B", "3"), false, unchanged),
+			new Change("remove(A, 1), (B, 2), (C, 3) and (C, 3) again: true, true, true, false",
+				properties -> List.of(properties.remove("A", "1"), properties.remove("B", "2"),
+					properties.remove("C", "3"), properties.remove("C", "3")),
+				List.of(true, true, true, false), List.of()),
+			new Change("remove(0): 1, the first", properties -> properties.remove(0), "1",
+				List.of("2", "3")),
+			new Change("remove(2): 3, the last", properties -> properties.remove(2), "3",
+				List.of("1", "2")),
+			new Change("remove(3), the size: null, all stay", properties -> properties.remove(3),
+				null, unchanged),
+			new Change("remove(-1): null, all stay", properties -> properties.remove(-1), null,
+				unchanged),
+			new Change("remove(0) four times: 1, 2, 3, null",
+				properties -> Arrays.asList(properties.remove(0), properties.remove(0),
+					properties.remove(0), properties.remove(0)),
+				Arrays.asList("1", "2", "3", null), List.of()),
+			new Change("clear(): empty", properties -> {
+				properties.clear();
+				return null;
+			}, null, List.of()), new Change("clear(), then C = 3: 3 is the first", properties -> {
+				properties.clear();
+				return properties.setProperty("C", "3");
+			}, null, List.of("3")),
+			new Change("putIfAbsent(A, 10), A there: 1, A stays 1",
+				properties -> properties.putIfAbsent("A", "10"), "1", unchanged),
+			new Change("putIfAbsent(D, 4): null", properties -> properties.putIfAbsent("D", "4"),
+				null, withD),
+			new Change("merge(D, 4), a new key: 4",
+				properties -> properties.merge("D", "4", (oldValue, value) -> value), "4", withD),
+			new Change("merge(B, 20) to null: null, B goes",
+				properties -> properties.merge("B", "20", (oldValue, value) -> null), null,
+				List.of("1", "3")),
+			new Change("compute(D) to 4: 4",
+				properties -> properties.compute("D", (key, value) -> "4"), "4", withD),
+			new Change("compute(A) to null: null, A goes",
+				properties -> properties.compute("A", (key, value) -> null), null,
+				List.of("2", "3")),
+			new Change("computeIfAbsent(D) to 4: 4",
+				properties -> properties.computeIfAbsent("D", key -> "4"), "4", withD),
+			new Change("computeIfPresent(A) to 10: 10",
+				properties -> properties.computeIfPresent("A", (key, value) -> "10"), "10",
+				List.of("10", "2", "3")),
+			new Change("computeIfPresent(A) to null: null, A goes",
+				properties -> properties.computeIfPresent("A", (key, value) -> null), null,
+				List.of("2", "3")),
+			new Change("replace(A, 10): 1", properties -> properties.replace("A", "10"), "1",
+				List.of("10", "2", "3")),
+			new Change("replace(B, 2, 20): true", properties -> properties.replace("B", "2", "20"),
+				true, List.of("1", "20", "3")),
+			new Change("replace(D, 4), not a key: null, all stay",
+				properties -> properties.replace("D", "4"), null, unchanged),
+			new Change("replaceAll with a 0 appended: 10, 20, 30", properties -> {
+				properties.replaceAll((key, value) -> value + "0");
+				return null;
+			}, null, List.of("10", "20", "30")),
+			new Change("entrySet().removeIf of B: true, B goes",
+				properties -> properties.entrySet().removeIf(entry -> "B".equals(entry.getKey())),
+				true, List.of("1", "3")),
+			new Change("values().remove(1): true, A goes",
+				properties -> properties.values().remove("1"), true, List.of("2", "3")),
+			new Change("keySet().remove(B): true, B goes",
+				properties -> properties.keySet().remove("B"), true, List.of("1", "3")),
+			new Change("keySet().iterator(), next() and remove(): A goes", properties -> {
+				final Iterator<Object> iterator = properties.keySet().iterator();
+				final Object next = iterator.next();
+				iterator.remove();
+				return next;
+			}, "A", List.of("2", "3")));
+	}
 
+	/**
+	 * Test for the methods that change the keys or the values, the views {@code keySet()},
+	 * {@code entrySet()} and {@code values()} included: each returns what {@link java.util.Map}
+	 * specifies, and the index follows the change, as the class Javadoc says, also an index read
+	 * before the change
+	 *
+	 * @param change
+	 *            the change, what it returns and the values of the index afterwards
+	 */
+	@ParameterizedTest(name = "{0}")
+	@MethodSource("changes")
+	public void testChange(final Change change)
+	{
+		final IndexSortedProperties properties = IndexSortedProperties.of();
 		properties.setProperty("B", "2");
-		assertEquals("3", properties.get(0));
-		assertEquals("2", properties.get(1));
-		assertEquals("1", properties.get(2));
-		assertTrue(0 < properties.getComparator().compare(null, "A"));
-	}
-
-	/**
-	 * Test for method {@link IndexSortedProperties#get(int)}: the value of the key at the index,
-	 * and null at the index equal to the size
-	 */
-	@Test
-	public void testGetInt()
-	{
-
-		final Properties unsortedProperties = new Properties();
-		unsortedProperties.put("B", "2");
-		unsortedProperties.put("C", "3");
-		unsortedProperties.put("A", "1");
-		unsortedProperties.put("D", "4");
-		unsortedProperties.put("E", "5");
-
-		final IndexSortedProperties properties = IndexSortedProperties.of();
-		properties.putAll(unsortedProperties);
-		Object expected;
-		Object actual;
-		actual = properties.get(0);
-		expected = "1";
-		assertEquals(expected, actual);
-
-		actual = properties.get(5);
-		expected = null;
-		assertEquals(expected, actual);
-
-
-	}
-
-	/**
-	 * Test for method {@link IndexSortedProperties#getProperty(int)}: the value of the key at the
-	 * index, and null at the index equal to the size
-	 */
-	@Test
-	public void testGetPropertyInt()
-	{
-		final Properties unsortedProperties = new Properties();
-		unsortedProperties.put("B", "2");
-		unsortedProperties.put("C", "3");
-		unsortedProperties.put("A", "1");
-		unsortedProperties.put("D", "4");
-		unsortedProperties.put("E", "5");
-
-		final IndexSortedProperties properties = IndexSortedProperties.of();
-		properties.putAll(unsortedProperties);
-		Object expected;
-		Object actual;
-		actual = properties.getProperty(0);
-		expected = "1";
-		assertEquals(expected, actual);
-
-		actual = properties.getProperty(5);
-		expected = null;
-		assertEquals(expected, actual);
-	}
-
-	/**
-	 * Test for method {@link IndexSortedProperties#indexOf(Object)}: the index of the key whose
-	 * value it is, and -1 for a value that no key of the index has, also a value of the defaults,
-	 * whose keys are not in the index
-	 */
-	@Test
-	public void testIndexOf()
-	{
-
-		final Properties unsortedProperties = new Properties();
-		unsortedProperties.put("B", "2");
-		unsortedProperties.put("C", "3");
-		unsortedProperties.put("A", "1");
-		unsortedProperties.put("D", "4");
-
-		final IndexSortedProperties properties = new IndexSortedProperties(unsortedProperties);
-
-		properties.setProperty("E", "5");
-		int expected;
-		int actual;
-		expected = 0;
-		actual = properties.indexOf("5");
-		assertEquals(expected, actual);
-		expected = -1;
-		actual = properties.indexOf("6");
-		assertEquals(expected, actual);
-		expected = -1;
-		actual = properties.indexOf("1");
-		assertEquals(expected, actual);
-	}
-
-	/**
-	 * Test the method {@link IndexSortedProperties#put(Object, Object)} returns the previous value
-	 * of the key, and null for a key that had none, as {@link java.util.Map#put(Object, Object)}
-	 * specifies
-	 */
-	@Test
-	public void testPutReturnsThePreviousValue()
-	{
-		final IndexSortedProperties properties = IndexSortedProperties.of();
-		assertNull(properties.put("A", "1"));
-		assertEquals("1", properties.put("A", "2"));
-		assertEquals("2", properties.setProperty("A", "3"));
-		assertEquals("3", properties.getProperty("A"));
-		assertEquals(1, properties.size());
-	}
-
-	/**
-	 * Test for method {@link IndexSortedProperties#putAll(java.util.Map)}
-	 */
-	@Test
-	public void testPutAllMapOfQextendsObjectQextendsObject()
-	{
-		final Properties unsortedProperties = new Properties();
-		unsortedProperties.put("B", "2");
-		unsortedProperties.put("C", "3");
-		unsortedProperties.put("A", "1");
-		unsortedProperties.put("D", "4");
-		unsortedProperties.put("E", "5");
-
-		final IndexSortedProperties properties = IndexSortedProperties.of();
-		properties.putAll(unsortedProperties);
-		Object expected;
-		Object actual;
-		actual = properties.getProperty(0);
-		expected = "1";
-		assertEquals(expected, actual);
-
-		actual = properties.getProperty(5);
-		expected = null;
-		assertEquals(expected, actual);
-	}
-
-	/**
-	 * Test for method {@link IndexSortedProperties#remove(int)}
-	 */
-	@Test
-	public void testRemoveInt()
-	{
-		final Properties unsortedProperties = new Properties();
-		unsortedProperties.put("B", "2");
-		unsortedProperties.put("C", "3");
-		unsortedProperties.put("A", "1");
-		unsortedProperties.put("D", "4");
-		unsortedProperties.put("E", "5");
-
-		final IndexSortedProperties properties = IndexSortedProperties.of();
-		properties.putAll(unsortedProperties);
-		Object expected;
-		Object actual;
-		Object removed;
-
-		removed = properties.remove(0);
-		actual = removed;
-		expected = "1";
-		assertEquals(expected, actual);
-
-		removed = properties.remove(0);
-		actual = removed;
-		expected = "2";
-		assertEquals(expected, actual);
-
-		removed = properties.remove(0);
-		actual = removed;
-		expected = "3";
-		assertEquals(expected, actual);
-
-		removed = properties.remove(0);
-		actual = removed;
-		expected = "4";
-		assertEquals(expected, actual);
-
-		removed = properties.remove(0);
-		actual = removed;
-		expected = "5";
-		assertEquals(expected, actual);
-
-		removed = properties.remove(0);
-		actual = removed;
-		expected = null;
-		assertEquals(expected, actual);
-	}
-
-	/**
-	 * Test for method {@link IndexSortedProperties#remove(Object)}
-	 */
-	@Test
-	public void testRemoveObject()
-	{
-		final Properties unsortedProperties = new Properties();
-		unsortedProperties.put("B", "2");
-		unsortedProperties.put("C", "3");
-		unsortedProperties.put("A", "1");
-		unsortedProperties.put("D", "4");
-		unsortedProperties.put("E", "5");
-
-		final IndexSortedProperties properties = IndexSortedProperties.of();
-		properties.putAll(unsortedProperties);
-		Object expected;
-		Object actual;
-		Object removed;
-
-		removed = properties.remove("A");
-		actual = removed;
-		expected = "1";
-		assertEquals(expected, actual);
-
-		removed = properties.remove("B");
-		actual = removed;
-		expected = "2";
-		assertEquals(expected, actual);
-
-		removed = properties.remove("C");
-		actual = removed;
-		expected = "3";
-		assertEquals(expected, actual);
-
-		removed = properties.remove("D");
-		actual = removed;
-		expected = "4";
-		assertEquals(expected, actual);
-
-		removed = properties.remove("E");
-		actual = removed;
-		expected = "5";
-		assertEquals(expected, actual);
-
-		removed = properties.remove("E");
-		actual = removed;
-		expected = null;
-		assertEquals(expected, actual);
-	}
-
-	/**
-	 * Test for method {@link IndexSortedProperties#remove(Object, Object)}
-	 */
-	@Test
-	public void testRemoveObjectObject()
-	{
-		final Properties unsortedProperties = new Properties();
-		unsortedProperties.put("B", "2");
-		unsortedProperties.put("C", "3");
-		unsortedProperties.put("A", "1");
-		unsortedProperties.put("D", "4");
-		unsortedProperties.put("E", "5");
-
-		final IndexSortedProperties properties = IndexSortedProperties.of();
-		properties.putAll(unsortedProperties);
-		Object expected;
-		Object actual;
-		Object removed;
-
-		removed = properties.remove("A", "1");
-		actual = removed;
-		expected = Boolean.TRUE;
-		assertEquals(expected, actual);
-
-		removed = properties.remove("B", "2");
-		actual = removed;
-		expected = Boolean.TRUE;
-		assertEquals(expected, actual);
-
-		removed = properties.remove("C", "3");
-		actual = removed;
-		expected = Boolean.TRUE;
-		assertEquals(expected, actual);
-
-		removed = properties.remove("D", "4");
-		actual = removed;
-		expected = Boolean.TRUE;
-		assertEquals(expected, actual);
-
-		removed = properties.remove("E", "5");
-		actual = removed;
-		expected = Boolean.TRUE;
-		assertEquals(expected, actual);
-
-		removed = properties.remove("E", "5");
-		actual = removed;
-		expected = Boolean.FALSE;
-		assertEquals(expected, actual);
-	}
-
-	/**
-	 * Test the method {@link IndexSortedProperties#remove(Object, Object)} removes the key from the
-	 * index together with its entry, and keeps both when the value does not match
-	 */
-	@Test
-	public void testRemoveObjectObjectUpdatesTheIndex()
-	{
-		final IndexSortedProperties properties = IndexSortedProperties.of();
 		properties.setProperty("A", "1");
-		properties.setProperty("B", "2");
 		properties.setProperty("C", "3");
-
-		assertFalse(properties.remove("B", "3"));
-		assertEquals("2", properties.getProperty("B"));
-		assertEquals(1, properties.indexOf("2"));
-
-		assertTrue(properties.remove("B", "2"));
-		assertNull(properties.getProperty("B"));
-		assertEquals("1", properties.get(0));
-		assertEquals("3", properties.get(1));
-		assertNull(properties.get(2));
-		assertEquals(1, properties.indexOf("3"));
+		// read the index before the change, so that the change has to update it
+		assertIndex(List.of("1", "2", "3"), properties);
+		assertEquals(change.result(), change.change().apply(properties));
+		assertIndex(change.values(), properties);
 	}
 
 	/**
-	 * Test for method {@link IndexSortedProperties#setProperty(String, String)}
+	 * Test for the factory methods
+	 * {@link IndexSortedProperties#of(Properties, Comparator, boolean)} and
+	 * {@link IndexSortedProperties#of(Properties, Comparator)} and of
+	 * {@link IndexSortedProperties#of()}: the comparator puts null after any other key when the
+	 * flag nullIsGreaterThan is true, and before it otherwise
+	 *
+	 * @param description
+	 *            the name of the case
+	 * @param properties
+	 *            makes the properties
+	 * @param sign
+	 *            the sign of the comparison of null with A
 	 */
-	@Test
-	public void testSetPropertyStringString()
+	@ParameterizedTest(name = "{0}", quoteTextArguments = false)
+	@MethodSource("nullComparisons")
+	public void testComparatorWithNull(final String description,
+		final Supplier<IndexSortedProperties> properties, final int sign)
 	{
-		final IndexSortedProperties properties = new IndexSortedProperties();
-		properties.setProperty("B", "2");
-		properties.setProperty("C", "3");
-		properties.setProperty("A", "1");
-		properties.setProperty("D", "4");
-		properties.setProperty("E", "5");
-
-		int expected;
-		int actual;
-		expected = 4;
-		actual = properties.indexOf("5");
-		assertEquals(expected, actual);
-		expected = 3;
-		actual = properties.indexOf("4");
-		assertEquals(expected, actual);
-		expected = 2;
-		actual = properties.indexOf("3");
-		assertEquals(expected, actual);
-		expected = 1;
-		actual = properties.indexOf("2");
-		assertEquals(expected, actual);
-		expected = 0;
-		actual = properties.indexOf("1");
-		assertEquals(expected, actual);
+		assertEquals(sign, Integer.signum(properties.get().getComparator().compare(null, "A")));
 	}
 
 	/**
-	 * Test the method {@link IndexSortedProperties#keySet()}: removing a key through the set or its
-	 * iterator removes it from the index, too, as the set removes it with
-	 * {@link IndexSortedProperties#remove(Object)}
+	 * The cases of {@link #testComparatorWithNull(String, Supplier, int)}
+	 *
+	 * @return the name of the case, the properties and the sign
 	 */
-	@Test
-	public void testKeySetRemoveUpdatesTheIndex()
+	static Stream<Arguments> nullComparisons()
 	{
-		final IndexSortedProperties properties = IndexSortedProperties.of();
-		properties.setProperty("A", "1");
-		properties.setProperty("B", "2");
-		properties.setProperty("C", "3");
-
-		assertTrue(properties.keySet().remove("B"));
-		assertEquals("1", properties.get(0));
-		assertEquals("3", properties.get(1));
-		assertNull(properties.get(2));
-
-		final Iterator<Object> iterator = properties.keySet().iterator();
-		assertEquals("A", iterator.next());
-		iterator.remove();
-		assertEquals("3", properties.get(0));
-		assertNull(properties.get(1));
-		assertEquals(0, properties.indexOf("3"));
+		return Stream.of(
+			Arguments.of("of(defaults, descending, true): null after A",
+				(Supplier<IndexSortedProperties>)() -> IndexSortedProperties.of(new Properties(),
+					DESCENDING, true),
+				1),
+			Arguments.of("of(defaults, descending, false): null before A",
+				(Supplier<IndexSortedProperties>)() -> IndexSortedProperties.of(new Properties(),
+					DESCENDING, false),
+				-1),
+			Arguments.of("of(defaults, descending): null before A",
+				(Supplier<IndexSortedProperties>)() -> IndexSortedProperties.of(new Properties(),
+					DESCENDING),
+				-1),
+			Arguments.of("of(): null before A",
+				(Supplier<IndexSortedProperties>)IndexSortedProperties::of, -1));
 	}
 
 	/**
@@ -803,205 +595,6 @@ public class IndexSortedPropertiesTest
 	}
 
 	/**
-	 * Test the method {@link IndexSortedProperties#put(Object, Object)} with a key that is there
-	 * already: the index holds the key once, as the properties do
-	 */
-	@Test
-	public void testPutOfAKeyTwice()
-	{
-		final IndexSortedProperties properties = IndexSortedProperties.of();
-		properties.put("A", "1");
-		properties.put("A", "2");
-		assertEquals(1, properties.size());
-		assertEquals("2", properties.get(0));
-		assertNull(properties.get(1));
-		assertEquals(0, properties.indexOf("2"));
-	}
-
-	/**
-	 * Test the method {@link IndexSortedProperties#remove(Object)} with a key that was put twice,
-	 * and a put of another key afterwards: the key leaves the index, and the other key is the first
-	 * one in it. A key that the properties do not hold leaves the index as it is
-	 */
-	@Test
-	public void testRemoveOfAKeyPutTwice()
-	{
-		final IndexSortedProperties properties = IndexSortedProperties.of();
-		properties.put("A", "1");
-		properties.put("A", "2");
-		properties.remove("A");
-		properties.put("B", "3");
-		assertEquals("3", properties.get(0));
-		assertNull(properties.get(1));
-		assertEquals(0, properties.indexOf("3"));
-
-		assertNull(properties.remove("X"));
-		assertEquals("3", properties.get(0));
-		assertNull(properties.get(1));
-	}
-
-	/**
-	 * Test the methods {@link IndexSortedProperties#put(Object, Object)} and
-	 * {@link IndexSortedProperties#putAll(java.util.Map)} with defaults: after either, the index
-	 * holds the keys of the entries of the object and not those of the defaults, which
-	 * {@link Properties#getProperty(String)} still finds
-	 */
-	@Test
-	public void testPutAndPutAllWithDefaults()
-	{
-		final Properties defaults = new Properties();
-		defaults.setProperty("A", "1");
-		defaults.setProperty("B", "2");
-
-		final IndexSortedProperties put = new IndexSortedProperties(defaults);
-		put.put("C", "3");
-		assertEquals("3", put.getProperty(0));
-		assertNull(put.getProperty(1));
-		assertEquals("1", put.getProperty("A"));
-
-		final Properties more = new Properties();
-		more.setProperty("C", "3");
-		final IndexSortedProperties putAll = new IndexSortedProperties(defaults);
-		putAll.putAll(more);
-		assertEquals("3", putAll.getProperty(0));
-		assertNull(putAll.getProperty(1));
-		assertEquals("1", putAll.getProperty("A"));
-	}
-
-	/**
-	 * Test the methods {@link IndexSortedProperties#putIfAbsent(Object, Object)},
-	 * {@link IndexSortedProperties#merge(Object, Object, java.util.function.BiFunction)} and
-	 * {@link IndexSortedProperties#compute(Object, java.util.function.BiFunction)}: each returns
-	 * what {@link java.util.Map} specifies, puts the key it adds into the index and takes the key
-	 * it removes out of it
-	 */
-	@Test
-	public void testPutIfAbsentMergeAndCompute()
-	{
-		final IndexSortedProperties properties = IndexSortedProperties.of();
-		assertNull(properties.putIfAbsent("A", "1"));
-		assertEquals("2", properties.merge("B", "2", (oldValue, value) -> value));
-		assertEquals("3", properties.compute("C", (key, value) -> "3"));
-		assertEquals(3, properties.size());
-		assertEquals("1", properties.get(0));
-		assertEquals("2", properties.get(1));
-		assertEquals("3", properties.get(2));
-		assertEquals(0, properties.indexOf("1"));
-
-		assertEquals("1", properties.putIfAbsent("A", "10"));
-		assertEquals("1", properties.get(0));
-		assertNull(properties.get(3));
-
-		// a remapping function that returns null removes the entry
-		assertNull(properties.merge("B", "20", (oldValue, value) -> null));
-		assertEquals("1", properties.get(0));
-		assertEquals("3", properties.get(1));
-		assertNull(properties.get(2));
-
-		assertNull(properties.compute("A", (key, value) -> null));
-		assertEquals("3", properties.get(0));
-		assertNull(properties.get(1));
-		assertEquals(1, properties.size());
-	}
-
-	/**
-	 * Test the methods
-	 * {@link IndexSortedProperties#computeIfAbsent(Object, java.util.function.Function)} and
-	 * {@link IndexSortedProperties#computeIfPresent(Object, java.util.function.BiFunction)}: each
-	 * returns what {@link java.util.Map} specifies, the key computeIfAbsent adds goes into the
-	 * index, and the key computeIfPresent removes leaves it
-	 */
-	@Test
-	public void testComputeIfAbsentAndComputeIfPresent()
-	{
-		final IndexSortedProperties properties = IndexSortedProperties.of();
-		properties.setProperty("A", "1");
-		assertEquals("2", properties.computeIfAbsent("B", key -> "2"));
-		assertEquals("1", properties.get(0));
-		assertEquals("2", properties.get(1));
-
-		assertEquals("10", properties.computeIfPresent("A", (key, value) -> "10"));
-		assertEquals("10", properties.get(0));
-
-		assertNull(properties.computeIfPresent("A", (key, value) -> null));
-		assertEquals(1, properties.size());
-		assertEquals("2", properties.get(0));
-		assertNull(properties.get(1));
-		assertEquals(0, properties.indexOf("2"));
-	}
-
-	/**
-	 * Test the methods {@link IndexSortedProperties#replace(Object, Object)},
-	 * {@link IndexSortedProperties#replace(Object, Object, Object)} and
-	 * {@link IndexSortedProperties#replaceAll(java.util.function.BiFunction)}: they change values,
-	 * not keys, so the index holds the same keys, and finds the new values
-	 */
-	@Test
-	public void testReplaceAndReplaceAll()
-	{
-		final IndexSortedProperties properties = IndexSortedProperties.of();
-		properties.setProperty("B", "2");
-		properties.setProperty("A", "1");
-		assertEquals("1", properties.get(0));
-
-		assertEquals("1", properties.replace("A", "10"));
-		assertTrue(properties.replace("B", "2", "20"));
-		assertNull(properties.replace("C", "3"));
-		assertEquals("10", properties.get(0));
-		assertEquals("20", properties.get(1));
-		assertNull(properties.get(2));
-
-		properties.replaceAll((key, value) -> value + "0");
-		assertEquals("100", properties.get(0));
-		assertEquals("200", properties.get(1));
-		assertNull(properties.get(2));
-		assertEquals(1, properties.indexOf("200"));
-	}
-
-	/**
-	 * Test the views {@link IndexSortedProperties#entrySet()} and
-	 * {@link IndexSortedProperties#values()}: they remove entries without a method of
-	 * {@link IndexSortedProperties}, and the index follows them all the same
-	 */
-	@Test
-	public void testRemoveThroughEntrySetAndValues()
-	{
-		final IndexSortedProperties properties = IndexSortedProperties.of();
-		properties.setProperty("A", "1");
-		properties.setProperty("B", "2");
-		properties.setProperty("C", "3");
-		assertEquals("1", properties.get(0));
-
-		assertTrue(properties.entrySet().removeIf(entry -> "B".equals(entry.getKey())));
-		assertEquals("1", properties.get(0));
-		assertEquals("3", properties.get(1));
-		assertNull(properties.get(2));
-
-		assertTrue(properties.values().remove("1"));
-		assertEquals("3", properties.get(0));
-		assertNull(properties.get(1));
-		assertEquals(0, properties.indexOf("3"));
-	}
-
-	/**
-	 * Test the method {@link IndexSortedProperties#load(java.io.Reader)} with a key that is twice
-	 * in the input: the index holds the key once, with the value that came last
-	 *
-	 * @throws IOException
-	 *             Signals that an I/O exception has occurred
-	 */
-	@Test
-	public void testLoadOfAKeyTwice() throws IOException
-	{
-		final IndexSortedProperties properties = IndexSortedProperties.of();
-		properties.load(new StringReader("B=2\nA=1\nA=3\n"));
-		assertEquals(2, properties.size());
-		assertEquals("3", properties.get(0));
-		assertEquals("2", properties.get(1));
-		assertNull(properties.get(2));
-	}
-
-	/**
 	 * Test the method {@link IndexSortedProperties#clone()}: the copy has an index of its own, so
 	 * that a change of the copy leaves the index of the original as it is, and the other way round
 	 */
@@ -1026,24 +619,6 @@ public class IndexSortedPropertiesTest
 		assertEquals("3", original.get(1));
 		assertEquals("2", copy.get(0));
 		assertNull(copy.get(1));
-	}
-
-	/**
-	 * Test the methods {@link IndexSortedProperties#get(int)},
-	 * {@link IndexSortedProperties#getProperty(int)} and {@link IndexSortedProperties#remove(int)}
-	 * with a negative index: each returns null, as their Javadoc says for an index out of range,
-	 * and removes nothing
-	 */
-	@Test
-	public void testNegativeIndex()
-	{
-		final IndexSortedProperties properties = IndexSortedProperties.of();
-		properties.setProperty("A", "1");
-		assertNull(properties.get(-1));
-		assertNull(properties.getProperty(-1));
-		assertNull(properties.remove(-1));
-		assertEquals(1, properties.size());
-		assertEquals("1", properties.get(0));
 	}
 
 	/**
