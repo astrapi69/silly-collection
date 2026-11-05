@@ -26,31 +26,31 @@ package io.github.astrapi69.collection.array;
 
 import static org.junit.jupiter.api.Assertions.assertArrayEquals;
 import static org.junit.jupiter.api.Assertions.assertEquals;
-import static org.junit.jupiter.api.Assertions.assertNotNull;
 import static org.junit.jupiter.api.Assertions.assertNotSame;
-import static org.junit.jupiter.api.Assertions.assertNull;
 import static org.junit.jupiter.api.Assertions.assertSame;
 import static org.junit.jupiter.api.Assertions.assertThrows;
-import static org.junit.jupiter.api.Assertions.assertTrue;
 
+import java.nio.charset.StandardCharsets;
 import java.util.Arrays;
-import java.util.Iterator;
 import java.util.LinkedHashMap;
 import java.util.List;
 import java.util.Map;
 import java.util.Optional;
 import java.util.Set;
+import java.util.function.BinaryOperator;
+import java.util.function.Function;
+import java.util.function.IntSupplier;
+import java.util.function.Supplier;
+import java.util.function.UnaryOperator;
 import java.util.stream.Collectors;
 import java.util.stream.Stream;
 
 import org.junit.jupiter.api.Test;
+import org.junit.jupiter.params.ParameterizedTest;
+import org.junit.jupiter.params.provider.Arguments;
+import org.junit.jupiter.params.provider.CsvSource;
+import org.junit.jupiter.params.provider.MethodSource;
 import org.meanbean.test.BeanTester;
-
-import io.github.astrapi69.check.Argument;
-import io.github.astrapi69.collection.list.ListExtensions;
-import io.github.astrapi69.collection.list.ListFactory;
-import io.github.astrapi69.collection.map.MapExtensions;
-import io.github.astrapi69.collection.set.SetFactory;
 
 /**
  * The unit test class for the class {@link ArrayExtensions}.
@@ -62,1456 +62,1162 @@ public class ArrayExtensionsTest
 {
 
 	/**
-	 * Test joining two non-null arrays. Verifies that the result contains all elements of both
-	 * input arrays.
-	 */
-	@Test
-	void testJoinWithBothArraysNotNull()
-	{
-		String[] array1 = { "A", "B", "C" };
-		String[] array2 = { "D", "E" };
-		String[] result = ArrayExtensions.join(array1, array2);
-
-		assertNotNull(result, "The resulting array should not be null.");
-		assertArrayEquals(new String[] { "A", "B", "C", "D", "E" }, result,
-			"The arrays should be joined correctly.");
-	}
-
-	/**
-	 * Test joining when the first array is null. Verifies that the second array is returned.
-	 */
-	@Test
-	void testJoinWithFirstArrayNull()
-	{
-		String[] array1 = null;
-		String[] array2 = { "D", "E" };
-		String[] result = ArrayExtensions.join(array1, array2);
-
-		assertNotNull(result, "The resulting array should not be null.");
-		assertArrayEquals(array2, result,
-			"The result should be the second array when the first is null.");
-	}
-
-	/**
-	 * Test joining when the second array is null. Verifies that the first array is returned.
-	 */
-	@Test
-	void testJoinWithSecondArrayNull()
-	{
-		String[] array1 = { "A", "B", "C" };
-		String[] array2 = null;
-		String[] result = ArrayExtensions.join(array1, array2);
-
-		assertNotNull(result, "The resulting array should not be null.");
-		assertArrayEquals(array1, result,
-			"The result should be the first array when the second is null.");
-	}
-
-	/**
-	 * Test joining when both arrays are null. Verifies that the result is null.
-	 */
-	@Test
-	void testJoinWithBothArraysNull()
-	{
-		String[] array1 = null;
-		String[] array2 = null;
-		String[] result = ArrayExtensions.join(array1, array2);
-
-		assertNull(result, "The result should be null when both arrays are null.");
-	}
-
-	/**
-	 * Test joining two arrays with incompatible types. Verifies that an
-	 * {@link IllegalArgumentException} is thrown when trying to join arrays of incompatible types.
-	 */
-	@Test
-	void testJoinWithIncompatibleTypes()
-	{
-		Integer[] array1 = { 1, 2, 3 };
-		String[] array2 = { "A", "B" };
-
-		assertThrows(IllegalArgumentException.class, () -> {
-			ArrayExtensions.join(array1, array2);
-		}, "An IllegalArgumentException should be thrown for incompatible types.");
-	}
-
-	/**
-	 * Test for the Method {@link ArrayExtensions#toSet(Object[])}
-	 */
-	@Test
-	public void testToSet()
-	{
-		Set<Integer> actual;
-		Set<Integer> expected;
-		Integer[] original = { 1, 2, 3, 4, 5 };
-		actual = ArrayExtensions.toSet(original);
-		expected = SetFactory.newLinkedHashSet(original);
-		assertEquals(expected, actual);
-	}
-
-	/**
-	 * Test for the Method {@link ArrayExtensions#subArray(Object[], int, int)}
-	 */
-	@Test
-	public void testSubArrayWithValidRange()
-	{
-		Integer[] original = { 1, 2, 3, 4, 5 };
-		Integer[] expected = { 2, 3, 4 };
-		assertArrayEquals(expected, ArrayExtensions.subArray(original, 1, 4));
-	}
-
-	/**
-	 * Test for the Method {@link ArrayExtensions#subArray(Object[], int, int)}
-	 */
-	@Test
-	public void testSubArrayWithFullRange()
-	{
-		Integer[] original = { 1, 2, 3, 4, 5 };
-		Integer[] expected = { 1, 2, 3, 4, 5 };
-		assertArrayEquals(expected, ArrayExtensions.subArray(original, 0, 5));
-	}
-
-	/**
-	 * Test for the Method {@link ArrayExtensions#subArray(Object[], int, int)}
-	 */
-	@Test
-	public void testSubArrayWithSingleElement()
-	{
-		Integer[] original = { 1, 2, 3, 4, 5 };
-		Integer[] expected = { 3 };
-		assertArrayEquals(expected, ArrayExtensions.subArray(original, 2, 3));
-	}
-
-	/**
-	 * Test for the Method {@link ArrayExtensions#subArray(Object[], int, int)}
-	 */
-	@Test
-	public void testSubArrayWithEmptyRange()
-	{
-		Integer[] original = { 1, 2, 3, 4, 5 };
-		Integer[] expected = { };
-		assertArrayEquals(expected, ArrayExtensions.subArray(original, 2, 2));
-	}
-
-	/**
-	 * Test for the Method {@link ArrayExtensions#subArray(Object[], int, int)}
-	 */
-	@Test
-	public void testSubArrayWithInvalidRange()
-	{
-		Integer[] original = { 1, 2, 3, 4, 5 };
-		assertThrows(ArrayIndexOutOfBoundsException.class,
-			() -> ArrayExtensions.subArray(original, -1, 3));
-	}
-
-	/**
-	 * Test for the Method {@link ArrayExtensions#subArray(Object[], int, int)}
-	 */
-	@Test
-	public void testSubArrayWithStartGreaterThanEnd()
-	{
-		Integer[] original = { 1, 2, 3, 4, 5 };
-		assertThrows(IllegalArgumentException.class,
-			() -> ArrayExtensions.subArray(original, 4, 3));
-	}
-
-	/**
-	 * Converts the given two-dimensional array to a {@link Map} object
+	 * The names the lookup tables search in: {@code Caesar, Dora, Emil, Anton}, in this order, so
+	 * that the order is not the alphabetical one
 	 *
-	 * @param <T>
-	 *            the generic type
-	 * @param twoDimArray
-	 *            The two-dimensional array
-	 * @return The {@link Map} object produced from the given two-dimensional array
+	 * @return a new array of the names
 	 */
-	public static <T> Map<String, Object> toStringObjectMap(final Object[][] twoDimArray)
+	static String[] names()
 	{
-		Argument.notNull(twoDimArray, "twoDimArray");
-		final Map<String, Object> map = new LinkedHashMap<>();
-		for (final Object[] element : twoDimArray)
+		return new String[] { "Caesar", "Dora", "Emil", "Anton" };
+	}
+
+	/**
+	 * A call of {@link ArrayExtensions#join(Object[], Object...)} or
+	 * {@link ArrayExtensions#concatenate(Object[], Object[])} with two arrays, and what it returns
+	 *
+	 * @param description
+	 *            the name of the case
+	 * @param method
+	 *            join or concatenate
+	 * @param first
+	 *            the first array, may be null
+	 * @param second
+	 *            the second array, may be null
+	 * @param expected
+	 *            the returned array, null if it returns null
+	 * @param itself
+	 *            true if the expected array is a given array itself, false if it is a new array
+	 */
+	record TwoArrays(String description, BinaryOperator<Object[]> method, Object[] first,
+		Object[] second, Object[] expected, boolean itself) {
+		@Override
+		public String toString()
 		{
-			final String key = (String)element[0];
-			final Object value = element[1];
-			map.put(key, value);
-		}
-		return map;
-	}
-
-	/**
-	 * Test for the Method {@link ArrayExtensions#toTwoDimensionalArray(Map, Class)}
-	 */
-	@Test
-	public void testToTwoDimensionalArray()
-	{
-		final String[][] twoDimArray = { { "1", "value1" }, { "3", "value3" }, { "4", "value4" },
-				{ "2", "value2" } };
-		final Map<String, String> map = MapExtensions.toGenericMap(twoDimArray);
-
-		String[][] toTwoDimensionalArray = ArrayExtensions.toTwoDimensionalArray(map, String.class);
-		assertArrayEquals(toTwoDimensionalArray, twoDimArray);
-	}
-
-	/**
-	 * Test method for {@link ArrayExtensions#getLastIndex(Object[])}
-	 */
-	@Test
-	public void testGetLastIndexObjectArray()
-	{
-		int actual;
-		int expected;
-		Integer[] source;
-
-		source = ArrayFactory.newArray(1, 2, 3, 4, 5, 6, 7, 8, 9);
-		actual = ArrayExtensions.getLastIndex(source);
-		expected = 8;
-		assertEquals(expected, actual);
-
-		source = null;
-		actual = ArrayExtensions.getLastIndex(source);
-		expected = -1;
-		assertEquals(expected, actual);
-	}
-
-	/**
-	 * Test method for {@link ArrayExtensions#getLastIndex(int[])}
-	 */
-	@Test
-	public void testGetLastIndexIntArray()
-	{
-
-		int actual;
-		int expected;
-		int[] source;
-
-		source = ArrayFactory.newIntArray(1, 2, 3, 4, 5, 6, 7, 8, 9);
-		actual = ArrayExtensions.getLastIndex(source);
-		expected = 8;
-		assertEquals(expected, actual);
-
-		source = null;
-		actual = ArrayExtensions.getLastIndex(source);
-		expected = -1;
-		assertEquals(expected, actual);
-	}
-
-	/**
-	 * Test method for {@link ArrayExtensions#getLastIndex(boolean[])}
-	 */
-	@Test
-	public void testGetLastIndexBooleanArray()
-	{
-		int actual;
-		int expected;
-		boolean[] source;
-		source = ArrayFactory.newBooleanArray(true, true, false);
-		actual = ArrayExtensions.getLastIndex(source);
-		expected = 2;
-		assertEquals(expected, actual);
-
-		source = null;
-		actual = ArrayExtensions.getLastIndex(source);
-		expected = -1;
-		assertEquals(expected, actual);
-	}
-
-	/**
-	 * Test method for {@link ArrayExtensions#getLastIndex(boolean[])}
-	 */
-	@Test
-	public void testGetLastIndexByteArray()
-	{
-		int actual;
-		int expected;
-		byte[] source;
-		source = ArrayFactory.newByteArray((byte)-84, (byte)-19, (byte)0, (byte)5, (byte)116,
-			(byte)0, (byte)7, (byte)70, (byte)111, (byte)111, (byte)32, (byte)98, (byte)97);
-		actual = ArrayExtensions.getLastIndex(source);
-		expected = 12;
-		assertEquals(expected, actual);
-
-		source = null;
-		actual = ArrayExtensions.getLastIndex(source);
-		expected = -1;
-		assertEquals(expected, actual);
-	}
-
-	/**
-	 * Test method for {@link ArrayExtensions#getLastIndex(char[])}
-	 */
-	@Test
-	public void testGetLastIndexCharArray()
-	{
-		int actual;
-		int expected;
-		char[] source;
-		source = ArrayFactory.newCharArray('f', 'o', 'o');
-		actual = ArrayExtensions.getLastIndex(source);
-		expected = 2;
-		assertEquals(expected, actual);
-
-		source = null;
-		actual = ArrayExtensions.getLastIndex(source);
-		expected = -1;
-		assertEquals(expected, actual);
-	}
-
-	/**
-	 * Test method for {@link ArrayExtensions#getLastIndex(double[])}
-	 */
-	@Test
-	public void testGetLastIndexDoubleArray()
-	{
-		int actual;
-		int expected;
-		double[] source;
-		source = ArrayFactory.newDoubleArray(1.1D, 2.1D, 3.1D);
-		actual = ArrayExtensions.getLastIndex(source);
-		expected = 2;
-		assertEquals(expected, actual);
-
-		source = null;
-		actual = ArrayExtensions.getLastIndex(source);
-		expected = -1;
-		assertEquals(expected, actual);
-	}
-
-	/**
-	 * Test method for {@link ArrayExtensions#getLastIndex(float[])}
-	 */
-	@Test
-	public void testGetLastIndexFloatArray()
-	{
-		int actual;
-		int expected;
-		float[] source;
-		source = ArrayFactory.newFloatArray(1.0F, 2.0F, 3.0F);
-		actual = ArrayExtensions.getLastIndex(source);
-		expected = 2;
-		assertEquals(expected, actual);
-
-		source = null;
-		actual = ArrayExtensions.getLastIndex(source);
-		expected = -1;
-		assertEquals(expected, actual);
-	}
-
-	/**
-	 * Test method for {@link ArrayExtensions#getLastIndex(long[])}
-	 */
-	@Test
-	public void testGetLastIndexLongArray()
-	{
-		int actual;
-		int expected;
-		long[] source;
-		source = ArrayFactory.newLongArray(1L, 2L, 3L);
-		actual = ArrayExtensions.getLastIndex(source);
-		expected = 2;
-		assertEquals(expected, actual);
-
-		source = null;
-		actual = ArrayExtensions.getLastIndex(source);
-		expected = -1;
-		assertEquals(expected, actual);
-	}
-
-	/**
-	 * Test method for {@link ArrayExtensions#getLastIndex(short[])}
-	 */
-	@Test
-	public void testGetLastIndexShortArray()
-	{
-		int actual;
-		int expected;
-		short[] source;
-		source = ArrayFactory.newShortArray((short)1, (short)2, (short)3);
-		actual = ArrayExtensions.getLastIndex(source);
-		expected = 2;
-		assertEquals(expected, actual);
-
-		source = null;
-		actual = ArrayExtensions.getLastIndex(source);
-		expected = -1;
-		assertEquals(expected, actual);
-	}
-
-	/**
-	 * Test method for {@link ArrayExtensions#arraycopyWithSystem(Object[], Object[])}.
-	 */
-	@Test
-	public void testArraycopyWithSystem()
-	{
-		boolean actual;
-		boolean expected;
-		Integer[] source;
-		Integer[] destination;
-
-		source = ArrayFactory.newArray(1, 2, 3, 4, 5, 6, 7, 8, 9);
-		destination = new Integer[source.length];
-		destination = ArrayExtensions.arraycopyWithSystem(source, destination);
-		actual = Arrays.deepEquals(source, destination);
-		expected = true;
-		assertEquals(expected, actual);
-
-		source = null;
-		destination = ArrayExtensions.arraycopyWithSystem(source, destination);
-		assertNull(destination);
-	}
-
-	/**
-	 * Test for method {@link ArrayExtensions#asList(Object[])}
-	 */
-	@Test
-	public void testAsList()
-	{
-		String actual;
-		String expected;
-		final String[] numbers = { "1", "2", "3", "4", "5", "6", "7" };
-		final List<String> numberList = ArrayExtensions.asList(numbers);
-		for (int i = 0; i < numbers.length; i++)
-		{
-			expected = numbers[i];
-			actual = numberList.get(i);
-			assertEquals(expected, actual);
+			return description;
 		}
 	}
 
 	/**
-	 * Test for method {@link ArrayExtensions#asSet(Object[])}
+	 * The cases of {@link ArrayExtensions#join(Object[], Object...)}: a new array of the component
+	 * type of the first array, or the other array itself if one of them is null; and of
+	 * {@link ArrayExtensions#concatenate(Object[], Object[])}, which also hands back the existing
+	 * array itself if the elements are empty, as its Javadoc says
+	 *
+	 * @return the cases
 	 */
-	@Test
-	public void testAsSet()
+	static Stream<TwoArrays> twoArrays()
 	{
-		String actual;
-		String expected;
-		final String[] numbers = { "1", "2", "3", "4", "5", "6", "7" };
-		final Set<String> numberSet = ArrayExtensions.asSet("1", "2", "3", "4", "5", "6", "7");
-
-		Iterator<String> iterator = numberSet.iterator();
-		int i = 0;
-		while (iterator.hasNext())
-		{
-			actual = iterator.next();
-			expected = numbers[i];
-			assertEquals(expected, actual);
-			i++;
-		}
-	}
-
-	/**
-	 * Test for method {@link ArrayExtensions#asStream(Object[])}
-	 */
-	@Test
-	public void testAsStream()
-	{
-		final String[] numbers = { "1", "2", "3", "4", "5", "6", "7" };
-		final Stream<String> numberSet = ArrayExtensions.asStream("1", "2", "3", "4", "5", "6",
-			"7");
-
-		numberSet.forEach(i -> {
-			assertTrue(ArrayExtensions.contains(numbers, i));
-		});
-	}
-
-	/**
-	 * Test the method {@link ArrayExtensions#asSet(Object[])} with a duplicate element: the set
-	 * holds every given element once
-	 */
-	@Test
-	public void testAsSetWithDuplicateElement()
-	{
-		final Set<String> expected = SetFactory.newHashSet("1", "2", "3");
-		final Set<String> actual = ArrayExtensions.asSet("1", "2", "3", "2");
-		assertEquals(expected, actual);
-	}
-
-	/**
-	 * Test the method {@link ArrayExtensions#asStream(Object[])}: the stream delivers all given
-	 * elements in their order
-	 */
-	@Test
-	public void testAsStreamDeliversAllElementsInOrder()
-	{
-		final List<String> expected = ListFactory.newArrayList("1", "2", "3");
-		final List<String> actual = ArrayExtensions.asStream("1", "2", "3")
-			.collect(Collectors.toList());
-		assertEquals(expected, actual);
-	}
-
-	/**
-	 * Test method for {@link ArrayExtensions#contains(Object[], Object)} .
-	 */
-	@Test
-	public void testContains()
-	{
-		boolean expected;
-		boolean actual;
-
-		final String last = "7";
-		final String[] numbers = { "1", "2", "3", "4", "5", "6", last };
-		// Old vanilla java with static method...
-		actual = ArrayExtensions.contains(numbers, last);
-		expected = true;
-		assertEquals(expected, actual);
-		final String[] empty = { };
-		expected = false;
-		actual = ArrayExtensions.contains(empty, last);
-		assertEquals(expected, actual);
-
-		actual = ArrayExtensions.contains(empty, null);
-		assertEquals(expected, actual);
-
-		actual = ArrayExtensions.contains(empty, 8);
-		assertEquals(expected, actual);
-
-	}
-
-	/**
-	 * Test method for {@link ArrayExtensions#containsAtLeastOne(Object[], Object[])}
-	 */
-	@Test
-	public void testContainsAtLeastOne()
-	{
-		boolean expected;
-		boolean actual;
-		String last;
-
-		last = "7";
-		final String[] numbers = { "1", "2", "3", "4", "5", "6", last };
-		// Old vanilla java with static method...
-		actual = ArrayExtensions.containsAtLeastOne(numbers, last, "6");
-		expected = true;
-		assertEquals(expected, actual);
-		final String[] empty = { };
-		expected = false;
-		actual = ArrayExtensions.containsAtLeastOne(empty, last);
-		assertEquals(expected, actual);
-
-		actual = ArrayExtensions.containsAtLeastOne(empty, 8);
-		assertEquals(expected, actual);
-	}
-
-	/**
-	 * Test for method {@link ArrayExtensions#getFirst(Object[])}
-	 */
-	@Test
-	public void testGetFirst()
-	{
-		String expected;
-		String actual;
-		expected = "1";
-		final String[] numbers = { expected, "2", "3", "4", "5", "6", "7" };
-		// Old vanilla java with static method...
-		actual = ArrayExtensions.getFirst(numbers);
-		assertEquals(expected, actual);
-		final String[] empty = { };
-		expected = null;
-		actual = ArrayExtensions.getFirst(empty);
-		assertEquals(expected, actual);
-
-		actual = ArrayExtensions.getFirst(null);
-		assertEquals(expected, actual);
-	}
-
-	/**
-	 * Test for method {@link ArrayExtensions#getIndex(Object[], Object)}
-	 */
-	@Test
-	public void testGetIndex()
-	{
-		int expected;
-		int actual;
-		expected = 6;
-		final String last = "7";
-		final String[] numbers = { "1", "2", "3", "4", "5", "6", last };
-		// Old vanilla java with static method...
-		actual = ArrayExtensions.getIndex(numbers, last);
-		assertEquals(expected, actual);
-		final String[] empty = { };
-		expected = -1;
-		actual = ArrayExtensions.getIndex(empty, last);
-		assertEquals(expected, actual);
-
-		actual = ArrayExtensions.getIndex(empty, null);
-		assertEquals(expected, actual);
-	}
-
-	/**
-	 * Test for method {@link ArrayExtensions#getLast(Object[])}
-	 */
-	@Test
-	public void testGetLast()
-	{
-		String expected;
-		String actual;
-		expected = "7";
-		final String[] numbers = { "1", "2", "3", "4", "5", "6", expected };
-		// Old vanilla java with static method...
-		actual = ArrayExtensions.getLast(numbers);
-		assertEquals(expected, actual);
-		final String[] empty = { };
-		expected = null;
-		actual = ArrayExtensions.getLast(empty);
-		assertEquals(expected, actual);
-
-		actual = ArrayExtensions.getLast(null);
-		assertEquals(expected, actual);
-	}
-
-	/**
-	 * Test method for {@link ArrayExtensions#hasNext(Object[], Object)}
-	 */
-	@Test
-	public void testHasNext()
-	{
-		boolean expected;
-		boolean actual;
-		String last;
-		String first;
-		String[] numbers;
-
-		last = "7";
-		first = "1";
-		numbers = ArrayFactory.newArray(first, "2", "3", "4", "5", "6", last);
-
-		expected = false;
-		actual = ArrayExtensions.hasNext(numbers, null);
-		assertEquals(expected, actual);
-
-		expected = true;
-		actual = ArrayExtensions.hasNext(numbers, "6");
-		assertEquals(expected, actual);
-
-		expected = false;
-		actual = ArrayExtensions.hasNext(numbers, last);
-		assertEquals(expected, actual);
-	}
-
-	/**
-	 * Test for method {@link ArrayExtensions#getNextIndex(Object[], Object)}
-	 */
-	@Test
-	public void testGetNextIndex()
-	{
-		int expected;
-		int actual;
-		String last;
-		String first;
-		String[] numbers;
-
-		last = "7";
-		first = "1";
-		numbers = ArrayFactory.newArray(first, "2", "3", "4", "5", "6", last);
-		expected = 0;
-
-		// use case with last...
-		// Old vanilla java with static method...
-		actual = ArrayExtensions.getNextIndex(numbers, last);
-		assertEquals(expected, actual);
-		// use case with first...
-		expected = 1;
-		actual = ArrayExtensions.getNextIndex(numbers, first);
-		assertEquals(expected, actual);
-		// scenarios of empty or null value...
-		final String[] empty = { };
-		expected = -1;
-		actual = ArrayExtensions.getNextIndex(empty, last);
-		assertEquals(expected, actual);
-
-		actual = ArrayExtensions.getNextIndex(empty, null);
-		assertEquals(expected, actual);
-	}
-
-	/**
-	 * Test for method {@link ArrayExtensions#getNextIndexes(Object[], Object, int)}
-	 */
-	@Test
-	public void testGetNextIndexes()
-	{
-		int[] actual;
-		int[] expected;
-		String last;
-		String first;
-		String[] numbers;
-
-		last = "7";
-		first = "1";
-		numbers = ArrayFactory.newArray(first, "2", "3", "4", "5", "6", last);
-
-		// use case with last...
-		// Old vanilla java with static method...
-		actual = ArrayExtensions.getNextIndexes(numbers, last, 2);
-		expected = ArrayFactory.newIntArray(0, 1);
-		assertEquals(expected[0], actual[0]);
-		assertEquals(expected[1], actual[1]);
-		// use case with first...
-		expected[0] = 1;
-		expected[1] = 2;
-		actual = ArrayExtensions.getNextIndexes(numbers, first, 2);
-		assertEquals(expected[0], actual[0]);
-		assertEquals(expected[1], actual[1]);
-		// scenarios of empty or null value...
-		final String[] empty = { };
-		expected = null;
-		actual = ArrayExtensions.getNextIndexes(empty, last, 2);
-		assertEquals(expected, actual);
-
-		actual = ArrayExtensions.getNextIndexes(empty, null, 2);
-		assertEquals(expected, actual);
-	}
-
-	/**
-	 * Test method for {@link ArrayExtensions#hasPrevious(Object[], Object)}
-	 */
-	@Test
-	public void testHasPrevious()
-	{
-		boolean expected;
-		boolean actual;
-		String last;
-		String first;
-		String[] numbers;
-		String[] empty;
-
-		last = "7";
-		first = "1";
-		numbers = ArrayFactory.newArray(first, "2", "3", "4", "5", "6", last);
-
-		expected = true;
-		// use case with last...
-		// Old vanilla java with static method...
-		actual = ArrayExtensions.hasPrevious(numbers, last);
-		assertEquals(expected, actual);
-		// use case with first...
-		expected = false;
-		actual = ArrayExtensions.hasPrevious(numbers, first);
-		assertEquals(expected, actual);
-		// scenarios of empty or null value...
-		empty = ArrayFactory.newArray();
-		expected = false;
-		actual = ArrayExtensions.hasPrevious(empty, last);
-		assertEquals(expected, actual);
-
-		actual = ArrayExtensions.hasPrevious(empty, null);
-		assertEquals(expected, actual);
-	}
-
-	/**
-	 * Test method for {@link ArrayExtensions#getNextElement(Object[], Object)}
-	 */
-	@Test
-	public final void testGetNextElement()
-	{
-		Optional<String> expected;
-		Optional<String> actual;
-		List<String> search;
-
-		String caeser = "Caesar";
-		String dora = "Dora";
-		String emil = "Emil";
-		String anton = "Anton";
-		search = ListFactory.newArrayList();
-		search.add(caeser);
-		search.add(dora);
-		search.add(emil);
-		search.add(anton);
-
-		actual = ArrayExtensions.getNextElement(ListExtensions.toArray(search), "foo");
-		expected = Optional.empty();
-		assertEquals(expected, actual);
-
-		actual = ArrayExtensions.getNextElement(ListExtensions.toArray(search), null);
-		expected = Optional.empty();
-		assertEquals(expected, actual);
-
-		actual = ArrayExtensions.getNextElement(ListExtensions.toArray(search), anton);
-		expected = Optional.empty();
-		assertEquals(expected, actual);
-
-		actual = ArrayExtensions.getNextElement(ListExtensions.toArray(search), emil);
-		expected = Optional.of(anton);
-		assertEquals(expected, actual);
-
-		actual = ArrayExtensions.getNextElement(ListExtensions.toArray(search), dora);
-		expected = Optional.of(emil);
-		assertEquals(expected, actual);
-
-		actual = ArrayExtensions.getNextElement(ListExtensions.toArray(search), caeser);
-		expected = Optional.of(dora);
-		assertEquals(expected, actual);
-	}
-
-	/**
-	 * Test for method {@link ArrayExtensions#getPreviousElement(Object[], Object)}
-	 */
-	@Test
-	public void testGetPreviousElement()
-	{
-		Optional<String> expected;
-		Optional<String> actual;
-		List<String> search;
-
-		String caeser = "Caesar";
-		String dora = "Dora";
-		String emil = "Emil";
-		String anton = "Anton";
-		search = ListFactory.newArrayList();
-		search.add(caeser);
-		search.add(dora);
-		search.add(emil);
-		search.add(anton);
-
-		actual = ArrayExtensions.getPreviousElement(ListExtensions.toArray(search), "foo");
-		expected = Optional.empty();
-		assertEquals(expected, actual);
-
-		actual = ArrayExtensions.getPreviousElement(ListExtensions.toArray(search), null);
-		expected = Optional.empty();
-		assertEquals(expected, actual);
-
-		actual = ArrayExtensions.getPreviousElement(ListExtensions.toArray(search), caeser);
-		expected = Optional.empty();
-		assertEquals(expected, actual);
-
-		actual = ArrayExtensions.getPreviousElement(ListExtensions.toArray(search), dora);
-		expected = Optional.of(caeser);
-		assertEquals(expected, actual);
-
-		actual = ArrayExtensions.getPreviousElement(ListExtensions.toArray(search), emil);
-		expected = Optional.of(dora);
-		assertEquals(expected, actual);
-
-		actual = ArrayExtensions.getPreviousElement(ListExtensions.toArray(search), anton);
-		expected = Optional.of(emil);
-		assertEquals(expected, actual);
-	}
-
-	/**
-	 * Test for method {@link ArrayExtensions#getPreviousIndex(Object[], Object)}
-	 */
-	@Test
-	public void testGetPreviousIndex()
-	{
-		int expected;
-		int actual;
-		String last;
-		String first;
-		String[] numbers;
-
-		last = "7";
-		first = "1";
-		numbers = ArrayFactory.newArray(first, "2", "3", "4", "5", "6", last);
-
-		expected = 5;
-		// use case with last...
-		// Old vanilla java with static method...
-		actual = ArrayExtensions.getPreviousIndex(numbers, last);
-		assertEquals(expected, actual);
-		// use case with first...
-		expected = 6;
-		actual = ArrayExtensions.getPreviousIndex(numbers, first);
-		assertEquals(expected, actual);
-		// scenarios of empty or null value...
-		final String[] empty = { };
-		expected = -1;
-		actual = ArrayExtensions.getPreviousIndex(empty, last);
-		assertEquals(expected, actual);
-
-		actual = ArrayExtensions.getPreviousIndex(empty, null);
-		assertEquals(expected, actual);
-	}
-
-	/**
-	 * Test for method {@link ArrayExtensions#getPreviousIndexes(Object[], Object, int)}
-	 */
-	@Test
-	public void testGetPreviousIndexes()
-	{
-		int[] expected = { 5, 4 };
-		final String last = "7";
-		final String first = "1";
-		final String[] numbers = { first, "2", "3", "4", "5", "6", last };
-		// use case with last...
-		// Old vanilla java with static method...
-		int[] actual = ArrayExtensions.getPreviousIndexes(numbers, last, 2);
-		assertEquals(expected[0], actual[0]);
-		assertEquals(expected[1], actual[1]);
-		// use case with first...
-		expected[0] = 6;
-		expected[1] = 5;
-		actual = ArrayExtensions.getPreviousIndexes(numbers, first, 2);
-		assertEquals(expected[0], actual[0]);
-		assertEquals(expected[1], actual[1]);
-		// scenarios of empty or null value...
-		final String[] empty = { };
-		expected = null;
-		actual = ArrayExtensions.getPreviousIndexes(empty, last, 2);
-		assertEquals(expected, actual);
-
-		actual = ArrayExtensions.getPreviousIndexes(empty, null, 2);
-		assertEquals(expected, actual);
-	}
-
-	/**
-	 * Test for method {@link ArrayExtensions#indexOf(Object[], Object)}
-	 */
-	@Test
-	public void testIndexOf()
-	{
-		int expected;
-		int actual;
-		expected = 6;
-		final String last = "7";
-		final String[] numbers = { "1", "2", "3", "4", "5", "6", last };
-		// Old vanilla java with static method...
-		actual = ArrayExtensions.indexOf(numbers, last);
-		assertEquals(expected, actual);
-		final String[] empty = { };
-		expected = -1;
-		actual = ArrayExtensions.indexOf(empty, last);
-		assertEquals(expected, actual);
-
-		actual = ArrayExtensions.indexOf(empty, null);
-		assertEquals(expected, actual);
-	}
-
-	/**
-	 * Test the method for {@link ArrayExtensions#intersection(Object[], Object[])}
-	 */
-	@Test
-	public void testIntersection()
-	{
-		String[] actual;
-		String[] expected;
-		String[] one;
-		String[] other;
-
-		one = ArrayFactory.newArray("Anton", "Alex", "Berta", "Brad", "Caesar", "Leonardo");
-
-		other = ArrayFactory.newArray("Alex", "Berta", "Brad", "Caesar", "Leonardo");
-
-		actual = ArrayExtensions.intersection(one, other);
-
-		expected = ArrayFactory.newArray("Alex", "Berta", "Brad", "Caesar", "Leonardo");
-		assertArrayEquals(actual, expected);
-
-	}
-
-	/**
-	 * Test method for {@link ArrayExtensions#isFirst(Object[], Object)} .
-	 */
-	@Test
-	public void testIsFirst()
-	{
-		boolean expected;
-		boolean actual;
-		final String[] numbers = { "1", "2", "3", "4", "5", "6", "7" };
-
-		actual = ArrayExtensions.isFirst(numbers, "1");
-		expected = true;
-		assertEquals(expected, actual);
-
-		actual = ArrayExtensions.isFirst(numbers, null);
-		expected = false;
-		assertEquals(expected, actual);
-	}
-
-	/**
-	 * Test method for {@link ArrayExtensions#isLast(Object[], Object)} .
-	 */
-	@Test
-	public void testIsLast()
-	{
-		boolean expected;
-		boolean actual;
-
-		final String[] numbers = { "1", "2", "3", "4", "5", "6", "7" };
-
-		actual = ArrayExtensions.isLast(numbers, "7");
-		expected = true;
-		assertEquals(expected, actual);
-
-		actual = ArrayExtensions.isLast(numbers, null);
-		expected = false;
-		assertEquals(expected, actual);
-	}
-
-	/**
-	 * Test method for {@link ArrayExtensions#removeAll(Object[], Object[])}
-	 */
-	@Test
-	public void testRemoveAll()
-	{
-		String[] actual;
-		String[] expected;
-		String[] source;
-		String[] arrayToRemove;
-
-		source = ArrayFactory.newArray("1", "2", "3", "4");
-		arrayToRemove = ArrayFactory.newArray("2", "3", "4");
-		actual = ArrayExtensions.removeAll(source, arrayToRemove);
-		expected = ArrayFactory.newArray("1");
-		assertArrayEquals(actual, expected);
-	}
-
-	/**
-	 * Test method for {@link ArrayExtensions#removeFirst(Object[])}
-	 */
-	@Test
-	public void testRemoveFirst()
-	{
-		String[] actual;
-		String[] expected;
-		String[] source;
-
-		source = ArrayFactory.newArray("1", "2", "3", "4");
-		actual = ArrayExtensions.removeFirst(source);
-		expected = ArrayFactory.newArray("2", "3", "4");
-		assertArrayEquals(actual, expected);
-	}
-
-	/**
-	 * Test method for {@link ArrayExtensions#removeFirst(Object[])} with an empty array: it throws
-	 * an {@link IndexOutOfBoundsException}, as before the fix of #63
-	 */
-	@Test
-	public void testRemoveFirstOfAnEmptyArray()
-	{
-		final IndexOutOfBoundsException exception = assertThrows(IndexOutOfBoundsException.class,
-			() -> ArrayExtensions.removeFirst(new String[0]));
-		assertEquals("Index 0 out of bounds for length 0", exception.getMessage());
-	}
-
-	/**
-	 * Test method for {@link ArrayExtensions#removeFromEnd(Object[], Object[])}
-	 */
-	@Test
-	public void testRemoveFromEnd()
-	{
-		Integer[] actual;
-		Integer[] expected;
-		Integer[] source;
-		Integer[] toRemove;
-
-		source = ArrayFactory.newArray(1, 2, 3, 4, 5, 6, 7, 8, 9);
-		toRemove = ArrayFactory.newArray(7, 8, 9);
-		actual = ArrayExtensions.removeFromEnd(source, toRemove);
-		expected = ArrayFactory.newArray(1, 2, 3, 4, 5, 6);
-		assertArrayEquals(actual, expected);
-	}
-
-	/**
-	 * Test method for {@link ArrayExtensions#removeFromStart(Object[], Object[])}
-	 */
-	@Test
-	public void testRemoveFromStart()
-	{
-		Integer[] actual;
-		Integer[] expected;
-		Integer[] source;
-		Integer[] toRemove;
-
-		source = ArrayFactory.newArray(1, 2, 3, 4, 5, 6, 7, 8, 9);
-		toRemove = ArrayFactory.newArray(1, 2, 3);
-		actual = ArrayExtensions.removeFromStart(source, toRemove);
-		expected = ArrayFactory.newArray(4, 5, 6, 7, 8, 9);
-		assertArrayEquals(actual, expected);
-
-		source = ArrayFactory.newArray();
-		toRemove = ArrayFactory.newArray(1, 2, 3);
-		actual = ArrayExtensions.removeFromStart(source, toRemove);
-		expected = ArrayFactory.newArray();
-		assertArrayEquals(actual, expected);
-	}
-
-	/**
-	 * Test method for {@link ArrayExtensions#removeFromStart(Object[], Object[])} with elements of
-	 * different classes: the result has the component type of the given array, the {@code Number[]}
-	 * {1, 2.5, 3} without the prefix {1} gives the {@code Number[]} {2.5, 3}. Before the fix of #64
-	 * the component type was the class of the first element, {@code Integer}, and copying 2.5 threw
-	 * an {@link ArrayStoreException}
-	 */
-	@Test
-	public void testRemoveFromStartWithElementsOfDifferentClasses()
-	{
-		final Number[] array = { 1, 2.5, 3 };
-
-		final Number[] actual = ArrayExtensions.removeFromStart(array, new Number[] { 1 });
-		assertEquals(Number[].class, actual.getClass());
-		assertArrayEquals(new Number[] { 2.5, 3 }, actual);
-	}
-
-	/**
-	 * Test method for {@link ArrayExtensions#removeFromStart(Object[], Object[])} with null as
-	 * first element: the {@code String[]} {null, "a", "b"} without the prefix {null} gives the
-	 * {@code String[]} {"a", "b"}. Before the fix of #64 the method took the class of the first
-	 * element as component type and threw a {@link NullPointerException}
-	 */
-	@Test
-	public void testRemoveFromStartWithNullFirstElement()
-	{
-		final String[] array = { null, "a", "b" };
-
-		final String[] actual = ArrayExtensions.removeFromStart(array, new String[] { null });
-		assertEquals(String[].class, actual.getClass());
-		assertArrayEquals(new String[] { "a", "b" }, actual);
-	}
-
-	/**
-	 * Test method for {@link ArrayExtensions#removeFromStart(Object[], Object[])} with an
-	 * {@code Object[]} that holds strings: the result has the component type of the given array, it
-	 * is the {@code Object[]} {"b", "c"}. Before the fix of #64 the result was a {@code String[]},
-	 * the class of the first element
-	 */
-	@Test
-	public void testRemoveFromStartOfAnObjectArrayOfStrings()
-	{
-		final Object[] array = { "a", "b", "c" };
-
-		final Object[] actual = ArrayExtensions.removeFromStart(array, new Object[] { "a" });
-		assertArrayEquals(new Object[] { "b", "c" }, actual);
-		assertEquals(Object[].class, actual.getClass());
-	}
-
-	/**
-	 * Test method for {@link ArrayExtensions#removeFromStart(Object[], Object[])} and
-	 * {@link ArrayExtensions#removeFromEnd(Object[], Object[])} with a prefix or suffix that does
-	 * not match: the result is a copy of the given array (#76). Before the fix of #76 both removed
-	 * as many elements as the prefix or suffix has, whatever they are
-	 */
-	@Test
-	public void testRemoveFromStartAndEndWithAPrefixOrSuffixThatDoesNotMatch()
-	{
-		final Integer[] array = { 1, 2, 3 };
-
-		final Integer[] withoutPrefix = ArrayExtensions.removeFromStart(array, new Integer[] { 9 });
-		assertArrayEquals(new Integer[] { 1, 2, 3 }, withoutPrefix);
-		assertNotSame(array, withoutPrefix);
-		final Integer[] withoutSuffix = ArrayExtensions.removeFromEnd(array, new Integer[] { 9 });
-		assertArrayEquals(new Integer[] { 1, 2, 3 }, withoutSuffix);
-		assertNotSame(array, withoutSuffix);
-		// a prefix or suffix that matches in part only does not match either
-		assertArrayEquals(new Integer[] { 1, 2, 3 },
-			ArrayExtensions.removeFromStart(array, new Integer[] { 1, 9 }));
-		assertArrayEquals(new Integer[] { 1, 2, 3 },
-			ArrayExtensions.removeFromEnd(array, new Integer[] { 9, 3 }));
-		assertArrayEquals(new Integer[] { 1, 2, 3 }, array);
-	}
-
-	/**
-	 * Test method for {@link ArrayExtensions#removeFromStart(Object[], Object[])} and
-	 * {@link ArrayExtensions#removeFromEnd(Object[], Object[])} with a prefix or suffix longer than
-	 * the array: the result is a copy of the given array, as a longer prefix or suffix does not
-	 * match (#76). Before the fix of #76 both threw a {@link NegativeArraySizeException}
-	 */
-	@Test
-	public void testRemoveFromStartAndEndWithALongerPrefixOrSuffix()
-	{
-		final Integer[] array = { 1 };
-
-		assertArrayEquals(new Integer[] { 1 },
-			ArrayExtensions.removeFromStart(array, new Integer[] { 1, 2 }));
-		assertArrayEquals(new Integer[] { 1 },
-			ArrayExtensions.removeFromEnd(array, new Integer[] { 1, 2 }));
-	}
-
-	/**
-	 * Test method for {@link ArrayExtensions#removeFromStart(Object[], Object[])} with an empty
-	 * array: the result is a new empty array (#76). Before the fix of #76 it was the given array
-	 * itself
-	 */
-	@Test
-	public void testRemoveFromStartOfAnEmptyArray()
-	{
+		final BinaryOperator<Object[]> join = ArrayExtensions::join;
+		final BinaryOperator<Object[]> concatenate = ArrayExtensions::concatenate;
+		final String[] abc = { "A", "B", "C" };
+		final String[] de = { "D", "E" };
+		final Integer[] numbers = { 1, 2, 3 };
 		final Integer[] empty = { };
-
-		final Integer[] actual = ArrayExtensions.removeFromStart(empty, new Integer[] { 1 });
-		assertArrayEquals(new Integer[] { }, actual);
-		assertNotSame(empty, actual);
+		return Stream.of(
+			new TwoArrays("join, A, B, C and D, E: a new array A to E", join, abc, de,
+				new String[] { "A", "B", "C", "D", "E" }, false),
+			new TwoArrays("join, null and D, E: the second array itself", join, null, de, de, true),
+			new TwoArrays(
+				"join, A, B, C and null: the first array itself", join, abc, null, abc, true),
+			new TwoArrays("join, null and null: null", join, null, null, null, true),
+			new TwoArrays("join, the Number[] 1.5 and the Integer[] 2: a new Number[]", join,
+				new Number[] { 1.5 }, new Integer[] { 2 }, new Number[] { 1.5, 2 }, false),
+			new TwoArrays("concatenate, 1, 2, 3 and 4, 5, 6: a new array 1 to 6", concatenate,
+				numbers, new Integer[] { 4, 5, 6 }, new Integer[] { 1, 2, 3, 4, 5, 6 }, false),
+			new TwoArrays("concatenate, an empty array and 1, 2, 3: a new array 1, 2, 3",
+				concatenate, empty, numbers, new Integer[] { 1, 2, 3 }, false),
+			new TwoArrays("concatenate, the Number[] 1.5 and 2: a new Number[]", concatenate,
+				new Number[] { 1.5 }, new Number[] { 2 }, new Number[] { 1.5, 2 }, false),
+			new TwoArrays("concatenate, null and 1, 2, 3: the elements array itself", concatenate,
+				null, numbers, numbers, true),
+			new TwoArrays("concatenate, 1, 2, 3 and an empty array: the existing array itself",
+				concatenate, numbers, empty, numbers, true),
+			new TwoArrays("concatenate, 1, 2, 3 and null: the existing array itself", concatenate,
+				numbers, null, numbers, true),
+			new TwoArrays("concatenate, an empty array and null: the empty array itself",
+				concatenate, empty, null, empty, true),
+			new TwoArrays("concatenate, null and an empty array: null", concatenate, null, empty,
+				null, true),
+			new TwoArrays("concatenate, null and null: null", concatenate, null, null, null, true));
 	}
 
 	/**
-	 * Test method for {@link ArrayExtensions#removeFromEnd(Object[], Object[])} with null: it
-	 * throws an {@link IllegalArgumentException} for a null array and a null suffix, as
-	 * {@link ArrayExtensions#removeFromStart(Object[], Object[])} does (#76). Before the fix of #76
-	 * it threw a {@link NullPointerException}
+	 * Test for the methods {@link ArrayExtensions#join(Object[], Object...)} and
+	 * {@link ArrayExtensions#concatenate(Object[], Object[])}: a new array holds the elements of
+	 * the first array followed by those of the second, in the component type of the first
+	 *
+	 * @param arrays
+	 *            the method, the two arrays and what it returns
 	 */
-	@Test
-	public void testRemoveFromEndWithNull()
+	@ParameterizedTest(name = "{0}")
+	@MethodSource("twoArrays")
+	public void testJoinAndConcatenate(final TwoArrays arrays)
 	{
-		assertThrows(IllegalArgumentException.class,
-			() -> ArrayExtensions.removeFromEnd(null, new Integer[] { 1 }));
-		assertThrows(IllegalArgumentException.class,
-			() -> ArrayExtensions.removeFromEnd(new Integer[] { 1 }, null));
+		final Object[] actual = arrays.method().apply(arrays.first(), arrays.second());
+		if (arrays.itself())
+		{
+			assertSame(arrays.expected(), actual);
+			return;
+		}
+		assertArrayEquals(arrays.expected(), actual);
+		assertEquals(arrays.expected().getClass(), actual.getClass());
+		assertNotSame(arrays.first(), actual);
+		assertNotSame(arrays.second(), actual);
 	}
 
 	/**
-	 * Test method for {@link ArrayExtensions#removeFromStart(Object[], Object[])} and
-	 * {@link ArrayExtensions#removeFromEnd(Object[], Object[])} with a prefix or suffix as long as
-	 * the array, and with null elements that match: the result is an empty array, and the array
-	 * without the null at its start or its end, as before the fix of #76
+	 * Test for method {@link ArrayExtensions#join(Object[], Object...)} with arrays whose component
+	 * types are incompatible: the second cannot be stored in an array of the first
+	 *
+	 * @param description
+	 *            the name of the case
+	 * @param first
+	 *            the first array
+	 * @param second
+	 *            the second array
 	 */
-	@Test
-	public void testRemoveFromStartAndEndWithTheWholeArrayAndWithNullElements()
+	@ParameterizedTest(name = "{0}", quoteTextArguments = false)
+	@MethodSource("incompatibleArrays")
+	public void testJoinWithIncompatibleTypes(final String description, final Object[] first,
+		final Object[] second)
 	{
-		final Integer[] array = { 1, 2 };
-
-		assertArrayEquals(new Integer[] { }, ArrayExtensions.removeFromStart(array, array));
-		assertArrayEquals(new Integer[] { }, ArrayExtensions.removeFromEnd(array, array));
-		assertArrayEquals(new String[] { "a" },
-			ArrayExtensions.removeFromEnd(new String[] { "a", null }, new String[] { null }));
-		assertArrayEquals(new String[] { "a" },
-			ArrayExtensions.removeFromStart(new String[] { null, "a" }, new String[] { null }));
+		final IllegalArgumentException exception = assertThrows(IllegalArgumentException.class,
+			() -> ArrayExtensions.join(first, second));
+		assertEquals("Cannot store " + second.getClass().getComponentType().getName()
+			+ " in an array of " + first.getClass().getComponentType().getName(),
+			exception.getMessage());
 	}
 
 	/**
-	 * Test method for {@link ArrayExtensions#removeLast(Object[])}
+	 * The arrays of incompatible component types for
+	 * {@link #testJoinWithIncompatibleTypes(String, Object[], Object[])}
+	 *
+	 * @return the name of the case and the two arrays
 	 */
-	@Test
-	public void testRemoveLast()
+	static Stream<Arguments> incompatibleArrays()
 	{
-		String[] actual;
-		String[] expected;
-		String[] source;
-
-		source = ArrayFactory.newArray("1", "2", "3", "4");
-		actual = ArrayExtensions.removeLast(source);
-		expected = ArrayFactory.newArray("1", "2", "3");
-		assertArrayEquals(actual, expected);
+		return Stream.of(
+			Arguments.of("an Integer[] and a String[]", new Integer[] { 1, 2, 3 },
+				new String[] { "A", "B" }),
+			Arguments.of("an Integer[] and a Number[], a supertype", new Integer[] { 1 },
+				new Number[] { 2 }));
 	}
 
 	/**
-	 * Test method for {@link ArrayExtensions#removeLast(Object[])} with an empty array: it throws
-	 * an {@link IndexOutOfBoundsException}, as {@link ArrayExtensions#removeFirst(Object[])} does.
-	 * Before the fix of #63 it threw a {@link NegativeArraySizeException}
+	 * A conversion of an array into a list, a set or a stream, and what it holds
+	 *
+	 * @param description
+	 *            the name of the case
+	 * @param conversion
+	 *            the conversion; a stream is collected into a list, and the result of
+	 *            {@link ArrayExtensions#toSet(Object[])} into a list, to compare its order too
+	 * @param expected
+	 *            what the conversion holds
 	 */
-	@Test
-	public void testRemoveLastOfAnEmptyArray()
-	{
-		final IndexOutOfBoundsException exception = assertThrows(IndexOutOfBoundsException.class,
-			() -> ArrayExtensions.removeLast(new String[0]));
-		assertEquals("Index -1 out of bounds for length 0", exception.getMessage());
+	record Conversion(String description, Supplier<Object> conversion, Object expected) {
+		@Override
+		public String toString()
+		{
+			return description;
+		}
 	}
 
 	/**
-	 * Test method for {@link ArrayExtensions#remove(Object[], int... )}
+	 * The cases of {@link ArrayExtensions#asList(Object[])},
+	 * {@link ArrayExtensions#toList(Object[])}, {@link ArrayExtensions#asSet(Object...)},
+	 * {@link ArrayExtensions#asStream(Object...)} and {@link ArrayExtensions#toSet(Object[])}
+	 *
+	 * @return the cases
 	 */
-	@Test
-	public void testRemoveVarArgs()
+	static Stream<Conversion> conversions()
 	{
-
-		String[] actual;
-		String[] expected;
-		String[] source;
-		// new scenario...
-		source = ArrayFactory.newArray("1", "2", "3", "4");
-		actual = ArrayExtensions.remove(source, 2, 3);
-		expected = ArrayFactory.newArray("1", "2");
-		assertArrayEquals(actual, expected);
-		// new scenario unsorted
-		source = ArrayFactory.newArray("1", "2", "3", "4", "5", "6");
-		actual = ArrayExtensions.remove(source, 5, 3, 1);
-		expected = ArrayFactory.newArray("1", "3", "5");
-		assertArrayEquals(actual, expected);
-		// new scenario unsorted
-		source = ArrayFactory.newArray("1", "2", "3", "4", "5", "6");
-		actual = ArrayExtensions.remove(source, 3, 5, 1);
-		expected = ArrayFactory.newArray("1", "3", "5");
-		assertArrayEquals(actual, expected);
+		final List<String> oneToSeven = List.of("1", "2", "3", "4", "5", "6", "7");
+		return Stream.of(
+			new Conversion("asList of 1 to 7: the elements in their order",
+				() -> ArrayExtensions.asList(new String[] { "1", "2", "3", "4", "5", "6", "7" }),
+				oneToSeven),
+			new Conversion("toList of 1 to 7: the elements in their order",
+				() -> ArrayExtensions.toList(new String[] { "1", "2", "3", "4", "5", "6", "7" }),
+				oneToSeven),
+			new Conversion("asSet of 1 to 7: each element",
+				() -> ArrayExtensions.asSet("1", "2", "3", "4", "5", "6", "7"),
+				Set.copyOf(oneToSeven)),
+			new Conversion("asSet of 1, 2, 3, 2: each element once",
+				() -> ArrayExtensions.asSet("1", "2", "3", "2"), Set.of("1", "2", "3")),
+			new Conversion("asSet of no elements: an empty set", ArrayExtensions::asSet, Set.of()),
+			new Conversion("asStream of 1 to 7: the elements in their order",
+				() -> ArrayExtensions.asStream("1", "2", "3", "4", "5", "6", "7")
+					.collect(Collectors.toList()),
+				oneToSeven),
+			new Conversion("toSet of 1 to 5: each element, in their order",
+				() -> List.copyOf(ArrayExtensions.toSet(new Integer[] { 1, 2, 3, 4, 5 })),
+				List.of(1, 2, 3, 4, 5)),
+			new Conversion("toSet of 3, 1, 2, 1: each element once, in the order of the first",
+				() -> List.copyOf(ArrayExtensions.toSet(new Integer[] { 3, 1, 2, 1 })),
+				List.of(3, 1, 2)));
 	}
 
 	/**
-	 * Test method for {@link ArrayExtensions#remove(Object[], int...)} with unsorted indexes: the
-	 * indexes array of the caller stays { 2, 0 }. Before the fix of #63 the method sorted it to {
-	 * 0, 2 }
+	 * Test for the methods {@link ArrayExtensions#asList(Object[])},
+	 * {@link ArrayExtensions#toList(Object[])}, {@link ArrayExtensions#asSet(Object...)},
+	 * {@link ArrayExtensions#asStream(Object...)} and {@link ArrayExtensions#toSet(Object[])}
+	 *
+	 * @param conversion
+	 *            the conversion and what it holds
 	 */
-	@Test
-	public void testRemoveWithUnsortedIndexes()
+	@ParameterizedTest(name = "{0}")
+	@MethodSource("conversions")
+	public void testConversion(final Conversion conversion)
 	{
-		final Integer[] array = { 0, 1, 2, 3 };
-		final int[] indexes = { 2, 0 };
-
-		assertArrayEquals(new Integer[] { 1, 3 }, ArrayExtensions.remove(array, indexes));
-		assertArrayEquals(new int[] { 2, 0 }, indexes);
+		assertEquals(conversion.expected(), conversion.conversion().get());
 	}
 
 	/**
-	 * Test method for {@link ArrayExtensions#remove(Object[], int...)} with an index given twice:
-	 * it removes the element at the index once, { 0, 1, 2, 3 } without 1 and 1 gives { 0, 2, 3 }.
-	 * Before the fix of #63 the method also removed the element that moved there and gave { 0, 3 }
+	 * Test for method {@link ArrayExtensions#subArray(Object[], int, int)}: the elements from the
+	 * start, inclusive, to the end, exclusive, of 1 to 5, as {@link Arrays#copyOfRange} gives them,
+	 * which fills an end beyond the array with null
+	 *
+	 * @param description
+	 *            the name of the case
+	 * @param start
+	 *            the start index
+	 * @param end
+	 *            the end index
+	 * @param expected
+	 *            the elements of the sub array, separated by a space, null for a null element
 	 */
-	@Test
-	public void testRemoveWithAnIndexTwice()
+	@ParameterizedTest(name = "{0}", quoteTextArguments = false)
+	@CsvSource(value = { "1 to 4: 2, 3, 4 | 1 | 4 | 2 3 4",
+			"0 to 5: all of them | 0 | 5 | 1 2 3 4 5", "2 to 3: one element | 2 | 3 | 3",
+			"2 to 2: none | 2 | 2 | ''", "5 to 5, at the end: none | 5 | 5 | ''",
+			"3 to 7, beyond the end: 4, 5 and two nulls | 3 | 7 | 4 5 null null" }, delimiter = '|')
+	public void testSubArray(final String description, final int start, final int end,
+		final String expected)
 	{
-		final Integer[] array = { 0, 1, 2, 3 };
-
-		assertArrayEquals(new Integer[] { 0, 2, 3 }, ArrayExtensions.remove(array, 1, 1));
+		final Integer[] expectedArray = expected.isEmpty()
+			? new Integer[0]
+			: Arrays.stream(expected.split(" "))
+				.map(element -> "null".equals(element) ? null : Integer.valueOf(element))
+				.toArray(Integer[]::new);
+		final Integer[] actual = ArrayExtensions.subArray(new Integer[] { 1, 2, 3, 4, 5 }, start,
+			end);
+		assertArrayEquals(expectedArray, actual);
 	}
 
 	/**
-	 * Test method for {@link ArrayExtensions#remove(Object[], int...)} with the last index given
-	 * twice: it removes the last element once, { 0, 1, 2, 3 } without 3 and 3 gives { 0, 1, 2 }.
-	 * Before the fix of #63 the method threw an {@link IndexOutOfBoundsException}, as the second 3
-	 * was out of range after the first one was removed
+	 * Test for method {@link ArrayExtensions#subArray(Object[], int, int)} with a range that
+	 * {@link Arrays#copyOfRange} refuses, on 1 to 5
+	 *
+	 * @param description
+	 *            the name of the case
+	 * @param start
+	 *            the start index
+	 * @param end
+	 *            the end index
+	 * @param exception
+	 *            the class of the exception it throws
 	 */
-	@Test
-	public void testRemoveWithTheLastIndexTwice()
+	@ParameterizedTest(name = "{0}", quoteTextArguments = false)
+	@CsvSource({
+			"a negative start: ArrayIndexOutOfBoundsException, -1, 3, java.lang.ArrayIndexOutOfBoundsException",
+			"a start beyond the length: ArrayIndexOutOfBoundsException, 6, 7, java.lang.ArrayIndexOutOfBoundsException",
+			"a start greater than the end: IllegalArgumentException, 4, 3, java.lang.IllegalArgumentException" })
+	public void testSubArrayWithInvalidRange(final String description, final int start,
+		final int end, final Class<? extends Exception> exception)
 	{
-		final Integer[] array = { 0, 1, 2, 3 };
-
-		assertArrayEquals(new Integer[] { 0, 1, 2 }, ArrayExtensions.remove(array, 3, 3));
+		final Integer[] original = { 1, 2, 3, 4, 5 };
+		assertThrows(exception, () -> ArrayExtensions.subArray(original, start, end));
 	}
 
 	/**
-	 * Test method for {@link ArrayExtensions#remove(Object[], int...)} with an index out of range:
-	 * it throws an {@link IndexOutOfBoundsException} with the message of
-	 * {@link java.util.ArrayList#remove(int)}, and the given array is unchanged, as before the fix
-	 * of #63
+	 * Test for method {@link ArrayExtensions#toTwoDimensionalArray(Map, Class)}: a row of key and
+	 * value for each entry, in the order of the map
+	 *
+	 * @param description
+	 *            the name of the case
+	 * @param expected
+	 *            the rows, the entries of the map
 	 */
-	@Test
-	public void testRemoveWithAnIndexOutOfRange()
+	@ParameterizedTest(name = "{0}", quoteTextArguments = false)
+	@MethodSource("twoDimensionalArrays")
+	public void testToTwoDimensionalArray(final String description, final String[][] expected)
 	{
-		final Integer[] array = { 0, 1, 2, 3 };
-		IndexOutOfBoundsException exception;
-
-		exception = assertThrows(IndexOutOfBoundsException.class,
-			() -> ArrayExtensions.remove(array, 1, 4));
-		assertEquals("Index 4 out of bounds for length 4", exception.getMessage());
-
-		exception = assertThrows(IndexOutOfBoundsException.class,
-			() -> ArrayExtensions.remove(array, -1));
-		assertEquals("Index -1 out of bounds for length 4", exception.getMessage());
-
-		assertArrayEquals(new Integer[] { 0, 1, 2, 3 }, array);
-	}
-
-	/**
-	 * Test method for {@link ArrayExtensions#remove(Object[], int...)} with a negative index and
-	 * another one: the message names the length of the given array, 4 (#76). Before the fix of #76
-	 * it named the length of the list after the other index was removed, 3
-	 */
-	@Test
-	public void testRemoveWithANegativeIndexAndAnother()
-	{
-		final Integer[] array = { 0, 1, 2, 3 };
-
-		final IndexOutOfBoundsException exception = assertThrows(IndexOutOfBoundsException.class,
-			() -> ArrayExtensions.remove(array, -1, 2));
-		assertEquals("Index -1 out of bounds for length 4", exception.getMessage());
-		assertArrayEquals(new Integer[] { 0, 1, 2, 3 }, array);
-	}
-
-	/**
-	 * Test for method {@link ArrayExtensions#splitInChunks(byte[], int)}
-	 */
-	@Test
-	public void testSplit()
-	{
-		int expected;
-		int actual;
-		final String byteString = "Lorem ipsum dolor sit amet, consectetur adipiscing elit.";
-
-		final byte[] byteArray = byteString.getBytes();
-
-		expected = 56;
-		actual = byteArray.length;
-		assertEquals(expected, actual);
-
-		final byte[][] splitedBytes = ArrayExtensions.splitInChunks(byteArray, 5);
-
-		expected = 12;
-		actual = splitedBytes.length;
-		assertEquals(expected, actual);
-	}
-
-	/**
-	 * Test the method {@link ArrayExtensions#splitInChunks(byte[], int)} with a length that is a
-	 * multiple of the chunk size: every chunk is full
-	 */
-	@Test
-	public void testSplitInChunksWithLengthMultipleOfChunkSize()
-	{
-		final byte[] bytes = { 1, 2, 3, 4, 5, 6 };
-		final byte[][] expected = { { 1, 2, 3 }, { 4, 5, 6 } };
-		final byte[][] actual = ArrayExtensions.splitInChunks(bytes, 3);
+		final Map<String, String> map = new LinkedHashMap<>();
+		for (final String[] row : expected)
+		{
+			map.put(row[0], row[1]);
+		}
+		final String[][] actual = ArrayExtensions.toTwoDimensionalArray(map, String.class);
+		assertEquals(String[][].class, actual.getClass());
 		assertArrayEquals(expected, actual);
 	}
 
 	/**
-	 * Test for method {@link ArrayExtensions#toList(Object[])}
+	 * The maps of {@link #testToTwoDimensionalArray(String, String[][])}, as the rows they are made
+	 * of
+	 *
+	 * @return the name of the case and the rows
 	 */
-	@Test
-	public void testToList()
+	static Stream<Arguments> twoDimensionalArrays()
 	{
-		String actual;
-		String expected;
-		final String[] numbers = { "1", "2", "3", "4", "5", "6", "7" };
-		final List<String> numberList = ArrayExtensions.toList(numbers);
-		for (int i = 0; i < numbers.length; i++)
+		return Stream.of(
+			Arguments
+				.of("four entries, not in the order of their keys: four rows in their order",
+					new String[][] { { "1", "value1" }, { "3", "value3" }, { "4", "value4" },
+							{ "2", "value2" } }),
+			Arguments.of("no entry: no row", new String[0][]));
+	}
+
+	/**
+	 * A call of one of the methods {@code getLastIndex} and the index it returns
+	 *
+	 * @param description
+	 *            the name of the case
+	 * @param call
+	 *            the call
+	 * @param expected
+	 *            the last index
+	 */
+	record LastIndex(String description, IntSupplier call, int expected) {
+		@Override
+		public String toString()
 		{
-			expected = numbers[i];
-			actual = numberList.get(i);
-			assertEquals(expected, actual);
+			return description;
 		}
 	}
 
 	/**
-	 * Test for method {@link ArrayFactory#newArray(Object[], Object[])}
+	 * The three cases of a method {@code getLastIndex}: values, an empty array and null
+	 *
+	 * @param name
+	 *            the type of the array
+	 * @param values
+	 *            the call with values
+	 * @param lastIndex
+	 *            the last index of the values
+	 * @param empty
+	 *            the call with an empty array
+	 * @param none
+	 *            the call with null
+	 * @return the cases
 	 */
-	@Test
-	public void testNewArrayWithExistingArray()
+	static Stream<LastIndex> lastIndexesOf(final String name, final IntSupplier values,
+		final int lastIndex, final IntSupplier empty, final IntSupplier none)
 	{
-		Integer[] actual;
-		Integer[] expected;
-		final Integer[] numbers = { 1, 2, 3 };
-		final Integer[] moreNumbers = { 4, 5, 6 };
-
-		actual = ArrayExtensions.concatenate(numbers, moreNumbers);
-		expected = ArrayFactory.newArray(1, 2, 3, 4, 5, 6);
-		assertArrayEquals(actual, expected);
-
-		actual = ArrayExtensions.concatenate(ArrayFactory.newArray(), numbers);
-		expected = ArrayFactory.newArray(numbers);
-		assertArrayEquals(actual, expected);
-
-		actual = ArrayExtensions.concatenate(null, numbers);
-		assertArrayEquals(actual, expected);
-
-		actual = ArrayExtensions.concatenate(null, null);
-		expected = null;
-		assertArrayEquals(actual, expected);
+		return Stream.of(
+			new LastIndex(name + ", " + (lastIndex + 1) + " values: " + lastIndex, values,
+				lastIndex),
+			new LastIndex(name + ", empty: -1", empty, -1),
+			new LastIndex(name + ", null: -1", none, -1));
 	}
 
 	/**
-	 * Test the method {@link ArrayExtensions#concatenate(Object[], Object[])} with an empty and
-	 * with a null array of elements: the result holds the elements of the existing array
+	 * The cases of {@link ArrayExtensions#getLastIndex(Object[])} and of the methods
+	 * {@code getLastIndex} of the primitive types
+	 *
+	 * @return the cases
 	 */
-	@Test
-	public void testConcatenateWithoutElements()
+	static Stream<LastIndex> lastIndexes()
 	{
-		final Integer[] expected = { 1, 2, 3 };
-		final Integer[] existingArray = { 1, 2, 3 };
-		assertArrayEquals(expected, ArrayExtensions.concatenate(existingArray, new Integer[0]));
-		assertArrayEquals(expected, ArrayExtensions.concatenate(existingArray, null));
+		return Stream.of(
+			lastIndexesOf("Object[]",
+				() -> ArrayExtensions.getLastIndex(new Integer[] { 1, 2, 3, 4, 5, 6, 7, 8, 9 }), 8,
+				() -> ArrayExtensions.getLastIndex(new Integer[0]),
+				() -> ArrayExtensions.getLastIndex((Integer[])null)),
+			lastIndexesOf("int[]",
+				() -> ArrayExtensions.getLastIndex(new int[] { 1, 2, 3, 4, 5, 6, 7, 8, 9 }), 8,
+				() -> ArrayExtensions.getLastIndex(new int[0]),
+				() -> ArrayExtensions.getLastIndex((int[])null)),
+			lastIndexesOf("boolean[]",
+				() -> ArrayExtensions.getLastIndex(new boolean[] { true, true, false }), 2,
+				() -> ArrayExtensions.getLastIndex(new boolean[0]),
+				() -> ArrayExtensions.getLastIndex((boolean[])null)),
+			lastIndexesOf("byte[]",
+				() -> ArrayExtensions.getLastIndex(
+					new byte[] { -84, -19, 0, 5, 116, 0, 7, 70, 111, 111, 32, 98, 97 }),
+				12, () -> ArrayExtensions.getLastIndex(new byte[0]),
+				() -> ArrayExtensions.getLastIndex((byte[])null)),
+			lastIndexesOf("char[]",
+				() -> ArrayExtensions.getLastIndex(new char[] { 'f', 'o', 'o' }), 2,
+				() -> ArrayExtensions.getLastIndex(new char[0]),
+				() -> ArrayExtensions.getLastIndex((char[])null)),
+			lastIndexesOf("double[]",
+				() -> ArrayExtensions.getLastIndex(new double[] { 1.1D, 2.1D, 3.1D }), 2,
+				() -> ArrayExtensions.getLastIndex(new double[0]),
+				() -> ArrayExtensions.getLastIndex((double[])null)),
+			lastIndexesOf("float[]",
+				() -> ArrayExtensions.getLastIndex(new float[] { 1.0F, 2.0F, 3.0F }), 2,
+				() -> ArrayExtensions.getLastIndex(new float[0]),
+				() -> ArrayExtensions.getLastIndex((float[])null)),
+			lastIndexesOf("long[]", () -> ArrayExtensions.getLastIndex(new long[] { 1L, 2L, 3L }),
+				2, () -> ArrayExtensions.getLastIndex(new long[0]),
+				() -> ArrayExtensions.getLastIndex((long[])null)),
+			lastIndexesOf("short[]", () -> ArrayExtensions.getLastIndex(new short[] { 1, 2, 3 }), 2,
+				() -> ArrayExtensions.getLastIndex(new short[0]),
+				() -> ArrayExtensions.getLastIndex((short[])null)))
+			.flatMap(Function.identity());
 	}
 
 	/**
-	 * Test the method {@link ArrayExtensions#concatenate(Object[], Object[])} where the second
-	 * array is null or empty, or the first array is null: the result is a given array itself, not a
-	 * copy of it. Only with elements in the second array and a first array that is not null is the
-	 * result a new array
+	 * Test for method {@link ArrayExtensions#getLastIndex(Object[])} and the methods
+	 * {@code getLastIndex} of the primitive types: the length minus one, -1 for an empty array and
+	 * for null
+	 *
+	 * @param lastIndex
+	 *            the call and the last index
 	 */
-	@Test
-	public void testConcatenateReturnsAGivenArrayItself()
+	@ParameterizedTest(name = "{0}")
+	@MethodSource("lastIndexes")
+	public void testGetLastIndex(final LastIndex lastIndex)
 	{
-		final Integer[] existingArray = { 1, 2, 3 };
-		final Integer[] emptyArray = new Integer[0];
-		assertSame(existingArray, ArrayExtensions.concatenate(existingArray, emptyArray));
-		assertSame(existingArray, ArrayExtensions.concatenate(existingArray, null));
-		assertSame(emptyArray, ArrayExtensions.concatenate(emptyArray, null));
-		assertNull(ArrayExtensions.concatenate(null, emptyArray));
-		assertSame(existingArray, ArrayExtensions.concatenate(null, existingArray));
-		assertNotSame(existingArray, ArrayExtensions.concatenate(emptyArray, existingArray));
+		assertEquals(lastIndex.expected(), lastIndex.call().getAsInt());
+	}
+
+	/**
+	 * Test for method {@link ArrayExtensions#arraycopyWithSystem(Object[], Object[])}: the elements
+	 * of the source in the destination, which is returned; null for a null source
+	 *
+	 * @param description
+	 *            the name of the case
+	 * @param source
+	 *            the source, may be null
+	 * @param destination
+	 *            the destination
+	 * @param expected
+	 *            the returned array, or null if it returns null
+	 */
+	@ParameterizedTest(name = "{0}", quoteTextArguments = false)
+	@MethodSource("arraycopies")
+	public void testArraycopyWithSystem(final String description, final Integer[] source,
+		final Integer[] destination, final Integer[] expected)
+	{
+		final Integer[] actual = ArrayExtensions.arraycopyWithSystem(source, destination);
+		assertArrayEquals(expected, actual);
+		if (actual != null)
+		{
+			assertSame(destination, actual);
+		}
+	}
+
+	/**
+	 * The cases of {@link #testArraycopyWithSystem(String, Integer[], Integer[], Integer[])}
+	 *
+	 * @return the name of the case, the source, the destination and the returned array
+	 */
+	static Stream<Arguments> arraycopies()
+	{
+		return Stream.of(
+			Arguments.of("1 to 9 into a destination of the same length: the destination with them",
+				new Integer[] { 1, 2, 3, 4, 5, 6, 7, 8, 9 }, new Integer[9],
+				new Integer[] { 1, 2, 3, 4, 5, 6, 7, 8, 9 }),
+			Arguments.of("1, 2 into the longer 9, 9, 9: the destination 1, 2, 9",
+				new Integer[] { 1, 2 }, new Integer[] { 9, 9, 9 }, new Integer[] { 1, 2, 9 }),
+			Arguments.of("a null source: null", null, new Integer[9], null));
+	}
+
+	/**
+	 * A search for an element in an array, and where it is
+	 *
+	 * @param description
+	 *            the name of the case
+	 * @param array
+	 *            the array
+	 * @param element
+	 *            the element, may be null
+	 * @param index
+	 *            the index of the element, -1 if it is not in the array
+	 */
+	record Search(String description, Object[] array, Object element, int index) {
+		@Override
+		public String toString()
+		{
+			return description;
+		}
+	}
+
+	/**
+	 * The cases of {@link #testIndexOfGetIndexAndContains(Search)}
+	 *
+	 * @return the cases
+	 */
+	static Stream<Search> searches()
+	{
+		final String[] numbers = { "1", "2", "3", "4", "5", "6", "7" };
+		final String[] empty = { };
+		return Stream.of(new Search("7, the last of 1 to 7: 6", numbers, "7", 6),
+			new Search("1, the first of 1 to 7: 0", numbers, "1", 0),
+			new Search("8, not in 1 to 7: -1", numbers, "8", -1),
+			new Search("null, not in 1 to 7: -1", numbers, null, -1),
+			new Search("2, twice in 1, 2, 2: 1, the first", new String[] { "1", "2", "2" }, "2", 1),
+			new Search("null in 1, null: 1", new String[] { "1", null }, null, 1),
+			new Search("7 in an empty array: -1", empty, "7", -1),
+			new Search("null in an empty array: -1", empty, null, -1),
+			new Search("the Integer 8 in an empty String array: -1", empty, 8, -1));
+	}
+
+	/**
+	 * Test for the methods {@link ArrayExtensions#indexOf(Object[], Object)},
+	 * {@link ArrayExtensions#getIndex(Object[], Object)} and
+	 * {@link ArrayExtensions#contains(Object[], Object)}: the index of the first occurrence, and
+	 * contained if and only if there is one
+	 *
+	 * @param search
+	 *            the array, the element and its index
+	 */
+	@ParameterizedTest(name = "{0}")
+	@MethodSource("searches")
+	public void testIndexOfGetIndexAndContains(final Search search)
+	{
+		assertEquals(search.index(), ArrayExtensions.indexOf(search.array(), search.element()),
+			"indexOf");
+		assertEquals(search.index(), ArrayExtensions.getIndex(search.array(), search.element()),
+			"getIndex");
+		assertEquals(search.index() != -1,
+			ArrayExtensions.contains(search.array(), search.element()), "contains");
+	}
+
+	/**
+	 * Test for method {@link ArrayExtensions#containsAtLeastOne(Object[], Object...)}
+	 *
+	 * @param description
+	 *            the name of the case
+	 * @param array
+	 *            the array
+	 * @param elements
+	 *            the elements to search
+	 * @param expected
+	 *            true if at least one of the elements is in the array
+	 */
+	@ParameterizedTest(name = "{0}", quoteTextArguments = false)
+	@MethodSource("containsAtLeastOne")
+	public void testContainsAtLeastOne(final String description, final Object[] array,
+		final Object[] elements, final boolean expected)
+	{
+		assertEquals(expected, ArrayExtensions.containsAtLeastOne(array, elements));
+	}
+
+	/**
+	 * The cases of {@link #testContainsAtLeastOne(String, Object[], Object[], boolean)}
+	 *
+	 * @return the name of the case, the array, the elements and the answer
+	 */
+	static Stream<Arguments> containsAtLeastOne()
+	{
+		final String[] numbers = { "1", "2", "3", "4", "5", "6", "7" };
+		final String[] empty = { };
+		return Stream.of(
+			Arguments.of("7 or 6 in 1 to 7, both in it: true", numbers, new String[] { "7", "6" },
+				true),
+			Arguments.of("8 or 7 in 1 to 7, the second in it: true", numbers,
+				new String[] { "8", "7" }, true),
+			Arguments.of("8 or 9 in 1 to 7, neither in it: false", numbers,
+				new String[] { "8", "9" }, false),
+			Arguments.of("no element in 1 to 7: false", numbers, new String[0], false),
+			Arguments.of("7 in an empty array: false", empty, new String[] { "7" }, false),
+			Arguments.of("the Integer 8 in an empty array: false", empty, new Object[] { 8 },
+				false));
+	}
+
+	/**
+	 * An array and its first and last element
+	 *
+	 * @param description
+	 *            the name of the case
+	 * @param array
+	 *            the array, may be null
+	 * @param first
+	 *            the first element, null if there is none
+	 * @param last
+	 *            the last element, null if there is none
+	 */
+	record Ends(String description, String[] array, String first, String last) {
+		@Override
+		public String toString()
+		{
+			return description;
+		}
+	}
+
+	/**
+	 * The cases of {@link #testFirstAndLast(Ends)}
+	 *
+	 * @return the cases
+	 */
+	static Stream<Ends> ends()
+	{
+		return Stream.of(
+			new Ends("1 to 7: 1 and 7", new String[] { "1", "2", "3", "4", "5", "6", "7" }, "1",
+				"7"),
+			new Ends("a single element: it, first and last", new String[] { "x" }, "x", "x"),
+			new Ends("an empty array: none", new String[0], null, null),
+			new Ends("null: none", null, null, null));
+	}
+
+	/**
+	 * Test for the methods {@link ArrayExtensions#getFirst(Object[])},
+	 * {@link ArrayExtensions#getFirstElement(Object[])}, {@link ArrayExtensions#getLast(Object[])}
+	 * and {@link ArrayExtensions#getLastElement(Object[])}: the first and the last element, null or
+	 * an empty {@link Optional} for an empty array and for null
+	 *
+	 * @param ends
+	 *            the array and its first and last element
+	 */
+	@ParameterizedTest(name = "{0}")
+	@MethodSource("ends")
+	public void testFirstAndLast(final Ends ends)
+	{
+		assertEquals(ends.first(), ArrayExtensions.getFirst(ends.array()), "getFirst");
+		assertEquals(Optional.ofNullable(ends.first()),
+			ArrayExtensions.getFirstElement(ends.array()), "getFirstElement");
+		assertEquals(ends.last(), ArrayExtensions.getLast(ends.array()), "getLast");
+		assertEquals(Optional.ofNullable(ends.last()), ArrayExtensions.getLastElement(ends.array()),
+			"getLastElement");
+	}
+
+	/**
+	 * Test for the methods {@link ArrayExtensions#isFirst(Object[], Object)} and
+	 * {@link ArrayExtensions#isLast(Object[], Object)}
+	 *
+	 * @param description
+	 *            the name of the case
+	 * @param array
+	 *            the array, its elements separated by a space
+	 * @param element
+	 *            the element, may be null
+	 * @param first
+	 *            the answer of isFirst
+	 * @param last
+	 *            the answer of isLast
+	 */
+	@ParameterizedTest(name = "{0}", quoteTextArguments = false)
+	@CsvSource({ "1 in 1 to 7: first, 1 2 3 4 5 6 7, 1, true, false",
+			"7 in 1 to 7: last, 1 2 3 4 5 6 7, 7, false, true",
+			"4 in 1 to 7: neither, 1 2 3 4 5 6 7, 4, false, false",
+			"8 not in 1 to 7: neither, 1 2 3 4 5 6 7, 8, false, false",
+			"null not in 1 to 7: neither, 1 2 3 4 5 6 7, , false, false",
+			"x alone: first and last, x, x, true, true" })
+	public void testIsFirstAndIsLast(final String description, final String array,
+		final String element, final boolean first, final boolean last)
+	{
+		final String[] elements = array.split(" ");
+		assertEquals(first, ArrayExtensions.isFirst(elements, element), "isFirst");
+		assertEquals(last, ArrayExtensions.isLast(elements, element), "isLast");
+	}
+
+	/**
+	 * An element of an array and its neighbours, as the methods that look for the next and the
+	 * previous element find them: {@link ArrayExtensions#getNextIndex(Object[], Object)} and
+	 * {@link ArrayExtensions#getPreviousIndex(Object[], Object)} wrap around at the ends, the other
+	 * methods do not
+	 *
+	 * @param description
+	 *            the name of the case
+	 * @param array
+	 *            the array
+	 * @param element
+	 *            the element, may be null
+	 * @param nextIndex
+	 *            the answer of getNextIndex
+	 * @param previousIndex
+	 *            the answer of getPreviousIndex
+	 * @param next
+	 *            the next element, null if there is none
+	 * @param previous
+	 *            the previous element, null if there is none
+	 */
+	record Neighbours(String description, String[] array, String element, int nextIndex,
+		int previousIndex, String next, String previous) {
+		@Override
+		public String toString()
+		{
+			return description;
+		}
+	}
+
+	/**
+	 * The cases of {@link #testNeighbours(Neighbours)}, in {@link #names()}
+	 *
+	 * @return the cases
+	 */
+	static Stream<Neighbours> neighbours()
+	{
+		return Stream.of(
+			new Neighbours("Caesar, the first: next Dora, no previous, previous index wraps to 3",
+				names(), "Caesar", 1, 3, "Dora", null),
+			new Neighbours("Dora: next Emil, previous Caesar", names(), "Dora", 2, 0, "Emil",
+				"Caesar"),
+			new Neighbours("Emil: next Anton, previous Dora", names(), "Emil", 3, 1, "Anton",
+				"Dora"),
+			new Neighbours("Anton, the last: no next, next index wraps to 0, previous Emil",
+				names(), "Anton", 0, 2, null, "Emil"),
+			new Neighbours("foo, not in the array: none, -1", names(), "foo", -1, -1, null, null),
+			new Neighbours("null, not in the array: none, -1", names(), null, -1, -1, null, null),
+			new Neighbours("x alone: none, both indexes wrap to 0", new String[] { "x" }, "x", 0, 0,
+				null, null),
+			new Neighbours("Anton in an empty array: none, -1", new String[0], "Anton", -1, -1,
+				null, null),
+			new Neighbours("null in an empty array: none, -1", new String[0], null, -1, -1, null,
+				null));
+	}
+
+	/**
+	 * Test for the methods {@link ArrayExtensions#getNextIndex(Object[], Object)},
+	 * {@link ArrayExtensions#getPreviousIndex(Object[], Object)},
+	 * {@link ArrayExtensions#hasNext(Object[], Object)},
+	 * {@link ArrayExtensions#hasPrevious(Object[], Object)},
+	 * {@link ArrayExtensions#getNextElement(Object[], Object)} and
+	 * {@link ArrayExtensions#getPreviousElement(Object[], Object)}
+	 *
+	 * @param neighbours
+	 *            the array, the element and its neighbours
+	 */
+	@ParameterizedTest(name = "{0}")
+	@MethodSource("neighbours")
+	public void testNeighbours(final Neighbours neighbours)
+	{
+		final String[] array = neighbours.array();
+		final String element = neighbours.element();
+		assertEquals(neighbours.nextIndex(), ArrayExtensions.getNextIndex(array, element),
+			"getNextIndex");
+		assertEquals(neighbours.previousIndex(), ArrayExtensions.getPreviousIndex(array, element),
+			"getPreviousIndex");
+		assertEquals(neighbours.next() != null, ArrayExtensions.hasNext(array, element), "hasNext");
+		assertEquals(neighbours.previous() != null, ArrayExtensions.hasPrevious(array, element),
+			"hasPrevious");
+		assertEquals(Optional.ofNullable(neighbours.next()),
+			ArrayExtensions.getNextElement(array, element), "getNextElement");
+		assertEquals(Optional.ofNullable(neighbours.previous()),
+			ArrayExtensions.getPreviousElement(array, element), "getPreviousElement");
+	}
+
+	/**
+	 * Test for the methods {@link ArrayExtensions#getNextIndexes(Object[], Object, int)} and
+	 * {@link ArrayExtensions#getPreviousIndexes(Object[], Object, int)} on 1 to 7, which go on from
+	 * index to index as {@link ArrayExtensions#getNextIndex(Object[], Object)} and
+	 * {@link ArrayExtensions#getPreviousIndex(Object[], Object)} do, around the ends
+	 *
+	 * @param description
+	 *            the name of the case
+	 * @param array
+	 *            the array, its elements separated by a space, '' for an empty one
+	 * @param element
+	 *            the element, may be null
+	 * @param count
+	 *            the count of indexes
+	 * @param next
+	 *            the next indexes, separated by a space, '' for none, null if there are none
+	 * @param previous
+	 *            the previous indexes, the same way
+	 */
+	@ParameterizedTest(name = "{0}", quoteTextArguments = false)
+	@CsvSource(value = {
+			"from 7, the last, 2 indexes: next 0 1, previous 5 4 | 1 2 3 4 5 6 7 | 7 | 2 | 0 1 | 5 4",
+			"from 1, the first, 2 indexes: next 1 2, previous 6 5 | 1 2 3 4 5 6 7 | 1 | 2 | 1 2 | 6 5",
+			"from 7, 9 indexes, more than the length: around the ends again | 1 2 3 4 5 6 7 | 7 | 9 | 0 1 2 3 4 5 6 0 1 | 5 4 3 2 1 0 6 5 4",
+			"from 7, 0 indexes: none | 1 2 3 4 5 6 7 | 7 | 0 | '' | ''",
+			"from 8, not in the array: null | 1 2 3 4 5 6 7 | 8 | 2 | | ",
+			"from null: null | 1 2 3 4 5 6 7 | | 2 | | ",
+			"from 7 in an empty array: null | '' | 7 | 2 | | ",
+			"from null in an empty array: null | '' | | 2 | | " }, delimiter = '|')
+	public void testGetNextAndPreviousIndexes(final String description, final String array,
+		final String element, final int count, final String next, final String previous)
+	{
+		final String[] elements = elements(array);
+		assertArrayEquals(indexes(next), ArrayExtensions.getNextIndexes(elements, element, count),
+			"getNextIndexes");
+		assertArrayEquals(indexes(previous),
+			ArrayExtensions.getPreviousIndexes(elements, element, count), "getPreviousIndexes");
+	}
+
+	/**
+	 * The indexes of a row of {@link #testGetNextAndPreviousIndexes}
+	 *
+	 * @param indexes
+	 *            the indexes, separated by a space, may be empty or null
+	 * @return the indexes, null for null
+	 */
+	private static int[] indexes(final String indexes)
+	{
+		if (indexes == null)
+		{
+			return null;
+		}
+		return indexes.isEmpty()
+			? new int[0]
+			: Arrays.stream(indexes.split(" ")).mapToInt(Integer::parseInt).toArray();
+	}
+
+	/**
+	 * Test for method {@link ArrayExtensions#intersection(Object[], Object[])}: the elements of the
+	 * first array that are in the other, in the order of the first, in an array of its component
+	 * type
+	 *
+	 * @param description
+	 *            the name of the case
+	 * @param one
+	 *            the first array, its elements separated by a space
+	 * @param other
+	 *            the other array, the same way, '' for an empty one
+	 * @param expected
+	 *            the intersection, the same way
+	 */
+	@ParameterizedTest(name = "{0}", quoteTextArguments = false)
+	@CsvSource(value = {
+			"all but Anton in common | Anton Alex Berta Brad Caesar Leonardo | Alex Berta Brad Caesar Leonardo | Alex Berta Brad Caesar Leonardo",
+			"in the order of the first array | c b a | a b | b a",
+			"nothing in common: empty | a b | c | ''",
+			"an empty other array: empty | a b | '' | ''",
+			"an empty first array: empty | '' | a b | ''" }, delimiter = '|')
+	public void testIntersection(final String description, final String one, final String other,
+		final String expected)
+	{
+		final String[] actual = ArrayExtensions.intersection(elements(one), elements(other));
+		assertEquals(String[].class, actual.getClass());
+		assertArrayEquals(elements(expected), actual);
+	}
+
+	/**
+	 * The elements of an array in a row of a {@link CsvSource}
+	 *
+	 * @param elements
+	 *            the elements, separated by a space, may be empty
+	 * @return the array of the elements
+	 */
+	private static String[] elements(final String elements)
+	{
+		return elements.isEmpty() ? new String[0] : elements.split(" ");
+	}
+
+	/**
+	 * A call of one of the methods that remove elements from an array and give a new one, and what
+	 * it gives
+	 *
+	 * @param description
+	 *            the name of the case
+	 * @param array
+	 *            makes the given array
+	 * @param removal
+	 *            the call with the given array
+	 * @param expected
+	 *            the new array, of the component type of the given array
+	 */
+	record Removal(String description, Supplier<Object[]> array, UnaryOperator<Object[]> removal,
+		Object[] expected) {
+		@Override
+		public String toString()
+		{
+			return description;
+		}
+	}
+
+	/**
+	 * A case of {@link ArrayExtensions#removeFromStart(Object[], Object[])} or
+	 * {@link ArrayExtensions#removeFromEnd(Object[], Object[])}, which also checks that the prefix
+	 * or the suffix is not changed
+	 *
+	 * @param description
+	 *            the name of the case
+	 * @param array
+	 *            makes the given array
+	 * @param affix
+	 *            makes the prefix or suffix
+	 * @param method
+	 *            removeFromStart or removeFromEnd
+	 * @param expected
+	 *            the new array
+	 * @return the case
+	 */
+	static Removal affix(final String description, final Supplier<Object[]> array,
+		final Supplier<Object[]> affix, final BinaryOperator<Object[]> method,
+		final Object[] expected)
+	{
+		return new Removal(description, array, given -> {
+			final Object[] givenAffix = affix.get();
+			final Object[] result = method.apply(given, givenAffix);
+			assertArrayEquals(affix.get(), givenAffix, "the prefix or suffix is changed");
+			return result;
+		}, expected);
+	}
+
+	/**
+	 * The cases of {@link ArrayExtensions#removeFromStart(Object[], Object[])} and
+	 * {@link ArrayExtensions#removeFromEnd(Object[], Object[])} (#64, #76), of
+	 * {@link ArrayExtensions#removeAll(Object[], Object[])}, of
+	 * {@link ArrayExtensions#removeFirst(Object[])} and
+	 * {@link ArrayExtensions#removeLast(Object[])}, and of
+	 * {@link ArrayExtensions#remove(Object[], int...)} (#63)
+	 *
+	 * @return the cases
+	 */
+	static Stream<Removal> removals()
+	{
+		final BinaryOperator<Object[]> start = ArrayExtensions::removeFromStart;
+		final BinaryOperator<Object[]> end = ArrayExtensions::removeFromEnd;
+		return Stream.of(
+			affix("removeFromStart, 1 to 9 without 1, 2, 3: 4 to 9",
+				() -> new Integer[] { 1, 2, 3, 4, 5, 6, 7, 8, 9 }, () -> new Integer[] { 1, 2, 3 },
+				start, new Integer[] { 4, 5, 6, 7, 8, 9 }),
+			affix("removeFromEnd, 1 to 9 without 7, 8, 9: 1 to 6",
+				() -> new Integer[] { 1, 2, 3, 4, 5, 6, 7, 8, 9 }, () -> new Integer[] { 7, 8, 9 },
+				end, new Integer[] { 1, 2, 3, 4, 5, 6 }),
+			affix("removeFromStart, the Number[] 1, 2.5, 3 without 1: the Number[] 2.5, 3 (#64)",
+				() -> new Number[] { 1, 2.5, 3 }, () -> new Number[] { 1 }, start,
+				new Number[] { 2.5, 3 }),
+			affix("removeFromEnd, the Number[] 1, 2.5, 3 without 3: the Number[] 1, 2.5",
+				() -> new Number[] { 1, 2.5, 3 }, () -> new Number[] { 3 }, end,
+				new Number[] { 1, 2.5 }),
+			affix("removeFromStart, null, a, b without null: a, b (#64)",
+				() -> new String[] { null, "a", "b" }, () -> new String[] { null }, start,
+				new String[] { "a", "b" }),
+			affix("removeFromStart, the Object[] a, b, c without a: the Object[] b, c (#64)",
+				() -> new Object[] { "a", "b", "c" }, () -> new Object[] { "a" }, start,
+				new Object[] { "b", "c" }),
+			affix("removeFromStart, 1, 2, 3 without 9, no prefix: a copy (#76)",
+				() -> new Integer[] { 1, 2, 3 }, () -> new Integer[] { 9 }, start,
+				new Integer[] { 1, 2, 3 }),
+			affix("removeFromEnd, 1, 2, 3 without 9, no suffix: a copy (#76)",
+				() -> new Integer[] { 1, 2, 3 }, () -> new Integer[] { 9 }, end,
+				new Integer[] { 1, 2, 3 }),
+			affix("removeFromStart, 1, 2, 3 without 1, 9, a prefix in part only: a copy (#76)",
+				() -> new Integer[] { 1, 2, 3 }, () -> new Integer[] { 1, 9 }, start,
+				new Integer[] { 1, 2, 3 }),
+			affix("removeFromEnd, 1, 2, 3 without 9, 3, a suffix in part only: a copy (#76)",
+				() -> new Integer[] { 1, 2, 3 }, () -> new Integer[] { 9, 3 }, end,
+				new Integer[] { 1, 2, 3 }),
+			affix("removeFromStart, 1 without the longer 1, 2: a copy (#76)",
+				() -> new Integer[] { 1 }, () -> new Integer[] { 1, 2 }, start,
+				new Integer[] { 1 }),
+			affix("removeFromEnd, 1 without the longer 1, 2: a copy (#76)",
+				() -> new Integer[] { 1 }, () -> new Integer[] { 1, 2 }, end, new Integer[] { 1 }),
+			affix("removeFromStart, an empty array without 1, 2, 3: a new empty array (#76)",
+				() -> new Integer[0], () -> new Integer[] { 1, 2, 3 }, start, new Integer[0]),
+			affix("removeFromStart, an empty array without 1: a new empty array (#76)",
+				() -> new Integer[0], () -> new Integer[] { 1 }, start, new Integer[0]),
+			affix("removeFromEnd, an empty array without 1: a new empty array",
+				() -> new Integer[0], () -> new Integer[] { 1 }, end, new Integer[0]),
+			affix("removeFromStart, 1, 2 without an empty prefix: a copy",
+				() -> new Integer[] { 1, 2 }, () -> new Integer[0], start, new Integer[] { 1, 2 }),
+			affix("removeFromEnd, 1, 2 without an empty suffix: a copy",
+				() -> new Integer[] { 1, 2 }, () -> new Integer[0], end, new Integer[] { 1, 2 }),
+			affix("removeFromStart, 1, 2 without the whole 1, 2: empty",
+				() -> new Integer[] { 1, 2 }, () -> new Integer[] { 1, 2 }, start, new Integer[0]),
+			affix("removeFromEnd, 1, 2 without the whole 1, 2: empty", () -> new Integer[] { 1, 2 },
+				() -> new Integer[] { 1, 2 }, end, new Integer[0]),
+			affix("removeFromEnd, a, null without null: a", () -> new String[] { "a", null },
+				() -> new String[] { null }, end, new String[] { "a" }),
+			affix("removeFromStart, null, a without null: a", () -> new String[] { null, "a" },
+				() -> new String[] { null }, start, new String[] { "a" }),
+			new Removal("removeAll, 1, 2, 3, 4 without 2, 3, 4: 1",
+				() -> new String[] { "1", "2", "3", "4" },
+				array -> ArrayExtensions.removeAll(array, new String[] { "2", "3", "4" }),
+				new String[] { "1" }),
+			new Removal("removeAll, 1, 2, 2, 3 without 2: 1, 3, every 2",
+				() -> new String[] { "1", "2", "2", "3" },
+				array -> ArrayExtensions.removeAll(array, new String[] { "2" }),
+				new String[] { "1", "3" }),
+			new Removal("removeAll, 1, 2 without 9, not in it: a copy",
+				() -> new String[] { "1", "2" },
+				array -> ArrayExtensions.removeAll(array, new String[] { "9" }),
+				new String[] { "1", "2" }),
+			new Removal("removeAll, the Number[] 1, 2.5 without nothing: a Number[] copy",
+				() -> new Number[] { 1, 2.5 },
+				array -> ArrayExtensions.removeAll(array, new Number[0]), new Number[] { 1, 2.5 }),
+			new Removal("removeFirst, 1, 2, 3, 4: 2, 3, 4",
+				() -> new String[] { "1", "2", "3", "4" }, ArrayExtensions::removeFirst,
+				new String[] { "2", "3", "4" }),
+			new Removal("removeFirst, a alone: empty", () -> new String[] { "a" },
+				ArrayExtensions::removeFirst, new String[0]),
+			new Removal("removeFirst, the Number[] 1, 2.5: the Number[] 2.5",
+				() -> new Number[] { 1, 2.5 }, ArrayExtensions::removeFirst, new Number[] { 2.5 }),
+			new Removal("removeLast, 1, 2, 3, 4: 1, 2, 3",
+				() -> new String[] { "1", "2", "3", "4" }, ArrayExtensions::removeLast,
+				new String[] { "1", "2", "3" }),
+			new Removal("removeLast, a alone: empty", () -> new String[] { "a" },
+				ArrayExtensions::removeLast, new String[0]),
+			removal("remove, 1, 2, 3, 4 without 2, 3: 1, 2",
+				() -> new String[] { "1", "2", "3", "4" }, new int[] { 2, 3 },
+				new String[] { "1", "2" }),
+			removal("remove, 1 to 6 without 5, 3, 1, unsorted: 1, 3, 5",
+				() -> new String[] { "1", "2", "3", "4", "5", "6" }, new int[] { 5, 3, 1 },
+				new String[] { "1", "3", "5" }),
+			removal("remove, 1 to 6 without 3, 5, 1, unsorted: 1, 3, 5",
+				() -> new String[] { "1", "2", "3", "4", "5", "6" }, new int[] { 3, 5, 1 },
+				new String[] { "1", "3", "5" }),
+			removal("remove, 0, 1, 2, 3 without 2, 0: 1, 3, the indexes stay unsorted (#63)",
+				() -> new Integer[] { 0, 1, 2, 3 }, new int[] { 2, 0 }, new Integer[] { 1, 3 }),
+			removal("remove, 0, 1, 2, 3 without 1 twice: 0, 2, 3, the element at 1 once (#63)",
+				() -> new Integer[] { 0, 1, 2, 3 }, new int[] { 1, 1 }, new Integer[] { 0, 2, 3 }),
+			removal("remove, 0, 1, 2, 3 without the last index 3 twice: 0, 1, 2 (#63)",
+				() -> new Integer[] { 0, 1, 2, 3 }, new int[] { 3, 3 }, new Integer[] { 0, 1, 2 }),
+			removal("remove, the Number[] 1, 2.5 without any index: a Number[] copy",
+				() -> new Number[] { 1, 2.5 }, new int[0], new Number[] { 1, 2.5 }));
+	}
+
+	/**
+	 * A case of {@link ArrayExtensions#remove(Object[], int...)}, which also checks that the
+	 * indexes array of the caller is not changed (#63)
+	 *
+	 * @param description
+	 *            the name of the case
+	 * @param array
+	 *            makes the given array
+	 * @param indexes
+	 *            the indexes to remove
+	 * @param expected
+	 *            the new array
+	 * @return the case
+	 */
+	static Removal removal(final String description, final Supplier<Object[]> array,
+		final int[] indexes, final Object[] expected)
+	{
+		return new Removal(description, array, given -> {
+			final int[] givenIndexes = indexes.clone();
+			final Object[] result = ArrayExtensions.remove(given, givenIndexes);
+			assertArrayEquals(indexes, givenIndexes, "the indexes are changed");
+			return result;
+		}, expected);
+	}
+
+	/**
+	 * Test for the methods {@link ArrayExtensions#removeFromStart(Object[], Object[])},
+	 * {@link ArrayExtensions#removeFromEnd(Object[], Object[])},
+	 * {@link ArrayExtensions#removeAll(Object[], Object[])},
+	 * {@link ArrayExtensions#removeFirst(Object[])}, {@link ArrayExtensions#removeLast(Object[])}
+	 * and {@link ArrayExtensions#remove(Object[], int...)}: the result is a new array of the
+	 * component type of the given array, and the given array is not changed
+	 *
+	 * @param removal
+	 *            the call, the given array and the new one
+	 */
+	@ParameterizedTest(name = "{0}")
+	@MethodSource("removals")
+	public void testRemove(final Removal removal)
+	{
+		final Object[] array = removal.array().get();
+		final Object[] actual = removal.removal().apply(array);
+		assertArrayEquals(removal.expected(), actual);
+		assertEquals(array.getClass(), actual.getClass(), "the component type");
+		assertNotSame(array, actual);
+		assertArrayEquals(removal.array().get(), array, "the given array is changed");
+	}
+
+	/**
+	 * A call of one of the methods that remove elements from an array, which it refuses, and the
+	 * exception it throws
+	 *
+	 * @param description
+	 *            the name of the case
+	 * @param array
+	 *            makes the given array, may make null
+	 * @param removal
+	 *            the call with the given array
+	 * @param exception
+	 *            the class of the exception
+	 * @param message
+	 *            the message of the exception, null if the case does not check it
+	 */
+	record RefusedRemoval(String description, Supplier<Object[]> array,
+		UnaryOperator<Object[]> removal, Class<? extends RuntimeException> exception,
+		String message) {
+		@Override
+		public String toString()
+		{
+			return description;
+		}
+	}
+
+	/**
+	 * The cases of {@link #testRemoveRefused(RefusedRemoval)}
+	 *
+	 * @return the cases
+	 */
+	static Stream<RefusedRemoval> refusedRemovals()
+	{
+		final Supplier<Object[]> zeroToThree = () -> new Integer[] { 0, 1, 2, 3 };
+		return Stream.of(
+			new RefusedRemoval("removeFirst, an empty array: Index 0 out of bounds (#63)",
+				() -> new String[0], ArrayExtensions::removeFirst, IndexOutOfBoundsException.class,
+				"Index 0 out of bounds for length 0"),
+			new RefusedRemoval("removeLast, an empty array: Index -1 out of bounds (#63)",
+				() -> new String[0], ArrayExtensions::removeLast, IndexOutOfBoundsException.class,
+				"Index -1 out of bounds for length 0"),
+			new RefusedRemoval("remove, 0, 1, 2, 3 without 1 and 4: Index 4 out of bounds",
+				zeroToThree, array -> ArrayExtensions.remove(array, 1, 4),
+				IndexOutOfBoundsException.class, "Index 4 out of bounds for length 4"),
+			new RefusedRemoval("remove, 0, 1, 2, 3 without -1: Index -1 out of bounds", zeroToThree,
+				array -> ArrayExtensions.remove(array, -1), IndexOutOfBoundsException.class,
+				"Index -1 out of bounds for length 4"),
+			new RefusedRemoval(
+				"remove, 0, 1, 2, 3 without -1 and 2: the length of the given array, 4 (#76)",
+				zeroToThree, array -> ArrayExtensions.remove(array, -1, 2),
+				IndexOutOfBoundsException.class, "Index -1 out of bounds for length 4"),
+			new RefusedRemoval("removeFromEnd, a null array: IllegalArgumentException (#76)",
+				() -> null, array -> ArrayExtensions.removeFromEnd(array, new Integer[] { 1 }),
+				IllegalArgumentException.class, null),
+			new RefusedRemoval("removeFromEnd, a null suffix: IllegalArgumentException (#76)",
+				() -> new Integer[] { 1 }, array -> ArrayExtensions.removeFromEnd(array, null),
+				IllegalArgumentException.class, null),
+			new RefusedRemoval("removeFromStart, a null array: IllegalArgumentException",
+				() -> null, array -> ArrayExtensions.removeFromStart(array, new Integer[] { 1 }),
+				IllegalArgumentException.class, null),
+			new RefusedRemoval("removeFromStart, a null prefix: IllegalArgumentException",
+				() -> new Integer[] { 1 }, array -> ArrayExtensions.removeFromStart(array, null),
+				IllegalArgumentException.class, null));
+	}
+
+	/**
+	 * Test for the methods {@link ArrayExtensions#removeFirst(Object[])},
+	 * {@link ArrayExtensions#removeLast(Object[])},
+	 * {@link ArrayExtensions#remove(Object[], int...)},
+	 * {@link ArrayExtensions#removeFromStart(Object[], Object[])} and
+	 * {@link ArrayExtensions#removeFromEnd(Object[], Object[])} with an argument they refuse: the
+	 * exception, its message, and the given array is not changed
+	 *
+	 * @param removal
+	 *            the call and the exception
+	 */
+	@ParameterizedTest(name = "{0}")
+	@MethodSource("refusedRemovals")
+	public void testRemoveRefused(final RefusedRemoval removal)
+	{
+		final Object[] array = removal.array().get();
+		final RuntimeException exception = assertThrows(removal.exception(),
+			() -> removal.removal().apply(array));
+		if (removal.message() != null)
+		{
+			assertEquals(removal.message(), exception.getMessage());
+		}
+		assertArrayEquals(removal.array().get(), array, "the given array is changed");
+	}
+
+	/**
+	 * Test for method {@link ArrayExtensions#splitInChunks(byte[], int)}: chunks of the chunk size
+	 * in the order of the bytes, the last one with the rest
+	 *
+	 * @param description
+	 *            the name of the case
+	 * @param text
+	 *            the text whose bytes are split
+	 * @param chunkSize
+	 *            the chunk size
+	 * @param chunks
+	 *            the chunks, as texts separated by a '|'
+	 */
+	@ParameterizedTest(name = "{0}", quoteTextArguments = false)
+	@CsvSource(value = {
+			"56 bytes in chunks of 5: 12, the last of 1 byte; Lorem ipsum dolor sit amet, consectetur adipiscing elit.; 5; Lorem| ipsu|m dol|or si|t ame|t, co|nsect|etur |adipi|scing| elit|.",
+			"6 bytes in chunks of 3, a multiple: 2 full ones; abcdef; 3; abc|def",
+			"5 bytes in chunks of 2: 3, the last of 1 byte; abcde; 2; ab|cd|e",
+			"5 bytes in chunks of 9, more than the length: 1; abcde; 9; abcde",
+			"2 bytes in chunks of 1: 2; ab; 1; a|b" }, delimiter = ';')
+	public void testSplitInChunks(final String description, final String text, final int chunkSize,
+		final String chunks)
+	{
+		final byte[][] expected = Arrays.stream(chunks.split("\\|", -1))
+			.map(chunk -> chunk.getBytes(StandardCharsets.US_ASCII)).toArray(byte[][]::new);
+		assertArrayEquals(expected,
+			ArrayExtensions.splitInChunks(text.getBytes(StandardCharsets.US_ASCII), chunkSize));
 	}
 
 	/**
