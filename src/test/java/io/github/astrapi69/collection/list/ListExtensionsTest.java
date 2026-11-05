@@ -852,6 +852,7 @@ public class ListExtensionsTest
 	@CsvSource(value = {
 			"Anton, the last, to 0: Anton first | Leonidas Berta Caesar Dora Emil Anton | Anton | 0 | Anton Leonidas Berta Caesar Dora Emil | false",
 			"Anton to 2 | Leonidas Berta Caesar Dora Emil Anton | Anton | 2 | Leonidas Berta Anton Caesar Dora Emil | false",
+			"Anton, the first, to 2 | Anton Leonidas Berta Caesar Dora Emil | Anton | 2 | Leonidas Berta Anton Caesar Dora Emil | false",
 			"Berta to 5, the last index: Berta last | Leonidas Berta Caesar Dora Emil Anton | Berta | 5 | Leonidas Caesar Dora Emil Anton Berta | false",
 			"Berta to 6, the size: Berta last | Leonidas Berta Caesar Dora Emil Anton | Berta | 6 | Leonidas Caesar Dora Emil Anton Berta | false",
 			"Berta to 8, beyond the size: Berta last | Leonidas Berta Caesar Dora Emil Anton | Berta | 8 | Leonidas Caesar Dora Emil Anton Berta | false",
