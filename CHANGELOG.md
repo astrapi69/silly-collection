@@ -1,6 +1,16 @@
 ## Change log
 ----------------------
 
+Version 29.1-SNAPSHOT
+-------------
+
+FIXED:
+
+- `IndexableSet` declares its public no-argument constructor with a Javadoc comment, so javadoc prints no warning;
+  29.0 had the compiler's default constructor, about which the javadoc of JDK 25 warns ("use of default constructor,
+  which does not provide a comment"), and the release gate of 29.0 did not notice it, as it searched the German
+  output for "warning". The binary interface stays the same, as the default constructor was public too (#96)
+
 Version 29.0
 -------------
 
