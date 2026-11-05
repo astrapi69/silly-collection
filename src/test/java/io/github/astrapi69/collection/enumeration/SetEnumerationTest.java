@@ -24,23 +24,24 @@
  */
 package io.github.astrapi69.collection.enumeration;
 
+import static org.junit.jupiter.api.Assertions.assertEquals;
 import static org.junit.jupiter.api.Assertions.assertFalse;
-import static org.junit.jupiter.api.Assertions.assertNotNull;
+import static org.junit.jupiter.api.Assertions.assertThrows;
 import static org.junit.jupiter.api.Assertions.assertTrue;
 
 import java.util.ArrayList;
 import java.util.Enumeration;
+import java.util.HashSet;
 import java.util.List;
 import java.util.NoSuchElementException;
 import java.util.Set;
 import java.util.Vector;
 
-import org.junit.jupiter.api.Assertions;
 import org.junit.jupiter.api.Disabled;
 import org.junit.jupiter.api.Test;
+import org.junit.jupiter.params.ParameterizedTest;
+import org.junit.jupiter.params.provider.CsvSource;
 import org.meanbean.test.BeanTester;
-
-import io.github.astrapi69.collection.set.SetExtensions;
 
 /**
  * The unit test class for the class {@link SetEnumeration}.
@@ -49,169 +50,69 @@ import io.github.astrapi69.collection.set.SetExtensions;
  */
 public class SetEnumerationTest
 {
-	/** The List for the test. */
-	private final List<String> list = new ArrayList<String>()
-	{
-		/**
-		 * The serialVersionUID
-		 */
-		private static final long serialVersionUID = 1L;
 
+	/**
+	 * The elements of a row of a {@link CsvSource}
+	 *
+	 * @param elements
+	 *            the elements, separated by a space, may be empty
+	 * @return the elements
+	 */
+	static List<String> elements(final String elements)
+	{
+		return elements.isEmpty() ? List.of() : List.of(elements.split(" "));
+	}
+
+	/**
+	 * Test for the constructor and the methods {@link SetEnumeration#hasMoreElements()} and
+	 * {@link SetEnumeration#nextElement()}: the enumeration gives the elements of the set first,
+	 * then those of the given enumeration that the set does not hold, each once; hasMoreElements()
+	 * may be called more than once, nextElement() also without it, and after the last element
+	 * hasMoreElements() is false and nextElement() throws a {@link NoSuchElementException}
+	 *
+	 * @param description
+	 *            the name of the case
+	 * @param set
+	 *            the elements of the set, separated by a space, '' for an empty one
+	 * @param enumeration
+	 *            the elements of the enumeration, '' for an empty one, null for no enumeration
+	 * @param expected
+	 *            all elements the enumeration gives, those of the set first
+	 */
+	@ParameterizedTest(name = "{0}", quoteTextArguments = false)
+	@CsvSource(value = {
+			"the set and the enumeration of one to four: each once | one two three four | one two three four | one two three four",
+			"an empty set and the enumeration of one to four: the four of the enumeration | '' | one two three four | one two three four",
+			"the set a, b and the enumeration b, c: a and b, then c | a b | b c | a b c",
+			"the set a and no enumeration: a | a | | a",
+			"an empty set and no enumeration: none | '' | | ''",
+			"an empty set and an empty enumeration: none | '' | '' | ''" }, delimiter = '|')
+	public void testEnumeration(final String description, final String set,
+		final String enumeration, final String expected)
+	{
+		final Set<String> setElements = new HashSet<>(elements(set));
+		final Enumeration<String> enumerationElements = enumeration == null
+			? null
+			: new Vector<>(elements(enumeration)).elements();
+		final SetEnumeration<String> setEnumeration = new SetEnumeration<>(setElements,
+			enumerationElements);
+		final List<String> actual = new ArrayList<>();
+		final List<String> expectedElements = elements(expected);
+		if (!expectedElements.isEmpty())
 		{
-			add("one");
-			add("two");
-			add("three");
-			add("four");
+			actual.add(setEnumeration.nextElement());
 		}
-	};
-
-	/**
-	 * Test method for {@link SetEnumeration#hasMoreElements()}
-	 */
-	@Test
-	public void testHasMoreElements() throws Exception
-	{
-		Set<String> set = SetExtensions.toSet(list);
-		Enumeration<String> numbers;
-		Vector<String> numbersNames = new Vector<>(list);
-		numbers = numbersNames.elements();
-
-		SetEnumeration<String> stringSetEnumeration = new SetEnumeration<>(set, numbers);
-		assertNotNull(stringSetEnumeration);
-
-		boolean hasMoreElements = stringSetEnumeration.hasMoreElements();
-		assertTrue(hasMoreElements);
-
-		hasMoreElements = stringSetEnumeration.hasMoreElements();
-		assertTrue(hasMoreElements);
-
-		String nextElement = stringSetEnumeration.nextElement();
-		assertNotNull(nextElement);
-
-		hasMoreElements = stringSetEnumeration.hasMoreElements();
-		assertTrue(hasMoreElements);
-
-		nextElement = stringSetEnumeration.nextElement();
-		assertNotNull(nextElement);
-
-		hasMoreElements = stringSetEnumeration.hasMoreElements();
-		assertTrue(hasMoreElements);
-
-		nextElement = stringSetEnumeration.nextElement();
-		assertNotNull(nextElement);
-
-		hasMoreElements = stringSetEnumeration.hasMoreElements();
-		assertTrue(hasMoreElements);
-
-		nextElement = stringSetEnumeration.nextElement();
-		assertNotNull(nextElement);
-
-		hasMoreElements = stringSetEnumeration.hasMoreElements();
-		assertFalse(hasMoreElements);
-	}
-
-	/**
-	 * Test method for {@link SetEnumeration#hasMoreElements()} with null value from the
-	 * {@link Enumeration}
-	 */
-	@Test
-	public void testHasMoreElementsEnumerationNull() throws Exception
-	{
-		Set<String> set = SetExtensions.toSet(list);
-		set.clear();
-		Enumeration<String> numbers;
-		Vector<String> numbersNames = new Vector<>(list);
-		numbers = numbersNames.elements();
-
-		SetEnumeration<String> stringSetEnumeration = new SetEnumeration<>(set, numbers);
-		assertNotNull(stringSetEnumeration);
-
-		boolean hasMoreElements = stringSetEnumeration.hasMoreElements();
-		assertTrue(hasMoreElements);
-	}
-
-
-	/**
-	 * Test method for {@link SetEnumeration#hasMoreElements()}
-	 */
-	@Test
-	public void testHasMoreElementsThrowNoSuchElementException()
-	{
-		Set<String> set = SetExtensions.toSet(list);
-		Enumeration<String> numbers;
-		Vector<String> numbersNames = new Vector<>(list);
-		numbers = numbersNames.elements();
-
-		SetEnumeration<String> stringSetEnumeration = new SetEnumeration<>(set, numbers);
-		assertNotNull(stringSetEnumeration);
-
-		boolean hasMoreElements = stringSetEnumeration.hasMoreElements();
-		assertTrue(hasMoreElements);
-
-		Assertions.assertThrows(NoSuchElementException.class, () -> {
-			boolean hasMoreElements2 = stringSetEnumeration.hasMoreElements();
-			assertTrue(hasMoreElements2);
-
-			String nextElement = stringSetEnumeration.nextElement();
-			assertNotNull(nextElement);
-
-			hasMoreElements2 = stringSetEnumeration.hasMoreElements();
-			assertTrue(hasMoreElements2);
-
-			nextElement = stringSetEnumeration.nextElement();
-			assertNotNull(nextElement);
-
-			hasMoreElements2 = stringSetEnumeration.hasMoreElements();
-			assertTrue(hasMoreElements2);
-
-			nextElement = stringSetEnumeration.nextElement();
-			assertNotNull(nextElement);
-
-			hasMoreElements2 = stringSetEnumeration.hasMoreElements();
-			assertTrue(hasMoreElements2);
-
-			nextElement = stringSetEnumeration.nextElement();
-			assertNotNull(nextElement);
-
-			hasMoreElements2 = stringSetEnumeration.hasMoreElements();
-			assertFalse(hasMoreElements2);
-
-			nextElement = stringSetEnumeration.nextElement();
-		});
-	}
-
-	/**
-	 * Test method for {@link SetEnumeration#nextElement()}
-	 */
-	@Test
-	public void testNextElement() throws Exception
-	{
-		Set<String> set = SetExtensions.toSet(list);
-		Enumeration<String> numbers;
-		Vector<String> numbersNames = new Vector<>(list);
-		numbers = numbersNames.elements();
-
-		SetEnumeration<String> stringSetEnumeration = new SetEnumeration<>(set, numbers);
-		assertNotNull(stringSetEnumeration);
-
-		String nextElement = stringSetEnumeration.nextElement();
-		assertNotNull(nextElement);
-	}
-
-	/**
-	 * Test method for the SetEnumeration constructor
-	 */
-	@Test
-	public void testSetEnumeration() throws Exception
-	{
-		Set<String> set = SetExtensions.toSet(list);
-		Enumeration<String> numbers;
-		Vector<String> numbersNames = new Vector<>(list);
-		numbers = numbersNames.elements();
-
-		SetEnumeration<String> stringSetEnumeration = new SetEnumeration<>(set, numbers);
-		assertNotNull(stringSetEnumeration);
-
+		while (setEnumeration.hasMoreElements())
+		{
+			assertTrue(setEnumeration.hasMoreElements());
+			actual.add(setEnumeration.nextElement());
+		}
+		assertFalse(setEnumeration.hasMoreElements());
+		assertThrows(NoSuchElementException.class, setEnumeration::nextElement);
+		assertEquals(expectedElements.size(), actual.size(), "each element once");
+		assertEquals(Set.copyOf(expectedElements), Set.copyOf(actual));
+		assertEquals(setElements, Set.copyOf(actual.subList(0, setElements.size())),
+			"the elements of the set first");
 	}
 
 	/**

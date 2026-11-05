@@ -24,16 +24,14 @@
  */
 package io.github.astrapi69.collection.modification;
 
-import static org.junit.jupiter.api.Assertions.assertTrue;
+import static org.junit.jupiter.api.Assertions.assertEquals;
+import static org.junit.jupiter.api.Assertions.assertSame;
 
-import java.util.Arrays;
+import java.util.ArrayList;
 import java.util.List;
 
-import org.junit.jupiter.api.Test;
-
-import io.github.astrapi69.collection.CollectionExtensions;
-import io.github.astrapi69.collection.array.ArrayFactory;
-import io.github.astrapi69.collection.list.ListFactory;
+import org.junit.jupiter.params.ParameterizedTest;
+import org.junit.jupiter.params.provider.CsvSource;
 
 /**
  * The unit test class for the class {@link ModifiedCollections}
@@ -42,58 +40,51 @@ public class ModifiedCollectionsTest
 {
 
 	/**
-	 * Test method for
-	 * {@link ModifiedCollections#getModifiedLists(java.util.Collection, java.util.Collection)}
+	 * The elements of a row of a {@link CsvSource}
+	 *
+	 * @param elements
+	 *            the elements, separated by a space, may be empty
+	 * @return the elements
 	 */
-	@Test
-	public void testGetModifiedLists()
+	static List<String> elements(final String elements)
 	{
-		String[] previous;
-		String[] next;
-		String[] expectedadded;
-		String[] expectedremoved;
-		List<String> previousList;
-		List<String> nextList;
-		List<String> expectedaddedList;
-		List<String> expectedremovedList;
-		ModifiedCollections<String> result;
+		return elements.isEmpty() ? List.of() : List.of(elements.split(" "));
+	}
 
-		// initialize test data
-		previous = ArrayFactory.newArray("1", "2", "3", "4", "5", "6", "7");
-		next = ArrayFactory.newArray("2", "5", "6", "7", "8", "9");
-
-		expectedadded = ArrayFactory.newArray("8", "9");
-		expectedremoved = ArrayFactory.newArray("1", "3", "4");
-
-		expectedaddedList = Arrays.asList(expectedadded);
-		expectedremovedList = Arrays.asList(expectedremoved);
-
-		// new scenario...
-		previousList = ListFactory.newArrayList(Arrays.asList(previous));
-		nextList = ListFactory.newArrayList(Arrays.asList(next));
-
-		result = new ModifiedCollections<>();
-		result = result.getModifiedLists(previousList, nextList);
-
-		assertTrue(result.getRemovedElements().equals(expectedremovedList));
-		assertTrue(result.getAddedElements().equals(expectedaddedList));
-
-		// new scenario...
-		previousList = ListFactory.newArrayList(Arrays.asList(previous));
-		nextList = ListFactory.newArrayList(Arrays.asList(next));
-
-		nextList.removeAll(previousList);
-
-		assertTrue(CollectionExtensions.isEqualCollection(nextList, expectedaddedList));
-
-		// new scenario...
-		previousList = ListFactory.newArrayList(Arrays.asList(previous));
-		nextList = Arrays.asList(next);
-
-		previousList.removeAll(nextList);
-
-		assertTrue(CollectionExtensions.isEqualCollection(previousList, expectedremovedList));
-
+	/**
+	 * Test for method
+	 * {@link ModifiedCollections#getModifiedLists(java.util.Collection, java.util.Collection)}: the
+	 * elements of the next collection that the previous does not hold are added, those of the
+	 * previous that the next does not hold are removed, each in the order of its collection; the
+	 * method returns the object it is called on
+	 *
+	 * @param description
+	 *            the name of the case
+	 * @param previous
+	 *            the previous collection, the elements separated by a space
+	 * @param next
+	 *            the next collection, the same way
+	 * @param added
+	 *            the added elements, the same way
+	 * @param removed
+	 *            the removed elements, the same way
+	 */
+	@ParameterizedTest(name = "{0}", quoteTextArguments = false)
+	@CsvSource(value = {
+			"1 to 7 and 2, 5, 6, 7, 8, 9: 8, 9 added, 1, 3, 4 removed | 1 2 3 4 5 6 7 | 2 5 6 7 8 9 | 8 9 | 1 3 4",
+			"the same elements: nothing | a b | a b | '' | ''",
+			"the same elements in another order: nothing | a b | b a | '' | ''",
+			"from empty to a, b: a, b added | '' | a b | a b | ''",
+			"from a, b to empty: a, b removed | a b | '' | '' | a b" }, delimiter = '|')
+	public void testGetModifiedLists(final String description, final String previous,
+		final String next, final String added, final String removed)
+	{
+		final ModifiedCollections<String> modifiedCollections = new ModifiedCollections<>();
+		final ModifiedCollections<String> result = modifiedCollections
+			.getModifiedLists(new ArrayList<>(elements(previous)), new ArrayList<>(elements(next)));
+		assertSame(modifiedCollections, result);
+		assertEquals(elements(added), result.getAddedElements());
+		assertEquals(elements(removed), result.getRemovedElements());
 	}
 
 }
