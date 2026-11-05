@@ -1,0 +1,153 @@
+# Mutation testing with PIT, on GitHub only (#98, as astrapi69/comparator-extensions#33): several
+# PIT runs at the same time crashed the maintainer's machine on 2026-11-05, so PIT is not run
+# locally, by people or agents. A run on demand: gh workflow run mutation-testing.yml --ref
+# <branch>, or make pitest for the current branch; its summary shows the score, the floor and every
+# surviving mutant, and the artifact pitest-report holds PIT's HTML report and mutations.xml.
+
+name: Mutation testing
+
+on:
+  push:
+    branches: [ master, develop ]
+  pull_request:
+    branches: [ master, develop ]
+  workflow_dispatch:
+
+# the run reads the repository only; publish-badges, which writes, asks for that itself
+permissions:
+  contents: read
+
+# a newer push to the same pull request replaces a running one; on develop and master every push
+# runs, as each one publishes its badge
+concurrency:
+  group: mutation-testing-${{ github.ref }}
+  cancel-in-progress: ${{ github.event_name == 'pull_request' }}
+
+jobs:
+  pitest:
+
+    runs-on: ubuntu-latest
+
+    steps:
+      - name: Checkout sources
+        uses: actions/checkout@v4
+      - name: Setup Java
+        uses: actions/setup-java@v4
+        with:
+          java-version: '25'
+          distribution: 'temurin'
+      - name: Setup Gradle
+        uses: gradle/actions/setup-gradle@v3
+      - name: Mutation testing (PIT, fails below mutationThreshold in build.gradle)
+        run: ./gradlew pitest
+      - name: Summary of the run
+        # also when PIT failed the floor: it writes its report before it checks the threshold
+        if: always()
+        run: |
+          python3 -I .github/scripts/mutation-summary.py build/reports/pitest/mutations.xml build.gradle \
+            | tee -a "$GITHUB_STEP_SUMMARY"
+      - name: Keep the PIT report
+        if: always()
+        uses: actions/upload-artifact@v7
+        with:
+          name: pitest-report
+          path: build/reports/pitest/
+          if-no-files-found: ignore
+      - name: Mutation context (awesome-well-tested docs/mutation-context.md)
+        # The context that makes the score comparable: tool and version, mutator set,
+        # scope, the full result breakdown, the tool's score and the strict score. The
+        # converter is pinned to a commit of the list that defines the schema. Runs on
+        # a red PIT step too, so a regression carries its numbers; without a report
+        # (the build failed earlier) there is nothing to convert.
+        if: always()
+        run: |
+          if [ ! -f build/reports/pitest/mutations.xml ]; then
+            echo "no PIT report, nothing to convert"; exit 0
+          fi
+          curl -fsSL -o /tmp/mutation_context.py \
+            https://raw.githubusercontent.com/awesome-references/awesome-well-tested/3d1258db8b54a1ad239229869eec9d57c527991c/scripts/mutation_context.py
+          python3 /tmp/mutation_context.py --pit build/reports/pitest/mutations.xml \
+            --tool-version "$(grep -oP '^pitest-version = "\K[^"]+' gradle/libs.versions.toml)" \
+            --mutators DEFAULTS --target 'io.github.astrapi69.collection.*' \
+            --out build/reports/pitest/mutation-context.json
+          cat build/reports/pitest/mutation-context.json
+      - name: Keep the mutation context
+        if: always()
+        uses: actions/upload-artifact@v7
+        with:
+          name: mutation-context
+          path: build/reports/pitest/mutation-context.json
+          if-no-files-found: ignore
+      # also when pitest failed the floor: PIT writes its report before it checks the threshold, and a
+      # badge that kept the last passing score would hide exactly that failure
+      - name: Mutation score badge
+        id: badge
+        if: ${{ !cancelled() && github.event_name == 'push' && (github.ref_name == 'develop' || github.ref_name == 'master') && hashFiles('build/reports/pitest/mutations.xml') != '' }}
+        run: >-
+          python3 -I .github/scripts/mutation-score-badge.py build/reports/pitest/mutations.xml
+          "$RUNNER_TEMP/badges/mutation-score-$GITHUB_REF_NAME.json"
+      - name: Hand the badge to publish-badges
+        if: ${{ !cancelled() && steps.badge.outcome == 'success' }}
+        uses: actions/upload-artifact@v7
+        with:
+          name: badges
+          path: ${{ runner.temp }}/badges/
+          retention-days: 1
+
+    outputs:
+      badge: ${{ steps.badge.outcome }}
+
+  # Publishes the badge of a push to develop or master on the gh-pages branch, where the shields.io
+  # endpoint badge of README.md reads it. A job of its own, so that write access goes to a job that
+  # runs nothing of PIT, and never to a pull request. It runs whenever the pitest job made a badge,
+  # also when PIT failed the floor afterwards
+  publish-badges:
+    needs: pitest
+    if: ${{ !cancelled() && needs.pitest.outputs.badge == 'success' }}
+
+    runs-on: ubuntu-latest
+
+    permissions:
+      contents: write # the push to gh-pages
+
+    # one publish per branch at a time; a newer push replaces a waiting one, which loses nothing, as
+    # its badge is the newer one. develop and master may publish at the same time: the loop below
+    # takes the other one's commit and tries again
+    concurrency:
+      group: gh-pages-${{ github.ref_name }}
+      cancel-in-progress: false
+
+    steps:
+      - name: Checkout sources
+        uses: actions/checkout@v4
+      - name: Take the badge of the pitest job
+        uses: actions/download-artifact@v8
+        with:
+          name: badges
+          path: ${{ runner.temp }}/badges
+      - name: Publish the badge on gh-pages
+        run: |
+          git config user.name "github-actions[bot]"
+          git config user.email "41898282+github-actions[bot]@users.noreply.github.com"
+          for attempt in 1 2 3; do
+            # the first run creates the branch, without history; a later one adds to it, never forced
+            if git ls-remote --exit-code --heads origin gh-pages > /dev/null; then
+              git fetch --depth 1 origin +gh-pages:refs/remotes/origin/gh-pages
+              git switch --force-create gh-pages origin/gh-pages
+            else
+              git switch --orphan gh-pages
+            fi
+            mkdir -p badges
+            cp "$RUNNER_TEMP"/badges/*.json badges/
+            git add badges
+            if git diff --cached --quiet; then
+              echo "The badge is unchanged"
+              exit 0
+            fi
+            git commit --message "Mutation score badge of $GITHUB_REF_NAME at $GITHUB_SHA"
+            if git push origin gh-pages; then
+              exit 0
+            fi
+            echo "gh-pages moved while publishing (attempt $attempt), publishing again on top of it"
+          done
+          exit 1

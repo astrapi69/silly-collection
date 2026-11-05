@@ -6,7 +6,8 @@ pitest {
     // The mutator set, named so a reader of the score knows it: DEFAULTS is what
     // PIT runs when nothing is said.
     mutators = ["DEFAULTS"]
-    // XML is what the mutation-context step in .github/workflows/gradle.yml reads.
+    // XML is what the summary, mutation-context and badge steps in
+    // .github/workflows/mutation-testing.yml read.
     outputFormats = ["HTML", "XML"]
     timestampedReports = false
 }
