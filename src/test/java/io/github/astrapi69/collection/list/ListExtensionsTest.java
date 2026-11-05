@@ -39,6 +39,7 @@ import java.util.List;
 import java.util.Map;
 import java.util.Optional;
 import java.util.Set;
+import java.util.function.Function;
 import java.util.function.Supplier;
 import java.util.stream.Collectors;
 import java.util.stream.IntStream;
@@ -214,6 +215,211 @@ public class ListExtensionsTest
 		assertEquals(Optional.ofNullable(last), ListExtensions.removeLastElement(list),
 			"removeLastElement");
 		assertEquals(withoutLast, list, "the list after removeLastElement");
+	}
+
+	/**
+	 * The elements a, null in a new {@link ArrayList}, which the test may change
+	 *
+	 * @return the new list
+	 */
+	private static List<String> aAndNull()
+	{
+		return new ArrayList<>(Arrays.asList("a", null));
+	}
+
+	/**
+	 * The elements null, a in a new {@link ArrayList}, which the test may change
+	 *
+	 * @return the new list
+	 */
+	private static List<String> nullAndA()
+	{
+		return new ArrayList<>(Arrays.asList(null, "a"));
+	}
+
+	/**
+	 * A call of one of the methods at the ends of a list, with a null list or a list that holds
+	 * null, what it returns and the list afterwards
+	 *
+	 * @param description
+	 *            the name of the case
+	 * @param list
+	 *            makes the given list, may make null
+	 * @param call
+	 *            the call with the given list
+	 * @param result
+	 *            what it returns
+	 * @param after
+	 *            the list afterwards, null for a null list
+	 */
+	record EndCall(String description, Supplier<List<String>> list,
+		Function<List<String>, Object> call, Object result, List<String> after) {
+		@Override
+		public String toString()
+		{
+			return description;
+		}
+	}
+
+	/**
+	 * The cases of {@link #testEndCall(EndCall)}
+	 *
+	 * @return the cases
+	 */
+	static Stream<EndCall> endCalls()
+	{
+		return Stream.of(
+			new EndCall("getFirst of a, null: a", ListExtensionsTest::aAndNull,
+				ListExtensions::getFirst, "a", Arrays.asList("a", null)),
+			new EndCall("getLast of null, a: a", ListExtensionsTest::nullAndA,
+				ListExtensions::getLast, "a", Arrays.asList(null, "a")),
+			new EndCall("removeFirst of a, null: a, null stays", ListExtensionsTest::aAndNull,
+				ListExtensions::removeFirst, "a", Arrays.asList((String)null)),
+			new EndCall("removeLast of null, a: a, null stays", ListExtensionsTest::nullAndA,
+				ListExtensions::removeLast, "a", Arrays.asList((String)null)),
+			new EndCall("getFirstElement of a, null: a", ListExtensionsTest::aAndNull,
+				ListExtensions::getFirstElement, Optional.of("a"), Arrays.asList("a", null)),
+			new EndCall("getLastElement of null, a: a", ListExtensionsTest::nullAndA,
+				ListExtensions::getLastElement, Optional.of("a"), Arrays.asList(null, "a")),
+			new EndCall("removeFirstElement of a, null: a, null stays",
+				ListExtensionsTest::aAndNull, ListExtensions::removeFirstElement, Optional.of("a"),
+				Arrays.asList((String)null)),
+			new EndCall("removeLastElement of null, a: a, null stays", ListExtensionsTest::nullAndA,
+				ListExtensions::removeLastElement, Optional.of("a"), Arrays.asList((String)null)),
+			new EndCall("isLast of null, a and a: true", ListExtensionsTest::nullAndA,
+				list -> ListExtensions.isLast(list, "a"), true, Arrays.asList(null, "a")));
+	}
+
+	/**
+	 * Test for the methods {@link ListExtensions#getFirst(List)},
+	 * {@link ListExtensions#getLast(List)}, {@link ListExtensions#removeFirst(List)},
+	 * {@link ListExtensions#removeLast(List)}, their {@link Optional} variants and
+	 * {@link ListExtensions#isLast(List, Object)} with a null list or a list that holds null: what
+	 * they return, and the list afterwards
+	 *
+	 * @param endCall
+	 *            the list, the call, what it returns and the list afterwards
+	 */
+	@ParameterizedTest(name = "{0}")
+	@MethodSource("endCalls")
+	public void testEndCall(final EndCall endCall)
+	{
+		final List<String> list = endCall.list().get();
+		assertEquals(endCall.result(), endCall.call().apply(list));
+		assertEquals(endCall.after(), list, "the list afterwards");
+	}
+
+	/**
+	 * A call of one of the methods at the ends of a list, with a null list or a list that holds
+	 * null, which throws, and the list afterwards
+	 *
+	 * @param description
+	 *            the name of the case
+	 * @param list
+	 *            makes the given list, may make null
+	 * @param call
+	 *            the call with the given list
+	 * @param exception
+	 *            the class of the exception
+	 * @param after
+	 *            the list afterwards, null for a null list
+	 */
+	record RefusedEndCall(String description, Supplier<List<String>> list,
+		Function<List<String>, Object> call, Class<? extends RuntimeException> exception,
+		List<String> after) {
+		@Override
+		public String toString()
+		{
+			return description;
+		}
+	}
+
+	/**
+	 * The cases of {@link #testRefusedEndCall(RefusedEndCall)}. Today the methods without
+	 * {@link Optional} throw for a null list, where their Javadoc promises null, and for a null
+	 * first or last element, where it promises the element (#126): they give their list to the
+	 * {@link Optional} variants, which check it with Argument.notNull and give the element to
+	 * {@link Optional#of(Object)}; removeFirst, removeLast, removeFirstElement and
+	 * removeLastElement remove the null before they throw. isLast throws for a null list and for a
+	 * list that ends with null. The fix of #126 changes the rows that name it
+	 *
+	 * @return the cases
+	 */
+	static Stream<RefusedEndCall> refusedEndCalls()
+	{
+		final Supplier<List<String>> none = () -> null;
+		return Stream.of(
+			new RefusedEndCall("getFirst of null: today IllegalArgumentException (#126)", none,
+				ListExtensions::getFirst, IllegalArgumentException.class, null),
+			new RefusedEndCall("getLast of null: today IllegalArgumentException (#126)", none,
+				ListExtensions::getLast, IllegalArgumentException.class, null),
+			new RefusedEndCall("removeFirst of null: today IllegalArgumentException (#126)", none,
+				ListExtensions::removeFirst, IllegalArgumentException.class, null),
+			new RefusedEndCall("removeLast of null: today IllegalArgumentException (#126)", none,
+				ListExtensions::removeLast, IllegalArgumentException.class, null),
+			new RefusedEndCall("isLast of null and x: today IllegalArgumentException (#126)", none,
+				list -> ListExtensions.isLast(list, "x"), IllegalArgumentException.class, null),
+			new RefusedEndCall("getFirst of null, a: today NullPointerException (#126)",
+				ListExtensionsTest::nullAndA, ListExtensions::getFirst, NullPointerException.class,
+				Arrays.asList(null, "a")),
+			new RefusedEndCall("getLast of a, null: today NullPointerException (#126)",
+				ListExtensionsTest::aAndNull, ListExtensions::getLast, NullPointerException.class,
+				Arrays.asList("a", null)),
+			new RefusedEndCall(
+				"removeFirst of null, a: today NullPointerException, null removed (#126)",
+				ListExtensionsTest::nullAndA, ListExtensions::removeFirst,
+				NullPointerException.class, List.of("a")),
+			new RefusedEndCall(
+				"removeLast of a, null: today NullPointerException, null removed (#126)",
+				ListExtensionsTest::aAndNull, ListExtensions::removeLast,
+				NullPointerException.class, List.of("a")),
+			new RefusedEndCall("isLast of a, null and x: today NullPointerException (#126)",
+				ListExtensionsTest::aAndNull, list -> ListExtensions.isLast(list, "x"),
+				NullPointerException.class, Arrays.asList("a", null)),
+			new RefusedEndCall("isLast of a, null and null: today NullPointerException (#126)",
+				ListExtensionsTest::aAndNull, list -> ListExtensions.isLast(list, null),
+				NullPointerException.class, Arrays.asList("a", null)),
+			new RefusedEndCall("getFirstElement of null, a: NullPointerException",
+				ListExtensionsTest::nullAndA, ListExtensions::getFirstElement,
+				NullPointerException.class, Arrays.asList(null, "a")),
+			new RefusedEndCall("getLastElement of a, null: NullPointerException",
+				ListExtensionsTest::aAndNull, ListExtensions::getLastElement,
+				NullPointerException.class, Arrays.asList("a", null)),
+			new RefusedEndCall(
+				"removeFirstElement of null, a: NullPointerException, today null removed (#126)",
+				ListExtensionsTest::nullAndA, ListExtensions::removeFirstElement,
+				NullPointerException.class, List.of("a")),
+			new RefusedEndCall(
+				"removeLastElement of a, null: NullPointerException, today null removed (#126)",
+				ListExtensionsTest::aAndNull, ListExtensions::removeLastElement,
+				NullPointerException.class, List.of("a")),
+			new RefusedEndCall("getFirstElement of null: IllegalArgumentException", none,
+				ListExtensions::getFirstElement, IllegalArgumentException.class, null),
+			new RefusedEndCall("getLastElement of null: IllegalArgumentException", none,
+				ListExtensions::getLastElement, IllegalArgumentException.class, null),
+			new RefusedEndCall("removeFirstElement of null: IllegalArgumentException", none,
+				ListExtensions::removeFirstElement, IllegalArgumentException.class, null),
+			new RefusedEndCall("removeLastElement of null: IllegalArgumentException", none,
+				ListExtensions::removeLastElement, IllegalArgumentException.class, null));
+	}
+
+	/**
+	 * Test for the methods {@link ListExtensions#getFirst(List)},
+	 * {@link ListExtensions#getLast(List)}, {@link ListExtensions#removeFirst(List)},
+	 * {@link ListExtensions#removeLast(List)}, their {@link Optional} variants and
+	 * {@link ListExtensions#isLast(List, Object)} with a null list or a list that holds null, where
+	 * they throw: the exception, and the list afterwards
+	 *
+	 * @param refused
+	 *            the list, the call, the class of the exception and the list afterwards
+	 */
+	@ParameterizedTest(name = "{0}")
+	@MethodSource("refusedEndCalls")
+	public void testRefusedEndCall(final RefusedEndCall refused)
+	{
+		final List<String> list = refused.list().get();
+		assertThrows(refused.exception(), () -> refused.call().apply(list));
+		assertEquals(refused.after(), list, "the list afterwards");
 	}
 
 	/**
@@ -947,9 +1153,13 @@ public class ListExtensionsTest
 	}
 
 	/**
-	 * Test the method {@link ListExtensions#shuffle(List, List, int[])} with indexes in ascending
-	 * order: the elements at the given indexes move from the source to the destination, the others
-	 * stay in the source in their order
+	 * Test the method {@link ListExtensions#shuffle(List, List, int[])}: the elements at the given
+	 * indexes move from the source to the destination, the others stay in the source in their
+	 * order, and the given indexes do not change. Today shuffle removes by index from the last
+	 * given index to the first (#126): the elements move in the reverse order of the indexes, and
+	 * for indexes that are not ascending every removal moves the elements behind it, so other
+	 * elements move than the indexes name; an index given twice moves two elements. The fix of #126
+	 * changes the rows that name it
 	 *
 	 * @param description
 	 *            the name of the case
@@ -958,26 +1168,61 @@ public class ListExtensionsTest
 	 * @param indexes
 	 *            the indexes of the elements to move, separated by a space
 	 * @param moved
-	 *            the elements that move, separated by a space
+	 *            the elements of the destination afterwards, in their order, separated by a space
 	 * @param rest
 	 *            the elements of the source afterwards, separated by a space
 	 */
 	@ParameterizedTest(name = "{0}", quoteTextArguments = false)
 	@CsvSource(value = {
-			"indexes 1, 2 of Anton to Franz: Berta and Caesar move | Anton Berta Caesar Dora Emil Franz | 1 2 | Berta Caesar | Anton Dora Emil Franz",
-			"indexes 0, 1 of Anton, Dora, Emil, Franz: Anton and Dora move | Anton Dora Emil Franz | 0 1 | Anton Dora | Emil Franz",
+			"indexes 1, 2 of Anton to Franz: today Caesar and Berta move (#126) | Anton Berta Caesar Dora Emil Franz | 1 2 | Caesar Berta | Anton Dora Emil Franz",
+			"indexes 0, 1 of Anton, Dora, Emil, Franz: today Dora and Anton move (#126) | Anton Dora Emil Franz | 0 1 | Dora Anton | Emil Franz",
 			"index 5, the last of Anton to Franz: Franz moves | Anton Berta Caesar Dora Emil Franz | 5 | Franz | Anton Berta Caesar Dora Emil",
-			"no indexes: nothing moves | Anton Berta Caesar | '' | '' | Anton Berta Caesar" }, delimiter = '|')
+			"no indexes: nothing moves | Anton Berta Caesar | '' | '' | Anton Berta Caesar",
+			"indexes 2, 1 of Anton to Dora: today Berta and Dora move (#126) | Anton Berta Caesar Dora | 2 1 | Berta Dora | Anton Caesar",
+			"index 1 twice of Anton, Berta, Caesar: today Berta and Caesar move (#126) | Anton Berta Caesar | 1 1 | Berta Caesar | Anton" }, delimiter = '|')
 	public void testShuffle(final String description, final String source, final String indexes,
 		final String moved, final String rest)
 	{
 		final List<String> from = elements(source);
 		final List<String> destination = new ArrayList<>();
-		ListExtensions.shuffle(from, destination,
-			numbers(indexes).stream().mapToInt(Integer::intValue).toArray());
-		assertEquals(elements(rest), from);
-		assertEquals(elements(moved).size(), destination.size());
-		assertEquals(new HashSet<>(elements(moved)), new HashSet<>(destination));
+		final int[] selected = numbers(indexes).stream().mapToInt(Integer::intValue).toArray();
+		ListExtensions.shuffle(from, destination, selected);
+		assertEquals(elements(rest), from, "the source");
+		assertEquals(elements(moved), destination, "the destination");
+		assertArrayEquals(numbers(indexes).stream().mapToInt(Integer::intValue).toArray(), selected,
+			"the given indexes");
+	}
+
+	/**
+	 * Test the method {@link ListExtensions#shuffle(List, List, int[])} with an index out of the
+	 * range of the source: an {@link IndexOutOfBoundsException}. Today the elements at the indexes
+	 * after it in the array have moved before it throws (#126); the fix of #126 changes that row
+	 *
+	 * @param description
+	 *            the name of the case
+	 * @param source
+	 *            the elements of the source, separated by a space
+	 * @param indexes
+	 *            the indexes of the elements to move, separated by a space
+	 * @param moved
+	 *            the elements of the destination afterwards, separated by a space
+	 * @param rest
+	 *            the elements of the source afterwards, separated by a space
+	 */
+	@ParameterizedTest(name = "{0}", quoteTextArguments = false)
+	@CsvSource(value = {
+			"indexes 3, 0 of Anton, Berta, Caesar: today Anton moves before it throws (#126) | Anton Berta Caesar | 3 0 | Anton | Berta Caesar",
+			"indexes 0, 3 of Anton, Berta, Caesar: nothing moves | Anton Berta Caesar | 0 3 | '' | Anton Berta Caesar" }, delimiter = '|')
+	public void testShuffleWithAnIndexOutOfRange(final String description, final String source,
+		final String indexes, final String moved, final String rest)
+	{
+		final List<String> from = elements(source);
+		final List<String> destination = new ArrayList<>();
+		final int[] selected = numbers(indexes).stream().mapToInt(Integer::intValue).toArray();
+		assertThrows(IndexOutOfBoundsException.class,
+			() -> ListExtensions.shuffle(from, destination, selected));
+		assertEquals(elements(rest), from, "the source");
+		assertEquals(elements(moved), destination, "the destination");
 	}
 
 	/**
