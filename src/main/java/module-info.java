@@ -22,7 +22,8 @@ module io.github.astrapisixtynine.silly.collection
 {
 	requires io.github.astrapisixtynine.comparator.extensions;
 	requires io.github.astrapisixtynine.jobj.core;
-	requires io.github.astrapisixtynine.silly.bean;
+	// MapFactory takes its KeyValuePair, so a module that reads this one reads silly-bean too (#95)
+	requires transitive io.github.astrapisixtynine.silly.bean;
 	requires org.apache.commons.collections4;
 
 	exports io.github.astrapi69.collection;

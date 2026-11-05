@@ -131,9 +131,10 @@ public class PublishedPomTest
 	}
 
 	/**
-	 * Test that the pom gives every dependency the runtime scope today, silly-bean too, so a Maven
-	 * consumer does not compile against silly-bean, whose {@code KeyValuePair} {@code MapFactory}
-	 * takes and returns (#95)
+	 * Test that the pom gives silly-bean the compile scope, so a Maven consumer compiles against
+	 * it, as against {@code MapFactory}, which takes its {@code KeyValuePair}; the runtime scope it
+	 * had kept it off that consumer's compile class path (#95). The other dependencies keep the
+	 * runtime scope: no type of theirs is in a public signature of this library
 	 *
 	 * @throws ParserConfigurationException
 	 *             if no XML parser can be made
@@ -148,7 +149,7 @@ public class PublishedPomTest
 	{
 		assertEquals(Map.of("org.apache.commons:commons-collections4", "runtime",
 			"io.github.astrapi69:comparator-extensions", "runtime", "io.github.astrapi69:jobj-core",
-			"runtime", "io.github.astrapi69:silly-bean", "runtime"), scopesOfTheDependencies());
+			"runtime", "io.github.astrapi69:silly-bean", "compile"), scopesOfTheDependencies());
 	}
 
 }

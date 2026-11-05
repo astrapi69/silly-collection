@@ -24,7 +24,6 @@
  */
 package io.github.astrapi69.collection;
 
-import static org.junit.jupiter.api.Assertions.assertFalse;
 import static org.junit.jupiter.api.Assertions.assertNotNull;
 import static org.junit.jupiter.api.Assertions.assertTrue;
 
@@ -52,16 +51,16 @@ import org.junit.jupiter.params.provider.MethodSource;
 /**
  * Test that a consumer that declares this library alone compiles against it: a module on the module
  * path that requires this module alone, and a class on the class path (#95). {@code MapFactory}
- * takes and returns {@code KeyValuePair} of silly-bean, so the compiler of every consumer that
- * calls {@code MapFactory} needs silly-bean, also one that never names {@code KeyValuePair}: javac
- * reads the class file of every overload when it resolves a call. A consumer module that names
+ * takes {@code KeyValuePair} of silly-bean, so the compiler of every consumer that calls
+ * {@code MapFactory} needs silly-bean, also one that never names {@code KeyValuePair}: javac reads
+ * the class file of every overload when it resolves a call. A consumer module that names
  * {@code KeyValuePair} needs more: this module has to require silly-bean {@code transitive}, or
  * javac reports that the module of the consumer does not read it. Gradle's test task hands over
  * what such a consumer compiles against in the system property
  * {@value #CONSUMER_COMPILE_CLASSPATH_PROPERTY}: this project resolved as a consumer's compile
  * class path resolves it, its apiElements, that is the built jar and the api dependencies
- * (gradle/testing.gradle). Today silly-bean is an implementation dependency, so it is not on that
- * path, and no consumer compiles (#95)
+ * (gradle/testing.gradle). silly-bean is an api dependency, so it is on that path; as an
+ * implementation dependency it was not, and no consumer compiled (#95)
  */
 public class ModulePathTest
 {
@@ -79,13 +78,7 @@ public class ModulePathTest
 		"{", "	requires io.github.astrapisixtynine.silly.collection;", "}", "");
 
 	/**
-	 * The javac message for a consumer whose compiler does not find silly-bean, where the consumer
-	 * calls a method of {@code MapFactory}
-	 */
-	private static final String KEY_VALUE_PAIR_NOT_FOUND = "class file for io.github.astrapi69.collection.pair.KeyValuePair not found";
-
-	/**
-	 * A consumer: what it compiles, on which path, and how javac refuses it today
+	 * A consumer: what it compiles, and on which path
 	 *
 	 * @param description
 	 *            the description of the consumer, the name of the case
@@ -94,11 +87,8 @@ public class ModulePathTest
 	 *            {@code --class-path}
 	 * @param sources
 	 *            the sources of the consumer, by their path relative to the source directory
-	 * @param errorToday
-	 *            a part of the message with which javac refuses the consumer today
 	 */
-	record Consumer(String description, String pathOption, Map<String, String> sources,
-		String errorToday) {
+	record Consumer(String description, String pathOption, Map<String, String> sources) {
 		@Override
 		public String toString()
 		{
@@ -132,18 +122,14 @@ public class ModulePathTest
 		return Stream.of(
 			new Consumer("a module that names KeyValuePair", "--module-path",
 				Map.of("module-info.java", CONSUMER_MODULE_INFO, "consumer/check/Pairs.java",
-					namesKeyValuePair),
-				KEY_VALUE_PAIR_NOT_FOUND),
+					namesKeyValuePair)),
 			new Consumer("a module that calls MapFactory as silly-strings does", "--module-path",
 				Map.of("module-info.java", CONSUMER_MODULE_INFO, "consumer/check/Words.java",
-					callsAsSillyStrings),
-				KEY_VALUE_PAIR_NOT_FOUND),
+					callsAsSillyStrings)),
 			new Consumer("a class on the class path that names KeyValuePair", "--class-path",
-				Map.of("consumer/check/Pairs.java", namesKeyValuePair),
-				"package io.github.astrapi69.collection.pair does not exist"),
+				Map.of("consumer/check/Pairs.java", namesKeyValuePair)),
 			new Consumer("a class on the class path that calls MapFactory as silly-strings does",
-				"--class-path", Map.of("consumer/check/Words.java", callsAsSillyStrings),
-				KEY_VALUE_PAIR_NOT_FOUND));
+				"--class-path", Map.of("consumer/check/Words.java", callsAsSillyStrings)));
 	}
 
 	/**
@@ -178,8 +164,8 @@ public class ModulePathTest
 	}
 
 	/**
-	 * Test that a consumer that declares this library alone does not compile against it today, and
-	 * why: silly-bean is not on its compile class path (#95)
+	 * Test that a consumer that declares this library alone compiles against it, as silly-bean is
+	 * on its compile class path and this module requires it {@code transitive} (#95)
 	 *
 	 * @param consumer
 	 *            the consumer
@@ -212,9 +198,7 @@ public class ModulePathTest
 			final String messages = diagnostics.getDiagnostics().stream()
 				.map(diagnostic -> diagnostic.getMessage(Locale.ENGLISH))
 				.collect(Collectors.joining("; "));
-			assertFalse(compiled, () -> "the consumer compiles today: " + messages);
-			assertTrue(messages.contains(consumer.errorToday()),
-				() -> "javac refuses the consumer for another reason: " + messages);
+			assertTrue(compiled, () -> "the consumer does not compile: " + messages);
 		}
 	}
 

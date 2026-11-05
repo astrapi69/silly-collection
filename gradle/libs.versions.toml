@@ -36,12 +36,12 @@ test-object = { module = "io.github.astrapi69:test-object", version.ref = "test-
 vintage-time = { module = "io.github.astrapi69:vintage-time", version.ref = "vintage-time-version" }
 
 [bundles]
-# The core dependencies
+# The core dependencies, for the runtime of a consumer only: no type of theirs is in a public signature of this
+# library. silly-bean is not among them, it is an api dependency (gradle/dependencies.gradle, #95)
 core-dependencies = [
     "commons-collections4",
     "comparator-extensions",
     "jobj-core",
-    "silly-bean",
 ]
 # Dependencies required only at test runtime, such as test execution platforms
 test-runtime-only = [
