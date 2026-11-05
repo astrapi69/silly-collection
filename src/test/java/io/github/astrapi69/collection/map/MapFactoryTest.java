@@ -35,14 +35,21 @@ import static org.junit.jupiter.api.Assertions.assertTrue;
 import java.util.ArrayList;
 import java.util.Comparator;
 import java.util.HashMap;
+import java.util.LinkedHashMap;
 import java.util.List;
 import java.util.Map;
-import java.util.Random;
+import java.util.Set;
 import java.util.TreeMap;
 import java.util.concurrent.ConcurrentHashMap;
+import java.util.function.Supplier;
+import java.util.function.UnaryOperator;
+import java.util.stream.Stream;
 
 import org.apache.commons.collections4.map.LazyMap;
 import org.junit.jupiter.api.Test;
+import org.junit.jupiter.params.ParameterizedTest;
+import org.junit.jupiter.params.provider.Arguments;
+import org.junit.jupiter.params.provider.MethodSource;
 import org.meanbean.test.BeanTester;
 
 import io.github.astrapi69.collection.list.ListFactory;
@@ -57,23 +64,526 @@ public class MapFactoryTest
 {
 
 	/**
-	 * Test for the Method {@link MapFactory#newAssosiativeArrayMap()}. <br>
-	 * Here an example:<br>
-	 * <br>
-	 * in js you can create and fetch associative arrays like this:<br>
+	 * The entries the factory methods are given: 5 = value, 1 = novalue, 3 = othervalue, 2 =
+	 * somevalue, in this order, which is neither the order of the keys nor the reverse
+	 *
+	 * @return a new {@link LinkedHashMap} of the entries
+	 */
+	static Map<String, String> given()
+	{
+		final Map<String, String> map = new LinkedHashMap<>();
+		map.put("5", "value");
+		map.put("1", "novalue");
+		map.put("3", "othervalue");
+		map.put("2", "somevalue");
+		return map;
+	}
+
+	/**
+	 * The entries of {@link #given()} as key value pairs, in the same order
+	 *
+	 * @return a new list of the pairs
+	 */
+	static List<KeyValuePair<String, String>> pairs()
+	{
+		return ListFactory.newArrayList(pair("5", "value"), pair("1", "novalue"),
+			pair("3", "othervalue"), pair("2", "somevalue"));
+	}
+
+	/**
+	 * The entries of {@link #given()} as an array of key value pairs, in the same order
+	 *
+	 * @return a new array of the pairs
+	 */
+	@SuppressWarnings("unchecked")
+	static KeyValuePair<String, String>[] pairArray()
+	{
+		return pairs().toArray(new KeyValuePair[0]);
+	}
+
+	/**
+	 * A key value pair
+	 *
+	 * @param key
+	 *            the key
+	 * @param value
+	 *            the value
+	 * @return the pair
+	 */
+	static <K, V> KeyValuePair<K, V> pair(final K key, final V value)
+	{
+		return KeyValuePair.<K, V> builder().key(key).value(value).build();
+	}
+
+	/**
+	 * A key value pair with a class as key, which is not {@link Comparable}
+	 *
+	 * @param key
+	 *            the key
+	 * @param value
+	 *            the value
+	 * @return the pair
+	 */
+	static KeyValuePair<Class<?>, String> classPair(final Class<?> key, final String value)
+	{
+		return KeyValuePair.<Class<?>, String> builder().key(key).value(value).build();
+	}
+
+	/**
+	 * A call of a factory method of a {@link java.util.HashMap}, {@link LinkedHashMap},
+	 * {@link InsertionOrderMap} or {@link ConcurrentHashMap}, and the map it makes
+	 *
+	 * @param description
+	 *            the name of the case
+	 * @param factory
+	 *            the call
+	 * @param type
+	 *            the type of the map, the one the Javadoc of the factory method names
+	 * @param entries
+	 *            the entries of the map
+	 * @param keys
+	 *            the order of the keys, null if the type does not promise one
+	 */
+	record Factory(String description, Supplier<Map<?, ?>> factory, Class<?> type,
+		Map<?, ?> entries, List<?> keys) {
+		@Override
+		public String toString()
+		{
+			return description;
+		}
+	}
+
+	/**
+	 * The cases of {@link #testFactory(Factory)}
+	 *
+	 * @return the cases
+	 */
+	static Stream<Factory> factories()
+	{
+		final Map<String, String> entries = given();
+		final List<String> givenOrder = List.of("5", "1", "3", "2");
+		return Stream.of(
+			new Factory("newConcurrentHashMap(): empty", MapFactory::newConcurrentHashMap,
+				ConcurrentHashMap.class, Map.of(), null),
+			new Factory("newConcurrentHashMap(5): empty", () -> MapFactory.newConcurrentHashMap(5),
+				ConcurrentHashMap.class, Map.of(), null),
+			new Factory("newConcurrentHashMap(map): its entries",
+				() -> MapFactory.newConcurrentHashMap(given()), ConcurrentHashMap.class, entries,
+				null),
+			new Factory("newHashMap(): empty", MapFactory::newHashMap, HashMap.class, Map.of(),
+				null),
+			new Factory("newHashMap(10): empty", () -> MapFactory.newHashMap(10), HashMap.class,
+				Map.of(), null),
+			new Factory("newHashMap(map): its entries", () -> MapFactory.newHashMap(given()),
+				HashMap.class, entries, null),
+			new Factory("newHashMap(collection of pairs): the pairs",
+				() -> MapFactory.newHashMap(pairs()), HashMap.class, entries, null),
+			new Factory("newHashMap(pairs...): the pairs", () -> MapFactory.newHashMap(pairArray()),
+				HashMap.class, entries, null),
+			new Factory("newHashMap(keys 1 to 4, values one to four): the pairs",
+				() -> MapFactory.newHashMap(List.of(1, 2, 3, 4),
+					List.of("one", "two", "three", "four")),
+				HashMap.class, Map.of(1, "one", 2, "two", 3, "three", 4, "four"), null),
+			new Factory("newHashMap(no keys, no values): empty",
+				() -> MapFactory.newHashMap(List.of(), List.of()), HashMap.class, Map.of(), null),
+			new Factory("newInsertionOrderMap(): empty", MapFactory::newInsertionOrderMap,
+				InsertionOrderMap.class, Map.of(), List.of()),
+			new Factory("newInsertionOrderMap(4): empty", () -> MapFactory.newInsertionOrderMap(4),
+				InsertionOrderMap.class, Map.of(), List.of()),
+			new Factory("newInsertionOrderMap(map): its entries in its order",
+				() -> MapFactory.newInsertionOrderMap(given()), InsertionOrderMap.class, entries,
+				givenOrder),
+			new Factory("newInsertionOrderMap(collection of pairs): the pairs",
+				() -> MapFactory.newInsertionOrderMap(pairs()), InsertionOrderMap.class, entries,
+				null),
+			new Factory("newInsertionOrderMap(pairs...): the pairs",
+				() -> MapFactory.newInsertionOrderMap(pairArray()), InsertionOrderMap.class,
+				entries, null),
+			new Factory("newLinkedHashMap(): empty", MapFactory::newLinkedHashMap,
+				LinkedHashMap.class, Map.of(), List.of()),
+			new Factory("newLinkedHashMap(5): empty", () -> MapFactory.newLinkedHashMap(5),
+				LinkedHashMap.class, Map.of(), List.of()),
+			new Factory("newLinkedHashMap(map): its entries in its order",
+				() -> MapFactory.newLinkedHashMap(given()), LinkedHashMap.class, entries,
+				givenOrder),
+			new Factory("newLinkedHashMap(collection of pairs): the pairs",
+				() -> MapFactory.newLinkedHashMap(pairs()), LinkedHashMap.class, entries, null),
+			new Factory("newLinkedHashMap(pairs...): the pairs",
+				() -> MapFactory.newLinkedHashMap(pairArray()), LinkedHashMap.class, entries,
+				null));
+	}
+
+	/**
+	 * Test for the factory methods of {@link java.util.HashMap}, {@link LinkedHashMap},
+	 * {@link InsertionOrderMap} and {@link ConcurrentHashMap}: the new map is of the type the
+	 * Javadoc names and holds the given entries, a map that keeps an order in the order of the
+	 * given map
+	 *
+	 * @param factory
+	 *            the call and the map it makes
+	 */
+	@ParameterizedTest(name = "{0}")
+	@MethodSource("factories")
+	public void testFactory(final Factory factory)
+	{
+		final Map<?, ?> map = factory.factory().get();
+		assertInstanceOf(factory.type(), map);
+		assertEquals(factory.entries(), map);
+		if (factory.keys() != null)
+		{
+			assertEquals(factory.keys(), new ArrayList<>(map.keySet()));
+		}
+	}
+
+	/**
+	 * Test for method {@link MapFactory#newHashMap(List, List)} with lists of different sizes: it
+	 * throws an {@link IllegalArgumentException}
+	 *
+	 * @param description
+	 *            the name of the case
+	 * @param keys
+	 *            the keys
+	 * @param values
+	 *            the values
+	 */
+	@ParameterizedTest(name = "{0}", quoteTextArguments = false)
+	@MethodSource("listsOfDifferentSizes")
+	public void testNewHashMapWithListsOfDifferentSizes(final String description,
+		final List<Integer> keys, final List<String> values)
+	{
+		final IllegalArgumentException exception = assertThrows(IllegalArgumentException.class,
+			() -> MapFactory.newHashMap(keys, values));
+		assertEquals("The list of keys and values must have the same size", exception.getMessage());
+	}
+
+	/**
+	 * The cases of {@link #testNewHashMapWithListsOfDifferentSizes(String, List, List)}
+	 *
+	 * @return the name of the case, the keys and the values
+	 */
+	static Stream<Arguments> listsOfDifferentSizes()
+	{
+		return Stream.of(
+			Arguments.of("4 keys and 3 values", List.of(1, 2, 3, 4),
+				List.of("one", "two", "three")),
+			Arguments.of("3 keys and 4 values", List.of(1, 2, 3),
+				List.of("one", "two", "three", "four")));
+	}
+
+	/**
+	 * A call of a factory method of a {@link TreeMap}, and the map it makes
+	 *
+	 * @param description
+	 *            the name of the case
+	 * @param factory
+	 *            the call
+	 * @param comparator
+	 *            the comparator of the map, null for the natural order of the keys
+	 * @param entries
+	 *            the entries of the map
+	 * @param keys
+	 *            the order of the keys
+	 */
+	record TreeFactory(String description, Supplier<Map<?, ?>> factory, Comparator<?> comparator,
+		Map<?, ?> entries, List<?> keys) {
+		@Override
+		public String toString()
+		{
+			return description;
+		}
+	}
+
+	/**
+	 * The cases of {@link #testTreeFactory(TreeFactory)}
+	 *
+	 * @return the cases
+	 */
+	static Stream<TreeFactory> treeFactories()
+	{
+		final Map<String, String> entries = given();
+		final List<String> ascending = List.of("1", "2", "3", "5");
+		final Comparator<String> descending = Comparator.reverseOrder();
+		final Comparator<Class<?>> byName = Comparator.comparing(Class::getName);
+		final Map<Class<?>, String> classes = Map.of(Integer.class, "integer", String.class,
+			"string");
+		final List<Class<?>> classesByName = List.of(Integer.class, String.class);
+		return Stream.of(
+			new TreeFactory("newTreeMap(): empty, the natural order", MapFactory::newTreeMap, null,
+				Map.of(), List.of()),
+			new TreeFactory("newTreeMap(map): its entries in the natural order",
+				() -> MapFactory.newTreeMap(given()), null, entries, ascending),
+			new TreeFactory("newTreeMap(collection of pairs): the pairs in the natural order",
+				() -> MapFactory.newTreeMap(pairs()), null, entries, ascending),
+			new TreeFactory("newTreeMap(pairs...): the pairs in the natural order",
+				() -> MapFactory.newTreeMap(pairArray()), null, entries, ascending),
+			new TreeFactory("newTreeMap(comparator): empty, the order of the comparator",
+				() -> MapFactory.newTreeMap(descending), descending, Map.of(), List.of()),
+			new TreeFactory(
+				"newTreeMap(comparator, collection of pairs): the pairs in the order of the comparator",
+				() -> MapFactory.newTreeMap(descending, pairs()), descending, entries,
+				List.of("5", "3", "2", "1")),
+			new TreeFactory(
+				"newTreeMap(comparator, pairs...): the pairs in the order of the comparator",
+				() -> MapFactory.newTreeMap(descending, pairArray()), descending, entries,
+				List.of("5", "3", "2", "1")),
+			new TreeFactory(
+				"newTreeMap(comparator, collection of pairs), keys not Comparable: the order of the comparator (#44)",
+				() -> MapFactory.newTreeMap(byName,
+					ListFactory.newArrayList(classPair(String.class, "string"),
+						classPair(Integer.class, "integer"))),
+				byName, classes, classesByName),
+			new TreeFactory(
+				"newTreeMap(comparator, pairs...), keys not Comparable: the order of the comparator (#44)",
+				() -> MapFactory.newTreeMap(byName, classPair(String.class, "string"),
+					classPair(Integer.class, "integer")),
+				byName, classes, classesByName));
+	}
+
+	/**
+	 * Test for the factory methods of a {@link TreeMap}: the new map is a {@link TreeMap}, the type
+	 * the Javadoc names, with the given comparator or none, and holds the given entries in the
+	 * order of its keys
+	 *
+	 * @param factory
+	 *            the call and the map it makes
+	 */
+	@ParameterizedTest(name = "{0}")
+	@MethodSource("treeFactories")
+	public void testTreeFactory(final TreeFactory factory)
+	{
+		final Map<?, ?> map = factory.factory().get();
+		assertSame(factory.comparator(), assertInstanceOf(TreeMap.class, map).comparator());
+		assertEquals(factory.entries(), map);
+		assertEquals(factory.keys(), new ArrayList<>(map.keySet()));
+	}
+
+	/**
+	 * A call of a factory method of a {@link LazyMap}, and what the map creates
+	 *
+	 * @param description
+	 *            the name of the case
+	 * @param factory
+	 *            the call
+	 * @param keys
+	 *            the keys to get, in this order
+	 * @param order
+	 *            the order of the keys afterwards, null if the map does not promise one
+	 * @param created
+	 *            the type of the value the map creates for a key it does not hold yet
+	 */
+	record LazyFactory(String description, Supplier<Map<?, ?>> factory, List<?> keys, List<?> order,
+		Class<?> created) {
+		@Override
+		public String toString()
+		{
+			return description;
+		}
+	}
+
+	/**
+	 * The cases of {@link #testLazyFactory(LazyFactory)}
+	 *
+	 * @return the cases
+	 */
+	static Stream<LazyFactory> lazyFactories()
+	{
+		return Stream.of(
+			new LazyFactory("newLazyHashMap(): a HashMap for each key", MapFactory::newLazyHashMap,
+				List.of("b", "a"), null, HashMap.class),
+			new LazyFactory("newLazyHashMap(an empty HashMap): a HashMap for each key",
+				() -> MapFactory.newLazyHashMap(new HashMap<>()), List.of("b", "a"), null,
+				HashMap.class),
+			new LazyFactory("newLazyMap(): a HashMap for each key", MapFactory::newLazyMap,
+				List.of("b", "a"), null, HashMap.class),
+			new LazyFactory("newAssosiativeArrayMap(): a HashMap for each index",
+				MapFactory::newAssosiativeArrayMap, List.of(1, 0), null, HashMap.class),
+			new LazyFactory("newLazyTreeMap(): a TreeMap for each key, in the natural order",
+				MapFactory::newLazyTreeMap, List.of("b", "a"), List.of("a", "b"), TreeMap.class),
+			new LazyFactory(
+				"newLazyTreeMap(reverseOrder): a TreeMap for each key, in the order of the comparator",
+				() -> MapFactory.<Integer, Object> newLazyTreeMap(Comparator.reverseOrder()),
+				List.of(1, 3, 2), List.of(3, 2, 1), TreeMap.class),
+			new LazyFactory(
+				"newLazyTreeMap(an empty TreeMap): a TreeMap for each key, in the natural order",
+				() -> MapFactory.newLazyTreeMap(new TreeMap<>()), List.of("b", "a"),
+				List.of("a", "b"), TreeMap.class));
+	}
+
+	/**
+	 * Test for the factory methods of a {@link LazyMap}: the new map is an empty {@link LazyMap},
+	 * the type the Javadoc names, that creates a value for a key it does not hold yet and keeps it,
+	 * and that holds its keys in the order of the map it encapsulates
+	 *
+	 * @param factory
+	 *            the call and what the map creates
+	 */
+	@ParameterizedTest(name = "{0}")
+	@MethodSource("lazyFactories")
+	public void testLazyFactory(final LazyFactory factory)
+	{
+		final Map<?, ?> map = assertInstanceOf(LazyMap.class, factory.factory().get());
+		assertTrue(map.isEmpty());
+		for (final Object key : factory.keys())
+		{
+			final Object created = assertInstanceOf(factory.created(), map.get(key));
+			assertSame(created, map.get(key));
+		}
+		if (factory.order() != null)
+		{
+			assertEquals(factory.order(), new ArrayList<>(map.keySet()));
+		}
+		assertEquals(Set.copyOf(factory.keys()), map.keySet());
+	}
+
+	/**
+	 * Test for the methods {@link MapFactory#newLazyHashMap(HashMap)} and
+	 * {@link MapFactory#newLazyTreeMap(TreeMap)}: the new {@link LazyMap} encapsulates the given
+	 * map instead of copying it, so it holds the entries of the given map, and the value it creates
+	 * for a key it does not hold yet goes into the given map
+	 *
+	 * @param description
+	 *            the name of the case
+	 * @param given
+	 *            makes the given map
+	 * @param factory
+	 *            the factory method
+	 */
+	@ParameterizedTest(name = "{0}", quoteTextArguments = false)
+	@MethodSource("encapsulatedMaps")
+	public void testLazyMapEncapsulatesTheGivenMap(final String description,
+		final Supplier<Map<String, Object>> given, final UnaryOperator<Map<String, Object>> factory)
+	{
+		final Map<String, Object> map = given.get();
+		final Map<String, Object> lazyMap = factory.apply(map);
+		assertInstanceOf(LazyMap.class, lazyMap);
+		assertEquals(given.get(), lazyMap);
+		final Object created = lazyMap.get("a");
+		assertNotNull(created);
+		assertSame(created, map.get("a"));
+	}
+
+	/**
+	 * The cases of {@link #testLazyMapEncapsulatesTheGivenMap(String, Supplier, UnaryOperator)}
+	 *
+	 * @return the name of the case, the given map and the factory method
+	 */
+	static Stream<Arguments> encapsulatedMaps()
+	{
+		return Stream.of(
+			Arguments.of("newLazyHashMap(HashMap of four entries)",
+				(Supplier<Map<String, Object>>)() -> new HashMap<>(given()),
+				(UnaryOperator<Map<String, Object>>)map -> MapFactory
+					.newLazyHashMap((HashMap<String, Object>)map)),
+			Arguments.of("newLazyTreeMap(TreeMap of four entries)",
+				(Supplier<Map<String, Object>>)() -> new TreeMap<>(given()),
+				(UnaryOperator<Map<String, Object>>)map -> MapFactory
+					.newLazyTreeMap((TreeMap<String, Object>)map)));
+	}
+
+	/**
+	 * A call of one of the methods that make counter maps, and the counts
+	 *
+	 * @param description
+	 *            the name of the case
+	 * @param counter
+	 *            the call
+	 * @param expected
+	 *            the counts
+	 */
+	record Counter(String description, Supplier<Map<Integer, Integer>> counter,
+		Map<Integer, Integer> expected) {
+		@Override
+		public String toString()
+		{
+			return description;
+		}
+	}
+
+	/**
+	 * The counts of the keys 1 to 5, each the given count, and 5 the other one
+	 *
+	 * @param each
+	 *            the count of 1 to 4
+	 * @param five
+	 *            the count of 5
+	 * @return the counts
+	 */
+	static Map<Integer, Integer> oneToFive(final int each, final int five)
+	{
+		return Map.of(1, each, 2, each, 3, each, 4, each, 5, five);
+	}
+
+	/**
+	 * The cases of {@link #testCounterMap(Counter)}
+	 *
+	 * @return the cases
+	 */
+	static Stream<Counter> counters()
+	{
+		final List<Integer> oneToFive = List.of(1, 2, 3, 4, 5);
+		final List<Integer> fiveTwice = List.of(1, 2, 3, 4, 5, 5);
+		final Map<Integer, Integer> oneToTenZero = new HashMap<>();
+		for (int i = 1; i <= 10; i++)
+		{
+			oneToTenZero.put(i, 0);
+		}
+		return Stream.of(
+			new Counter("newCounterMap(1 to 5): each 0", () -> MapFactory.newCounterMap(oneToFive),
+				oneToFive(0, 0)),
+			new Counter("newCounterMap(1 to 5 and 5 again): each 0, 5 once more",
+				() -> MapFactory.newCounterMap(fiveTwice), oneToFive(0, 1)),
+			new Counter("newCounterMap(1 to 5, true): each 0",
+				() -> MapFactory.newCounterMap(oneToFive, true), oneToFive(0, 0)),
+			new Counter("newCounterMap(1 to 5, false): each 1",
+				() -> MapFactory.newCounterMap(oneToFive, false), oneToFive(1, 1)),
+			new Counter("newCounterMap(no elements): empty",
+				() -> MapFactory.newCounterMap(List.<Integer> of()), Map.of()),
+			new Counter("newCounterMap(map, 1 to 5): each 0",
+				() -> MapFactory.newCounterMap(new HashMap<>(), oneToFive), oneToFive(0, 0)),
+			new Counter("newCounterMap(map, 1 to 5, false): each 1",
+				() -> MapFactory.newCounterMap(new HashMap<>(), oneToFive, false), oneToFive(1, 1)),
+			new Counter("newCounterMap(map, 1 to 5 and 5 again, false): each 1, 5 twice",
+				() -> MapFactory.newCounterMap(new HashMap<>(), fiveTwice, false), oneToFive(1, 2)),
+			new Counter("newCounterMap(map of 1 counted 1, 1, 2): 1 counted on, 2 counted 0",
+				() -> MapFactory.newCounterMap(new HashMap<>(Map.of(1, 1)), List.of(1, 2)),
+				Map.of(1, 2, 2, 0)),
+			new Counter("newNumberCounterMap(1, 10): 1 to 10, each 0",
+				() -> MapFactory.newNumberCounterMap(1, 10), oneToTenZero),
+			new Counter("newNumberCounterMap(5, 5): 5 alone, 0",
+				() -> MapFactory.newNumberCounterMap(5, 5), Map.of(5, 0)),
+			new Counter("newNumberCounterMap(1, 3, map of 2 counted 5): 2 counted 5",
+				() -> MapFactory.newNumberCounterMap(1, 3, new HashMap<>(Map.of(2, 5))),
+				Map.of(1, 0, 2, 5, 3, 0)),
+			new Counter("newNumberCounterMap(1, 3, map of 9 counted 1): 9 not taken",
+				() -> MapFactory.newNumberCounterMap(1, 3, new HashMap<>(Map.of(9, 1))),
+				Map.of(1, 0, 2, 0, 3, 0)));
+	}
+
+	/**
+	 * Test for the methods {@code newCounterMap} and {@code newNumberCounterMap}: each element is a
+	 * key, counted 0 the first time, or 1 with the flag startByZero false, and one more each time
+	 * it comes again
+	 *
+	 * @param counter
+	 *            the call and the counts
+	 */
+	@ParameterizedTest(name = "{0}")
+	@MethodSource("counters")
+	public void testCounterMap(final Counter counter)
+	{
+		assertEquals(counter.expected(), counter.counter().get());
+	}
+
+	/**
+	 * Test for the Method {@link MapFactory#newAssosiativeArrayMap()}, with the example of its
+	 * Javadoc: in js you can create and fetch associative arrays like this:<br>
 	 * <br>
 	 * $arrayObj[0]['firstName'] = 'Albert';<br>
 	 * $arrayObj[0]['lastName'] = 'Einstein';<br>
 	 * $arrayObj[1]['firstName'] = 'Neil';<br>
 	 * $arrayObj[1]['lastName'] = 'Armstrong';<br>
 	 * <br>
-	 * to do the same in java we can do as the following code: final Map<Integer, Map<String,
-	 * String>> arrayMap = MapFactory.newAssosiativeArrayMap();<br>
-	 * <br>
-	 * arrayMap.get(0).put("firstName", "Albert");<br>
-	 * arrayMap.get(0).put("lastName", "Einstein");<br>
-	 * arrayMap.get(1).put("firstName", "Neil");<br>
-	 * arrayMap.get(1).put("lastName", "Armstrong");<br>
+	 * and in java with the map so: arrayMap.get(0).put("firstName", "Albert");
 	 */
 	@Test
 	public void testNewAssosiativeArrayMap()
@@ -85,725 +595,11 @@ public class MapFactoryTest
 		arrayMap.get(1).put("firstName", "Neil");
 		arrayMap.get(1).put("lastName", "Armstrong");
 
-		String expected = "Albert";
-		String actual = arrayMap.get(0).get("firstName");
-		assertEquals(expected, actual);
-
-		expected = "Einstein";
-		actual = arrayMap.get(0).get("lastName");
-		assertEquals(expected, actual);
-
-		expected = "Neil";
-		actual = arrayMap.get(1).get("firstName");
-		assertEquals(expected, actual);
-
-		expected = "Armstrong";
-		actual = arrayMap.get(1).get("lastName");
-		assertEquals(expected, actual);
-
-		expected = null;
-		actual = arrayMap.get(2).get("firstName");
-		assertEquals(expected, actual);
-	}
-
-	/**
-	 * Test for the Method {@link MapFactory#newConcurrentHashMap()}.
-	 */
-	@Test
-	public void testNewConcurrentHashMap()
-	{
-		final ConcurrentHashMap<Object, Object> concurrentHashMap = MapFactory
-			.newConcurrentHashMap();
-		assertNotNull(concurrentHashMap);
-	}
-
-	/**
-	 * Test for the Method {@link MapFactory#newConcurrentHashMap(int)}.
-	 */
-	@Test
-	public void testNewConcurrentHashMapInt()
-	{
-		final ConcurrentHashMap<Object, Object> concurrentHashMap = MapFactory
-			.newConcurrentHashMap(5);
-		assertNotNull(concurrentHashMap);
-	}
-
-	/**
-	 * Test method for {@link MapFactory#newConcurrentHashMap(Map)}.
-	 */
-	@Test
-	public void testNewConcurrentHashMapMapOfKV()
-	{
-		final Map<String, String> map = new HashMap<>();
-		map.put("1", "novalue");
-		map.put("2", "somevalue");
-		map.put("3", "othervalue");
-		map.put("5", "value");
-		Map<String, String> concurrentHashMap = MapFactory.newConcurrentHashMap(map);
-		assertNotNull(concurrentHashMap);
-		assertEquals(4, concurrentHashMap.size());
-	}
-
-	/**
-	 * Test for the Method {@link MapFactory#newCounterMap(java.util.Collection)}
-	 */
-	@Test
-	public void testNewCounterMap()
-	{
-		Map<Integer, Integer> actual;
-		Map<Integer, Integer> expected;
-		List<Integer> rangeList;
-		// new scenario...
-		rangeList = ListFactory.newRangeList(1, 5);
-		actual = MapFactory.newCounterMap(rangeList);
-		expected = MapFactory.newHashMap();
-		expected.put(1, 0);
-		expected.put(2, 0);
-		expected.put(3, 0);
-		expected.put(4, 0);
-		expected.put(5, 0);
-		assertEquals(expected, actual);
-		// new scenario...
-		rangeList = ListFactory.newArrayList(1, 2, 3, 4, 5, 5);
-		actual = MapFactory.newCounterMap(rangeList);
-		expected.put(5, 1);
-		assertEquals(expected, actual);
-	}
-
-	/**
-	 * Test for the Method {@link MapFactory#newCounterMap(java.util.Collection)}
-	 */
-	@Test
-	public void testNewCounterMapWithZeroFlag()
-	{
-		Map<Integer, Integer> actual;
-		Map<Integer, Integer> expected;
-		List<Integer> rangeList;
-		// new scenario...
-		rangeList = ListFactory.newRangeList(1, 5);
-		actual = MapFactory.newCounterMap(MapFactory.newHashMap(), rangeList, false);
-		expected = MapFactory.newHashMap();
-		expected.put(1, 1);
-		expected.put(2, 1);
-		expected.put(3, 1);
-		expected.put(4, 1);
-		expected.put(5, 1);
-		assertEquals(expected, actual);
-		// new scenario...
-		rangeList = ListFactory.newArrayList(1, 2, 3, 4, 5, 5);
-		actual = MapFactory.newCounterMap(MapFactory.newHashMap(), rangeList, false);
-		expected.put(5, 2);
-		assertEquals(expected, actual);
-	}
-
-	/**
-	 * Test for the Method {@link MapFactory#newHashMap()}.
-	 */
-	@Test
-	public void testNewHashMap()
-	{
-		final Map<Object, Object> hashMap = MapFactory.newHashMap();
-		assertNotNull(hashMap);
-	}
-
-	/**
-	 * Test the method {@link MapFactory#newHashMap(int)}: the new map is an empty {@link HashMap},
-	 * the type its Javadoc names
-	 */
-	@Test
-	public void testNewHashMapWithInitialCapacity()
-	{
-		int initialCapacity;
-		initialCapacity = 10;
-		final Map<Object, Object> hashMap = MapFactory.newHashMap(initialCapacity);
-		assertNotNull(hashMap);
-		assertInstanceOf(HashMap.class, hashMap);
-		assertTrue(hashMap.isEmpty());
-	}
-
-	/**
-	 * Test for the Method {@link MapFactory#newHashMap(List, List)}
-	 */
-	@Test
-	public void testNewHashMapFromLists()
-	{
-		final Map<Object, Object> hashMap = MapFactory.newHashMap();
-		assertNotNull(hashMap);
-	}
-
-	/**
-	 * Test for the Method {@link MapFactory#newHashMap(List, List)}
-	 */
-	@Test
-	public void testNewHashMapWithKeyValueLists()
-	{
-		List<Integer> keys;
-		List<String> values;
-		Map<Integer, String> actual;
-		Map<Integer, String> expected;
-		expected = new HashMap<>();
-		expected.put(1, "one");
-		expected.put(2, "two");
-		expected.put(3, "three");
-		expected.put(4, "four");
-
-		keys = ListFactory.newArrayList(1, 2, 3, 4);
-		values = ListFactory.newArrayList("one", "two", "three", "four");
-		actual = MapFactory.newHashMap(keys, values);
-		assertEquals(expected, actual);
-	}
-
-	/**
-	 * Test for the Method {@link MapFactory#newHashMap(List, List)}
-	 */
-	@Test
-	public void testNewHashMapWithKeyValueLists_ThrowsIllegalArgumentException_WhenKeysAndValuesDifferentSize()
-	{
-		List<Integer> keys;
-		List<String> values;
-		Map<Integer, String> actual;
-		Map<Integer, String> expected;
-		expected = new HashMap<>();
-		expected.put(1, "one");
-		expected.put(2, "two");
-		expected.put(3, "three");
-		expected.put(4, "four");
-
-		keys = ListFactory.newArrayList(1, 2, 3, 4);
-		values = ListFactory.newArrayList("one", "two", "three");
-
-		// Act & Assert
-		assertThrows(IllegalArgumentException.class, () -> {
-			MapFactory.newHashMap(keys, values);
-		});
-	}
-
-	/**
-	 * Test method for {@link MapFactory#newHashMap(java.util.Collection)}
-	 */
-	@Test
-	public void testNewHashMapListOfKeyValuePairs()
-	{
-		List<KeyValuePair<String, String>> keyValuePairs;
-		Map<String, String> map;
-		Map<String, String> hashMap;
-
-		map = new HashMap<>();
-		map.put("1", "novalue");
-		map.put("2", "somevalue");
-		map.put("3", "othervalue");
-		map.put("5", "value");
-		keyValuePairs = KeyValuePair.toKeyValuePairs(map);
-		hashMap = MapFactory.newHashMap(keyValuePairs);
-		assertNotNull(hashMap);
-		assertEquals(4, hashMap.size());
-
-		keyValuePairs = ListFactory.newArrayList(
-			KeyValuePair.<String, String> builder().key("1").value("novalue").build(),
-			KeyValuePair.<String, String> builder().key("2").value("somevalue").build(),
-			KeyValuePair.<String, String> builder().key("3").value("othervalue").build(),
-			KeyValuePair.<String, String> builder().key("5").value("value").build());
-		hashMap = MapFactory.newHashMap(keyValuePairs);
-		assertNotNull(hashMap);
-		assertEquals(4, hashMap.size());
-	}
-
-	/**
-	 * Test method for {@link MapFactory#newHashMap(Map)}.
-	 */
-	@Test
-	public void testNewHashMapMapOfKV()
-	{
-		final Map<String, String> map = new HashMap<>();
-		map.put("1", "novalue");
-		map.put("2", "somevalue");
-		map.put("3", "othervalue");
-		map.put("5", "value");
-		Map<String, String> concurrentHashMap = MapFactory.newHashMap(map);
-		assertNotNull(concurrentHashMap);
-		assertEquals(4, concurrentHashMap.size());
-	}
-
-	/**
-	 * Test method for {@link MapFactory#newHashMap(KeyValuePair[])}
-	 */
-	@Test
-	public void testNewHashMapObjects()
-	{
-		Map<String, String> hashMap;
-
-		hashMap = MapFactory.newHashMap(
-			KeyValuePair.<String, String> builder().key("1").value("novalue").build(),
-			KeyValuePair.<String, String> builder().key("2").value("somevalue").build(),
-			KeyValuePair.<String, String> builder().key("3").value("othervalue").build(),
-			KeyValuePair.<String, String> builder().key("5").value("value").build());
-		assertNotNull(hashMap);
-		assertEquals(4, hashMap.size());
-	}
-
-	/**
-	 * Test the method {@link MapFactory#newInsertionOrderMap()}: the new map is an empty
-	 * {@link InsertionOrderMap}, the type its Javadoc names
-	 */
-	@Test
-	public void testNewInsertionOrderMap()
-	{
-		final Map<Integer, String> map = MapFactory.newInsertionOrderMap();
-		assertNotNull(map);
-		assertInstanceOf(InsertionOrderMap.class, map);
-		assertTrue(map.isEmpty());
-	}
-
-	/**
-	 * Test the method {@link MapFactory#newInsertionOrderMap(int)}: the new map is an empty
-	 * {@link InsertionOrderMap}, the type its Javadoc names
-	 */
-	@Test
-	public void testNewInsertionOrderMapInt()
-	{
-		Map<String, String> insertionOrderMap = MapFactory.newInsertionOrderMap(4);
-		assertNotNull(insertionOrderMap);
-		assertInstanceOf(InsertionOrderMap.class, insertionOrderMap);
-		assertTrue(insertionOrderMap.isEmpty());
-	}
-
-	/**
-	 * Test method for {@link MapFactory#newInsertionOrderMap(java.util.Collection)}
-	 */
-	@Test
-	public void testNewInsertionOrderMapListOfKeyValuePairs()
-	{
-		List<KeyValuePair<String, String>> keyValuePairs;
-		Map<String, String> map;
-		Map<String, String> insertionOrderMap;
-
-		map = new HashMap<>();
-		map.put("1", "novalue");
-		map.put("2", "somevalue");
-		map.put("3", "othervalue");
-		map.put("5", "value");
-		keyValuePairs = KeyValuePair.toKeyValuePairs(map);
-		insertionOrderMap = MapFactory.newInsertionOrderMap(keyValuePairs);
-		assertNotNull(insertionOrderMap);
-		assertEquals(4, insertionOrderMap.size());
-
-		keyValuePairs = ListFactory.newArrayList(
-			KeyValuePair.<String, String> builder().key("1").value("novalue").build(),
-			KeyValuePair.<String, String> builder().key("2").value("somevalue").build(),
-			KeyValuePair.<String, String> builder().key("3").value("othervalue").build(),
-			KeyValuePair.<String, String> builder().key("5").value("value").build());
-		insertionOrderMap = MapFactory.newInsertionOrderMap(keyValuePairs);
-		assertNotNull(insertionOrderMap);
-		assertEquals(4, insertionOrderMap.size());
-	}
-
-	/**
-	 * Test method for {@link MapFactory#newInsertionOrderMap(Map)}.
-	 */
-	@Test
-	public void testNewInsertionOrderMapMapOfKV()
-	{
-		final Map<String, String> map = new HashMap<>();
-		map.put("1", "novalue");
-		map.put("2", "somevalue");
-		map.put("3", "othervalue");
-		map.put("5", "value");
-		Map<String, String> insertionOrderMap = MapFactory.newInsertionOrderMap(map);
-		assertNotNull(insertionOrderMap);
-		assertEquals(4, insertionOrderMap.size());
-	}
-
-	/**
-	 * Test method for {@link MapFactory#newInsertionOrderMap(KeyValuePair[])}
-	 */
-	@Test
-	public void testNewInsertionOrderMapObjects()
-	{
-		Map<String, String> insertionOrderMap;
-
-		insertionOrderMap = MapFactory.newInsertionOrderMap(
-			KeyValuePair.<String, String> builder().key("1").value("novalue").build(),
-			KeyValuePair.<String, String> builder().key("2").value("somevalue").build(),
-			KeyValuePair.<String, String> builder().key("3").value("othervalue").build(),
-			KeyValuePair.<String, String> builder().key("5").value("value").build());
-		assertNotNull(insertionOrderMap);
-		assertEquals(4, insertionOrderMap.size());
-	}
-
-	/**
-	 * Test method for {@link MapFactory#newLazyHashMap(HashMap)}
-	 */
-	@Test
-	public void testNewLazyHashMap()
-	{
-		final HashMap<String, String> map = new HashMap<>();
-		map.put("1", "novalue");
-		map.put("2", "somevalue");
-		map.put("3", "othervalue");
-		map.put("5", "value");
-		Map<String, String> lazyMap = MapFactory.newLazyHashMap(map);
-		assertNotNull(lazyMap);
-	}
-
-	/**
-	 * Test the method {@link MapFactory#newLazyTreeMap()}: the new map is an empty {@link LazyMap},
-	 * the type its Javadoc names, that creates a value for a key it does not hold yet, and as it
-	 * encapsulates a {@link TreeMap} it holds its keys in their natural order
-	 */
-	@Test
-	public void testNewLazyTreeMap()
-	{
-		final Map<String, Object> lazyMap = MapFactory.newLazyTreeMap();
-		assertNotNull(lazyMap);
-		assertInstanceOf(LazyMap.class, lazyMap);
-		assertTrue(lazyMap.isEmpty());
-		assertNotNull(lazyMap.get("b"));
-		assertNotNull(lazyMap.get("a"));
-		assertEquals(ListFactory.newArrayList("a", "b"), new ArrayList<>(lazyMap.keySet()));
-	}
-
-	/**
-	 * Test the method {@link MapFactory#newLazyTreeMap(Comparator)}: the new map is an empty
-	 * {@link LazyMap}, the type its Javadoc names, that creates a value for a key it does not hold
-	 * yet and holds its keys in the order of the given comparator
-	 */
-	@Test
-	public void testNewLazyTreeMapComparator()
-	{
-		final Map<Integer, Object> lazyMap = MapFactory.newLazyTreeMap(Comparator.reverseOrder());
-		assertNotNull(lazyMap);
-		assertInstanceOf(LazyMap.class, lazyMap);
-		assertTrue(lazyMap.isEmpty());
-		assertNotNull(lazyMap.get(1));
-		assertNotNull(lazyMap.get(3));
-		assertNotNull(lazyMap.get(2));
-		assertEquals(ListFactory.newArrayList(3, 2, 1), new ArrayList<>(lazyMap.keySet()));
-	}
-
-	/**
-	 * Test the method {@link MapFactory#newLazyTreeMap(TreeMap)}: the new {@link LazyMap}, the type
-	 * its Javadoc names, encapsulates the given {@link TreeMap} instead of copying it, so it holds
-	 * the entries of the given map, and the value it creates for a key it does not hold yet goes
-	 * into the given map
-	 */
-	@Test
-	public void testNewLazyTreeMapTreeMap()
-	{
-		final TreeMap<String, String> map = new TreeMap<>();
-		map.put("1", "novalue");
-		map.put("2", "somevalue");
-		map.put("3", "othervalue");
-		map.put("5", "value");
-		Map<String, String> lazyMap = MapFactory.newLazyTreeMap(map);
-		assertNotNull(lazyMap);
-		assertInstanceOf(LazyMap.class, lazyMap);
-		assertEquals(map, lazyMap);
-		// new scenario...
-		final TreeMap<String, Object> treeMap = new TreeMap<>();
-		final Map<String, Object> lazyTreeMap = MapFactory.newLazyTreeMap(treeMap);
-		final Object created = lazyTreeMap.get("a");
-		assertNotNull(created);
-		assertSame(created, treeMap.get("a"));
-	}
-
-	/**
-	 * Test for the Method {@link MapFactory#newLinkedHashMap()}.
-	 */
-	@Test
-	public void testNewLinkedHashMap()
-	{
-		final Map<Object, Object> hashMap = MapFactory.newLinkedHashMap();
-		assertNotNull(hashMap);
-	}
-
-
-	/**
-	 * Test for the Method {@link MapFactory#newLinkedHashMap(int)}.
-	 */
-	@Test
-	public void testNewLinkedHashMapInt()
-	{
-		final Map<Object, Object> hashMap = MapFactory.newLinkedHashMap(5);
-		assertNotNull(hashMap);
-	}
-
-	/**
-	 * Test method for {@link MapFactory#newLinkedHashMap(java.util.Collection)}
-	 */
-	@Test
-	public void testNewLinkedHashMapListOfKeyValuePairs()
-	{
-		List<KeyValuePair<String, String>> keyValuePairs;
-		Map<String, String> map;
-		Map<String, String> hashMap;
-
-		map = new HashMap<>();
-		map.put("1", "novalue");
-		map.put("2", "somevalue");
-		map.put("3", "othervalue");
-		map.put("5", "value");
-		keyValuePairs = KeyValuePair.toKeyValuePairs(map);
-		hashMap = MapFactory.newLinkedHashMap(keyValuePairs);
-		assertNotNull(hashMap);
-		assertEquals(4, hashMap.size());
-
-		keyValuePairs = ListFactory.newArrayList(
-			KeyValuePair.<String, String> builder().key("1").value("novalue").build(),
-			KeyValuePair.<String, String> builder().key("2").value("somevalue").build(),
-			KeyValuePair.<String, String> builder().key("3").value("othervalue").build(),
-			KeyValuePair.<String, String> builder().key("5").value("value").build());
-		hashMap = MapFactory.newLinkedHashMap(keyValuePairs);
-		assertNotNull(hashMap);
-		assertEquals(4, hashMap.size());
-	}
-
-	/**
-	 * Test method for {@link MapFactory#newLinkedHashMap(Map)}.
-	 */
-	@Test
-	public void testNewLinkedHashMapMapOfKV()
-	{
-		final Map<String, String> map = new HashMap<>();
-		map.put("1", "novalue");
-		map.put("2", "somevalue");
-		map.put("3", "othervalue");
-		map.put("5", "value");
-		Map<String, String> concurrentHashMap = MapFactory.newLinkedHashMap(map);
-		assertNotNull(concurrentHashMap);
-		assertEquals(4, concurrentHashMap.size());
-	}
-
-	/**
-	 * Test method for {@link MapFactory#newLinkedHashMap(KeyValuePair[])}
-	 */
-	@Test
-	public void testNewLinkedHashMapObjects()
-	{
-		Map<String, String> hashMap;
-
-		hashMap = MapFactory.newLinkedHashMap(
-			KeyValuePair.<String, String> builder().key("1").value("novalue").build(),
-			KeyValuePair.<String, String> builder().key("2").value("somevalue").build(),
-			KeyValuePair.<String, String> builder().key("3").value("othervalue").build(),
-			KeyValuePair.<String, String> builder().key("5").value("value").build());
-		assertNotNull(hashMap);
-		assertEquals(4, hashMap.size());
-	}
-
-	/**
-	 * Test method for {@link MapFactory#newNumberCounterMap(int, int)}
-	 */
-	@Test
-	public void testNewNumberCounterMap()
-	{
-		int minVolume;
-		int maxVolume;
-		minVolume = 1;
-		maxVolume = 10;
-		Map<Integer, Integer> numberCounterMap = MapFactory.newNumberCounterMap(minVolume,
-			maxVolume);
-		assertNotNull(numberCounterMap);
-		assertEquals(numberCounterMap.size(), maxVolume);
-	}
-
-	/**
-	 * Test method for {@link MapFactory#newNumberCounterMap(int, int)}
-	 */
-	@Test
-	public void testNewNumberCounterMapIntIntMap()
-	{
-		int minVolume;
-		int maxVolume;
-		Map<Integer, Integer> initialNumberCounterMap;
-		Map<Integer, Integer> numberCounterMap;
-
-		minVolume = 1;
-		maxVolume = 10;
-		initialNumberCounterMap = MapFactory.newNumberCounterMap(minVolume, maxVolume);
-		for (int i = minVolume; i <= maxVolume; i++)
-		{
-			initialNumberCounterMap.merge(i, 1 + new Random().nextInt() * 4, Integer::sum);
-		}
-		numberCounterMap = MapFactory.newNumberCounterMap(minVolume, maxVolume,
-			initialNumberCounterMap);
-		assertNotNull(numberCounterMap);
-		assertEquals(numberCounterMap.size(), maxVolume);
-	}
-
-	/**
-	 * Test the method {@link MapFactory#newTreeMap()}: the new map is an empty {@link TreeMap}, the
-	 * type its Javadoc names, without a comparator, so it orders its keys by their natural order
-	 */
-	@Test
-	public void testNewTreeMap()
-	{
-		final Map<Integer, String> treeMap = MapFactory.newTreeMap();
-		assertNotNull(treeMap);
-		assertNull(assertInstanceOf(TreeMap.class, treeMap).comparator());
-		assertTrue(treeMap.isEmpty());
-	}
-
-	/**
-	 * Test the method {@link MapFactory#newTreeMap(java.util.Collection)}: the new map is a
-	 * {@link TreeMap} without a comparator that holds the pairs in the natural order of their keys
-	 */
-	@Test
-	public void testNewTreeMapListOfKeyValuePairs()
-	{
-		final List<KeyValuePair<Integer, String>> keyValuePairs = ListFactory.newArrayList(
-			KeyValuePair.<Integer, String> builder().key(5).value("value").build(),
-			KeyValuePair.<Integer, String> builder().key(1).value("novalue").build());
-		final List<Integer> expectedKeys = ListFactory.newArrayList(1, 5);
-		final Map<Integer, String> expected = new HashMap<>();
-		expected.put(1, "novalue");
-		expected.put(5, "value");
-		final Map<Integer, String> actual = MapFactory.newTreeMap(keyValuePairs);
-		assertNull(assertInstanceOf(TreeMap.class, actual).comparator());
-		assertEquals(expectedKeys, new ArrayList<>(actual.keySet()));
-		assertEquals(expected, actual);
-	}
-
-	/**
-	 * Test the method {@link MapFactory#newTreeMap(KeyValuePair...)}: the new map is a
-	 * {@link TreeMap} without a comparator that holds the pairs in the natural order of their keys
-	 */
-	@Test
-	public void testNewTreeMapKeyValuePairs()
-	{
-		final List<Integer> expectedKeys = ListFactory.newArrayList(1, 5);
-		final Map<Integer, String> expected = new HashMap<>();
-		expected.put(1, "novalue");
-		expected.put(5, "value");
-		final Map<Integer, String> actual = MapFactory.newTreeMap(
-			KeyValuePair.<Integer, String> builder().key(5).value("value").build(),
-			KeyValuePair.<Integer, String> builder().key(1).value("novalue").build());
-		assertNull(assertInstanceOf(TreeMap.class, actual).comparator());
-		assertEquals(expectedKeys, new ArrayList<>(actual.keySet()));
-		assertEquals(expected, actual);
-	}
-
-	/**
-	 * Test the method {@link MapFactory#newTreeMap(Comparator)}: the new map is an empty
-	 * {@link TreeMap}, the type its Javadoc names, that orders its keys by the given comparator
-	 */
-	@Test
-	public void testNewTreeMapComparator()
-	{
-		final Comparator<Integer> comparator = Comparator.reverseOrder();
-		final Map<Integer, String> treeMap = MapFactory.newTreeMap(comparator);
-		assertNotNull(treeMap);
-		assertSame(comparator, assertInstanceOf(TreeMap.class, treeMap).comparator());
-		assertTrue(treeMap.isEmpty());
-	}
-
-	/**
-	 * Test method for {@link MapFactory#newTreeMap(Comparator, java.util.Collection)}
-	 */
-	@Test
-	public void testNewTreeMapComparatorListOfKeyValuePairs()
-	{
-		List<KeyValuePair<Integer, String>> keyValuePairs;
-		Map<Integer, String> map;
-		Map<Integer, String> treeMap;
-		Comparator<Integer> comparator;
-
-		map = new HashMap<>();
-		map.put(1, "novalue");
-		map.put(2, "somevalue");
-		map.put(3, "othervalue");
-		map.put(5, "value");
-		keyValuePairs = KeyValuePair.toKeyValuePairs(map);
-		comparator = (o1, o2) -> o1 - o2;
-		treeMap = MapFactory.newTreeMap(comparator, keyValuePairs);
-		assertNotNull(treeMap);
-		assertEquals(4, treeMap.size());
-
-		keyValuePairs = ListFactory.newArrayList(
-			KeyValuePair.<Integer, String> builder().key(1).value("novalue").build(),
-			KeyValuePair.<Integer, String> builder().key(2).value("somevalue").build(),
-			KeyValuePair.<Integer, String> builder().key(3).value("othervalue").build(),
-			KeyValuePair.<Integer, String> builder().key(5).value("value").build());
-		treeMap = MapFactory.newTreeMap(comparator, keyValuePairs);
-		assertNotNull(treeMap);
-		assertEquals(4, treeMap.size());
-	}
-
-	/**
-	 * Test the method {@link MapFactory#newTreeMap(Comparator, java.util.Collection)} with keys
-	 * that are not {@link Comparable}, ordered by the given comparator: the new map is a
-	 * {@link TreeMap} with that comparator that holds the pairs in its order (#44)
-	 */
-	@Test
-	public void testNewTreeMapComparatorListOfKeyValuePairsWithKeysNotComparable()
-	{
-		final Comparator<Class<?>> comparator = Comparator.comparing(Class::getName);
-		final List<KeyValuePair<Class<?>, String>> keyValuePairs = ListFactory.newArrayList(
-			KeyValuePair.<Class<?>, String> builder().key(String.class).value("string").build(),
-			KeyValuePair.<Class<?>, String> builder().key(Integer.class).value("integer").build());
-		final List<Class<?>> expectedKeys = ListFactory.newArrayList(Integer.class, String.class);
-		final Map<Class<?>, String> expected = new HashMap<>();
-		expected.put(Integer.class, "integer");
-		expected.put(String.class, "string");
-		final Map<Class<?>, String> actual = MapFactory.newTreeMap(comparator, keyValuePairs);
-		assertSame(comparator, assertInstanceOf(TreeMap.class, actual).comparator());
-		assertEquals(expectedKeys, new ArrayList<>(actual.keySet()));
-		assertEquals(expected, actual);
-	}
-
-	/**
-	 * Test method for {@link MapFactory#newTreeMap(Map)}.
-	 */
-	@Test
-	public void testNewTreeMapMapOfKV()
-	{
-		final Map<String, String> map = new HashMap<>();
-		map.put("1", "novalue");
-		map.put("2", "somevalue");
-		map.put("3", "othervalue");
-		map.put("5", "value");
-		Map<String, String> concurrentHashMap = MapFactory.newTreeMap(map);
-		assertNotNull(concurrentHashMap);
-		assertEquals(4, concurrentHashMap.size());
-	}
-
-	/**
-	 * Test method for {@link MapFactory#newTreeMap(Comparator, KeyValuePair...)}
-	 */
-	@Test
-	public void testNewTreeMapObjects()
-	{
-		Map<String, String> treeMap;
-		Comparator<String> comparator;
-
-		comparator = (o1, o2) -> o1.compareTo(o2);
-		treeMap = MapFactory.newTreeMap(comparator,
-			KeyValuePair.<String, String> builder().key("1").value("novalue").build(),
-			KeyValuePair.<String, String> builder().key("2").value("somevalue").build(),
-			KeyValuePair.<String, String> builder().key("3").value("othervalue").build(),
-			KeyValuePair.<String, String> builder().key("5").value("value").build());
-		assertNotNull(treeMap);
-		assertEquals(4, treeMap.size());
-	}
-
-	/**
-	 * Test the method {@link MapFactory#newTreeMap(Comparator, KeyValuePair...)} with keys that are
-	 * not {@link Comparable}, ordered by the given comparator: the new map is a {@link TreeMap}
-	 * with that comparator that holds the pairs in its order (#44)
-	 */
-	@Test
-	public void testNewTreeMapObjectsWithKeysNotComparable()
-	{
-		final Comparator<Class<?>> comparator = Comparator.comparing(Class::getName);
-		final List<Class<?>> expectedKeys = ListFactory.newArrayList(Integer.class, String.class);
-		final Map<Class<?>, String> expected = new HashMap<>();
-		expected.put(Integer.class, "integer");
-		expected.put(String.class, "string");
-		final Map<Class<?>, String> actual = MapFactory.newTreeMap(comparator,
-			KeyValuePair.<Class<?>, String> builder().key(String.class).value("string").build(),
-			KeyValuePair.<Class<?>, String> builder().key(Integer.class).value("integer").build());
-		assertSame(comparator, assertInstanceOf(TreeMap.class, actual).comparator());
-		assertEquals(expectedKeys, new ArrayList<>(actual.keySet()));
-		assertEquals(expected, actual);
+		assertEquals("Albert", arrayMap.get(0).get("firstName"));
+		assertEquals("Einstein", arrayMap.get(0).get("lastName"));
+		assertEquals("Neil", arrayMap.get(1).get("firstName"));
+		assertEquals("Armstrong", arrayMap.get(1).get("lastName"));
+		assertNull(arrayMap.get(2).get("firstName"));
 	}
 
 	/**
