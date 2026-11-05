@@ -258,7 +258,32 @@ public class MapExtensionsTest
 			new Merge("mergeAndSummarize(map, set, true) twice: 2 for each",
 				() -> MapExtensions.mergeAndSummarize(
 					MapExtensions.mergeAndSummarize(oneToTenCountedZero(), keys, true), keys, true),
-				countedOneToTen(2, true)));
+				countedOneToTen(2, true)),
+			new Merge(
+				"mergeAndSummarize(map, collection), 1, 2, 3 with 1, 3, 3, 9: 3 twice, but counted 3 times (#116)",
+				() -> MapExtensions.mergeAndSummarize(mapOf(1, 0, 2, 0, 3, 0), List.of(1, 3, 3, 9)),
+				mapOf(1, 1, 2, 0, 3, 3)),
+			new Merge(
+				"mergeAndSummarize(map, collection, false), 1, 2, 3 with 1, 3, 3, 9: 3 twice, but counted 3 times (#116)",
+				() -> MapExtensions.mergeAndSummarize(mapOf(1, 0, 2, 0, 3, 0), List.of(1, 3, 3, 9),
+					false),
+				mapOf(1, 1, 2, 0, 3, 3)),
+			new Merge(
+				"mergeAndSummarize(map, collection, true), 1, 2, 3 with 1, 3, 3, 9: 3 twice, but counted 3 times, 9 once (#116)",
+				() -> MapExtensions.mergeAndSummarize(mapOf(1, 0, 2, 0, 3, 0), List.of(1, 3, 3, 9),
+					true),
+				mapOf(1, 1, 2, 0, 3, 3, 9, 1)),
+			new Merge(
+				"mergeAndSummarize(map, collection, true), 1, 2, 3 with 1, 3, 9, 9, 9: 9 three times, but counted 5 times (#116)",
+				() -> MapExtensions.mergeAndSummarize(mapOf(1, 2, 2, 2, 3, 2),
+					List.of(1, 3, 9, 9, 9), true),
+				mapOf(1, 3, 2, 2, 3, 3, 9, 5)),
+			new Merge("mergeAndSummarize(map, empty collection): the counts of the map",
+				() -> MapExtensions.mergeAndSummarize(mapOf(1, 1, 2, 2), List.<Integer> of()),
+				mapOf(1, 1, 2, 2)),
+			new Merge("mergeAndSummarize(map, empty collection, true): the counts of the map",
+				() -> MapExtensions.mergeAndSummarize(mapOf(1, 1, 2, 2), List.<Integer> of(), true),
+				mapOf(1, 1, 2, 2)));
 	}
 
 	/**
