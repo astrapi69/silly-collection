@@ -24,30 +24,38 @@
  */
 package io.github.astrapi69.collection.properties;
 
-import static org.junit.jupiter.api.Assertions.*;
+import static org.junit.jupiter.api.Assertions.assertEquals;
+import static org.junit.jupiter.api.Assertions.assertThrows;
+import static org.junit.jupiter.api.Assertions.assertTrue;
 
+import java.io.ByteArrayInputStream;
 import java.io.File;
+import java.io.FileInputStream;
 import java.io.FileNotFoundException;
 import java.io.FileOutputStream;
 import java.io.IOException;
 import java.io.InputStream;
 import java.io.OutputStream;
-import java.net.URL;
+import java.net.URISyntaxException;
+import java.nio.charset.StandardCharsets;
+import java.nio.file.Files;
 import java.nio.file.Path;
 import java.util.ArrayList;
 import java.util.Collections;
+import java.util.LinkedHashMap;
 import java.util.List;
 import java.util.Map;
 import java.util.Optional;
 import java.util.Properties;
+import java.util.stream.Stream;
 
-import org.junit.jupiter.api.Assertions;
 import org.junit.jupiter.api.Test;
 import org.junit.jupiter.api.io.TempDir;
+import org.junit.jupiter.params.ParameterizedTest;
+import org.junit.jupiter.params.provider.Arguments;
+import org.junit.jupiter.params.provider.CsvSource;
+import org.junit.jupiter.params.provider.MethodSource;
 import org.meanbean.test.BeanTester;
-
-import io.github.astrapi69.collection.list.ListFactory;
-import io.github.astrapi69.io.StringOutputStream;
 
 /**
  * The unit test class for the class {@link PropertiesExtensions}.
@@ -64,457 +72,549 @@ public class PropertiesExtensionsTest
 	@TempDir
 	Path directory;
 
-
 	/**
-	 * Test method for {@link PropertiesExtensions#export(Properties, OutputStream)} <br>
-	 * Scenario of export an existing {@link Properties} object to a given {@link OutputStream} as
-	 * string object where the flag loadFromXML and the flag storeToXML are both false. <br>
+	 * Properties of the given keys and values
 	 *
-	 * @throws IOException
-	 *             Signals that an I/O exception has occurred.
+	 * @param keysAndValues
+	 *            the keys and values, one after the other
+	 * @return the properties
 	 */
-	@Test
-	public void testExportToString() throws IOException
+	static Properties propertiesOf(final String... keysAndValues)
 	{
 		final Properties properties = new Properties();
-		properties.setProperty("foo", "bar");
-		String actual;
-		try (OutputStream outputStream = new StringOutputStream())
+		for (int i = 0; i < keysAndValues.length; i += 2)
 		{
-			PropertiesExtensions.export(properties, outputStream);
-			actual = outputStream.toString();
-			assertNotNull(actual);
-			assertTrue(actual.contains("foo=bar"));
+			properties.setProperty(keysAndValues[i], keysAndValues[i + 1]);
+		}
+		return properties;
+	}
+
+	/**
+	 * The file of a resource of the tests
+	 *
+	 * @param name
+	 *            the name of the resource
+	 * @return the file
+	 */
+	static File resource(final String name)
+	{
+		try
+		{
+			return new File(
+				PropertiesExtensionsTest.class.getClassLoader().getResource(name).toURI());
+		}
+		catch (final URISyntaxException exception)
+		{
+			throw new IllegalStateException(exception);
 		}
 	}
 
 	/**
-	 * Test method for {@link PropertiesExtensions#export(Properties, File)}
-	 * 
-	 * @throws IOException
-	 *             Signals that an I/O exception has occurred.
+	 * The entries of the resource {@code resources.properties}
+	 *
+	 * @return the properties
 	 */
-	@Test
-	public void testExportToFile() throws IOException
+	static Properties resourcesProperties()
 	{
-		final Properties properties = new Properties();
-		properties.setProperty("foo", "bar");
-		File propertiesFile = new File(directory.toFile(), "output3.properties");
-		PropertiesExtensions.export(properties, propertiesFile);
-
-		final Properties propertiesOutput = PropertiesExtensions.loadProperties(propertiesFile);
-		assertNotNull(propertiesOutput);
-		assertEquals(properties, propertiesOutput);
+		return propertiesOf("testkey3", "Hello =", "testkey2", "Street", "testkey1", "testvalue2",
+			"bla", "But");
 	}
 
+	/**
+	 * The entries of the resource {@code SigninPanel.properties.xml}
+	 *
+	 * @return the properties
+	 */
+	static Properties signinPanelProperties()
+	{
+		return propertiesOf("global.email.label", "Email", "global.enter.your.email.label",
+			"Enter your email", "global.password.label", "Password",
+			"global.enter.your.password.label", "Enter your password");
+	}
 
 	/**
-	 * Test method for
-	 * {@link PropertiesExtensions#export(Properties, OutputStream, InputStream, String, boolean, boolean)}.
-	 * <br>
-	 * Scenario of export an existing {@link Properties} object to an given {@link OutputStream} as
-	 * *.properties file where the flag loadFromXML and the flag storeToXML are both false. <br>
-	 *
-	 * @throws IOException
-	 *             Signals that an I/O exception has occurred.
+	 * A call that writes properties into a file
 	 */
-	@Test
-	public void testExportToProperties() throws IOException
+	@FunctionalInterface
+	interface FileWrite
 	{
-		final Properties properties = new Properties();
-		properties.setProperty("foo", "bar");
-		File propertiesFile = new File(directory.toFile(), "output2.properties");
-		try (OutputStream outputStream = new FileOutputStream(propertiesFile))
+		/**
+		 * Writes into the given file
+		 *
+		 * @param file
+		 *            the file, which does not exist yet
+		 * @throws IOException
+		 *             Signals that an I/O exception has occurred
+		 */
+		void write(File file) throws IOException;
+	}
+
+	/**
+	 * A call of one of the methods that export or convert properties into a file, and what the file
+	 * holds
+	 *
+	 * @param description
+	 *            the name of the case
+	 * @param write
+	 *            the call
+	 * @param xml
+	 *            true if the file is an XML file
+	 * @param expected
+	 *            the properties the file holds
+	 * @param text
+	 *            a text the file holds
+	 */
+	record Write(String description, FileWrite write, boolean xml, Properties expected,
+		String text) {
+		@Override
+		public String toString()
 		{
-			PropertiesExtensions.export(properties, outputStream, null, null, false, false);
+			return description;
 		}
-		final Properties propertiesOutput = PropertiesExtensions.loadProperties(propertiesFile);
-		assertNotNull(propertiesOutput);
-		assertEquals(properties, propertiesOutput);
 	}
 
 	/**
-	 * Test method for {@link PropertiesExtensions#export(Properties, OutputStream)}. <br>
-	 * Scenario of export an existing {@link Properties} object to an given {@link OutputStream} as
-	 * *.properties file where the flag loadFromXML and the flag storeToXML are both false. <br>
+	 * The cases of {@link #testWrite(Write)}
 	 *
-	 * @throws IOException
-	 *             Signals that an I/O exception has occurred.
+	 * @return the cases
 	 */
-	@Test
-	public void testExportToProperties2() throws IOException
+	static Stream<Write> writes()
 	{
-		final Properties properties = new Properties();
-		properties.setProperty("foo", "bar");
-		File propertiesFile = new File(directory.toFile(), "output2.properties");
-		try (OutputStream outputStream = new FileOutputStream(propertiesFile))
+		final Properties fooBar = propertiesOf("foo", "bar");
+		final String fooBarXml = "<entry key=\"foo\">bar</entry>";
+		return Stream.of(
+			new Write("export(properties, file): a properties file",
+				file -> PropertiesExtensions.export(propertiesOf("foo", "bar"), file), false,
+				fooBar, "foo=bar"),
+			new Write("export(properties, outputStream): a properties file",
+				file -> writeTo(file,
+					out -> PropertiesExtensions.export(propertiesOf("foo", "bar"), out)),
+				false, fooBar, "foo=bar"),
+			new Write("export(properties, outputStream, comment): with the comment",
+				file -> writeTo(file,
+					out -> PropertiesExtensions.export(propertiesOf("foo", "bar"), out,
+						"Foo comment")),
+				false, fooBar, "#Foo comment"),
+			new Write(
+				"export(properties, outputStream, null, null, false, false): a properties file",
+				file -> writeTo(file,
+					out -> PropertiesExtensions.export(propertiesOf("foo", "bar"), out, null, null,
+						false, false)),
+				false, fooBar, "foo=bar"),
+			new Write("export(properties, outputStream, null, null, true, true): an XML file",
+				file -> writeTo(file,
+					out -> PropertiesExtensions.export(propertiesOf("foo", "bar"), out, null, null,
+						true, true)),
+				true, fooBar, fooBarXml),
+			new Write("export(properties, outputStream, null, null, false, true): an XML file",
+				file -> writeTo(file,
+					out -> PropertiesExtensions.export(propertiesOf("foo", "bar"), out, null, null,
+						false, true)),
+				true, fooBar, fooBarXml),
+			new Write(
+				"export(properties, outputStream, inputStream of a=1, null, false, false): both entries",
+				file -> writeTo(file,
+					out -> PropertiesExtensions.export(propertiesOf("foo", "bar"), out,
+						new ByteArrayInputStream("a=1".getBytes(StandardCharsets.ISO_8859_1)), null,
+						false, false)),
+				false, propertiesOf("foo", "bar", "a", "1"), "a=1"),
+			new Write("export(null, outputStream, null, null, false, false): no entry",
+				file -> writeTo(file,
+					out -> PropertiesExtensions.export(null, out, null, null, false, false)),
+				false, new Properties(), "#"),
+			new Write("toPropertiesFile(outputStream, resources.properties, null): its entries",
+				file -> writeTo(file,
+					out -> readFrom("resources.properties",
+						in -> PropertiesExtensions.toPropertiesFile(out, in, null))),
+				false, resourcesProperties(), "testkey2=Street"),
+			new Write("toProperties(file, SigninPanel.properties.xml, comment): its four entries",
+				file -> PropertiesExtensions.toProperties(file,
+					resource("SigninPanel.properties.xml"), "a comment"),
+				false, signinPanelProperties(), "#a comment"),
+			new Write(
+				"toProperties(outputStream, SigninPanel.properties.xml, comment): its four entries",
+				file -> writeTo(file,
+					out -> readFrom("SigninPanel.properties.xml",
+						in -> PropertiesExtensions.toProperties(out, in, "a comment"))),
+				false, signinPanelProperties(), "#a comment"),
+			new Write("toXml(resources.properties, file, comment, UTF8): its entries as XML",
+				file -> PropertiesExtensions.toXml(resource("resources.properties"), file,
+					"a comment", "UTF8"),
+				true, resourcesProperties(), "<comment>a comment</comment>"));
+	}
+
+	/**
+	 * A call that writes into an output stream
+	 */
+	@FunctionalInterface
+	interface StreamWrite
+	{
+		/**
+		 * Writes into the given output stream
+		 *
+		 * @param outputStream
+		 *            the output stream
+		 * @throws IOException
+		 *             Signals that an I/O exception has occurred
+		 */
+		void write(OutputStream outputStream) throws IOException;
+	}
+
+	/**
+	 * Writes into the given file with the given call
+	 *
+	 * @param file
+	 *            the file
+	 * @param write
+	 *            the call that writes into the output stream of the file
+	 * @throws IOException
+	 *             Signals that an I/O exception has occurred
+	 */
+	static void writeTo(final File file, final StreamWrite write) throws IOException
+	{
+		try (OutputStream outputStream = new FileOutputStream(file))
 		{
-			PropertiesExtensions.export(properties, outputStream);
+			write.write(outputStream);
 		}
-		final Properties propertiesOutput = PropertiesExtensions.loadProperties(propertiesFile);
-		assertNotNull(propertiesOutput);
-		assertEquals(properties, propertiesOutput);
 	}
 
 	/**
-	 * Test method for {@link PropertiesExtensions#export(Properties, OutputStream, String)}. <br>
-	 * Scenario of export an existing {@link Properties} object to an given {@link OutputStream} as
-	 * *.properties file where the flag loadFromXML and the flag storeToXML are both false. <br>
-	 *
-	 * @throws IOException
-	 *             Signals that an I/O exception has occurred.
+	 * A call that reads from an input stream
 	 */
-	@Test
-	public void testExportToProperties3() throws IOException
+	@FunctionalInterface
+	interface StreamRead
 	{
-		final Properties properties = new Properties();
-		properties.setProperty("foo", "bar");
-		File propertiesFile = new File(directory.toFile(), "output2.properties");
-		try (OutputStream outputStream = new FileOutputStream(propertiesFile))
+		/**
+		 * Reads from the given input stream
+		 *
+		 * @param inputStream
+		 *            the input stream
+		 * @throws IOException
+		 *             Signals that an I/O exception has occurred
+		 */
+		void read(InputStream inputStream) throws IOException;
+	}
+
+	/**
+	 * Reads from the given resource with the given call
+	 *
+	 * @param name
+	 *            the name of the resource
+	 * @param read
+	 *            the call that reads from the input stream of the resource
+	 * @throws IOException
+	 *             Signals that an I/O exception has occurred
+	 */
+	static void readFrom(final String name, final StreamRead read) throws IOException
+	{
+		try (InputStream inputStream = new FileInputStream(resource(name)))
 		{
-			PropertiesExtensions.export(properties, outputStream, "Foo comment");
+			read.read(inputStream);
 		}
-		final Properties propertiesOutput = PropertiesExtensions.loadProperties(propertiesFile);
-		assertNotNull(propertiesOutput);
-		assertEquals(properties, propertiesOutput);
 	}
 
 	/**
-	 * Test method for
-	 * {@link PropertiesExtensions#export(Properties, OutputStream, InputStream, String, boolean, boolean)}.
+	 * Test for the methods {@code export}, {@code toProperties}, {@link PropertiesExtensions#toXml}
+	 * and {@link PropertiesExtensions#toPropertiesFile}: the file holds the given properties, as a
+	 * properties file or an XML file, which {@link PropertiesExtensions#loadProperties(File)} or
+	 * {@link PropertiesExtensions#loadProperties(File, boolean)} read back
 	 *
-	 * <br>
-	 * Scenario of export an existing {@link Properties} object to an given {@link OutputStream} as
-	 * *.xml properties file where the flag loadFromXML and the flag storeToXML are both true. <br>
+	 * @param write
+	 *            the call and what the file holds
+	 * @throws IOException
+	 *             Signals that an I/O exception has occurred
+	 */
+	@ParameterizedTest(name = "{0}")
+	@MethodSource("writes")
+	public void testWrite(final Write write) throws IOException
+	{
+		final File file = new File(directory.toFile(), "output");
+		write.write().write(file);
+		final Properties actual = write.xml()
+			? PropertiesExtensions.loadProperties(file, true)
+			: PropertiesExtensions.loadProperties(file);
+		assertEquals(write.expected(), actual);
+		final String text = Files.readString(file.toPath(), StandardCharsets.ISO_8859_1);
+		assertTrue(text.contains(write.text()), () -> "the file does not hold " + write.text());
+	}
+
+	/**
+	 * Test for the methods {@link PropertiesExtensions#toXml(File, File, String, String)} and
+	 * {@link PropertiesExtensions#toProperties(File, File, String)} one after the other: the XML
+	 * file of {@code SigninPanel.properties.xml}, converted into a properties file, into an XML
+	 * file and back, holds its four entries
 	 *
 	 * @throws IOException
-	 *             Signals that an I/O exception has occurred.
+	 *             Signals that an I/O exception has occurred
 	 */
 	@Test
-	public void testExportToXml() throws IOException
+	public void testToXmlAndBack() throws IOException
 	{
-		final Properties properties = new Properties();
-		properties.setProperty("foo", "bar");
-		File propertiesFile = new File(directory.toFile(), "output1.xml");
-		try (OutputStream outputStream = new FileOutputStream(propertiesFile))
-		{
-			PropertiesExtensions.export(properties, outputStream, null, null, true, true);
-		}
-		final Properties propertiesOutput = PropertiesExtensions.loadProperties(propertiesFile,
-			true);
-		assertNotNull(propertiesOutput);
-		assertEquals(properties, propertiesOutput);
+		final File properties = new File(directory.toFile(), "SigninPanel.properties");
+		final File xml = new File(directory.toFile(), "login.properties.xml");
+		final File back = new File(directory.toFile(), "login.properties");
+		PropertiesExtensions.toProperties(properties, resource("SigninPanel.properties.xml"),
+			"a comment");
+		PropertiesExtensions.toXml(properties, xml, "a comment", "UTF8");
+		PropertiesExtensions.toProperties(back, xml, "a comment");
+		assertEquals(signinPanelProperties(), PropertiesExtensions.loadProperties(back));
 	}
 
 	/**
-	 * Test method for
-	 * {@link PropertiesExtensions#export(Properties, OutputStream, InputStream, String, boolean, boolean)}.
+	 * Test for the methods {@link PropertiesExtensions#loadProperties(File)} and
+	 * {@link PropertiesExtensions#loadProperties(File, boolean)}: the properties of a properties
+	 * file or of an XML file
 	 *
-	 * <br>
-	 * Scenario of export an existing {@link Properties} object to an given {@link OutputStream} as
-	 * *.xml properties file where the flag loadFromXML is false and the flag storeToXML is true.
-	 * <br>
-	 *
+	 * @param description
+	 *            the name of the case
+	 * @param name
+	 *            the name of the resource
+	 * @param xml
+	 *            true if the file is an XML file
+	 * @param expected
+	 *            the properties
 	 * @throws IOException
-	 *             Signals that an I/O exception has occurred.
+	 *             Signals that an I/O exception has occurred
 	 */
-	@Test
-	public void testExportToXml2() throws IOException
+	@ParameterizedTest(name = "{0}", quoteTextArguments = false)
+	@MethodSource("loads")
+	public void testLoadProperties(final String description, final String name, final boolean xml,
+		final Properties expected) throws IOException
 	{
-		final Properties properties = new Properties();
-		properties.setProperty("foo", "bar");
-		File propertiesFile = new File(directory.toFile(), "output2.xml");
-		try (OutputStream outputStream = new FileOutputStream(propertiesFile))
-		{
-			PropertiesExtensions.export(properties, outputStream, null, null, false, true);
-		}
-		final Properties propertiesOutput = PropertiesExtensions.loadProperties(propertiesFile,
-			true);
-		assertNotNull(propertiesOutput);
-		assertEquals(properties, propertiesOutput);
+		final File file = resource(name);
+		assertEquals(expected,
+			xml
+				? PropertiesExtensions.loadProperties(file, true)
+				: PropertiesExtensions.loadProperties(file));
 	}
 
 	/**
-	 * Test for method {@link PropertiesExtensions#findRedundantValues(Properties)}
-	 */
-	@Test
-	public void testFindRedundantValues()
-	{
-		final Properties properties = new Properties();
-
-		properties.put("com", "Hello, {0} {1} {2}!");
-		properties.put("foo.redundant.value", "Hello, {0} {1} {2}!");
-		properties.put("com.example.gui.window.title", "Hello, {0}!");
-		properties.put("com.example.gui.window.buttons.ok", "OK");
-		properties.put("foo.bar", "OK");
-		properties.put("com.example.gui.window.buttons.cancel", "Cancel");
-
-		final Map<String, List<String>> redundantValues = PropertiesExtensions
-			.findRedundantValues(properties);
-
-		Collections.sort(redundantValues.get("OK"));
-
-		assertEquals(redundantValues.get("Hello, {0} {1} {2}!"),
-			ListFactory.newArrayList("com", "foo.redundant.value"));
-		assertEquals(redundantValues.get("OK"),
-			ListFactory.newArrayList("com.example.gui.window.buttons.ok", "foo.bar"));
-	}
-
-	/**
-	 * Test the method {@link PropertiesExtensions#findRedundantValues(Properties)} at the boundary:
-	 * a value that one key has is not redundant, a value that two keys share is
-	 */
-	@Test
-	public void testFindRedundantValuesNeedsTwoKeys()
-	{
-		final Properties properties = new Properties();
-		properties.setProperty("single", "once");
-		properties.setProperty("first", "twice");
-		properties.setProperty("second", "twice");
-
-		final Map<String, List<String>> redundantValues = PropertiesExtensions
-			.findRedundantValues(properties);
-
-		assertEquals(1, redundantValues.size());
-		assertFalse(redundantValues.containsKey("once"));
-		final List<String> keys = new ArrayList<>(redundantValues.get("twice"));
-		Collections.sort(keys);
-		assertEquals(ListFactory.newArrayList("first", "second"), keys);
-	}
-
-	/**
-	 * Test for method {@link PropertiesExtensions#getInteger(Properties, String)}.
-	 */
-	@Test
-	public void testGetInteger()
-	{
-		Integer expected;
-		Integer actual;
-		Optional<Integer> number;
-		Properties properties;
-		properties = new Properties();
-
-		properties.put("com", "5");
-
-		number = PropertiesExtensions.getInteger(properties, "com");
-		actual = number.get();
-		expected = 5;
-		assertEquals(actual, expected);
-
-		properties = new Properties();
-
-		properties.put("com", "8");
-
-		number = PropertiesExtensions.getInteger(properties, "com");
-		actual = number.get();
-		expected = 8;
-		assertEquals(actual, expected);
-
-		number = PropertiesExtensions.getInteger(properties, "bar");
-		assertFalse(number.isPresent());
-
-	}
-
-	/**
-	 * Test for method {@link PropertiesExtensions#getInteger(Properties, String)} where value is
-	 * not a number.
-	 */
-	@Test
-	public void testGetIntegerWithNoNumberValue()
-	{
-		Optional<Integer> actual;
-		Optional<Integer> expected;
-		Properties properties = new Properties();
-
-		properties.put("com", "foo");
-
-		actual = PropertiesExtensions.getInteger(properties, "com");
-		expected = Optional.empty();
-		assertEquals(actual, expected);
-	}
-
-	/**
-	 * Test for method {@link PropertiesExtensions#getMatchedPrefixLists(Properties)}.
-	 */
-	@Test
-	public void testGetMatchedPrefixLists()
-	{
-		final Properties properties = new Properties();
-
-		properties.put("com", "Hello, {0} {1} {2}!");
-		properties.put("foo.redundant.value", "Hello, {0} {1} {2}!");
-		properties.put("com.example.gui.window.title", "Hello, {0}!");
-		properties.put("com.example.gui.window.buttons.ok", "OK");
-		properties.put("foo.bar", "OK");
-		properties.put("com.example.gui.window.buttons.cancel", "Cancel");
-
-		final Map<String, List<String>> matchedPrefixLists = PropertiesExtensions
-			.getMatchedPrefixLists(properties);
-
-		assertEquals(matchedPrefixLists.size(), 5);
-	}
-
-	/**
-	 * Test the method {@link PropertiesExtensions#getMatchedPrefixLists(Properties)} puts all keys
-	 * with the same prefix in front of their last dot into the one list of that prefix
-	 */
-	@Test
-	public void testGetMatchedPrefixListsGroupsTheKeysOfOnePrefix()
-	{
-		final Properties properties = new Properties();
-		properties.setProperty("com.example.gui.window.buttons.ok", "OK");
-		properties.setProperty("com.example.gui.window.buttons.cancel", "Cancel");
-		properties.setProperty("com.example.gui.window.title", "Hello");
-
-		final Map<String, List<String>> matchedPrefixLists = PropertiesExtensions
-			.getMatchedPrefixLists(properties);
-
-		assertEquals(2, matchedPrefixLists.size());
-		final List<String> buttons = new ArrayList<>(
-			matchedPrefixLists.get("com.example.gui.window.buttons"));
-		Collections.sort(buttons);
-		assertEquals(ListFactory.newArrayList("com.example.gui.window.buttons.cancel",
-			"com.example.gui.window.buttons.ok"), buttons);
-		assertEquals(ListFactory.newArrayList("com.example.gui.window.title"),
-			matchedPrefixLists.get("com.example.gui.window"));
-	}
-
-	/**
-	 * Test the method {@link PropertiesExtensions#getMatchedPrefixLists(Properties)} at the
-	 * boundary of the last dot: a key whose last dot is its first character has nothing in front of
-	 * it and is its own prefix, like a key without a dot, while a dot at the second character
-	 * leaves a prefix of one character
-	 */
-	@Test
-	public void testGetMatchedPrefixListsWithTheLastDotAtTheStart()
-	{
-		final Properties properties = new Properties();
-		properties.setProperty(".hidden", "x");
-		properties.setProperty("a.b", "y");
-		properties.setProperty("plain", "z");
-
-		final Map<String, List<String>> matchedPrefixLists = PropertiesExtensions
-			.getMatchedPrefixLists(properties);
-
-		assertEquals(3, matchedPrefixLists.size());
-		assertEquals(ListFactory.newArrayList(".hidden"), matchedPrefixLists.get(".hidden"));
-		assertEquals(ListFactory.newArrayList("a.b"), matchedPrefixLists.get("a"));
-		assertEquals(ListFactory.newArrayList("plain"), matchedPrefixLists.get("plain"));
-	}
-
-	/**
-	 * Test for method {@link PropertiesExtensions#getPropertyParameters(String)}.
-	 */
-	@Test
-	public void testGetPropertyParameters()
-	{
-		final String propertyValue = "Hello, {0} {1} {2}!";
-		final List<String> propertyParameters = PropertiesExtensions
-			.getPropertyParameters(propertyValue);
-		assertEquals(propertyParameters.size(), 3);
-	}
-
-	/**
-	 * Test for method {@link PropertiesExtensions#loadProperties(File)}.
+	 * The cases of {@link #testLoadProperties(String, String, boolean, Properties)}
 	 *
-	 * @throws IOException
-	 *             Signals that an I/O exception has occurred.
+	 * @return the name of the case, the resource, the flag and the properties
 	 */
-	@Test
-	public void testLoadProperties() throws IOException
+	static Stream<Arguments> loads()
 	{
-		final URL resource = getClass().getClassLoader().getResource("resources.properties");
-		final File propertiesFile = new File(resource.getFile());
-		final Properties properties = PropertiesExtensions.loadProperties(propertiesFile);
-		assertNotNull(properties);
+		return Stream.of(
+			Arguments.of("loadProperties(resources.properties): its four entries",
+				"resources.properties", false, resourcesProperties()),
+			Arguments.of("loadProperties(SigninPanel.properties.xml, true): its four entries",
+				"SigninPanel.properties.xml", true, signinPanelProperties()));
 	}
 
 	/**
-	 * Test for method {@link PropertiesExtensions#loadProperties(File)} with a file that does not
-	 * exist.
+	 * Test for the methods {@link PropertiesExtensions#loadProperties(File)} and
+	 * {@link PropertiesExtensions#loadProperties(File, boolean)} with a file that does not exist:
+	 * they throw a {@link FileNotFoundException} with the name of the file
 	 *
-	 * @throws IOException
-	 *             Signals that an I/O exception has occurred.
+	 * @param description
+	 *            the name of the case
+	 * @param xml
+	 *            the flag loadFromXML, null for {@link PropertiesExtensions#loadProperties(File)}
 	 */
-	@Test
-	public void testLoadPropertiesNotFound() throws IOException
+	@ParameterizedTest(name = "{0}", quoteTextArguments = false)
+	@CsvSource({ "loadProperties(file), ", "'loadProperties(file, false)', false",
+			"'loadProperties(file, true)', true" })
+	public void testLoadPropertiesNotFound(final String description, final Boolean xml)
 	{
-		Assertions.assertThrows(FileNotFoundException.class, () -> {
-			PropertiesExtensions.loadProperties(new File(directory.toFile(), "foo.properties"));
+		final File file = new File(directory.toFile(), "foo.properties");
+		final FileNotFoundException exception = assertThrows(FileNotFoundException.class, () -> {
+			if (xml == null)
+			{
+				PropertiesExtensions.loadProperties(file);
+			}
+			else
+			{
+				PropertiesExtensions.loadProperties(file, xml);
+			}
 		});
+		assertEquals("foo.properties not found.", exception.getMessage());
 	}
 
 	/**
-	 * Test method for
-	 * {@link PropertiesExtensions#toPropertiesFile(OutputStream, InputStream, String)}.
+	 * The given map with each list sorted, to compare lists whose order follows the hash order of
+	 * {@link Properties}
 	 *
-	 * @throws IOException
-	 *             Signals that an I/O exception has occurred.
+	 * @param map
+	 *            the map
+	 * @return a new map with sorted copies of the lists, in the order of the keys of the given map
 	 */
-	@Test
-	public void testToPropertiesFile() throws IOException
+	static Map<String, List<String>> sorted(final Map<String, List<String>> map)
 	{
-		File propertiesFile = new File(directory.toFile(), "output1.properties");
-		final URL resource = getClass().getClassLoader().getResource("resources.properties");
-		final File propertiesInputFile = new File(resource.getFile());
-		try (OutputStream outputStream = new FileOutputStream(propertiesFile);
-			InputStream inputStream = resource.openStream())
+		final Map<String, List<String>> sorted = new LinkedHashMap<>();
+		map.forEach((key, list) -> {
+			final List<String> copy = new ArrayList<>(list);
+			Collections.sort(copy);
+			sorted.put(key, copy);
+		});
+		return sorted;
+	}
+
+	/**
+	 * The six entries of the message bundle that {@link #testFindRedundantValues} and
+	 * {@link #testGetMatchedPrefixLists} search
+	 *
+	 * @return the properties
+	 */
+	static Properties messages()
+	{
+		return propertiesOf("com", "Hello, {0} {1} {2}!", "foo.redundant.value",
+			"Hello, {0} {1} {2}!", "com.example.gui.window.title", "Hello, {0}!",
+			"com.example.gui.window.buttons.ok", "OK", "foo.bar", "OK",
+			"com.example.gui.window.buttons.cancel", "Cancel");
+	}
+
+	/**
+	 * Test for method {@link PropertiesExtensions#findRedundantValues(Properties)}: each value that
+	 * two keys or more share, with these keys; a value of one key is not redundant
+	 *
+	 * @param description
+	 *            the name of the case
+	 * @param properties
+	 *            the properties
+	 * @param expected
+	 *            the redundant values and their keys
+	 */
+	@ParameterizedTest(name = "{0}", quoteTextArguments = false)
+	@MethodSource("redundantValues")
+	public void testFindRedundantValues(final String description, final Properties properties,
+		final Map<String, List<String>> expected)
+	{
+		assertEquals(expected, sorted(PropertiesExtensions.findRedundantValues(properties)));
+	}
+
+	/**
+	 * The cases of {@link #testFindRedundantValues(String, Properties, Map)}
+	 *
+	 * @return the name of the case, the properties and the redundant values
+	 */
+	static Stream<Arguments> redundantValues()
+	{
+		return Stream.of(
+			Arguments.of("six messages: two values, each of two keys", messages(),
+				Map.of("Hello, {0} {1} {2}!", List.of("com", "foo.redundant.value"), "OK",
+					List.of("com.example.gui.window.buttons.ok", "foo.bar"))),
+			Arguments.of("a value of one key and a value of two: the value of two",
+				propertiesOf("single", "once", "first", "twice", "second", "twice"),
+				Map.of("twice", List.of("first", "second"))),
+			Arguments.of("a value of three keys: all three",
+				propertiesOf("a", "x", "b", "x", "c", "x"), Map.of("x", List.of("a", "b", "c"))),
+			Arguments.of("every value of one key: none", propertiesOf("a", "x", "b", "y"),
+				Map.of()),
+			Arguments.of("no properties: none", new Properties(), Map.of()));
+	}
+
+	/**
+	 * Test for method {@link PropertiesExtensions#getMatchedPrefixLists(Properties)}: each prefix
+	 * in front of the last dot of a key, with all keys of this prefix; a key whose last dot is its
+	 * first character, or that has no dot, is its own prefix
+	 *
+	 * @param description
+	 *            the name of the case
+	 * @param properties
+	 *            the properties
+	 * @param expected
+	 *            the prefixes and their keys
+	 */
+	@ParameterizedTest(name = "{0}", quoteTextArguments = false)
+	@MethodSource("matchedPrefixLists")
+	public void testGetMatchedPrefixLists(final String description, final Properties properties,
+		final Map<String, List<String>> expected)
+	{
+		assertEquals(expected, sorted(PropertiesExtensions.getMatchedPrefixLists(properties)));
+	}
+
+	/**
+	 * The cases of {@link #testGetMatchedPrefixLists(String, Properties, Map)}
+	 *
+	 * @return the name of the case, the properties and the prefixes
+	 */
+	static Stream<Arguments> matchedPrefixLists()
+	{
+		return Stream.of(
+			Arguments.of("six messages: five prefixes", messages(),
+				Map.of("com", List.of("com"), "foo.redundant", List.of("foo.redundant.value"),
+					"com.example.gui.window", List.of("com.example.gui.window.title"),
+					"com.example.gui.window.buttons",
+					List.of("com.example.gui.window.buttons.cancel",
+						"com.example.gui.window.buttons.ok"),
+					"foo", List.of("foo.bar"))),
+			Arguments.of("two keys of one prefix and one of another: two prefixes",
+				propertiesOf("com.example.gui.window.buttons.ok", "OK",
+					"com.example.gui.window.buttons.cancel", "Cancel",
+					"com.example.gui.window.title", "Hello"),
+				Map.of("com.example.gui.window.buttons",
+					List.of("com.example.gui.window.buttons.cancel",
+						"com.example.gui.window.buttons.ok"),
+					"com.example.gui.window", List.of("com.example.gui.window.title"))),
+			Arguments.of("the last dot at the start, at the second character, none: three prefixes",
+				propertiesOf(".hidden", "x", "a.b", "y", "plain", "z"),
+				Map.of(".hidden", List.of(".hidden"), "a", List.of("a.b"), "plain",
+					List.of("plain"))),
+			Arguments.of("no properties: none", new Properties(), Map.of()));
+	}
+
+	/**
+	 * Test for method {@link PropertiesExtensions#getInteger(Properties, String)}: the number of
+	 * the key, or an empty {@link Optional} for a key without a value or with one that is no number
+	 *
+	 * @param description
+	 *            the name of the case
+	 * @param value
+	 *            the value of the key com, null for no entry
+	 * @param key
+	 *            the key to get
+	 * @param expected
+	 *            the number, null for an empty {@link Optional}
+	 */
+	@ParameterizedTest(name = "{0}", quoteTextArguments = false)
+	@CsvSource({ "com of 5: 5, 5, com, 5", "com of 8: 8, 8, com, 8", "com of -3: -3, -3, com, -3",
+			"'bar, not a key: empty', 8, bar,", "'com of foo, no number: empty', foo, com,",
+			"no entry: empty, , com," })
+	public void testGetInteger(final String description, final String value, final String key,
+		final Integer expected)
+	{
+		final Properties properties = new Properties();
+		if (value != null)
 		{
-			PropertiesExtensions.toPropertiesFile(outputStream, inputStream, null);
+			properties.setProperty("com", value);
 		}
-		final Properties propertiesInput = PropertiesExtensions.loadProperties(propertiesInputFile);
-		assertNotNull(propertiesInput);
-		final Properties propertiesOutput = PropertiesExtensions.loadProperties(propertiesFile);
-		assertNotNull(propertiesOutput);
-		assertEquals(propertiesInput, propertiesOutput);
+		assertEquals(Optional.ofNullable(expected),
+			PropertiesExtensions.getInteger(properties, key));
 	}
 
 	/**
-	 * Test for method {@link PropertiesExtensions#toProperties(File, File, String)}.
-	 *
-	 * @throws IOException
-	 *             Signals that an I/O exception has occurred.
+	 * Test for method {@link PropertiesExtensions#getInteger(Properties, String)} with null instead
+	 * of properties: an empty {@link Optional}
 	 */
 	@Test
-	public void testToPropertiesFileFileString() throws IOException
+	public void testGetIntegerOfNull()
 	{
-		URL resource;
-		final File propertiesFile = new File(directory.toFile(), "SigninPanel.properties");
-		resource = getClass().getClassLoader().getResource("SigninPanel.properties.xml");
-		final File xmlFile = new File(resource.getFile());
-		PropertiesExtensions.toProperties(propertiesFile, xmlFile, "a comment");
-		final Properties properties = PropertiesExtensions.loadProperties(propertiesFile);
-		assertNotNull(properties);
-		assertTrue(properties.size() == 4);
+		assertEquals(Optional.empty(), PropertiesExtensions.getInteger(null, "com"));
 	}
 
 	/**
-	 * Test for method {@link PropertiesExtensions#toXml(File, File, String, String)}.
+	 * Test for method {@link PropertiesExtensions#getPropertyParameters(String)}: the texts between
+	 * the curly braces, in their order
 	 *
-	 * @throws IOException
-	 *             Signals that an I/O exception has occurred.
+	 * @param description
+	 *            the name of the case
+	 * @param value
+	 *            the property value
+	 * @param expected
+	 *            the parameters, separated by a space, '' for none
 	 */
-	@Test
-	public void testToXmlFileFileStringString() throws IOException
+	@ParameterizedTest(name = "{0}", quoteTextArguments = false)
+	@CsvSource(value = { "three numbered parameters: 0 1 2 | Hello, {0} {1} {2}! | 0 1 2",
+			"a named and a numbered one: name 0 | {name} owes {0} | name 0",
+			"no braces: none | Hello! | ''" }, delimiter = '|')
+	public void testGetPropertyParameters(final String description, final String value,
+		final String expected)
 	{
-		URL resource;
-		final File xmlOutputFile = new File(directory.toFile(), "login.properties.xml");
-		final File propertiesOutputFile = new File(directory.toFile(), "login.properties");
-		final File propertiesFile = new File(directory.toFile(), "SigninPanel.properties");
-		resource = getClass().getClassLoader().getResource("SigninPanel.properties.xml");
-		final File xmlFile = new File(resource.getFile());
-		PropertiesExtensions.toProperties(propertiesFile, xmlFile, "a comment");
-		Properties properties = PropertiesExtensions.loadProperties(propertiesFile);
-		assertNotNull(properties);
-		assertTrue(properties.size() == 4);
-
-		PropertiesExtensions.toXml(propertiesFile, xmlOutputFile, "a comment", "UTF8");
-
-		PropertiesExtensions.toProperties(propertiesOutputFile, xmlOutputFile, "a comment");
-
-		properties = PropertiesExtensions.loadProperties(propertiesOutputFile);
-		assertNotNull(properties);
-		assertTrue(properties.size() == 4);
+		final List<String> parameters = expected.isEmpty()
+			? List.of()
+			: List.of(expected.split(" "));
+		assertEquals(parameters, PropertiesExtensions.getPropertyParameters(value));
 	}
 
 	/**
