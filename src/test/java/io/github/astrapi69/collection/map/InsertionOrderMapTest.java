@@ -63,6 +63,20 @@ public class InsertionOrderMapTest
 	}
 
 	/**
+	 * A new {@link InsertionOrderMap} of 1 = value1, 3 = null, 4 = value4, in this order
+	 *
+	 * @return the new map
+	 */
+	static Map<String, String> oneNullFour()
+	{
+		final Map<String, String> map = new InsertionOrderMap<>();
+		map.put("1", "value1");
+		map.put("3", null);
+		map.put("4", "value4");
+		return map;
+	}
+
+	/**
 	 * A map made by a constructor and filled with four entries, and the order of its keys before
 	 * and after the key 2 is put again with a new value
 	 *
@@ -163,13 +177,45 @@ public class InsertionOrderMapTest
 	public void testPutReturnsThePreviousValue(final String description, final String key,
 		final String value, final String previous, final String keys)
 	{
-		final Map<String, String> map = new InsertionOrderMap<>();
-		map.put("1", "value1");
-		map.put("3", null);
-		map.put("4", "value4");
+		final Map<String, String> map = oneNullFour();
 		assertEquals(previous, map.put(key, value));
 		assertEquals(value, map.get(key));
 		assertEquals(Arrays.asList(keys.split(" ")), new ArrayList<>(map.keySet()));
+	}
+
+	/**
+	 * Test for method {@link InsertionOrderMap#putAll(Map)} on a map of 1 = value1, 3 = null, 4 =
+	 * value4: each key of the given map takes its value, a new key comes last, in the order of the
+	 * given map, and the keys afterwards are in the order given
+	 *
+	 * @param description
+	 *            the name of the case
+	 * @param entries
+	 *            the entries of the given map in its order, key=value separated by a space, nothing
+	 *            after = for a null value, '' for none
+	 * @param keys
+	 *            the order of the keys afterwards, separated by a space
+	 */
+	@ParameterizedTest(name = "{0}", quoteTextArguments = false)
+	@CsvSource(value = { "no entries: the map unchanged | '' | 1 3 4",
+			"the new key 2: 2 last | 2=value2 | 1 3 4 2",
+			"the new keys 5, 2: last, in the order of the given map | 5=value5 2=value2 | 1 3 4 5 2",
+			"1, which holds value1: 1 keeps its place, which put does not (#127) | 1=value5 | 1 3 4",
+			"1 with null, which holds value1: 1 keeps its place, which put does not (#127) | 1= | 1 3 4",
+			"3, which holds null: 3 keeps its place, which put does not (#127) | 3=value5 | 1 3 4",
+			"4, 2, 1: 4 and 1 keep their places, which put does not, 2 last (#127) | 4=value5 2=value2 1=value6 | 1 3 4 2" }, delimiter = '|')
+	public void testPutAll(final String description, final String entries, final String keys)
+	{
+		final Map<String, String> given = new LinkedHashMap<>();
+		for (final String entry : entries.isEmpty() ? new String[0] : entries.split(" "))
+		{
+			final String[] keyAndValue = entry.split("=", -1);
+			given.put(keyAndValue[0], keyAndValue[1].isEmpty() ? null : keyAndValue[1]);
+		}
+		final Map<String, String> map = oneNullFour();
+		map.putAll(given);
+		assertEquals(Arrays.asList(keys.split(" ")), new ArrayList<>(map.keySet()));
+		given.forEach((key, value) -> assertEquals(value, map.get(key), "the value of " + key));
 	}
 
 }
