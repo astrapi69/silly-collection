@@ -1,22 +1,119 @@
 ## Change log
 ----------------------
 
-Version 29.1-SNAPSHOT
+Version 29.1
 -------------
+
+29.1 fixes what its parameterized tests found where the code broke its name, its Javadoc or the contract of the
+interface it implements (#92); each fix that a caller can notice carries a **Note**. It builds the same bytes from the
+same commit (#99), runs PIT on GitHub only (#98), and gives consumers silly-bean on their compile class path (#95).
+Measured by the release gate (Temurin 25.0.5+8, the JDK `.sdkmanrc` names; the tree of `RELEASE-29.1`): 1356 tests in
+27 test classes, 3 skipped; 1523 of 1523 lines and 637 of 640 branches covered (JaCoCo, floors 98% and 95%);
+972 of 983 mutants detected, 99% (PIT 1.30.1, floor 95%, in the workflow "Mutation testing" on GitHub).
 
 FIXED:
 
+- silly-bean is an API dependency: `MapFactory` takes its `KeyValuePair` in ten public signatures, but silly-bean was
+  declared `implementation` and required without `transitive`, so the pom gave it the runtime scope, the Gradle module
+  metadata listed it in `runtimeElements` alone, and a project that declares silly-collection alone did not compile a
+  call of `MapFactory`, also one that never names `KeyValuePair` ("cannot access KeyValuePair"). It is declared `api`
+  now and the module requires it `transitive`; the pom gives it the compile scope. commons-collections4,
+  comparator-extensions and jobj-core stay runtime dependencies, as no type of theirs is in a public signature (#95).
+  **Note:** a consumer's compile class path gains silly-bean 3.0, which its runtime class path already held, and a
+  module that reads silly-collection reads silly-bean too; a project that declared silly-bean only for `MapFactory`,
+  as silly-strings does, can drop it
 - `IndexableSet` declares its public no-argument constructor with a Javadoc comment, so javadoc prints no warning;
   29.0 had the compiler's default constructor, about which the javadoc of JDK 25 warns ("use of default constructor,
   which does not provide a comment"), and the release gate of 29.0 did not notice it, as it searched the German
   output for "warning". The binary interface stays the same, as the default constructor was public too (#96)
+- `ArrayFactory.newRangeArray` gives both ends of the int values: from `Integer.MAX_VALUE - 1` to `Integer.MAX_VALUE`
+  it returns both numbers, where its counter overflowed and it threw an `ArrayIndexOutOfBoundsException`. A range of
+  more than `Integer.MAX_VALUE` numbers, such as `Integer.MIN_VALUE` to `Integer.MAX_VALUE`, throws an
+  `IllegalArgumentException` that names the range and the count, where its length overflowed into an
+  `ArrayIndexOutOfBoundsException` or a `NegativeArraySizeException` (#113). **Note:** a range ending at
+  `Integer.MAX_VALUE` returns its numbers now, and a range too long for an array throws an `IllegalArgumentException`
+  instead of those two exceptions
+- `ArrayExtensions.isLast` compares the element with the last element (`Objects.equals`): an element twice at the end
+  is last, null is the last of an array that ends with null, and an empty or null array gives false.
+  `getFirst`/`getLast` give a null first or last element as null, and `getFirstElement`/`getLastElement` give an empty
+  `Optional` for it, where all four threw a `NullPointerException` (#114). **Note:** `isLast` of an empty array gives
+  false where it gave true, of an element twice at the end true where it gave false, and of a null array false where
+  it threw a `NullPointerException`
+- `MapFactory.newLinkedHashMap` and `MapFactory.newInsertionOrderMap` of a collection or an array of key value pairs
+  put the pairs into the new map one by one, in their order; they copied the `HashMap` of silly-bean's
+  `KeyValuePair.toMap`, so the keys came in the order of their hashes. A key given more than once takes the value of
+  its last pair, and in a `LinkedHashMap` the place of its first pair, in an `InsertionOrderMap` that of its last, as
+  their `put` does (#115). **Note:** the iteration order of these maps changes to the order of the given pairs
+- `MapExtensions.mergeAndSummarize(Map, Collection)` and `mergeAndSummarize(Map, Collection, boolean)` count each
+  occurrence of a key in the collection once; a key that appears n times was counted 2n - 1 times, as the collection
+  was counted twice (#116). **Note:** a caller that passes a collection with a repeated key gets n instead of 2n - 1;
+  the `@param` says "collection" instead of "set"
+- `IndexSortedProperties.indexOf(null)` gives -1, as its Javadoc says, where it threw a `NullPointerException` as soon
+  as the index held a key; also where `getProperty` gives null for a value that is not a string (#117). **Note:**
+  `indexOf(null)` returns -1 instead of throwing
+- `ArrayIterator.remove` follows the contract of `Iterator.remove`: it removes the last element `next` gave, moves the
+  elements after it one place to the front of the array, goes on with the element after it, and throws an
+  `IllegalStateException` before the first `next` and when called a second time after one `next`; it skipped the
+  element after the removed one, removed a second element when called twice, and did not remove a null element.
+  `ArrayIterator.hasNext` and `SetEnumeration.hasMoreElements` no longer take a null element for the end: both give
+  null elements like any other, and `SetEnumeration` gives a null of the enumeration that the set does not contain
+  (#118). **Note:** a second `remove()` after one `next()` throws an `IllegalStateException` instead of removing the
+  next element; an iteration over an array or a set with a null element goes on to its end
+- `ListExtensions.getFirst`, `getLast`, `removeFirst` and `removeLast` give null for a null list and give a null first
+  or last element as null, as their Javadoc says. Before, they threw an `IllegalArgumentException` or a
+  `NullPointerException`, and the removing ones did so after removing the null. `getFirstElement`, `getLastElement`,
+  `removeFirstElement` and `removeLastElement` document the `NullPointerException` for a null element, as
+  `Stream.findFirst` does, and throw it before anything is removed. `isLast` compares with the last element using
+  `Objects.equals` and gives false for a null or empty list. `shuffle` moves the elements its indexes name, in the
+  order of the indexes, each index once; the given array is not changed, and an index out of range throws before any
+  element moves (#126). **Note:** the four methods without `Optional` return null for a null list instead of
+  throwing. `shuffle` with unsorted indexes moves the elements it names, and with ascending indexes the destination
+  now holds them in the order of the indexes, no longer reversed (`1, 2` of Anton, Berta, Caesar gives Berta, Caesar)
+- `InsertionOrderMap.putAll` calls `put` for each mapping of the given map, in its order, as the contract of
+  `Map.putAll` says; it was `LinkedHashMap`'s, which goes through `HashMap.putVal` and kept the place of a key the map
+  holds already, where `put` moves it to the end (#127). **Note:** `putAll` moves a key that is already there to the
+  end, as `put` does; `merge`, `compute`, `computeIfPresent` and `replace` still keep its place
 
 CHANGED:
 
+- the tests check their edge and boundary cases in parameterized tables with speaking case names, as the family rule
+  asks (#92): 29.0 ran 640 tests from 640 `@Test` methods in 25 test classes; 29.1 runs 1356 cases from 108 `@Test` and
+  125 `@ParameterizedTest` methods in 27. Each row makes its object inside the test, and the rows compare whole results
+  where the old tests compared a size or `assertNotNull`; the map tests count with fixed numbers instead of random
+  ones. The tables found the defects fixed above (#113 to #118, #126, #127)
 - a javadoc warning fails the build: the `javadoc` task runs with `-Werror` and `failOnError = true`, and `check`
   depends on it, so `./gradlew build` and CI run javadoc and fail on a warning in every locale (#96).
   **Note:** a javadoc error fails the build now too; `failOnError` was `false`, also through the `javadoc` block
   inside the `javadocJar` task, which configured the project's `javadoc` task
+- mutation testing runs on GitHub only, in a workflow of its own, "Mutation testing"
+  (`.github/workflows/mutation-testing.yml`, job `pitest`): on a push to `develop` or `master`, on a pull request
+  against them and on demand (`gh workflow run mutation-testing.yml --ref <branch>`). It runs `./gradlew pitest`, which
+  fails below `mutationThreshold`, writes a summary of the run (killed of total, the score as PIT rounds it, the floor,
+  every mutant not detected, also on a red run) and keeps PIT's report as the artifact `pitest-report`. The mutation
+  context, the badge and its publication moved with it out of `gradle.yml`, which builds and reports the coverage.
+  `make pitest` starts the workflow for the pushed current branch instead of running PIT locally, `make pitest-status`
+  prints the summary of the branch's newest run, and the release gate takes PIT's numbers from the runs on the release
+  pull request and its merge commit (#98)
+- a build of the same commit gives the same bytes, so a release can be rebuilt from its tag and checked against Maven
+  Central (#99, as astrapi69/silly-strings#14): the jar's manifest no longer names the build time, the operating
+  system or the JDK's patch level, `Build-Timestamp`, `Build-OS` and `Build-Jdk` are gone and `Build-Jdk-Spec` (25)
+  takes their place; javac compiles with `--release 25`; javadoc writes English in every locale (`-locale en`, its JVM
+  in en_US); every archive has fixed entry times and order; `mavenLocal()` is read only with `-PuseMavenLocal`; the
+  workflows build on the JDK `.sdkmanrc` names, Temurin 25.0.5+8 since #106, and check it; `scripts/check-reproducible.sh` builds
+  the five artifacts twice and compares them. `make release`, which published from the local machine and into
+  `~/.m2`, is gone; `make tag-release` refuses a `-SNAPSHOT` version and wants `CONFIRM=yes`.
+  **Note:** a tool that read `Build-Timestamp`, `Build-OS` or `Build-Jdk` from the manifest finds `Build-Jdk-Spec`
+  instead; a build that relied on an artifact of this project in `~/.m2` passes `-PuseMavenLocal`
+- every commit gets its own run of "Mutation testing" (#103): the workflow ran in a concurrency group per branch, in
+  which GitHub keeps one running and one pending run and cancels the pending one when a third queues, so a merge
+  commit of `develop` could get no run; the group is now one per commit (`mutation-testing-${{ github.sha }}`, no
+  cancelling), and the badge's publication keeps its group per branch
+- the build and the release run on Temurin 25.0.5+8, where #99 pinned 25.0.4+7: `.sdkmanrc` names sdkman's
+  `25.0.5.0+8-tem`, and all four workflows set up `25.0.5+8.0.LTS`, `dependency-submission.yml` too, which took
+  whatever Temurin 25 came first. Their check of the JDK compares the build as well, `Temurin-25.0.5+8` in the
+  JDK's `release` file, where it compared `JAVA_VERSION`, the same for every build of 25.0.5, with a pattern that
+  matched nothing in sdkman's new name. The class files stay Java 25 (`--release`); the javadoc jar comes from the
+  javadoc tool of 25.0.5 (#106, as astrapi69/silly-strings#70)
 
 Version 29.0
 -------------
