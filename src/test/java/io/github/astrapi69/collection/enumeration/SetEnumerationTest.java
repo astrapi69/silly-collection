@@ -32,6 +32,7 @@ import static org.junit.jupiter.api.Assertions.assertTrue;
 import java.util.ArrayList;
 import java.util.Enumeration;
 import java.util.HashSet;
+import java.util.LinkedHashSet;
 import java.util.List;
 import java.util.NoSuchElementException;
 import java.util.Set;
@@ -42,6 +43,8 @@ import org.junit.jupiter.api.Test;
 import org.junit.jupiter.params.ParameterizedTest;
 import org.junit.jupiter.params.provider.CsvSource;
 import org.meanbean.test.BeanTester;
+
+import io.github.astrapi69.collection.iterator.IteratorSteps;
 
 /**
  * The unit test class for the class {@link SetEnumeration}.
@@ -113,6 +116,43 @@ public class SetEnumerationTest
 		assertEquals(Set.copyOf(expectedElements), Set.copyOf(actual));
 		assertEquals(setElements, Set.copyOf(actual.subList(0, setElements.size())),
 			"the elements of the set first");
+	}
+
+	/**
+	 * Test for the methods {@link SetEnumeration#hasMoreElements()} and
+	 * {@link SetEnumeration#nextElement()} step by step, also with null elements: steps on the
+	 * enumeration through {@link Enumeration#asIterator()}, hasNext for hasMoreElements() and next
+	 * for nextElement(), and what each gives, see {@link IteratorSteps}
+	 *
+	 * @param description
+	 *            the name of the case
+	 * @param set
+	 *            the elements of the set in their order, separated by a space, null for a null
+	 *            element
+	 * @param enumeration
+	 *            the elements of the enumeration, null for a null element, nothing for no
+	 *            enumeration
+	 * @param steps
+	 *            the steps
+	 * @param results
+	 *            what each step gives
+	 */
+	@ParameterizedTest(name = "{0}", quoteTextArguments = false)
+	@CsvSource(value = {
+			"the set a and the enumeration a, b: more elements as often as asked, a, then b | a | a b | hasNext hasNext next next hasNext | true true a b false",
+			"the set null, a and no enumeration: null, then a (#118) | null a | | hasNext next next hasNext | true null a false",
+			"the set a and the enumeration null, b: a, then the null and b of the enumeration (#118) | a | null b | next next next hasNext | a null b false",
+			"the set null and the enumeration null, b: null once, then b (#118) | null | null b | next next next hasNext | null b NoSuchElementException false" }, delimiter = '|')
+	public void testSteps(final String description, final String set, final String enumeration,
+		final String steps, final String results)
+	{
+		final SetEnumeration<String> setEnumeration = new SetEnumeration<>(
+			new LinkedHashSet<>(IteratorSteps.elementsWithNull(set)),
+			enumeration == null
+				? null
+				: new Vector<>(IteratorSteps.elementsWithNull(enumeration)).elements());
+		assertEquals(IteratorSteps.elements(results),
+			IteratorSteps.run(setEnumeration.asIterator(), steps));
 	}
 
 	/**
