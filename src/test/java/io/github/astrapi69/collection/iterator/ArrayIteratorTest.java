@@ -53,7 +53,8 @@ public class ArrayIteratorTest
 	 * @param description
 	 *            the name of the case
 	 * @param array
-	 *            the elements of the array, separated by a space, '' for an empty one
+	 *            the elements of the array, separated by a space, '' for an empty one, null for a
+	 *            null element
 	 * @param steps
 	 *            the steps
 	 * @param results
@@ -71,20 +72,23 @@ public class ArrayIteratorTest
 			"foo alone: next foo, then no next | foo | next hasNext | foo false | foo",
 			"foo, bar: next foo, then bar | foo bar | next next | foo bar | foo bar",
 			"foo alone: next, remove, no next | foo | next remove hasNext | foo removed false | null",
-			"foo, bar: next, remove, bar moves to 0, no next, bar is not returned | foo bar | next remove hasNext | foo removed false | bar null",
-			"foo, bar, jack: next, remove, has next, remove again, no next | foo bar jack | next remove hasNext remove hasNext | foo removed true removed false | jack null null",
+			"foo, bar: next, remove, bar moves to 0, but no next, and next gives null, not bar (#118) | foo bar | next remove hasNext next | foo removed false null | bar null",
+			"foo, bar, jack: next, remove, has next, remove again removes bar too, next gives null (#118) | foo bar jack | next remove hasNext remove next | foo removed true removed null | jack null null",
+			"foo, bar, jack: next twice, remove bar, next gives null, jack is skipped (#118) | foo bar jack | next next remove next hasNext | foo bar removed null false | foo jack null",
+			"foo, null, bar: next twice, remove null removes nothing (#118) | foo null bar | next next remove next hasNext | foo null removed bar false | foo null bar",
+			"foo, bar: next twice, remove bar, the last, no next | foo bar | next next remove hasNext | foo bar removed false | foo null",
+			"foo alone: next, remove, next throws NoSuchElementException | foo | next remove next | foo removed NoSuchElementException | null",
+			"foo, null, bar: next foo, but no next, though next gives null and bar (#118) | foo null bar | next hasNext next next hasNext | foo false null bar false | foo null bar",
 			"empty: remove throws IllegalStateException | '' | remove | IllegalStateException | ''",
 			"foo, bar: remove before next throws IllegalStateException | foo bar | remove next | IllegalStateException foo | foo bar" }, delimiter = '|')
 	public void testSteps(final String description, final String array, final String steps,
 		final String results, final String arrayAfterwards)
 	{
-		final String[] elements = IteratorSteps.elements(array).toArray(new String[0]);
+		final String[] elements = IteratorSteps.elementsWithNull(array).toArray(new String[0]);
 		final ArrayIterator<String> iterator = new ArrayIterator<>(elements);
 		assertSame(elements, iterator.getArray());
 		assertEquals(IteratorSteps.elements(results), IteratorSteps.run(iterator, steps));
-		assertArrayEquals(
-			IteratorSteps.elements(arrayAfterwards).stream()
-				.map(element -> "null".equals(element) ? null : element).toArray(String[]::new),
+		assertArrayEquals(IteratorSteps.elementsWithNull(arrayAfterwards).toArray(new String[0]),
 			elements, () -> "the array afterwards " + Arrays.toString(elements));
 	}
 

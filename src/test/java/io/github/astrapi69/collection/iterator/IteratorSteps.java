@@ -32,9 +32,11 @@ import java.util.List;
  * Runs steps on an {@link Iterator} and writes down what each step gives, so that a row of a
  * {@link org.junit.jupiter.params.provider.CsvSource} can name the steps and their results: the
  * step {@code hasNext} gives true or false, {@code next} the element, {@code remove} the word
- * removed; a step that throws gives the simple name of the class of its exception
+ * removed; a step that throws gives the simple name of the class of its exception. An
+ * {@link java.util.Enumeration} runs its steps through {@link java.util.Enumeration#asIterator()},
+ * whose hasNext calls hasMoreElements and next nextElement (#118)
  */
-final class IteratorSteps
+public final class IteratorSteps
 {
 
 	/**
@@ -53,7 +55,7 @@ final class IteratorSteps
 	 *            the steps, separated by a space: hasNext, next or remove
 	 * @return what each step gave, in their order
 	 */
-	static List<String> run(final Iterator<?> iterator, final String steps)
+	public static List<String> run(final Iterator<?> iterator, final String steps)
 	{
 		final List<String> results = new ArrayList<>();
 		for (final String step : steps.split(" "))
@@ -91,9 +93,23 @@ final class IteratorSteps
 	 *            the elements, separated by a space, may be empty
 	 * @return the elements
 	 */
-	static List<String> elements(final String elements)
+	public static List<String> elements(final String elements)
 	{
 		return elements.isEmpty() ? List.of() : List.of(elements.split(" "));
+	}
+
+	/**
+	 * The elements of a row of a {@link org.junit.jupiter.params.provider.CsvSource}, the word null
+	 * for a null element
+	 *
+	 * @param elements
+	 *            the elements, separated by a space, may be empty
+	 * @return the elements, with null for each word null
+	 */
+	public static List<String> elementsWithNull(final String elements)
+	{
+		return elements(elements).stream().map(element -> "null".equals(element) ? null : element)
+			.toList();
 	}
 
 }
