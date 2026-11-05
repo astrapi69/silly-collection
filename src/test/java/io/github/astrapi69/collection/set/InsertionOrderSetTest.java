@@ -26,16 +26,17 @@ package io.github.astrapi69.collection.set;
 
 import static org.junit.jupiter.api.Assertions.assertEquals;
 import static org.junit.jupiter.api.Assertions.assertFalse;
-import static org.junit.jupiter.api.Assertions.assertTrue;
 
 import java.util.ArrayList;
-import java.util.Arrays;
-import java.util.Collection;
+import java.util.LinkedHashSet;
+import java.util.List;
 import java.util.Set;
+import java.util.function.Function;
+import java.util.function.Supplier;
+import java.util.stream.Stream;
 
-import org.junit.jupiter.api.AfterEach;
-import org.junit.jupiter.api.BeforeEach;
-import org.junit.jupiter.api.Test;
+import org.junit.jupiter.params.ParameterizedTest;
+import org.junit.jupiter.params.provider.MethodSource;
 
 /**
  * The unit test class for the class {@link InsertionOrderSet}
@@ -46,221 +47,146 @@ public class InsertionOrderSetTest
 {
 
 	/**
-	 * Sets up method will be invoked before every unit test method
+	 * Adds value1 to value4 to the given set, in this order
 	 *
-	 * @throws Exception
-	 *             is thrown if an exception occurs
+	 * @param set
+	 *            the set
+	 * @return the given set
 	 */
-	@BeforeEach
-	protected void setUp() throws Exception
+	static Set<String> oneToFour(final Set<String> set)
 	{
+		set.add("value1");
+		set.add("value2");
+		set.add("value3");
+		set.add("value4");
+		return set;
 	}
 
 	/**
-	 * Tear down method will be invoked after every unit test method
+	 * A set of value1 to value4, made in some way, and the order of its elements after value2 is
+	 * added again
 	 *
-	 * @throws Exception
-	 *             is thrown if an exception occurs
+	 * @param description
+	 *            the name of the case
+	 * @param set
+	 *            makes the set
+	 * @param afterAddAgain
+	 *            the order after value2 is added again
 	 */
-	@AfterEach
-	protected void tearDown() throws Exception
-	{
-	}
-
-	/**
-	 * Test method for {@link InsertionOrderSet#add(Object)}
-	 */
-	@Test
-	public void testAddE()
-	{
-		final String[] expected = { "value1", "value3", "value4", "value2" };
-		int count = 0;
-		final Set<String> set = new InsertionOrderSet<>(4, 4f);
-		set.add("value1");
-		set.add("value2");
-		set.add("value3");
-		set.add("value4");
-
-		set.add("value2"); // Add the same object.
-
-		for (final String element : set)
+	record OrderCase(String description, Supplier<Set<String>> set, List<String> afterAddAgain) {
+		@Override
+		public String toString()
 		{
-			assertTrue(element.equals(expected[count]));
-			count++;
+			return description;
 		}
 	}
 
 	/**
-	 * Test the method {@link InsertionOrderSet#add(Object)} with elements the set does not hold
-	 * yet: each add returns true, as its Javadoc and the {@link Set} contract say
+	 * The cases of {@link #testOrder(OrderCase)}
+	 *
+	 * @return the cases
 	 */
-	@Test
-	public void testAddReturnsTrueForANewElement()
+	static Stream<OrderCase> orders()
 	{
-		final Set<String> set = new InsertionOrderSet<>();
-		assertTrue(set.add("value1"));
-		assertTrue(set.add("value2"));
+		final List<String> moved = List.of("value1", "value3", "value4", "value2");
+		return Stream.of(
+			new OrderCase("InsertionOrderSet(): value2 moves to the end",
+				() -> oneToFour(new InsertionOrderSet<>()), moved),
+			new OrderCase("InsertionOrderSet(4): value2 moves to the end",
+				() -> oneToFour(new InsertionOrderSet<>(4)), moved),
+			new OrderCase("InsertionOrderSet(4, 4f): value2 moves to the end",
+				() -> oneToFour(new InsertionOrderSet<>(4, 4f)), moved),
+			new OrderCase(
+				"InsertionOrderSet(collection of value1 to value4): value2 moves to the end",
+				() -> new InsertionOrderSet<>(List.of("value1", "value2", "value3", "value4")),
+				moved),
+			new OrderCase("setOf(value1 to value4): value2 moves to the end",
+				() -> InsertionOrderSet.setOf("value1", "value2", "value3", "value4"), moved),
+			new OrderCase("LinkedHashSet, for the difference: value2 keeps its place",
+				() -> oneToFour(new LinkedHashSet<>()),
+				List.of("value1", "value2", "value3", "value4")));
 	}
 
 	/**
-	 * Test the no argument constructor of {@link InsertionOrderSet}.
+	 * Test for the constructors of {@link InsertionOrderSet}, its factory method
+	 * {@link InsertionOrderSet#setOf(Object...)} and its method
+	 * {@link InsertionOrderSet#add(Object)}: the elements come in the order they were added, and an
+	 * element added again moves to the end, which a {@link LinkedHashSet} does not do; both return
+	 * false for it
+	 *
+	 * @param order
+	 *            the set and the order after value2 is added again
 	 */
-	@Test
-	public void testInsertionOrderSet()
+	@ParameterizedTest(name = "{0}")
+	@MethodSource("orders")
+	public void testOrder(final OrderCase order)
 	{
-		final String[] expected = { "value1", "value3", "value4", "value2" };
-		int count = 0;
-		final Set<String> set = new InsertionOrderSet<>();
-		set.add("value1");
-		set.add("value2");
-		set.add("value3");
-		set.add("value4");
-
-		set.add("value2"); // Add the same object.
-
-		for (final String element : set)
-		{
-			assertTrue(element.equals(expected[count]));
-			count++;
-		}
-
+		final Set<String> set = order.set().get();
+		assertEquals(List.of("value1", "value2", "value3", "value4"), new ArrayList<>(set));
+		assertFalse(set.add("value2"));
+		assertEquals(order.afterAddAgain(), new ArrayList<>(set));
 	}
 
 	/**
-	 * Test method for {@link InsertionOrderSet#add(Object)} initialized with the constructor that
-	 * takes a collection
+	 * A change of the set a, b, what it returns and the order of the elements afterwards
+	 *
+	 * @param description
+	 *            the name of the case
+	 * @param change
+	 *            the change
+	 * @param result
+	 *            what it returns
+	 * @param expected
+	 *            the order of the elements afterwards
 	 */
-	@Test
-	public void testInsertionOrderSetCollectionOfQextendsE()
-	{
-
-		final String[] expected = { "value1", "value3", "value4", "value2" };
-
-		final String[] elements = { "value1", "value2", "value3", "value4" };
-
-		final Set<String> set = new InsertionOrderSet<>(Arrays.asList(elements));
-
-		set.add("value2"); // Add the same object.
-		int count = 0;
-		for (final String element : set)
+	record Change(String description, Function<Set<String>, Boolean> change, boolean result,
+		List<String> expected) {
+		@Override
+		public String toString()
 		{
-			final String exp = expected[count];
-			assertTrue(element.equals(exp));
-			count++;
-		}
-	}
-
-	/**
-	 * Test the constructor with the initial capacity of {@link InsertionOrderSet}.
-	 */
-	@Test
-	public void testInsertionOrderSetInt()
-	{
-		final String[] expected = { "value1", "value3", "value4", "value2" };
-		int count = 0;
-		final Set<String> set = new InsertionOrderSet<>(4);
-		set.add("value1");
-		set.add("value2");
-		set.add("value3");
-		set.add("value4");
-
-		set.add("value2"); // Add the same object.
-
-		for (final String element : set)
-		{
-			assertTrue(element.equals(expected[count]));
-			count++;
+			return description;
 		}
 	}
 
 	/**
-	 * Test the constructor with the initial capacity and the load factor of
-	 * {@link InsertionOrderSet}.
+	 * The cases of {@link #testAdd(Change)}
+	 *
+	 * @return the cases
 	 */
-	@Test
-	public void testInsertionOrderSetIntFloat()
+	static Stream<Change> changes()
 	{
-		final String[] expected = { "value1", "value3", "value4", "value2" };
-		int count = 0;
-		final Set<String> set = new InsertionOrderSet<>(4, 4f);
-		set.add("value1");
-		set.add("value2");
-		set.add("value3");
-		set.add("value4");
-
-		set.add("value2"); // Add the same object.
-
-		for (final String element : set)
-		{
-			assertTrue(element.equals(expected[count]));
-			count++;
-		}
+		return Stream.of(
+			new Change("add(c), a new element: true, c last", set -> set.add("c"), true,
+				List.of("a", "b", "c")),
+			new Change("add(a), a contained element: false, a moves to the end (#41)",
+				set -> set.add("a"), false, List.of("b", "a")),
+			new Change("addAll(a), a contained element: false, as the set holds no new one (#41)",
+				set -> set.addAll(List.of("a")), false, List.of("b", "a")),
+			new Change(
+				"addAll(a, c), a contained and a new element: true, both behind b in their order (#41)",
+				set -> set.addAll(List.of("a", "c")), true, List.of("b", "a", "c")),
+			new Change("addAll(), no element: false", set -> set.addAll(List.of()), false,
+				List.of("a", "b")));
 	}
 
 	/**
-	 * Test method for {@link InsertionOrderSet#setOf(Object...)}.
+	 * Test for the methods {@link InsertionOrderSet#add(Object)} and
+	 * {@link InsertionOrderSet#addAll(java.util.Collection)}: they return true if the set did not
+	 * contain an element, as their Javadoc and the {@link Set} contract say, and an element added
+	 * again moves to the end
+	 *
+	 * @param change
+	 *            the change, what it returns and the order afterwards
 	 */
-	@Test
-	public void testInsertionOrderSetOf()
-	{
-		final String[] expected = { "value1", "value3", "value4", "value2" };
-
-		final Set<String> set = InsertionOrderSet.setOf("value1", "value2", "value3", "value4");
-
-		set.add("value2"); // Add the same object.
-		int count = 0;
-		for (final String element : set)
-		{
-			final String exp = expected[count];
-			assertTrue(element.equals(exp));
-			count++;
-		}
-	}
-
-	/**
-	 * Test the method {@link InsertionOrderSet#add(Object)} with an element the set holds already:
-	 * the element moves to the end, and the method returns false, as its Javadoc says, "true if the
-	 * set did not already contain the specified element" (#41)
-	 */
-	@Test
-	public void testAddWithContainedElement()
+	@ParameterizedTest(name = "{0}")
+	@MethodSource("changes")
+	public void testAdd(final Change change)
 	{
 		final Set<String> set = new InsertionOrderSet<>();
 		set.add("a");
 		set.add("b");
-
-		assertFalse(set.add("a"));
-		assertEquals(Arrays.asList("b", "a"), new ArrayList<>(set));
-	}
-
-	/**
-	 * Test the method {@link InsertionOrderSet#addAll(Collection)} with an element the set holds
-	 * already: it returns false, as the set holds no new element (#41)
-	 */
-	@Test
-	public void testAddAllWithContainedElement()
-	{
-		final Set<String> set = new InsertionOrderSet<>();
-		set.add("a");
-
-		assertFalse(set.addAll(Arrays.asList("a")));
-		assertEquals(Arrays.asList("a"), new ArrayList<>(set));
-	}
-
-	/**
-	 * Test the method {@link InsertionOrderSet#addAll(Collection)} with a new element and one the
-	 * set holds already: it returns true, as the set changed, and both elements end in the order of
-	 * the collection, behind the others (#41)
-	 */
-	@Test
-	public void testAddAllWithNewAndContainedElement()
-	{
-		final Set<String> set = new InsertionOrderSet<>();
-		set.add("a");
-		set.add("b");
-
-		assertTrue(set.addAll(Arrays.asList("a", "c")));
-		assertEquals(Arrays.asList("b", "a", "c"), new ArrayList<>(set));
+		assertEquals(change.result(), change.change().apply(set));
+		assertEquals(change.expected(), new ArrayList<>(set));
 	}
 
 }
