@@ -311,7 +311,15 @@ public final class ArrayFactory
 	/**
 	 * Creates a new {@link Integer} array with the given range that is defined through start and
 	 * end, both inclusive. For instance if the start is 5 and the end is 9 the resulted array will
-	 * be [5,6,7,8,9], and if the start and the end are 5 it will be [5]
+	 * be [5,6,7,8,9], and if the start and the end are 5 it will be [5]. The ends of the int values
+	 * are numbers as any other: from {@link Integer#MAX_VALUE} - 1 to {@link Integer#MAX_VALUE} the
+	 * array holds both.
+	 * <p>
+	 * An array holds at most {@link Integer#MAX_VALUE} elements, so a range of more numbers is
+	 * refused, such as the one from {@link Integer#MIN_VALUE} to {@link Integer#MAX_VALUE}. A
+	 * shorter range the virtual machine cannot create the array for, too long for the virtual
+	 * machine or for its memory, throws its {@link OutOfMemoryError}.
+	 * </p>
 	 *
 	 * @param start
 	 *            The number to start, inclusive
@@ -319,7 +327,8 @@ public final class ArrayFactory
 	 *            The number to end, inclusive
 	 * @return the generated {@link Integer} array
 	 * @throws IllegalArgumentException
-	 *             if end is less than start
+	 *             if end is less than start, or if the range holds more than
+	 *             {@link Integer#MAX_VALUE} numbers
 	 */
 	public static Integer[] newRangeArray(final int start, final int end)
 	{
@@ -328,11 +337,20 @@ public final class ArrayFactory
 			throw new IllegalArgumentException(
 				"Parameter end must not be less than parameter start.");
 		}
-		final int length = end - start + 1;
-		final Integer[] array = new Integer[length];
-		for (int i = start; i <= end; i++)
+		// the count in long, as end - start + 1 in int overflows for more than Integer.MAX_VALUE
+		// numbers; the check is the one of Math.toIntExact
+		final long count = (long)end - start + 1;
+		final int length = (int)count;
+		if (length != count)
 		{
-			array[i - start] = i;
+			throw new IllegalArgumentException("The range from " + start + " to " + end + " holds "
+				+ count + " numbers and an array holds at most " + Integer.MAX_VALUE + ".");
+		}
+		final Integer[] array = new Integer[length];
+		// the counter is the index of the result, so that it stops before it could overflow
+		for (int index = 0; index < length; index++)
+		{
+			array[index] = start + index;
 		}
 		return array;
 	}
