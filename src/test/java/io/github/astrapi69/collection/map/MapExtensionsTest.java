@@ -260,24 +260,24 @@ public class MapExtensionsTest
 					MapExtensions.mergeAndSummarize(oneToTenCountedZero(), keys, true), keys, true),
 				countedOneToTen(2, true)),
 			new Merge(
-				"mergeAndSummarize(map, collection), 1, 2, 3 with 1, 3, 3, 9: 3 twice, but counted 3 times (#116)",
+				"mergeAndSummarize(map, collection), 1, 2, 3 with 1, 3, 3, 9: 3 twice, counted twice (#116)",
 				() -> MapExtensions.mergeAndSummarize(mapOf(1, 0, 2, 0, 3, 0), List.of(1, 3, 3, 9)),
-				mapOf(1, 1, 2, 0, 3, 3)),
+				mapOf(1, 1, 2, 0, 3, 2)),
 			new Merge(
-				"mergeAndSummarize(map, collection, false), 1, 2, 3 with 1, 3, 3, 9: 3 twice, but counted 3 times (#116)",
+				"mergeAndSummarize(map, collection, false), 1, 2, 3 with 1, 3, 3, 9: 3 twice, counted twice (#116)",
 				() -> MapExtensions.mergeAndSummarize(mapOf(1, 0, 2, 0, 3, 0), List.of(1, 3, 3, 9),
 					false),
-				mapOf(1, 1, 2, 0, 3, 3)),
+				mapOf(1, 1, 2, 0, 3, 2)),
 			new Merge(
-				"mergeAndSummarize(map, collection, true), 1, 2, 3 with 1, 3, 3, 9: 3 twice, but counted 3 times, 9 once (#116)",
+				"mergeAndSummarize(map, collection, true), 1, 2, 3 with 1, 3, 3, 9: 3 twice, counted twice, 9 once (#116)",
 				() -> MapExtensions.mergeAndSummarize(mapOf(1, 0, 2, 0, 3, 0), List.of(1, 3, 3, 9),
 					true),
-				mapOf(1, 1, 2, 0, 3, 3, 9, 1)),
+				mapOf(1, 1, 2, 0, 3, 2, 9, 1)),
 			new Merge(
-				"mergeAndSummarize(map, collection, true), 1, 2, 3 with 1, 3, 9, 9, 9: 9 three times, but counted 5 times (#116)",
+				"mergeAndSummarize(map, collection, true), 1, 2, 3 with 1, 3, 9, 9, 9: 9 three times, counted 3 times (#116)",
 				() -> MapExtensions.mergeAndSummarize(mapOf(1, 2, 2, 2, 3, 2),
 					List.of(1, 3, 9, 9, 9), true),
-				mapOf(1, 3, 2, 2, 3, 3, 9, 5)),
+				mapOf(1, 3, 2, 2, 3, 3, 9, 3)),
 			new Merge("mergeAndSummarize(map, empty collection): the counts of the map",
 				() -> MapExtensions.mergeAndSummarize(mapOf(1, 1, 2, 2), List.<Integer> of()),
 				mapOf(1, 1, 2, 2)),
@@ -288,7 +288,8 @@ public class MapExtensionsTest
 
 	/**
 	 * Test for the methods {@code mergeAndSummarize}: the values of the keys of both are summed up,
-	 * and only the keys of the first map are taken unless the flag fullMerge is true
+	 * a key of a collection counted once for each time it appears in it, and only the keys of the
+	 * first map are taken unless the flag fullMerge is true
 	 *
 	 * @param merge
 	 *            the call and the returned map
