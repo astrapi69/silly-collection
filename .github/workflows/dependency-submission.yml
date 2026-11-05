@@ -22,12 +22,12 @@ jobs:
     steps:
       - name: Checkout sources
         uses: actions/checkout@3d3c42e5aac5ba805825da76410c181273ba90b1 # v7.0.1
-      # The JDK .sdkmanrc names, as the full semver of Adoptium: with '25' or '25.0.4' setup-java takes whatever
+      # The JDK .sdkmanrc names, as the full semver of Adoptium: with '25' or '25.0.5' setup-java takes whatever
       # matches first, such as a later patch release from the runner image (#106, as astrapi69/silly-strings#14)
       - name: Setup Java
         uses: actions/setup-java@b6effb05e454b25005698d916606bdc6ffcbf961 # v5.7.0
         with:
-          java-version: '25.0.4+7.0.LTS'
+          java-version: '25.0.5+8.0.LTS'
           distribution: 'temurin'
       - name: Check the JDK is the one .sdkmanrc names
         run: |
