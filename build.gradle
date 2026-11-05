@@ -48,6 +48,10 @@ java {
 
 tasks.withType(JavaCompile).configureEach { javaCompiler ->
     options.encoding = "UTF-8"
+    // --release records the feature release of java.base in module-info.class (requires java.base 25), where
+    // javac would otherwise write the version of the JDK it runs on (25.0.4), and the jar would differ with
+    // the JDK's patch level (#99, as astrapi69/silly-strings#14)
+    options.release = Integer.parseInt("$projectSourceCompatibility")
     // uncomment the next line for build with compiler argument -Xlint:deprecation
     // options.compilerArgs << "-Xlint:deprecation"
     // uncomment the next line for build with compiler argument -Xlint:unchecked

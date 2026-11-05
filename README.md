@@ -299,29 +299,34 @@ What a release consists of, in the order it is run:
    (`docs: changelog for X.Y, and the version that carries it`), the full build green on it.
 3. **The release gate** on that pull request's tree: the tests and `jacocoTestCoverageVerification`
    with its floor in one run, `--rerun-tasks --no-build-cache`, on JDK 25, the toolchain of the
-   build, with an empty local Maven repository (`-Dmaven.repo.local=<an empty directory>`, as
-   `gradle/repositories.gradle` reads `mavenLocal()` before Central); javadoc prints no warning
+   build, on the JDK `.sdkmanrc` names, with an empty local Maven repository
+   (`-Dmaven.repo.local=<an empty directory>`; `gradle/repositories.gradle` reads `mavenLocal()` only
+   with `-PuseMavenLocal`); javadoc prints no warning
    (the build runs it with `-Werror`), the class files are of Java 25 (major version 69), and the
-   resolved dependencies hold no `-SNAPSHOT`. PIT does not run on a local machine: its numbers and
+   resolved dependencies hold no `-SNAPSHOT`; `scripts/check-reproducible.sh` builds the five
+   artifacts twice and finds them identical. PIT does not run on a local machine: its numbers and
    its floor come from the run of "Mutation testing" on the pull request, and again from its run on
    the merge commit of the pull request, whose tree is the tag's tree. The numbers of the gate go
    into the CHANGELOG entry and into the Quality section above, in the same pull request, before it
    is merged. The GitHub release (step 6) links the run on the merge commit, with the proof that its
    tree is the tag's tree: `git rev-parse "<the run's commit>^{tree}" "RELEASE-X.Y^{tree}"` prints
    the same tree twice (`gh run view <run> --json headSha` names the run's commit).
-4. **Tag the merge commit** with `./gradlew tagRelease` (`make tag-release`), which names it
+4. **Tag the merge commit** with `./gradlew tagRelease` (`make tag-release CONFIRM=yes`), which names it
    `RELEASE-X.Y`, once its tree is the tree of the gate and the "Mutation testing" run on it has
    the numbers of the gate, and push the tag. `publish.yml` uploads to the Central Portal, where
    the maintainer releases it. A pushed tag is never moved or deleted; a failed run is fixed on the
    branch and run again.
 5. **Verify on Central**: the jar, pom, `.module`, `-sources.jar` and `-javadoc.jar`, their sha1, and
-   `gpg --verify` on the `.asc`.
+   `gpg --verify` on the `.asc`; a local build of the tag, on the JDK `.sdkmanrc` names, gives the
+   same bytes as Central for all five. A release is uploaded only by `publish.yml`, from its tag;
+   `make tag-release` creates the tag and nothing else.
 6. **GitHub release** from the CHANGELOG entry.
 7. **`master` follows the release** by a merge of the tag: on `master`,
    `git merge --no-ff "RELEASE-X.Y^{commit}" -m "Merge tag RELEASE-X.Y into master"`. Before
    `master` is pushed, `git diff RELEASE-X.Y master` has to be empty; if it is not, nothing is
    pushed. Never a force push: `master` is always the latest release, nothing else.
-8. **Open the next cycle**: `projectVersion` to the next `-SNAPSHOT`.
+8. **Open the next cycle**: `projectVersion` to the next `-SNAPSHOT`, by a pull request, as
+   `develop` takes no direct push.
 
 ## Contributing
 
