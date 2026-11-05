@@ -2,4 +2,4 @@
 # exactly this build and check that they did: javac's --release keeps the class files independent of the patch
 # level, but the javadoc tool is not, so a release is rebuilt bit for bit only on the same JDK. A later patch
 # release is taken on deliberately, in a pull request of its own, here and in the java-version of the workflows.
-java=25.0.4-tem
+java=25.0.5.0+8-tem
