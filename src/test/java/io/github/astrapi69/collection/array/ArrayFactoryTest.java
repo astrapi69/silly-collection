@@ -390,7 +390,12 @@ public class ArrayFactoryTest
 			new RangeCase("-2 to 1, across zero: -2, -1, 0, 1", -2, 1,
 				new Integer[] { -2, -1, 0, 1 }),
 			new RangeCase("Integer.MIN_VALUE to Integer.MIN_VALUE + 1: both", Integer.MIN_VALUE,
-				Integer.MIN_VALUE + 1, new Integer[] { Integer.MIN_VALUE, Integer.MIN_VALUE + 1 }));
+				Integer.MIN_VALUE + 1, new Integer[] { Integer.MIN_VALUE, Integer.MIN_VALUE + 1 }),
+			new RangeCase("Integer.MAX_VALUE - 1 to Integer.MAX_VALUE: both (#113)",
+				Integer.MAX_VALUE - 1, Integer.MAX_VALUE,
+				new Integer[] { Integer.MAX_VALUE - 1, Integer.MAX_VALUE }),
+			new RangeCase("Integer.MAX_VALUE to Integer.MAX_VALUE: Integer.MAX_VALUE alone (#113)",
+				Integer.MAX_VALUE, Integer.MAX_VALUE, new Integer[] { Integer.MAX_VALUE }));
 	}
 
 	/**
@@ -408,11 +413,8 @@ public class ArrayFactoryTest
 
 	/**
 	 * Test for method {@link ArrayFactory#newRangeArray(int, int)} with a range it throws for, and
-	 * the exception with its message: an end less than the start. At the end of the int values it
-	 * throws today, as its counter and its length overflow (#113): from Integer.MAX_VALUE - 1 and
-	 * from Integer.MAX_VALUE to Integer.MAX_VALUE the counter passes Integer.MAX_VALUE and writes
-	 * beyond the array, and a range of more than Integer.MAX_VALUE numbers gets a length of 0 or a
-	 * negative one. The fix of #113 changes these four rows
+	 * the exception with its message: an end less than the start, and a range of more numbers than
+	 * an array can hold, more than Integer.MAX_VALUE (#113)
 	 *
 	 * @param description
 	 *            the name of the case
@@ -429,10 +431,8 @@ public class ArrayFactoryTest
 	@CsvSource({
 			"9 to 8: the end one less than the start, 9, 8, java.lang.IllegalArgumentException, Parameter end must not be less than parameter start.",
 			"9 to -9: the end far less than the start, 9, -9, java.lang.IllegalArgumentException, Parameter end must not be less than parameter start.",
-			"Integer.MAX_VALUE - 1 to Integer.MAX_VALUE: today the counter overflows (#113), 2147483646, 2147483647, java.lang.ArrayIndexOutOfBoundsException, Index 2 out of bounds for length 2",
-			"Integer.MAX_VALUE to Integer.MAX_VALUE: today the counter overflows (#113), 2147483647, 2147483647, java.lang.ArrayIndexOutOfBoundsException, Index 1 out of bounds for length 1",
-			"Integer.MIN_VALUE to Integer.MAX_VALUE: today the length overflows to 0 (#113), -2147483648, 2147483647, java.lang.ArrayIndexOutOfBoundsException, Index 0 out of bounds for length 0",
-			"0 to Integer.MAX_VALUE: today the length overflows to a negative (#113), 0, 2147483647, java.lang.NegativeArraySizeException, -2147483648" })
+			"Integer.MIN_VALUE to Integer.MAX_VALUE: all the int values (#113), -2147483648, 2147483647, java.lang.IllegalArgumentException, The range from -2147483648 to 2147483647 holds 4294967296 numbers and an array holds at most 2147483647.",
+			"0 to Integer.MAX_VALUE: one number more than an array holds (#113), 0, 2147483647, java.lang.IllegalArgumentException, The range from 0 to 2147483647 holds 2147483648 numbers and an array holds at most 2147483647." })
 	public void testNewRangeArrayThrows(final String description, final int start, final int end,
 		final Class<? extends RuntimeException> exception, final String message)
 	{
