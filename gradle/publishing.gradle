@@ -8,17 +8,20 @@ task sourcesJar(type: Jar) {
 task javadocJar(type: Jar) {
     from javadoc
     archiveClassifier.set("javadoc")
-    javadoc {
-        failOnError = false
-    }
 }
 
+// A javadoc warning fails the build (#96): -Werror turns each warning into an error, failOnError lets that error
+// fail the task, and check depends on javadoc, so that `./gradlew build` and CI run it. The release gate of 29.0
+// counted warnings by a text search, which missed one in the German locale ("Warnung").
 javadoc {
-    failOnError = false
+    failOnError = true
+    options.addBooleanOption("Werror", true)
     if(JavaVersion.current().isJava9Compatible()) {
         options.addBooleanOption("html5", true)
     }
 }
+
+check.dependsOn javadoc
 
 publishing {
     publications {

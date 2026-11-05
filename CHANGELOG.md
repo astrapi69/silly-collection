@@ -1,6 +1,23 @@
 ## Change log
 ----------------------
 
+Version 29.1-SNAPSHOT
+-------------
+
+FIXED:
+
+- `IndexableSet` declares its public no-argument constructor with a Javadoc comment, so javadoc prints no warning;
+  29.0 had the compiler's default constructor, about which the javadoc of JDK 25 warns ("use of default constructor,
+  which does not provide a comment"), and the release gate of 29.0 did not notice it, as it searched the German
+  output for "warning". The binary interface stays the same, as the default constructor was public too (#96)
+
+CHANGED:
+
+- a javadoc warning fails the build: the `javadoc` task runs with `-Werror` and `failOnError = true`, and `check`
+  depends on it, so `./gradlew build` and CI run javadoc and fail on a warning in every locale (#96).
+  **Note:** a javadoc error fails the build now too; `failOnError` was `false`, also through the `javadoc` block
+  inside the `javadocJar` task, which configured the project's `javadoc` task
+
 Version 29.0
 -------------
 
