@@ -1,7 +1,7 @@
 .PHONY: build build-stacktrace build-warning central-drop central-list central-upload \
 	central-upload-repository clean \
 	dependencies dependency-updates jacoco-coverage jacoco-report jar javadoc \
-	license-format pitest pitest-status publish publish-local release spotless-apply \
+	license-format pitest pitest-status publish publish-local spotless-apply \
 	spotless-check spotless-java spotless-misc tag-release test \
 	version-catalog-format version-catalog-update
 
@@ -9,6 +9,8 @@
 # CENTRAL_USERNAME/CENTRAL_PASSWORD or from ~/.gradle/gradle.properties
 # (centralUsername/centralPassword). PUBLISHING_TYPE is user_managed (review and
 # publish in the Portal) or automatic (publish directly after validation).
+VERSION := $(shell sed -n 's/^projectVersion=//p' gradle.properties)
+
 CENTRAL_NAMESPACE ?= io.github.astrapi69
 CENTRAL_STAGING_API ?= https://ossrh-staging-api.central.sonatype.com
 PUBLISHING_TYPE ?= user_managed
@@ -137,11 +139,6 @@ central-drop:
 		"$(CENTRAL_STAGING_API)/manual/drop/repository/$(REPOSITORY_KEY)" \
 		&& echo "staging repository $(REPOSITORY_KEY) dropped"
 
-# full release: clean, publish to local and remote, upload to the portal, tag the release
-release:
-	./gradlew clean publishMavenJavaPublicationToMavenLocal publish tagRelease
-	$(MAKE) central-upload
-
 spotless-apply:
 	./gradlew spotlessApply
 
@@ -154,7 +151,18 @@ spotless-java:
 spotless-misc:
 	./gradlew spotlessMiscApply
 
+# Creates the RELEASE tag on the checked-out commit. A release leaves only from CI: pushing the tag runs
+# publish.yml, which uploads to the Central Portal (README "Releasing"). There is no target that publishes from
+# this machine or into ~/.m2 for a release: the former `release` ran publishMavenJavaPublicationToMavenLocal,
+# publish and central-upload from here (#99, as astrapi69/comparator-extensions' tag-release, #28).
 tag-release:
+	@case "$(VERSION)" in *-SNAPSHOT) \
+		echo "tag-release refuses $(VERSION): a release tag carries a release version (README.md, \"Releasing\")"; \
+		exit 1;; esac
+	@test "$(CONFIRM)" = "yes" || { \
+		echo "tag-release creates a RELEASE tag, and pushing it triggers publish.yml, which uploads"; \
+		echo "to the Central Portal. Re-run with CONFIRM=yes if that is intended."; \
+		exit 1; }
 	./gradlew tagRelease
 
 version-catalog-format:
