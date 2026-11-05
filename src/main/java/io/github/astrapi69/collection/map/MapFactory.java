@@ -351,21 +351,24 @@ public final class MapFactory
 	}
 
 	/**
-	 * Factory method for create a new {@link InsertionOrderMap}
+	 * Factory method for create a new {@link InsertionOrderMap} of the given key value pairs, put
+	 * one by one in their order, so the map holds its keys in the order of the pairs. A key given
+	 * more than once takes the value and the place of its last pair, as
+	 * {@link InsertionOrderMap#put(Object, Object)} does
 	 *
 	 * @param <K>
 	 *            the generic type of the key
 	 * @param <V>
 	 *            the generic type of the value
 	 * @param keyValuePairs
-	 *            the collection with the key value pairs
+	 *            the collection with the key value pairs, in the order the map takes
 	 * @return The new {@link InsertionOrderMap}
 	 */
 	public static <K, V> Map<K, V> newInsertionOrderMap(
 		final Collection<KeyValuePair<K, V>> keyValuePairs)
 	{
 		Argument.notNull(keyValuePairs, "keyValuePairs");
-		return newInsertionOrderMap(KeyValuePair.toMap(keyValuePairs));
+		return putAll(new InsertionOrderMap<>(), keyValuePairs);
 	}
 
 	/**
@@ -386,14 +389,16 @@ public final class MapFactory
 	}
 
 	/**
-	 * Factory method for create a new {@link InsertionOrderMap}
+	 * Factory method for create a new {@link InsertionOrderMap} of the given key value pairs, put
+	 * one by one in their order, as {@link #newInsertionOrderMap(Collection)} does
 	 *
 	 * @param <K>
 	 *            the generic type of the key
 	 * @param <V>
 	 *            the generic type of the value
 	 * @param keyValuePairs
-	 *            the key value pairs to add in the new {@link InsertionOrderMap}
+	 *            the key value pairs to add in the new {@link InsertionOrderMap}, in the order the
+	 *            map takes
 	 * @return The new {@link InsertionOrderMap}
 	 */
 	@SafeVarargs
@@ -542,21 +547,24 @@ public final class MapFactory
 	}
 
 	/**
-	 * Factory method for create a new {@link LinkedHashMap}
+	 * Factory method for create a new {@link LinkedHashMap} of the given key value pairs, put one
+	 * by one in their order, so the map holds its keys in the order of the pairs. A key given more
+	 * than once takes the value of its last pair and keeps the place of its first one, as the
+	 * insertion order of a {@link LinkedHashMap} is not affected if a key is re-inserted
 	 *
 	 * @param <K>
 	 *            the generic type of the key
 	 * @param <V>
 	 *            the generic type of the value
 	 * @param keyValuePairs
-	 *            the collection with the key value pairs
+	 *            the collection with the key value pairs, in the order the map takes
 	 * @return The new {@link LinkedHashMap}
 	 */
 	public static <K, V> Map<K, V> newLinkedHashMap(
 		final Collection<KeyValuePair<K, V>> keyValuePairs)
 	{
 		Argument.notNull(keyValuePairs, "keyValuePairs");
-		return newLinkedHashMap(KeyValuePair.toMap(keyValuePairs));
+		return putAll(new LinkedHashMap<>(), keyValuePairs);
 	}
 
 	/**
@@ -577,14 +585,16 @@ public final class MapFactory
 	}
 
 	/**
-	 * Factory method for create a new {@link LinkedHashMap}
+	 * Factory method for create a new {@link LinkedHashMap} of the given key value pairs, put one
+	 * by one in their order, as {@link #newLinkedHashMap(Collection)} does
 	 *
 	 * @param <K>
 	 *            the generic type of the key
 	 * @param <V>
 	 *            the generic type of the value
 	 * @param keyValuePairs
-	 *            the key value pairs to add in the new {@link LinkedHashMap}
+	 *            the key value pairs to add in the new {@link LinkedHashMap}, in the order the map
+	 *            takes
 	 * @return The new {@link LinkedHashMap}
 	 */
 	@SafeVarargs
@@ -775,6 +785,30 @@ public final class MapFactory
 	{
 		Argument.notNull(map, "map");
 		return new TreeMap<>(map);
+	}
+
+	/**
+	 * Puts the given key value pairs into the given map one by one, in their order, so a map that
+	 * keeps the order of its puts keeps the order of the pairs (#115)
+	 *
+	 * @param <K>
+	 *            the generic type of the key
+	 * @param <V>
+	 *            the generic type of the value
+	 * @param map
+	 *            the map to put the pairs in
+	 * @param keyValuePairs
+	 *            the key value pairs
+	 * @return the given map
+	 */
+	private static <K, V> Map<K, V> putAll(final Map<K, V> map,
+		final Collection<KeyValuePair<K, V>> keyValuePairs)
+	{
+		for (final KeyValuePair<K, V> keyValuePair : keyValuePairs)
+		{
+			map.put(keyValuePair.getKey(), keyValuePair.getValue());
+		}
+		return map;
 	}
 
 }
