@@ -26,6 +26,7 @@ package io.github.astrapi69.collection.list;
 
 import static org.junit.jupiter.api.Assertions.*;
 
+import java.util.ArrayList;
 import java.util.Arrays;
 import java.util.Collection;
 import java.util.Collections;
@@ -35,10 +36,16 @@ import java.util.Iterator;
 import java.util.List;
 import java.util.ListIterator;
 import java.util.Random;
+import java.util.function.Consumer;
+import java.util.function.Function;
+import java.util.function.Supplier;
 import java.util.function.UnaryOperator;
+import java.util.stream.Stream;
 
 import org.junit.jupiter.api.DisplayName;
 import org.junit.jupiter.api.Test;
+import org.junit.jupiter.params.ParameterizedTest;
+import org.junit.jupiter.params.provider.MethodSource;
 
 import io.github.astrapi69.comparator.object.StringComparator;
 
@@ -49,56 +56,619 @@ public class SortedUniqueListTest
 {
 
 	/**
-	 * Test the method {@link SortedUniqueList#add(Object)}
+	 * The message of the UnsupportedOperationException of set, addFirst, addLast and the add and
+	 * set of the list iterator with a comparator, as TreeSet.addFirst says it, and the start of the
+	 * one of replaceAll
 	 */
-	@Test
-	public void testAddUniqueElement()
-	{
-		List<String> list;
+	private static final String POSITIONING = "The comparator of a SortedUniqueList determines the"
+		+ " position of its elements, so explicit positioning is not supported";
 
-		list = new SortedUniqueList<>(6);
-		list.add("Leonidas");
-		list.add("Leonidas");
-		assertEquals(list.size(), 1);
-		list.add("Berta");
-		list.add("Berta");
-		assertEquals(list.size(), 2);
-		list.add("Caesar");
-		list.add("Caesar");
-		assertEquals(list.size(), 3);
-		list.add("Dora");
-		list.add("Dora");
-		assertEquals(list.size(), 4);
-		list.add("Emil");
-		list.add("Emil");
-		assertEquals(list.size(), 5);
-		list.add("Anton");
-		list.add("Anton");
-		assertEquals(list.size(), 6);
+	/**
+	 * The message of the UnsupportedOperationException of sort
+	 */
+	private static final String SORT = "A SortedUniqueList keeps the order of its comparator;"
+		+ " setComparator(Comparator) changes it";
+
+	/**
+	 * The message of the UnsupportedOperationException of the view of subList
+	 */
+	private static final String SUB_LIST = "A subList view of a SortedUniqueList reads and removes"
+		+ " only; set and add through the list itself";
+
+	/**
+	 * The message of the UnsupportedOperationException of the view of reversed
+	 */
+	private static final String REVERSED = "The reversed view of a SortedUniqueList reads and"
+		+ " removes only; add through the list itself";
+
+	/**
+	 * A new {@link SortedUniqueList} of the given elements in the order of the given comparator
+	 *
+	 * @param comparator
+	 *            the comparator, null for none
+	 * @param elements
+	 *            the elements
+	 * @return the list
+	 */
+	private static SortedUniqueList<String> sorted(final Comparator<String> comparator,
+		final String... elements)
+	{
+		return new SortedUniqueList<>(Arrays.asList(elements), comparator);
 	}
 
 	/**
-	 * Test the method {@link SortedUniqueList#add(Object)}
+	 * Adds the given elements one after the other with {@link List#add(Object)}
+	 *
+	 * @param list
+	 *            the list
+	 * @param elements
+	 *            the elements
+	 * @return what each add returned
 	 */
-	@Test
-	public void testAddAllWithIndex()
+	private static List<Boolean> addEach(final List<String> list, final String... elements)
 	{
-		List<String> list;
-		List<String> addition;
+		final List<Boolean> returned = new ArrayList<>();
+		for (final String element : elements)
+		{
+			returned.add(list.add(element));
+		}
+		return returned;
+	}
 
-		addition = ListFactory.newArrayList("", "Emil", "Anton", "Anton", "Anton", "Emil", "");
-		list = new SortedUniqueList<>();
-		list.add("Emil");
-		list.add("Caesar");
-		list.addAll(1, addition);
-		assertEquals(list.size(), 4);
+	/**
+	 * Calls the given call and returns null, for a void method
+	 *
+	 * @param list
+	 *            the list
+	 * @param call
+	 *            the call
+	 * @return null
+	 */
+	private static Object none(final List<String> list, final Consumer<List<String>> call)
+	{
+		call.accept(list);
+		return null;
+	}
 
-		addition = ListFactory.newArrayList();
-		list = new SortedUniqueList<>();
-		list.add("Emil");
-		list.add("Caesar");
-		list.addAll(1, addition);
-		assertEquals(list.size(), 2);
+	/**
+	 * A call that changes a {@link SortedUniqueList}, what it returns and the list afterwards
+	 *
+	 * @param description
+	 *            the name of the case
+	 * @param list
+	 *            makes the list
+	 * @param call
+	 *            the call, which returns what the method returns, null for a void method
+	 * @param returned
+	 *            what the call returns
+	 * @param expected
+	 *            the elements of the list afterwards, in their order
+	 */
+	record ChangeCase(String description, Supplier<List<String>> list,
+		Function<List<String>, Object> call, Object returned, List<String> expected) {
+		@Override
+		public String toString()
+		{
+			return description;
+		}
+	}
+
+	/**
+	 * The calls that change a {@link SortedUniqueList}: the add methods put an element the list
+	 * does not hold at its place in the order of the comparator, whatever index they are given, and
+	 * append it without a comparator, and leave a held one where it is; without a comparator set
+	 * swaps an element held at another index, replaceAll and the algorithms of {@link Collections}
+	 * work as on an ArrayList, and with one replaceAll replaces in place where the values keep the
+	 * order. "The names" are "", Emil, Anton, Anton, Anton, Emil, ""
+	 *
+	 * @return the cases
+	 */
+	static Stream<ChangeCase> changes()
+	{
+		final List<String> names = Arrays.asList("", "Emil", "Anton", "Anton", "Anton", "Emil", "");
+		final Supplier<List<String>> aToF = () -> sorted(null, "a", "b", "c", "d", "e", "f");
+		return Stream.of(new ChangeCase(
+			"add of Leonidas, Berta, Caesar, Dora, Emil, Anton, each twice, initial capacity 6, no comparator: each once",
+			() -> new SortedUniqueList<>(6),
+			list -> addEach(list, "Leonidas", "Leonidas", "Berta", "Berta", "Caesar", "Caesar",
+				"Dora", "Dora", "Emil", "Emil", "Anton", "Anton"),
+			List.of(true, false, true, false, true, false, true, false, true, false, true, false),
+			List.of("Leonidas", "Berta", "Caesar", "Dora", "Emil", "Anton")),
+			new ChangeCase(
+				"add(0, e) of Leonidas, Berta, Caesar, Dora, Emil, Anton, no comparator: appended, the index ignored",
+				SortedUniqueList::new, list -> none(list, each -> {
+					for (final String name : List.of("Leonidas", "Berta", "Caesar", "Dora", "Emil",
+						"Anton"))
+					{
+						each.add(0, name);
+					}
+				}), null, List.of("Leonidas", "Berta", "Caesar", "Dora", "Emil", "Anton")),
+			new ChangeCase(
+				"add of Leonidas, Berta, Caesar, Dora, Emil, Anton, natural order: sorted in",
+				() -> sorted(Comparator.naturalOrder()),
+				list -> addEach(list, "Leonidas", "Berta", "Caesar", "Dora", "Emil", "Anton"),
+				List.of(true, true, true, true, true, true),
+				List.of("Anton", "Berta", "Caesar", "Dora", "Emil", "Leonidas")),
+			new ChangeCase("add of 3, 1, 2, 3, natural order: 1, 2, 3, the second 3 false",
+				() -> sorted(Comparator.naturalOrder()), list -> addEach(list, "3", "1", "2", "3"),
+				List.of(true, true, true, false), List.of("1", "2", "3")),
+			new ChangeCase(
+				"add of A, B, a, B to a, b, case insensitive: A and B next to the one held equal, a and B false (#40)",
+				() -> sorted(String.CASE_INSENSITIVE_ORDER, "a", "b"),
+				list -> addEach(list, "A", "B", "a", "B"), List.of(true, true, false, false),
+				List.of("A", "a", "B", "b")),
+			new ChangeCase(
+				"add of Leonidas, Berta, Leonidas, no comparator: appended, the second Leonidas false",
+				SortedUniqueList::new, list -> addEach(list, "Leonidas", "Berta", "Leonidas"),
+				List.of(true, true, false), List.of("Leonidas", "Berta")),
+			new ChangeCase(
+				"add(-1, Caesar), add(5, Anton) and add(-1, Caesar), no comparator: appended once (#40)",
+				SortedUniqueList::new, list -> none(list, each -> {
+					each.add(-1, "Caesar");
+					each.add(5, "Anton");
+					each.add(-1, "Caesar");
+				}), null, List.of("Caesar", "Anton")),
+			new ChangeCase(
+				"add(-1, Caesar), add(5, Anton) and add(5, Caesar), natural order: sorted in once (#40)",
+				() -> sorted(Comparator.naturalOrder()), list -> none(list, each -> {
+					each.add(-1, "Caesar");
+					each.add(5, "Anton");
+					each.add(5, "Caesar");
+				}), null, List.of("Anton", "Caesar")),
+			new ChangeCase(
+				"addAll of the names to Emil, Caesar, StringComparator: the new ones sorted in once",
+				() -> {
+					final List<String> list = new SortedUniqueList<>(new StringComparator());
+					list.add("Emil");
+					list.add("Caesar");
+					return list;
+				}, list -> list.addAll(names), true, List.of("", "Anton", "Caesar", "Emil")),
+			new ChangeCase("addAll of nothing to Emil, Caesar, no comparator: unchanged, false",
+				() -> sorted(null, "Emil", "Caesar"), list -> list.addAll(List.of()), false,
+				List.of("Emil", "Caesar")),
+			new ChangeCase(
+				"addAll(1, the names) to Emil, Caesar, no comparator: the new ones appended once",
+				() -> sorted(null, "Emil", "Caesar"), list -> list.addAll(1, names), true,
+				List.of("Emil", "Caesar", "", "Anton")),
+			new ChangeCase("addAll(1, nothing) to Emil, Caesar, no comparator: unchanged, false",
+				() -> sorted(null, "Emil", "Caesar"), list -> list.addAll(1, List.of()), false,
+				List.of("Emil", "Caesar")),
+			new ChangeCase(
+				"addAll of Emil, Caesar, Anton, Emil to Emil, natural order: the new ones sorted in",
+				() -> sorted(Comparator.naturalOrder(), "Emil"),
+				list -> list.addAll(Arrays.asList("Emil", "Caesar", "Anton", "Emil")), true,
+				List.of("Anton", "Caesar", "Emil")),
+			new ChangeCase("addAll of Emil, Anton to Anton, Emil, natural order: all held, false",
+				() -> sorted(Comparator.naturalOrder(), "Anton", "Emil"),
+				list -> list.addAll(Arrays.asList("Emil", "Anton")), false,
+				List.of("Anton", "Emil")),
+			new ChangeCase("addAll of nothing to Emil, natural order: unchanged, false",
+				() -> sorted(Comparator.naturalOrder(), "Emil"),
+				list -> list.addAll(Collections.emptyList()), false, List.of("Emil")),
+			new ChangeCase(
+				"addAll(0, Emil, Caesar, Anton) to Emil, natural order: sorted in, not at the index",
+				() -> sorted(Comparator.naturalOrder(), "Emil"),
+				list -> list.addAll(0, Arrays.asList("Emil", "Caesar", "Anton")), true,
+				List.of("Anton", "Caesar", "Emil")),
+			new ChangeCase("addAll(0, Emil, Anton) to Anton, Emil, natural order: all held, false",
+				() -> sorted(Comparator.naturalOrder(), "Anton", "Emil"),
+				list -> list.addAll(0, Arrays.asList("Emil", "Anton")), false,
+				List.of("Anton", "Emil")),
+			new ChangeCase(
+				"addAll(-1, Caesar, Anton) and addAll(5, Anton, Berta), no comparator: appended once (#40)",
+				SortedUniqueList::new,
+				list -> List.of(list.addAll(-1, Arrays.asList("Caesar", "Anton")),
+					list.addAll(5, Arrays.asList("Anton", "Berta"))),
+				List.of(true, true), List.of("Caesar", "Anton", "Berta")),
+			new ChangeCase(
+				"addAll(-1, Caesar, Anton) and addAll(5, Anton, Berta), natural order: sorted in once (#40)",
+				() -> sorted(Comparator.naturalOrder()),
+				list -> List.of(list.addAll(-1, Arrays.asList("Caesar", "Anton")),
+					list.addAll(5, Arrays.asList("Anton", "Berta"))),
+				List.of(true, true), List.of("Anton", "Berta", "Caesar")),
+			new ChangeCase(
+				"addAll of Caesar, Emil, Anton, Caesar to Emil, no comparator: the new ones appended once",
+				() -> sorted(null, "Emil"),
+				list -> list.addAll(Arrays.asList("Caesar", "Emil", "Anton", "Caesar")), true,
+				List.of("Emil", "Caesar", "Anton")),
+			new ChangeCase("addAll of a, b itself, natural order: nothing added, false (#77)",
+				() -> sorted(Comparator.naturalOrder(), "a", "b"), list -> list.addAll(list), false,
+				List.of("a", "b")),
+			new ChangeCase(
+				"set(0, c) of a, b, c, no comparator: c held at 2 swaps with a, returns a, as in UniqueList (#77)",
+				() -> sorted(null, "a", "b", "c"), list -> list.set(0, "c"), "a",
+				List.of("c", "b", "a")),
+			new ChangeCase(
+				"set(2, a) of a, b, c, no comparator: a held at 0 swaps with c, returns c, as in UniqueList (#77)",
+				() -> sorted(null, "a", "b", "c"), list -> list.set(2, "a"), "c",
+				List.of("c", "b", "a")),
+			new ChangeCase("set(0, b) of c, a, no comparator: replaced in place, returns c",
+				() -> sorted(null, "c", "a"), list -> list.set(0, "b"), "c", List.of("b", "a")),
+			new ChangeCase("replaceAll with upper case of c, a, no comparator: C, A",
+				() -> sorted(null, "c", "a"),
+				list -> none(list, each -> each.replaceAll(String::toUpperCase)), null,
+				List.of("C", "A")),
+			new ChangeCase(
+				"replaceAll doubling a, c, e, natural order: aa, cc, ee, the order kept (#78)",
+				() -> sorted(Comparator.naturalOrder(), "a", "c", "e"),
+				list -> none(list, each -> each.replaceAll(element -> element + element)), null,
+				List.of("aa", "cc", "ee")),
+			new ChangeCase(
+				"replaceAll with the next letter of a, b, c, natural order: b, c, d, each a held value (#78)",
+				() -> sorted(Comparator.naturalOrder(), "a", "b", "c"),
+				list -> none(list,
+					each -> each
+						.replaceAll(element -> String.valueOf((char)(element.charAt(0) + 1)))),
+				null, List.of("b", "c", "d")),
+			new ChangeCase(
+				"replaceAll giving B for a of a, b, c, case insensitive: B, b, c, held equal (#78)",
+				() -> sorted(String.CASE_INSENSITIVE_ORDER, "a", "b", "c"),
+				list -> none(list,
+					each -> each.replaceAll(element -> "a".equals(element) ? "B" : element)),
+				null, List.of("B", "b", "c")),
+			new ChangeCase("Collections.swap(0, 5) of a to f, no comparator: f, b, c, d, e, a",
+				aToF, list -> none(list, each -> Collections.swap(each, 0, 5)), null,
+				List.of("f", "b", "c", "d", "e", "a")),
+			new ChangeCase("Collections.swap(1, 1) of a to f, no comparator: unchanged", aToF,
+				list -> none(list, each -> Collections.swap(each, 1, 1)), null,
+				List.of("a", "b", "c", "d", "e", "f")),
+			new ChangeCase("Collections.reverse of a to f, an even size, no comparator: f to a",
+				aToF, list -> none(list, Collections::reverse), null,
+				List.of("f", "e", "d", "c", "b", "a")),
+			new ChangeCase("Collections.reverse of a, b, c, an odd size, no comparator: c, b, a",
+				() -> sorted(null, "a", "b", "c"), list -> none(list, Collections::reverse), null,
+				List.of("c", "b", "a")),
+			new ChangeCase(
+				"Collections.shuffle with the seed 77 of a to f, no comparator: a, c, f, b, e, d, as an ArrayList",
+				aToF, list -> none(list, each -> Collections.shuffle(each, new Random(77))), null,
+				List.of("a", "c", "f", "b", "e", "d")),
+			new ChangeCase("Collections.rotate by 1 of a to f, no comparator: f, a, b, c, d, e",
+				aToF, list -> none(list, each -> Collections.rotate(each, 1)), null,
+				List.of("f", "a", "b", "c", "d", "e")),
+			new ChangeCase("Collections.rotate by -1 of a to f, no comparator: b, c, d, e, f, a",
+				aToF, list -> none(list, each -> Collections.rotate(each, -1)), null,
+				List.of("b", "c", "d", "e", "f", "a")),
+			new ChangeCase("Collections.rotate by 2 of a to f, no comparator: e, f, a, b, c, d",
+				aToF, list -> none(list, each -> Collections.rotate(each, 2)), null,
+				List.of("e", "f", "a", "b", "c", "d")),
+			new ChangeCase("Collections.rotate by 3 of a to f, no comparator: d, e, f, a, b, c",
+				aToF, list -> none(list, each -> Collections.rotate(each, 3)), null,
+				List.of("d", "e", "f", "a", "b", "c")));
+	}
+
+	/**
+	 * Test the calls that change a {@link SortedUniqueList}: what each returns and the list
+	 * afterwards
+	 *
+	 * @param change
+	 *            the list, the call and its result
+	 */
+	@ParameterizedTest(name = "{0}")
+	@MethodSource("changes")
+	public void testChanges(final ChangeCase change)
+	{
+		final List<String> list = change.list().get();
+		assertEquals(change.returned(), change.call().apply(list));
+		assertEquals(change.expected(), list);
+	}
+
+	/**
+	 * A call on a {@link SortedUniqueList} that throws, the exception and the list afterwards
+	 *
+	 * @param description
+	 *            the name of the case
+	 * @param list
+	 *            makes the list
+	 * @param call
+	 *            the call
+	 * @param exception
+	 *            the class of the exception
+	 * @param message
+	 *            the message of the exception, null if a case does not check it
+	 * @param expected
+	 *            the elements of the list afterwards, null if a case does not check them
+	 */
+	record RefusalCase(String description, Supplier<List<String>> list, Consumer<List<String>> call,
+		Class<? extends RuntimeException> exception, String message, List<String> expected) {
+		@Override
+		public String toString()
+		{
+			return description;
+		}
+	}
+
+	/**
+	 * A call that throws an UnsupportedOperationException and leaves the list unchanged
+	 *
+	 * @param description
+	 *            the name of the case
+	 * @param list
+	 *            makes the list
+	 * @param call
+	 *            the call
+	 * @param message
+	 *            the message of the exception, null if the case does not check it
+	 * @param expected
+	 *            the elements of the list, before and after the call
+	 * @return the case
+	 */
+	private static RefusalCase refused(final String description, final Supplier<List<String>> list,
+		final Consumer<List<String>> call, final String message, final String... expected)
+	{
+		return new RefusalCase(description, list, call, UnsupportedOperationException.class,
+			message, List.of(expected));
+	}
+
+	/**
+	 * The calls on a {@link SortedUniqueList} that throw: with a comparator what would put an
+	 * element at a position the caller chooses or reorder the list against its comparator, as in a
+	 * SortedSet (#77, #78, #87, decided on #91), the writes through the views of subList and
+	 * reversed (#78, #87), sort, addFirst and addLast also without a comparator, replaceAll with
+	 * two equal values, and replaceAll with an operator that fails or a value the comparator cannot
+	 * compare; a refused call leaves the list as it is
+	 *
+	 * @return the cases
+	 */
+	static Stream<RefusalCase> refusals()
+	{
+		final Supplier<List<String>> abc = () -> sorted(Comparator.naturalOrder(), "a", "b", "c");
+		final Supplier<List<String>> ace = () -> sorted(Comparator.naturalOrder(), "a", "c", "e");
+		final Supplier<List<String>> ac = () -> sorted(Comparator.naturalOrder(), "a", "c");
+		final Supplier<List<String>> bdf = () -> sorted(Comparator.naturalOrder(), "b", "d", "f");
+		final Supplier<List<String>> abcd = () -> sorted(Comparator.naturalOrder(), "a", "b", "c",
+			"d");
+		final UnaryOperator<String> failsForB = element -> {
+			if ("b".equals(element))
+			{
+				throw new IllegalStateException("no value for b");
+			}
+			return element.toUpperCase();
+		};
+		return Stream.of(
+			refused("set(0, c) of a, b, c, natural order, c held behind it (#78)", abc,
+				list -> list.set(0, "c"), POSITIONING, "a", "b", "c"),
+			refused("set(2, a) of a, b, c, natural order, a held in front of it (#78)", abc,
+				list -> list.set(2, "a"), null, "a", "b", "c"),
+			refused("set(1, a) of a, b, c, natural order, held, would keep the order (#91)", abc,
+				list -> list.set(1, "a"), null, "a", "b", "c"),
+			refused("set(1, c) of a, b, c, natural order, held, would keep the order (#91)", abc,
+				list -> list.set(1, "c"), null, "a", "b", "c"),
+			refused("set(0, a) of b, d, f, natural order, keeps the order at the first index (#91)",
+				bdf, list -> list.set(0, "a"), null, "b", "d", "f"),
+			refused("set(0, c) of b, d, f, natural order, keeps the order (#91)", bdf,
+				list -> list.set(0, "c"), null, "b", "d", "f"),
+			refused("set(1, c) of b, d, f, natural order, keeps the order in the middle (#91)", bdf,
+				list -> list.set(1, "c"), null, "b", "d", "f"),
+			refused("set(1, e) of b, d, f, natural order, keeps the order in the middle (#91)", bdf,
+				list -> list.set(1, "e"), null, "b", "d", "f"),
+			refused("set(2, e) of b, d, f, natural order, keeps the order at the last index (#91)",
+				bdf, list -> list.set(2, "e"), null, "b", "d", "f"),
+			refused("set(2, z) of b, d, f, natural order, keeps the order at the last index (#91)",
+				bdf, list -> list.set(2, "z"), null, "b", "d", "f"),
+			refused("set(0, z) of m, natural order, the only element (#91)",
+				() -> sorted(Comparator.naturalOrder(), "m"), list -> list.set(0, "z"), null, "m"),
+			refused(
+				"set(1, B) of b, d, f, case insensitive, held equal to the neighbour in front (#91)",
+				() -> sorted(String.CASE_INSENSITIVE_ORDER, "b", "d", "f"),
+				list -> list.set(1, "B"), null, "b", "d", "f"),
+			refused(
+				"set(1, F) of b, d, f, case insensitive, held equal to the next neighbour (#91)",
+				() -> sorted(String.CASE_INSENSITIVE_ORDER, "b", "d", "f"),
+				list -> list.set(1, "F"), null, "b", "d", "f"),
+			refused("set(0, d) of a, c, e, natural order, against the order (#78)", ace,
+				list -> list.set(0, "d"), POSITIONING, "a", "c", "e"),
+			refused("set(2, b) of a, c, e, natural order, against the order (#78)", ace,
+				list -> list.set(2, "b"), null, "a", "c", "e"),
+			refused("set(1, d) of a, c, e, natural order, an element that keeps the order (#91)",
+				ace, list -> list.set(1, "d"), null, "a", "c", "e"),
+			refused("set(2, a) of a, b, natural order, an index out of range (#78)",
+				() -> sorted(Comparator.naturalOrder(), "a", "b"), list -> list.set(2, "a"), null,
+				"a", "b"),
+			refused("set(-1, b) of a, b, natural order, a negative index (#78)",
+				() -> sorted(Comparator.naturalOrder(), "a", "b"), list -> list.set(-1, "b"), null,
+				"a", "b"),
+			new RefusalCase("set(2, a) of b, a, no comparator: Index 2 out of bounds (#77)",
+				() -> sorted(null, "b", "a"), list -> list.set(2, "a"),
+				IndexOutOfBoundsException.class, "Index 2 out of bounds for length 2",
+				List.of("b", "a")),
+			new RefusalCase("set(-1, b) of b, a, no comparator: Index -1 out of bounds (#77)",
+				() -> sorted(null, "b", "a"), list -> list.set(-1, "b"),
+				IndexOutOfBoundsException.class, "Index -1 out of bounds for length 2",
+				List.of("b", "a")),
+			refused("set(0, null) of a, c, natural order, a value it cannot compare (#77, #78)", ac,
+				list -> list.set(0, null), null, "a", "c"),
+			new RefusalCase(
+				"replaceAll giving x for each of a, b, c: IllegalArgumentException, x twice (#77)",
+				abc, list -> list.replaceAll(element -> "x"), IllegalArgumentException.class,
+				"The operator gives the value x for two elements of this list",
+				List.of("a", "b", "c")),
+			new RefusalCase(
+				"replaceAll giving A for a and B for the others of a, b, c: IllegalArgumentException (#77)",
+				abc, list -> list.replaceAll(element -> element.equals("a") ? "A" : "B"),
+				IllegalArgumentException.class, null, List.of("a", "b", "c")),
+			new RefusalCase(
+				"replaceAll giving b for b and c for the others of a, b, c: c twice, out of order (#78)",
+				abc, list -> list.replaceAll(element -> "b".equals(element) ? "b" : "c"),
+				IllegalArgumentException.class,
+				"The operator gives the value c for two elements of this list",
+				List.of("a", "b", "c")),
+			refused("replaceAll giving f for a of a, c, e, natural order: c at 1 breaks it (#78)",
+				ace, list -> list.replaceAll(element -> "a".equals(element) ? "f" : element),
+				POSITIONING + ": the value c at the index 1 would break its order", "a", "c", "e"),
+			refused("replaceAll giving b, c, a for a, b, c, natural order, distinct values (#78)",
+				abc,
+				list -> list.replaceAll(
+					element -> element.equals("a") ? "b" : element.equals("b") ? "c" : "a"),
+				null, "a", "b", "c"),
+			new RefusalCase(
+				"replaceAll giving null for a of a, c, natural order: NullPointerException (#77)",
+				ac, list -> list.replaceAll(element -> "a".equals(element) ? null : element),
+				NullPointerException.class, null, List.of("a", "c")),
+			new RefusalCase("replaceAll(null) of an empty list: NullPointerException",
+				() -> sorted(Comparator.naturalOrder()), list -> list.replaceAll(null),
+				NullPointerException.class, null, List.of()),
+			new RefusalCase(
+				"replaceAll with an operator that removes b of a, b: ConcurrentModificationException",
+				() -> sorted(Comparator.naturalOrder(), "a", "b"),
+				list -> list.replaceAll(element -> {
+					list.remove("b");
+					return element.toUpperCase();
+				}), ConcurrentModificationException.class, null, null),
+			new RefusalCase(
+				"replaceAll with an operator that throws for b of a, b, c, natural order: none replaced",
+				abc, list -> list.replaceAll(failsForB), IllegalStateException.class,
+				"no value for b", List.of("a", "b", "c")),
+			new RefusalCase(
+				"replaceAll with an operator that throws for b of a, b, c, no comparator: none replaced",
+				() -> sorted(null, "a", "b", "c"), list -> list.replaceAll(failsForB),
+				IllegalStateException.class, "no value for b", List.of("a", "b", "c")),
+			refused("sort(reverse order) of a, b, c, natural order (#77)", abc,
+				list -> list.sort(Comparator.reverseOrder()), SORT, "a", "b", "c"),
+			refused("sort(null) of a, b, c, natural order (#77)", abc, list -> list.sort(null),
+				null, "a", "b", "c"),
+			refused("sort(natural order) of a, b, c, the comparator of the list (#77)", abc,
+				list -> list.sort(Comparator.naturalOrder()), null, "a", "b", "c"),
+			refused("sort(null) of b, a, no comparator (#77)", () -> sorted(null, "b", "a"),
+				list -> list.sort(null), null, "b", "a"),
+			refused("Collections.sort of c, b, a, reverse order (#77)",
+				() -> sorted(Comparator.reverseOrder(), "a", "b", "c"),
+				list -> Collections.sort(list), null, "c", "b", "a"),
+			refused("Collections.swap(0, 3) of a, b, c, d, natural order (#91)", abcd,
+				list -> Collections.swap(list, 0, 3), null, "a", "b", "c", "d"),
+			refused("Collections.reverse of a, b, c, d, natural order (#91)", abcd,
+				Collections::reverse, null, "a", "b", "c", "d"),
+			refused("Collections.shuffle with the seed 77 of a, b, c, d, natural order (#91)", abcd,
+				list -> Collections.shuffle(list, new Random(77)), null, "a", "b", "c", "d"),
+			refused("Collections.rotate by 1 of a, b, c, d, natural order (#91)", abcd,
+				list -> Collections.rotate(list, 1), null, "a", "b", "c", "d"),
+			refused("Collections.swap(0, 1) of a, b, c, d, natural order, two neighbours (#91)",
+				abcd, list -> Collections.swap(list, 0, 1), null, "a", "b", "c", "d"),
+			refused("Collections.rotate by -1 of a, b, c, d, natural order (#91)", abcd,
+				list -> Collections.rotate(list, -1), null, "a", "b", "c", "d"),
+			refused(
+				"Collections.swap(1, 1) of a, b, c, d, natural order, an index with itself (#91)",
+				abcd, list -> Collections.swap(list, 1, 1), null, "a", "b", "c", "d"),
+			refused("Collections.fill with a of b, c, d, natural order (#91)",
+				() -> sorted(Comparator.naturalOrder(), "b", "c", "d"),
+				list -> Collections.fill(list, "a"), null, "b", "c", "d"),
+			refused("Collections.copy of a, c into b, d, f, natural order (#91)", bdf,
+				list -> Collections.copy(list, Arrays.asList("a", "c")), null, "b", "d", "f"),
+			refused("subList(1, 3).set(0, z) of a, b, c, d (#78)", abcd,
+				list -> list.subList(1, 3).set(0, "z"), SUB_LIST, "a", "b", "c", "d"),
+			refused("subList(1, 3).set(0, a) of a, b, c, d, an element the list holds (#78)", abcd,
+				list -> list.subList(1, 3).set(0, "a"), null, "a", "b", "c", "d"),
+			refused("subList(1, 3).replaceAll of a, b, c, d (#78)", abcd,
+				list -> list.subList(1, 3).replaceAll(String::toUpperCase), null, "a", "b", "c",
+				"d"),
+			refused("subList(1, 3).subList(0, 1).set(0, z) of a, b, c, d (#78)", abcd,
+				list -> list.subList(1, 3).subList(0, 1).set(0, "z"), null, "a", "b", "c", "d"),
+			refused("subList(1, 3).subList(0, 1).replaceAll of a, b, c, d (#78)", abcd,
+				list -> list.subList(1, 3).subList(0, 1).replaceAll(String::toUpperCase), null, "a",
+				"b", "c", "d"),
+			refused("subList(0, 2).add(a) of a, c, the whole list, an element it holds (#78)", ac,
+				list -> list.subList(0, 2).add("a"), null, "a", "c"),
+			refused("subList(1, 3).add(e) of a, b, c, d (#78)", abcd,
+				list -> list.subList(1, 3).add("e"), null, "a", "b", "c", "d"),
+			refused("subList(1, 3).add(0, e) of a, b, c, d (#78)", abcd,
+				list -> list.subList(1, 3).add(0, "e"), null, "a", "b", "c", "d"),
+			refused("subList(1, 3).addAll(e) of a, b, c, d (#78)", abcd,
+				list -> list.subList(1, 3).addAll(Arrays.asList("e")), null, "a", "b", "c", "d"),
+			refused("subList(1, 3).addAll(0, e) of a, b, c, d (#78)", abcd,
+				list -> list.subList(1, 3).addAll(0, Arrays.asList("e")), null, "a", "b", "c", "d"),
+			refused("subList(1, 3).addAll of nothing of a, b, c, d (#78)", abcd,
+				list -> list.subList(1, 3).addAll(Collections.emptyList()), null, "a", "b", "c",
+				"d"),
+			refused("subList(1, 3).addAll(0, nothing) of a, b, c, d (#78)", abcd,
+				list -> list.subList(1, 3).addAll(0, Collections.emptyList()), null, "a", "b", "c",
+				"d"),
+			refused("subList(1, 3).subList(0, 1).add(e) of a, b, c, d (#78)", abcd,
+				list -> list.subList(1, 3).subList(0, 1).add("e"), null, "a", "b", "c", "d"),
+			refused("subList(1, 3).subList(0, 1).addAll(e) of a, b, c, d (#78)", abcd,
+				list -> list.subList(1, 3).subList(0, 1).addAll(Arrays.asList("e")), null, "a", "b",
+				"c", "d"),
+			refused("subList(1, 3).sort(reverse order) of a, b, c, d (#78)", abcd,
+				list -> list.subList(1, 3).sort(Comparator.reverseOrder()), null, "a", "b", "c",
+				"d"),
+			refused("subList(1, 3).sort(null) of a, b, c, d (#78)", abcd,
+				list -> list.subList(1, 3).sort(null), null, "a", "b", "c", "d"),
+			refused("subList(1, 3).sort(natural order) of a, b, c, d, its comparator (#78)", abcd,
+				list -> list.subList(1, 3).sort(Comparator.naturalOrder()), null, "a", "b", "c",
+				"d"),
+			refused("subList(2, 2).sort(null) of a, b, c, d, an empty view (#78)", abcd,
+				list -> list.subList(2, 2).sort(null), null, "a", "b", "c", "d"),
+			refused("subList(1, 3).subList(0, 2).sort(null) of a, b, c, d (#78)", abcd,
+				list -> list.subList(1, 3).subList(0, 2).sort(null), null, "a", "b", "c", "d"),
+			refused("Collections.reverse of subList(1, 3) of a, b, c, d (#78)", abcd,
+				list -> Collections.reverse(list.subList(1, 3)), null, "a", "b", "c", "d"),
+			refused("Collections.swap(0, 1) of subList(1, 3) of a, b, c, d (#78)", abcd,
+				list -> Collections.swap(list.subList(1, 3), 0, 1), null, "a", "b", "c", "d"),
+			refused("addFirst(z) of a, b, natural order (#87)",
+				() -> sorted(Comparator.naturalOrder(), "a", "b"), list -> list.addFirst("z"),
+				POSITIONING, "a", "b"),
+			refused("addLast(0) of a, b, natural order (#87)",
+				() -> sorted(Comparator.naturalOrder(), "a", "b"), list -> list.addLast("0"), null,
+				"a", "b"),
+			refused("addFirst(b) of a, b, natural order, an element the list holds (#87)",
+				() -> sorted(Comparator.naturalOrder(), "a", "b"), list -> list.addFirst("b"), null,
+				"a", "b"),
+			refused("addFirst(z) of b, a, no comparator (#87)", () -> sorted(null, "b", "a"),
+				list -> list.addFirst("z"), null, "b", "a"),
+			refused("addLast(z) of b, a, no comparator (#87)", () -> sorted(null, "b", "a"),
+				list -> list.addLast("z"), null, "b", "a"),
+			refused("reversed().addFirst(0) of a, b, c (#87)", abc,
+				list -> list.reversed().addFirst("0"), REVERSED, "a", "b", "c"),
+			refused("reversed().addLast(z) of a, b, c (#87)", abc,
+				list -> list.reversed().addLast("z"), null, "a", "b", "c"),
+			refused("reversed().add(z) of a, b, c (#87)", abc, list -> list.reversed().add("z"),
+				null, "a", "b", "c"),
+			refused("reversed().add(0, z) of a, b, c (#87)", abc,
+				list -> list.reversed().add(0, "z"), null, "a", "b", "c"),
+			refused("reversed().addAll(z) of a, b, c (#87)", abc,
+				list -> list.reversed().addAll(Arrays.asList("z")), null, "a", "b", "c"),
+			refused("reversed().set(0, y) of a, b, c (#87)", abc,
+				list -> list.reversed().set(0, "y"), null, "a", "b", "c"),
+			refused("reversed().replaceAll of a, b, c (#87)", abc,
+				list -> list.reversed().replaceAll(String::toUpperCase), null, "a", "b", "c"),
+			refused("reversed().sort(null) of a, b, c (#87)", abc,
+				list -> list.reversed().sort(null), null, "a", "b", "c"),
+			refused("set(y) of the list iterator of reversed() after next() of a, b, c (#87)", abc,
+				list -> {
+					final ListIterator<String> iterator = list.reversed().listIterator();
+					assertEquals("c", iterator.next());
+					iterator.set("y");
+				}, null, "a", "b", "c"),
+			refused("add(y) of the list iterator of reversed() after next() of a, b, c (#87)", abc,
+				list -> {
+					final ListIterator<String> iterator = list.reversed().listIterator();
+					assertEquals("c", iterator.next());
+					iterator.add("y");
+				}, null, "a", "b", "c"),
+			refused("reversed().subList(0, 2).addFirst(0) of a, b, c (#87)", abc,
+				list -> list.reversed().subList(0, 2).addFirst("0"), null, "a", "b", "c"));
+	}
+
+	/**
+	 * Test the calls on a {@link SortedUniqueList} that throw: the exception, its message where a
+	 * case names it, and the list afterwards, unchanged where the call is refused
+	 *
+	 * @param refusal
+	 *            the list, the call and the exception
+	 */
+	@ParameterizedTest(name = "{0}")
+	@MethodSource("refusals")
+	public void testRefusals(final RefusalCase refusal)
+	{
+		final List<String> list = refusal.list().get();
+		final RuntimeException exception = assertThrows(refusal.exception(),
+			() -> refusal.call().accept(list));
+		if (refusal.message() != null)
+		{
+			assertEquals(refusal.message(), exception.getMessage());
+		}
+		if (refusal.expected() != null)
+		{
+			assertEquals(refusal.expected(), list);
+		}
 	}
 
 	/**
@@ -177,111 +747,6 @@ public class SortedUniqueListTest
 	}
 
 	/**
-	 * Test the method {@link SortedUniqueList#addAll(Collection)}
-	 */
-	@Test
-	public void testAddAll()
-	{
-		List<String> list;
-		List<String> addition;
-
-		addition = ListFactory.newArrayList("", "Emil", "Anton", "Anton", "Anton", "Emil", "");
-		list = new SortedUniqueList<>(new StringComparator());
-		list.add("Emil");
-		list.add("Caesar");
-		list.addAll(addition);
-		assertEquals(list.size(), 4);
-
-		addition = ListFactory.newArrayList();
-		list = new SortedUniqueList<>();
-		list.add("Emil");
-		list.add("Caesar");
-		list.addAll(addition);
-		assertEquals(list.size(), 2);
-	}
-
-	/**
-	 * Test the method {@link SortedUniqueList#add(Object)}
-	 */
-	@Test
-	public void testAddWithIndex()
-	{
-		List<String> list;
-
-		list = new SortedUniqueList<>();
-		list.add(0, "Leonidas");
-		assertEquals(list.size(), 1);
-		list.add(0, "Berta");
-		assertEquals(list.size(), 2);
-		list.add(0, "Caesar");
-		assertEquals(list.size(), 3);
-		list.add(0, "Dora");
-		assertEquals(list.size(), 4);
-		list.add(0, "Emil");
-		assertEquals(list.size(), 5);
-		list.add(0, "Anton");
-		assertEquals(list.size(), 6);
-	}
-
-	/**
-	 * Test the method {@link SortedUniqueList#add(Object)}
-	 */
-	@Test
-	public void testAddWithString()
-	{
-		List<String> list;
-
-		list = new SortedUniqueList<>(Comparator.naturalOrder());
-		list.add("Leonidas");
-		assertEquals(list.size(), 1);
-		list.add("Berta");
-		assertEquals(list.size(), 2);
-		list.add("Caesar");
-		assertEquals(list.size(), 3);
-		list.add("Dora");
-		assertEquals(list.size(), 4);
-		list.add("Emil");
-		assertEquals(list.size(), 5);
-		list.add("Anton");
-		assertEquals(list.size(), 6);
-	}
-
-	/**
-	 * Test method for {@link SortedUniqueList#add(Object)}.
-	 */
-	@Test
-	@DisplayName("Test adding elements and maintaining sorted uniqueness")
-	public void testAdd()
-	{
-		SortedUniqueList<Integer> list = new SortedUniqueList<>(Comparator.naturalOrder());
-		assertTrue(list.add(3));
-		assertTrue(list.add(1));
-		assertTrue(list.add(2));
-		assertFalse(list.add(3));
-		assertEquals(Arrays.asList(1, 2, 3), list);
-	}
-
-	/**
-	 * Test the method {@link SortedUniqueList#add(Object)} with a comparator that holds "a" and
-	 * "A", and "b" and "B", equal, which equals does not: each goes in next to the element the
-	 * comparator holds it equal to, and the method returns true. The list stays unique by equals:
-	 * an element it contains is not added again, and the method returns false (#40)
-	 */
-	@Test
-	public void testAddWithComparatorInconsistentWithEquals()
-	{
-		List<String> list = new SortedUniqueList<>(String.CASE_INSENSITIVE_ORDER);
-		list.add("a");
-		list.add("b");
-
-		assertTrue(list.add("A"));
-		assertTrue(list.add("B"));
-		assertFalse(list.add("a"));
-		assertFalse(list.add("B"));
-		assertEquals(Arrays.asList("A", "a", "B", "b"), list);
-	}
-
-	/**
 	 * Test method for {@link SortedUniqueList#setComparator(Comparator)}.
 	 */
 	@Test
@@ -294,139 +759,6 @@ public class SortedUniqueListTest
 		list.add("cherry");
 		list.setComparator(Comparator.reverseOrder());
 		assertEquals(Arrays.asList("cherry", "banana", "apple"), list);
-	}
-
-	/**
-	 * Test the method {@link SortedUniqueList#addAll(Collection)} with a collection of new elements
-	 * and ones the list already contains: the new ones are inserted in the order of the comparator
-	 * and the method returns true
-	 */
-	@Test
-	public void testAddAllWithNewElements()
-	{
-		List<String> list = new SortedUniqueList<>(Comparator.naturalOrder());
-		list.add("Emil");
-
-		assertTrue(list.addAll(Arrays.asList("Emil", "Caesar", "Anton", "Emil")));
-		assertEquals(Arrays.asList("Anton", "Caesar", "Emil"), list);
-	}
-
-	/**
-	 * Test the method {@link SortedUniqueList#addAll(Collection)} with a collection of elements the
-	 * list already contains, which leaves the list unchanged and returns false
-	 */
-	@Test
-	public void testAddAllWithContainedElements()
-	{
-		List<String> list = new SortedUniqueList<>(Comparator.naturalOrder());
-		list.add("Anton");
-		list.add("Emil");
-
-		assertFalse(list.addAll(Arrays.asList("Emil", "Anton")));
-		assertEquals(Arrays.asList("Anton", "Emil"), list);
-	}
-
-	/**
-	 * Test the method {@link SortedUniqueList#addAll(Collection)} with an empty collection, which
-	 * leaves the list unchanged and returns false
-	 */
-	@Test
-	public void testAddAllWithEmptyCollection()
-	{
-		List<String> list = new SortedUniqueList<>(Comparator.naturalOrder());
-		list.add("Emil");
-
-		assertFalse(list.addAll(Collections.emptyList()));
-		assertEquals(Arrays.asList("Emil"), list);
-	}
-
-	/**
-	 * Test the method {@link SortedUniqueList#addAll(int, Collection)} with a collection of new
-	 * elements and one the list already contains: as with every add method of the class, the new
-	 * ones are inserted in the order of the comparator and not at the given index, and the method
-	 * returns true
-	 */
-	@Test
-	public void testAddAllWithIndexAndNewElements()
-	{
-		List<String> list = new SortedUniqueList<>(Comparator.naturalOrder());
-		list.add("Emil");
-
-		assertTrue(list.addAll(0, Arrays.asList("Emil", "Caesar", "Anton")));
-		assertEquals(Arrays.asList("Anton", "Caesar", "Emil"), list);
-	}
-
-	/**
-	 * Test the method {@link SortedUniqueList#addAll(int, Collection)} with a collection of
-	 * elements the list already contains, which leaves the list unchanged and returns false
-	 */
-	@Test
-	public void testAddAllWithIndexAndContainedElements()
-	{
-		List<String> list = new SortedUniqueList<>(Comparator.naturalOrder());
-		list.add("Anton");
-		list.add("Emil");
-
-		assertFalse(list.addAll(0, Arrays.asList("Emil", "Anton")));
-		assertEquals(Arrays.asList("Anton", "Emil"), list);
-	}
-
-	/**
-	 * Test the method {@link SortedUniqueList#add(int, Object)} with a negative index and one past
-	 * the end of the list: the index is ignored and not checked, and an element the list does not
-	 * contain yet goes in at its place in the order of the comparator, or at the end of a list
-	 * without one (#40)
-	 */
-	@Test
-	public void testAddWithIndexOutOfRange()
-	{
-		List<String> list = new SortedUniqueList<>();
-		list.add(-1, "Caesar");
-		list.add(5, "Anton");
-		list.add(-1, "Caesar");
-		assertEquals(Arrays.asList("Caesar", "Anton"), list);
-
-		list = new SortedUniqueList<>(Comparator.naturalOrder());
-		list.add(-1, "Caesar");
-		list.add(5, "Anton");
-		list.add(5, "Caesar");
-		assertEquals(Arrays.asList("Anton", "Caesar"), list);
-	}
-
-	/**
-	 * Test the method {@link SortedUniqueList#addAll(int, Collection)} with a negative index and
-	 * one past the end of the list: the index is ignored and not checked, the elements the list
-	 * does not contain yet go in at their place in the order of the comparator, or at the end of a
-	 * list without one, and the method returns true (#40)
-	 */
-	@Test
-	public void testAddAllWithIndexOutOfRange()
-	{
-		List<String> list = new SortedUniqueList<>();
-		assertTrue(list.addAll(-1, Arrays.asList("Caesar", "Anton")));
-		assertTrue(list.addAll(5, Arrays.asList("Anton", "Berta")));
-		assertEquals(Arrays.asList("Caesar", "Anton", "Berta"), list);
-
-		list = new SortedUniqueList<>(Comparator.naturalOrder());
-		assertTrue(list.addAll(-1, Arrays.asList("Caesar", "Anton")));
-		assertTrue(list.addAll(5, Arrays.asList("Anton", "Berta")));
-		assertEquals(Arrays.asList("Anton", "Berta", "Caesar"), list);
-	}
-
-	/**
-	 * Test the method {@link SortedUniqueList#add(Object)} without a comparator: an element the
-	 * list does not contain yet is appended and the method returns true, for an element the list
-	 * contains already it returns false and the list does not change (#66)
-	 */
-	@Test
-	public void testAddWithoutComparator()
-	{
-		List<String> list = new SortedUniqueList<>();
-
-		assertTrue(list.add("Leonidas"));
-		assertTrue(list.add("Berta"));
-		assertFalse(list.add("Leonidas"));
-		assertEquals(Arrays.asList("Leonidas", "Berta"), list);
 	}
 
 	/**
@@ -451,116 +783,6 @@ public class SortedUniqueListTest
 	}
 
 	/**
-	 * Test the method {@link SortedUniqueList#addAll(Collection)} without a comparator: the
-	 * elements the list does not contain yet are appended in the order of the collection, each of
-	 * them once, and the method returns true (#66)
-	 */
-	@Test
-	public void testAddAllWithoutComparator()
-	{
-		List<String> list = new SortedUniqueList<>();
-		list.add("Emil");
-
-		assertTrue(list.addAll(Arrays.asList("Caesar", "Emil", "Anton", "Caesar")));
-		assertEquals(Arrays.asList("Emil", "Caesar", "Anton"), list);
-	}
-
-	/**
-	 * Test the method {@link SortedUniqueList#set(int, Object)} with a comparator and an element
-	 * the list holds at another index, in front of and behind the given one: it throws the
-	 * UnsupportedOperationException, with the message of addFirst, as for any arguments, and the
-	 * list does not change; set(0, c) and set(2, a) of [a, b, c] (#77, #78)
-	 */
-	@Test
-	public void testSetWithElementHeldAtAnotherIndex()
-	{
-		List<String> list = new SortedUniqueList<>(Arrays.asList("a", "b", "c"),
-			Comparator.naturalOrder());
-		UnsupportedOperationException exception = assertThrows(UnsupportedOperationException.class,
-			() -> list.set(0, "c"));
-		assertEquals(
-			"The comparator of a SortedUniqueList determines the position of its elements, so"
-				+ " explicit positioning is not supported",
-			exception.getMessage());
-		assertThrows(UnsupportedOperationException.class, () -> list.set(2, "a"));
-		assertEquals(Arrays.asList("a", "b", "c"), list);
-	}
-
-	/**
-	 * Test the method {@link SortedUniqueList#set(int, Object)} with a comparator and an element
-	 * the list holds at another index, where it would keep the order: set(1, a) and set(1, c) of
-	 * [a, b, c] throw the UnsupportedOperationException as well, and the list does not change (#78,
-	 * decided on #91)
-	 */
-	@Test
-	public void testSetWithElementHeldAtAnotherIndexThatKeepsTheOrder()
-	{
-		List<String> list = new SortedUniqueList<>(Arrays.asList("a", "b", "c"),
-			Comparator.naturalOrder());
-
-		assertThrows(UnsupportedOperationException.class, () -> list.set(1, "a"));
-		assertThrows(UnsupportedOperationException.class, () -> list.set(1, "c"));
-		assertEquals(Arrays.asList("a", "b", "c"), list);
-	}
-
-	/**
-	 * Test the method {@link SortedUniqueList#set(int, Object)} with a comparator and elements the
-	 * list does not hold that would keep the order at the index, at the first, a middle and the
-	 * last index, set(0, a), set(0, c), set(1, c), set(1, e), set(2, e) and set(2, z) of [b, d, f],
-	 * and on a list of one element: each throws the UnsupportedOperationException, and the list
-	 * does not change (#78, decided on #91)
-	 */
-	@Test
-	public void testSetWithComparatorAndElementThatKeepsTheOrder()
-	{
-		List<String> elements = Arrays.asList("b", "d", "f");
-
-		assertSetThrows(elements, 0, "a");
-		assertSetThrows(elements, 0, "c");
-		assertSetThrows(elements, 1, "c");
-		assertSetThrows(elements, 1, "e");
-		assertSetThrows(elements, 2, "e");
-		assertSetThrows(elements, 2, "z");
-		assertSetThrows(Arrays.asList("m"), 0, "z");
-	}
-
-	/**
-	 * Calls set with the given index and element on a {@link SortedUniqueList} of the given
-	 * elements in their natural order, and asserts that it throws an UnsupportedOperationException
-	 * and that the list does not change
-	 *
-	 * @param elements
-	 *            the elements of the list, in their natural order
-	 * @param index
-	 *            the index to set
-	 * @param element
-	 *            the element to set
-	 */
-	private static void assertSetThrows(List<String> elements, int index, String element)
-	{
-		List<String> list = new SortedUniqueList<>(elements, Comparator.naturalOrder());
-		assertThrows(UnsupportedOperationException.class, () -> list.set(index, element));
-		assertEquals(elements, list);
-	}
-
-	/**
-	 * Test the method {@link SortedUniqueList#set(int, Object)} with a comparator inconsistent with
-	 * equals and elements it holds equal to a neighbour of the index, which equals does not: with
-	 * {@link String#CASE_INSENSITIVE_ORDER}, set(1, B) and set(1, F) of [b, d, f] throw the
-	 * UnsupportedOperationException, and the list stays [b, d, f] (#78, decided on #91)
-	 */
-	@Test
-	public void testSetWithComparatorInconsistentWithEquals()
-	{
-		List<String> list = new SortedUniqueList<>(Arrays.asList("b", "d", "f"),
-			String.CASE_INSENSITIVE_ORDER);
-
-		assertThrows(UnsupportedOperationException.class, () -> list.set(1, "B"));
-		assertThrows(UnsupportedOperationException.class, () -> list.set(1, "F"));
-		assertEquals(Arrays.asList("b", "d", "f"), list);
-	}
-
-	/**
 	 * Test the method {@link SortedUniqueList#set(int, Object)} with a comparator while an iterator
 	 * runs over the list: set(1, d) of [a, c, e] after the first next() throws the
 	 * UnsupportedOperationException, the list stays [a, c, e], and the iterator goes on with c and
@@ -582,24 +804,6 @@ public class SortedUniqueListTest
 	}
 
 	/**
-	 * Test the method {@link SortedUniqueList#set(int, Object)} without a comparator and with an
-	 * element the list holds at another index, in front of and behind the given one: the two
-	 * elements swap, as in {@link UniqueList}; set(0, c) of [a, b, c] returns a and set(2, a)
-	 * returns c, and both give [c, b, a] (#77)
-	 */
-	@Test
-	public void testSetWithoutComparatorAndElementHeldAtAnotherIndex()
-	{
-		List<String> list = new SortedUniqueList<>(Arrays.asList("a", "b", "c"));
-		assertEquals("a", list.set(0, "c"));
-		assertEquals(Arrays.asList("c", "b", "a"), list);
-
-		List<String> other = new SortedUniqueList<>(Arrays.asList("a", "b", "c"));
-		assertEquals("c", other.set(2, "a"));
-		assertEquals(Arrays.asList("c", "b", "a"), other);
-	}
-
-	/**
 	 * Test the method {@link SortedUniqueList#set(int, Object)} without a comparator while an
 	 * iterator runs over the list: the swap is no structural modification, set(0, c) of [a, b, c]
 	 * after the first next() gives [c, b, a], and the iterator goes on with b and a without a
@@ -617,30 +821,6 @@ public class SortedUniqueListTest
 		assertEquals("a", iterator.next());
 		assertFalse(iterator.hasNext());
 		assertEquals(Arrays.asList("c", "b", "a"), list);
-	}
-
-	/**
-	 * Test the method {@link SortedUniqueList#set(int, Object)} with a comparator and elements the
-	 * list does not hold: it throws an UnsupportedOperationException whatever its arguments, with
-	 * the message of addFirst, as TreeSet.addFirst does, for elements that break the order at the
-	 * index, set(0, d) and set(2, b) of [a, c, e], and for one that keeps it, set(1, d), and the
-	 * list stays [a, c, e] (#78, decided on #91)
-	 */
-	@Test
-	public void testSetWithComparator()
-	{
-		List<String> list = new SortedUniqueList<>(Arrays.asList("a", "c", "e"),
-			Comparator.naturalOrder());
-
-		UnsupportedOperationException exception = assertThrows(UnsupportedOperationException.class,
-			() -> list.set(0, "d"));
-		assertEquals(
-			"The comparator of a SortedUniqueList determines the position of its elements, so"
-				+ " explicit positioning is not supported",
-			exception.getMessage());
-		assertThrows(UnsupportedOperationException.class, () -> list.set(2, "b"));
-		assertThrows(UnsupportedOperationException.class, () -> list.set(1, "d"));
-		assertEquals(Arrays.asList("a", "c", "e"), list);
 	}
 
 	/**
@@ -666,283 +846,6 @@ public class SortedUniqueListTest
 		assertSame(previous, withoutComparator.set(0, other));
 		assertSame(other, withoutComparator.get(0));
 		assertEquals(Arrays.asList("b", "a"), withoutComparator);
-	}
-
-	/**
-	 * Test the method {@link SortedUniqueList#set(int, Object)} without a comparator and with an
-	 * element the list does not hold: it replaces the element at the index, as ArrayList does, [c,
-	 * a].set(0, b) returns c and gives [b, a]; before and after the fix of #77, as a list without a
-	 * comparator has no order to keep
-	 */
-	@Test
-	public void testSetWithoutComparator()
-	{
-		List<String> list = new SortedUniqueList<>(Arrays.asList("c", "a"));
-
-		assertEquals("c", list.set(0, "b"));
-		assertEquals(Arrays.asList("b", "a"), list);
-	}
-
-	/**
-	 * Test the method {@link SortedUniqueList#set(int, Object)} with an index out of range: with a
-	 * comparator it throws the UnsupportedOperationException, as it does for any arguments, and
-	 * without a comparator an IndexOutOfBoundsException with the message of ArrayList, for an
-	 * element the list holds too; the list does not change (#77, #78)
-	 */
-	@Test
-	public void testSetWithIndexOutOfRange()
-	{
-		List<String> list = new SortedUniqueList<>(Arrays.asList("a", "b"),
-			Comparator.naturalOrder());
-		assertThrows(UnsupportedOperationException.class, () -> list.set(2, "a"));
-		assertThrows(UnsupportedOperationException.class, () -> list.set(-1, "b"));
-		assertEquals(Arrays.asList("a", "b"), list);
-
-		List<String> withoutComparator = new SortedUniqueList<>(Arrays.asList("b", "a"));
-		IndexOutOfBoundsException exception = assertThrows(IndexOutOfBoundsException.class,
-			() -> withoutComparator.set(2, "a"));
-		assertEquals("Index 2 out of bounds for length 2", exception.getMessage());
-		exception = assertThrows(IndexOutOfBoundsException.class,
-			() -> withoutComparator.set(-1, "b"));
-		assertEquals("Index -1 out of bounds for length 2", exception.getMessage());
-		assertEquals(Arrays.asList("b", "a"), withoutComparator);
-	}
-
-	/**
-	 * Test the method {@link SortedUniqueList#set(int, Object)} with a comparator and an element it
-	 * cannot compare, null for the natural order: the comparator is not called, set throws the
-	 * UnsupportedOperationException, and the list stays [a, c] (#77, #78)
-	 */
-	@Test
-	public void testSetWithElementTheComparatorCannotCompare()
-	{
-		List<String> list = new SortedUniqueList<>(Arrays.asList("a", "c"),
-			Comparator.naturalOrder());
-
-		assertThrows(UnsupportedOperationException.class, () -> list.set(0, null));
-		assertEquals(Arrays.asList("a", "c"), list);
-	}
-
-	/**
-	 * Test the method {@link SortedUniqueList#replaceAll(UnaryOperator)} with operators that give
-	 * two equal values: it throws an IllegalArgumentException and replaces no element, the list
-	 * stays [a, b, c], also where the equal values come last (#77)
-	 */
-	@Test
-	public void testReplaceAllWithEqualValues()
-	{
-		List<String> list = new SortedUniqueList<>(Arrays.asList("a", "b", "c"),
-			Comparator.naturalOrder());
-
-		IllegalArgumentException exception = assertThrows(IllegalArgumentException.class,
-			() -> list.replaceAll(element -> "x"));
-		assertEquals("The operator gives the value x for two elements of this list",
-			exception.getMessage());
-		assertEquals(Arrays.asList("a", "b", "c"), list);
-
-		assertThrows(IllegalArgumentException.class,
-			() -> list.replaceAll(element -> element.equals("a") ? "A" : "B"));
-		assertEquals(Arrays.asList("a", "b", "c"), list);
-	}
-
-	/**
-	 * Test the method {@link SortedUniqueList#replaceAll(UnaryOperator)} with a comparator and
-	 * distinct values that break the order, each at the index of the element it replaces: the
-	 * operator that gives f for a gives [f, c, e] for [a, c, e], and the one that gives b for a, c
-	 * for b and a for c gives [b, c, a] for [a, b, c]; replaceAll throws an
-	 * UnsupportedOperationException, with the first value that breaks the order and its index in
-	 * the message, and no element is replaced (#78)
-	 */
-	@Test
-	public void testReplaceAllWithComparator()
-	{
-		List<String> list = new SortedUniqueList<>(Arrays.asList("a", "c", "e"),
-			Comparator.naturalOrder());
-		UnsupportedOperationException exception = assertThrows(UnsupportedOperationException.class,
-			() -> list.replaceAll(element -> "a".equals(element) ? "f" : element));
-		assertEquals(
-			"The comparator of a SortedUniqueList determines the position of its elements, so"
-				+ " explicit positioning is not supported: the value c at the index 1 would break its order",
-			exception.getMessage());
-		assertEquals(Arrays.asList("a", "c", "e"), list);
-
-		List<String> other = new SortedUniqueList<>(Arrays.asList("a", "b", "c"),
-			Comparator.naturalOrder());
-		assertThrows(UnsupportedOperationException.class, () -> other
-			.replaceAll(element -> element.equals("a") ? "b" : element.equals("b") ? "c" : "a"));
-		assertEquals(Arrays.asList("a", "b", "c"), other);
-	}
-
-	/**
-	 * Test the method {@link SortedUniqueList#replaceAll(UnaryOperator)} with a value the
-	 * comparator cannot compare, null for the natural order: the comparator throws a
-	 * NullPointerException, no element is replaced, and the list stays [a, c] (#77)
-	 */
-	@Test
-	public void testReplaceAllWithValueTheComparatorCannotCompare()
-	{
-		List<String> list = new SortedUniqueList<>(Arrays.asList("a", "c"),
-			Comparator.naturalOrder());
-
-		assertThrows(NullPointerException.class,
-			() -> list.replaceAll(element -> "a".equals(element) ? null : element));
-		assertEquals(Arrays.asList("a", "c"), list);
-	}
-
-	/**
-	 * Test the method {@link SortedUniqueList#replaceAll(UnaryOperator)} without a comparator and
-	 * with distinct values: each element is replaced by its value at its index, as ArrayList does,
-	 * [c, a] gives [C, A]; before and after the fix of #77
-	 */
-	@Test
-	public void testReplaceAllWithoutComparator()
-	{
-		List<String> list = new SortedUniqueList<>(Arrays.asList("c", "a"));
-
-		list.replaceAll(String::toUpperCase);
-		assertEquals(Arrays.asList("C", "A"), list);
-	}
-
-	/**
-	 * Test the method {@link SortedUniqueList#replaceAll(UnaryOperator)} with a null operator: it
-	 * throws a NullPointerException, on an empty list too, as List.replaceAll says; before and
-	 * after the fix of #77
-	 */
-	@Test
-	public void testReplaceAllWithNullOperator()
-	{
-		List<String> list = new SortedUniqueList<>(Comparator.naturalOrder());
-
-		assertThrows(NullPointerException.class, () -> list.replaceAll(null));
-	}
-
-	/**
-	 * Test the method {@link SortedUniqueList#replaceAll(UnaryOperator)} with an operator that
-	 * removes an element of the list: it throws a ConcurrentModificationException, as ArrayList
-	 * does, also where the removal ends the iteration over the list; before and after the fix of
-	 * #77
-	 */
-	@Test
-	public void testReplaceAllWithOperatorThatChangesTheList()
-	{
-		List<String> list = new SortedUniqueList<>(Arrays.asList("a", "b"),
-			Comparator.naturalOrder());
-
-		assertThrows(ConcurrentModificationException.class, () -> list.replaceAll(element -> {
-			list.remove("b");
-			return element.toUpperCase();
-		}));
-	}
-
-	/**
-	 * Test the method {@link SortedUniqueList#replaceAll(UnaryOperator)} with a comparator and
-	 * distinct values that keep the order, each at the index of the element it replaces: [a, c, e]
-	 * gives [aa, cc, ee] with the operator that doubles each element, and [b, c, d] with the one
-	 * that gives the next letter, values the list holds at another index; with
-	 * {@link String#CASE_INSENSITIVE_ORDER} [a, b, c] gives [B, b, c] with the operator that gives
-	 * B for a, a value equal to its neighbour by the comparator but not by equals; before and after
-	 * the change for #78
-	 */
-	@Test
-	public void testReplaceAllWithComparatorAndValuesThatKeepTheOrder()
-	{
-		List<String> list = new SortedUniqueList<>(Arrays.asList("a", "c", "e"),
-			Comparator.naturalOrder());
-		list.replaceAll(element -> element + element);
-		assertEquals(Arrays.asList("aa", "cc", "ee"), list);
-
-		list = new SortedUniqueList<>(Arrays.asList("a", "b", "c"), Comparator.naturalOrder());
-		list.replaceAll(element -> String.valueOf((char)(element.charAt(0) + 1)));
-		assertEquals(Arrays.asList("b", "c", "d"), list);
-
-		list = new SortedUniqueList<>(Arrays.asList("a", "b", "c"), String.CASE_INSENSITIVE_ORDER);
-		list.replaceAll(element -> "a".equals(element) ? "B" : element);
-		assertEquals(Arrays.asList("B", "b", "c"), list);
-	}
-
-	/**
-	 * Test the method {@link SortedUniqueList#replaceAll(UnaryOperator)} with a comparator and
-	 * values that are equal and out of order, c, b and c for [a, b, c]: the equal values throw the
-	 * IllegalArgumentException, and the list stays [a, b, c]; before and after the change for #78
-	 */
-	@Test
-	public void testReplaceAllWithEqualValuesOutOfOrder()
-	{
-		List<String> list = new SortedUniqueList<>(Arrays.asList("a", "b", "c"),
-			Comparator.naturalOrder());
-
-		IllegalArgumentException exception = assertThrows(IllegalArgumentException.class,
-			() -> list.replaceAll(element -> "b".equals(element) ? "b" : "c"));
-		assertEquals("The operator gives the value c for two elements of this list",
-			exception.getMessage());
-		assertEquals(Arrays.asList("a", "b", "c"), list);
-	}
-
-	/**
-	 * Test the method {@link SortedUniqueList#replaceAll(UnaryOperator)} with an operator that
-	 * throws for the second element, with and without a comparator: the exception goes to the
-	 * caller, and no element is replaced, [a, b, c] stays as it is, as all values are computed
-	 * before the first is stored; before and after the change for #78
-	 */
-	@Test
-	public void testReplaceAllWithOperatorThatThrows()
-	{
-		UnaryOperator<String> operator = element -> {
-			if ("b".equals(element))
-			{
-				throw new IllegalStateException("no value for b");
-			}
-			return element.toUpperCase();
-		};
-		List<String> list = new SortedUniqueList<>(Arrays.asList("a", "b", "c"),
-			Comparator.naturalOrder());
-		assertThrows(IllegalStateException.class, () -> list.replaceAll(operator));
-		assertEquals(Arrays.asList("a", "b", "c"), list);
-
-		List<String> withoutComparator = new SortedUniqueList<>(Arrays.asList("a", "b", "c"));
-		assertThrows(IllegalStateException.class, () -> withoutComparator.replaceAll(operator));
-		assertEquals(Arrays.asList("a", "b", "c"), withoutComparator);
-	}
-
-	/**
-	 * Test the method {@link SortedUniqueList#sort(Comparator)}: it throws an
-	 * UnsupportedOperationException for every argument, another comparator, null and the comparator
-	 * of the list, also on a list without a comparator, and the list does not change (#77)
-	 */
-	@Test
-	public void testSort()
-	{
-		List<String> list = new SortedUniqueList<>(Arrays.asList("a", "b", "c"),
-			Comparator.naturalOrder());
-
-		UnsupportedOperationException exception = assertThrows(UnsupportedOperationException.class,
-			() -> list.sort(Comparator.reverseOrder()));
-		assertEquals("A SortedUniqueList keeps the order of its comparator;"
-			+ " setComparator(Comparator) changes it", exception.getMessage());
-		assertThrows(UnsupportedOperationException.class, () -> list.sort(null));
-		assertThrows(UnsupportedOperationException.class,
-			() -> list.sort(Comparator.naturalOrder()));
-		assertEquals(Arrays.asList("a", "b", "c"), list);
-
-		List<String> withoutComparator = new SortedUniqueList<>(Arrays.asList("b", "a"));
-		assertThrows(UnsupportedOperationException.class, () -> withoutComparator.sort(null));
-		assertEquals(Arrays.asList("b", "a"), withoutComparator);
-	}
-
-	/**
-	 * Test {@link Collections#sort(List)} on a {@link SortedUniqueList} with the reverse order: it
-	 * calls list.sort(null), which throws an UnsupportedOperationException, and the list stays [c,
-	 * b, a] (#77)
-	 */
-	@Test
-	public void testCollectionsSort()
-	{
-		List<String> list = new SortedUniqueList<>(Arrays.asList("a", "b", "c"),
-			Comparator.reverseOrder());
-		assertEquals(Arrays.asList("c", "b", "a"), list);
-
-		assertThrows(UnsupportedOperationException.class, () -> Collections.sort(list));
-		assertEquals(Arrays.asList("c", "b", "a"), list);
 	}
 
 	/**
@@ -1044,212 +947,6 @@ public class SortedUniqueListTest
 	}
 
 	/**
-	 * Test the method {@link SortedUniqueList#addAll(Collection)} with the list itself: it adds
-	 * nothing, as the list holds each of its elements, returns false and does not throw; before and
-	 * after the fix of #77
-	 */
-	@Test
-	public void testAddAllOfTheListItself()
-	{
-		List<String> list = new SortedUniqueList<>(Arrays.asList("a", "b"),
-			Comparator.naturalOrder());
-
-		assertFalse(list.addAll(list));
-		assertEquals(Arrays.asList("a", "b"), list);
-	}
-
-	/**
-	 * Test {@link Collections#swap(List, int, int)}, {@link Collections#reverse(List)},
-	 * {@link Collections#shuffle(List, Random)} and {@link Collections#rotate(List, int)} on a
-	 * {@link SortedUniqueList} with the natural order: each throws the
-	 * UnsupportedOperationException of set at its first set, and the list stays [a, b, c, d], also
-	 * for two neighbours, a swap of an index with itself and the distance -1 (#77, #78, decided on
-	 * #91)
-	 */
-	@Test
-	public void testCollectionsAlgorithmsWithComparator()
-	{
-		List<String> elements = Arrays.asList("a", "b", "c", "d");
-		List<String> list = new SortedUniqueList<>(elements, Comparator.naturalOrder());
-
-		assertThrows(UnsupportedOperationException.class, () -> Collections.swap(list, 0, 3));
-		assertEquals(elements, list);
-		assertThrows(UnsupportedOperationException.class, () -> Collections.reverse(list));
-		assertEquals(elements, list);
-		assertThrows(UnsupportedOperationException.class,
-			() -> Collections.shuffle(list, new Random(77)));
-		assertEquals(elements, list);
-		assertThrows(UnsupportedOperationException.class, () -> Collections.rotate(list, 1));
-		assertEquals(elements, list);
-		assertThrows(UnsupportedOperationException.class, () -> Collections.swap(list, 0, 1));
-		assertEquals(elements, list);
-		assertThrows(UnsupportedOperationException.class, () -> Collections.rotate(list, -1));
-		assertEquals(elements, list);
-		assertThrows(UnsupportedOperationException.class, () -> Collections.swap(list, 1, 1));
-		assertEquals(elements, list);
-	}
-
-	/**
-	 * Test {@link Collections#fill(List, Object)} and {@link Collections#copy(List, List)} on a
-	 * {@link SortedUniqueList} with the natural order: they throw the UnsupportedOperationException
-	 * of set at their first set, and the list does not change: fill of [b, c, d] with a, and copy
-	 * of [a, c] into [b, d, f]; with a set that kept the order, fill left [a, c, d] and had lost b
-	 * (#78, decided on #91)
-	 */
-	@Test
-	public void testCollectionsFillAndCopyWithComparator()
-	{
-		List<String> filled = new SortedUniqueList<>(Arrays.asList("b", "c", "d"),
-			Comparator.naturalOrder());
-		assertThrows(UnsupportedOperationException.class, () -> Collections.fill(filled, "a"));
-		assertEquals(Arrays.asList("b", "c", "d"), filled);
-
-		List<String> copied = new SortedUniqueList<>(Arrays.asList("b", "d", "f"),
-			Comparator.naturalOrder());
-		assertThrows(UnsupportedOperationException.class,
-			() -> Collections.copy(copied, Arrays.asList("a", "c")));
-		assertEquals(Arrays.asList("b", "d", "f"), copied);
-	}
-
-	/**
-	 * Test {@link Collections#swap(List, int, int)}, {@link Collections#reverse(List)} of an even
-	 * and of an odd size, {@link Collections#shuffle(List, Random)} and
-	 * {@link Collections#rotate(List, int)} in one cycle (distance 1 and -1) and in several
-	 * (distance 2 and 3 of six elements) on a {@link SortedUniqueList} without a comparator: set
-	 * swaps an element the list holds at another index, so each of them works as on a
-	 * {@link UniqueList}, and shuffle gives the order it gives a UniqueList with the same seed
-	 * (#77)
-	 */
-	@Test
-	public void testCollectionsAlgorithmsWithoutComparator()
-	{
-		List<String> elements = Arrays.asList("a", "b", "c", "d", "e", "f");
-		List<String> list;
-
-		list = new SortedUniqueList<>(elements);
-		Collections.swap(list, 0, 5);
-		assertEquals(Arrays.asList("f", "b", "c", "d", "e", "a"), list);
-		Collections.swap(list, 1, 1);
-		assertEquals(Arrays.asList("f", "b", "c", "d", "e", "a"), list);
-
-		list = new SortedUniqueList<>(elements);
-		Collections.reverse(list);
-		assertEquals(Arrays.asList("f", "e", "d", "c", "b", "a"), list);
-		list = new SortedUniqueList<>(Arrays.asList("a", "b", "c"));
-		Collections.reverse(list);
-		assertEquals(Arrays.asList("c", "b", "a"), list);
-
-		List<String> shuffled = new UniqueList<>(elements);
-		Collections.shuffle(shuffled, new Random(77));
-		assertNotEquals(elements, shuffled);
-		list = new SortedUniqueList<>(elements);
-		Collections.shuffle(list, new Random(77));
-		assertEquals(shuffled, list);
-
-		list = new SortedUniqueList<>(elements);
-		Collections.rotate(list, 1);
-		assertEquals(Arrays.asList("f", "a", "b", "c", "d", "e"), list);
-		list = new SortedUniqueList<>(elements);
-		Collections.rotate(list, -1);
-		assertEquals(Arrays.asList("b", "c", "d", "e", "f", "a"), list);
-		list = new SortedUniqueList<>(elements);
-		Collections.rotate(list, 2);
-		assertEquals(Arrays.asList("e", "f", "a", "b", "c", "d"), list);
-		list = new SortedUniqueList<>(elements);
-		Collections.rotate(list, 3);
-		assertEquals(Arrays.asList("d", "e", "f", "a", "b", "c"), list);
-	}
-
-	/**
-	 * Test set and replaceAll of the view of {@link SortedUniqueList#subList(int, int)} and of a
-	 * view of it: each throws an UnsupportedOperationException, for an element the list holds and
-	 * for a new one, and neither the list nor the view changes
-	 */
-	@Test
-	public void testSubListSetAndReplaceAll()
-	{
-		List<String> list = new SortedUniqueList<>(Arrays.asList("a", "b", "c", "d"),
-			Comparator.naturalOrder());
-		List<String> view = list.subList(1, 3);
-
-		UnsupportedOperationException exception = assertThrows(UnsupportedOperationException.class,
-			() -> view.set(0, "z"));
-		assertEquals(
-			"A subList view of a SortedUniqueList reads and removes only; set and add through"
-				+ " the list itself",
-			exception.getMessage());
-		assertThrows(UnsupportedOperationException.class, () -> view.set(0, "a"));
-		assertThrows(UnsupportedOperationException.class,
-			() -> view.replaceAll(String::toUpperCase));
-		assertThrows(UnsupportedOperationException.class, () -> view.subList(0, 1).set(0, "z"));
-		assertThrows(UnsupportedOperationException.class,
-			() -> view.subList(0, 1).replaceAll(String::toUpperCase));
-		assertEquals(Arrays.asList("a", "b", "c", "d"), list);
-		assertEquals(Arrays.asList("b", "c"), view);
-	}
-
-	/**
-	 * Test the add methods of the view of {@link SortedUniqueList#subList(int, int)} and of a view
-	 * of it: add(E), add(int, E), addAll and addAll(int, Collection) throw an
-	 * UnsupportedOperationException, with an empty collection too, and neither the list nor the
-	 * view changes; the third case of #78, add(a) on subList(0, 2) of [a, c], too
-	 */
-	@Test
-	public void testSubListAdd()
-	{
-		List<String> unique = new SortedUniqueList<>(Arrays.asList("a", "c"),
-			Comparator.naturalOrder());
-		List<String> whole = unique.subList(0, 2);
-		assertThrows(UnsupportedOperationException.class, () -> whole.add("a"));
-		assertEquals(Arrays.asList("a", "c"), unique);
-		assertEquals(2, whole.size());
-		assertEquals(Arrays.asList("a", "c"), whole);
-
-		List<String> list = new SortedUniqueList<>(Arrays.asList("a", "b", "c", "d"),
-			Comparator.naturalOrder());
-		List<String> view = list.subList(1, 3);
-
-		assertThrows(UnsupportedOperationException.class, () -> view.add("e"));
-		assertThrows(UnsupportedOperationException.class, () -> view.add(0, "e"));
-		assertThrows(UnsupportedOperationException.class, () -> view.addAll(Arrays.asList("e")));
-		assertThrows(UnsupportedOperationException.class, () -> view.addAll(0, Arrays.asList("e")));
-		assertThrows(UnsupportedOperationException.class,
-			() -> view.addAll(Collections.emptyList()));
-		assertThrows(UnsupportedOperationException.class,
-			() -> view.addAll(0, Collections.emptyList()));
-		assertThrows(UnsupportedOperationException.class, () -> view.subList(0, 1).add("e"));
-		assertThrows(UnsupportedOperationException.class,
-			() -> view.subList(0, 1).addAll(Arrays.asList("e")));
-		assertEquals(Arrays.asList("a", "b", "c", "d"), list);
-		assertEquals(Arrays.asList("b", "c"), view);
-	}
-
-	/**
-	 * Test sort of the view of {@link SortedUniqueList#subList(int, int)} and of a view of it, and
-	 * {@link Collections#reverse(List)} and {@link Collections#swap(List, int, int)}, which work
-	 * through its set: each throws an UnsupportedOperationException, sort with null, with the
-	 * comparator of the list and on an empty view too, and the list does not change
-	 */
-	@Test
-	public void testSubListSort()
-	{
-		List<String> list = new SortedUniqueList<>(Arrays.asList("a", "b", "c", "d"),
-			Comparator.naturalOrder());
-		List<String> view = list.subList(1, 3);
-
-		assertThrows(UnsupportedOperationException.class,
-			() -> view.sort(Comparator.reverseOrder()));
-		assertThrows(UnsupportedOperationException.class, () -> view.sort(null));
-		assertThrows(UnsupportedOperationException.class,
-			() -> view.sort(Comparator.naturalOrder()));
-		assertThrows(UnsupportedOperationException.class, () -> list.subList(2, 2).sort(null));
-		assertThrows(UnsupportedOperationException.class, () -> view.subList(0, 2).sort(null));
-		assertThrows(UnsupportedOperationException.class, () -> Collections.reverse(view));
-		assertThrows(UnsupportedOperationException.class, () -> Collections.swap(view, 0, 1));
-		assertEquals(Arrays.asList("a", "b", "c", "d"), list);
-	}
-
-	/**
 	 * Test set and add of the list iterators of the view of
 	 * {@link SortedUniqueList#subList(int, int)}, of listIterator() and of listIterator(int): they
 	 * throw an UnsupportedOperationException, for an element the list holds and for a new one, and
@@ -1326,33 +1023,6 @@ public class SortedUniqueListTest
 	}
 
 	/**
-	 * Test the methods {@link SortedUniqueList#addFirst(Object)} and
-	 * {@link SortedUniqueList#addLast(Object)}: they throw an UnsupportedOperationException, as
-	 * those of SortedSet and TreeSet do, the comparator determines the position; with and without a
-	 * comparator, for a new element and for one the list holds, and the list does not change (#87)
-	 */
-	@Test
-	public void testAddFirstAndAddLast()
-	{
-		List<String> list = new SortedUniqueList<>(Arrays.asList("a", "b"),
-			Comparator.naturalOrder());
-		UnsupportedOperationException exception = assertThrows(UnsupportedOperationException.class,
-			() -> list.addFirst("z"));
-		assertEquals(
-			"The comparator of a SortedUniqueList determines the position of its elements, so"
-				+ " explicit positioning is not supported",
-			exception.getMessage());
-		assertThrows(UnsupportedOperationException.class, () -> list.addLast("0"));
-		assertThrows(UnsupportedOperationException.class, () -> list.addFirst("b"));
-		assertEquals(Arrays.asList("a", "b"), list);
-
-		List<String> withoutComparator = new SortedUniqueList<>(Arrays.asList("b", "a"));
-		assertThrows(UnsupportedOperationException.class, () -> withoutComparator.addFirst("z"));
-		assertThrows(UnsupportedOperationException.class, () -> withoutComparator.addLast("z"));
-		assertEquals(Arrays.asList("b", "a"), withoutComparator);
-	}
-
-	/**
 	 * Test the method {@link SortedUniqueList#setComparator(Comparator)} with a comparator whose
 	 * sort throws: it throws that exception, and the list keeps its comparator and its order; null,
 	 * the natural order, throws a ClassCastException for two Objects, and the natural order throws
@@ -1376,44 +1046,6 @@ public class SortedUniqueListTest
 			() -> list.setComparator(Comparator.naturalOrder()));
 		assertNull(list.getComparator());
 		assertEquals(Arrays.asList("b", "a", "c", null), list);
-	}
-
-	/**
-	 * Test the changes through {@link SortedUniqueList#reversed()}: the view reads and removes, as
-	 * the view of subList, and add, add(int, E), addFirst, addLast, addAll, set, replaceAll and
-	 * sort through it, and the set and add of its list iterator, throw an
-	 * UnsupportedOperationException, and the list does not change (#87)
-	 */
-	@Test
-	public void testReversed()
-	{
-		List<String> list = new SortedUniqueList<>(Arrays.asList("a", "b", "c"),
-			Comparator.naturalOrder());
-		List<String> reversed = list.reversed();
-
-		UnsupportedOperationException exception = assertThrows(UnsupportedOperationException.class,
-			() -> reversed.addFirst("0"));
-		assertEquals(
-			"The reversed view of a SortedUniqueList reads and removes only; add through the"
-				+ " list itself",
-			exception.getMessage());
-		assertThrows(UnsupportedOperationException.class, () -> reversed.addLast("z"));
-		assertThrows(UnsupportedOperationException.class, () -> reversed.add("z"));
-		assertThrows(UnsupportedOperationException.class, () -> reversed.add(0, "z"));
-		assertThrows(UnsupportedOperationException.class,
-			() -> reversed.addAll(Arrays.asList("z")));
-		assertThrows(UnsupportedOperationException.class, () -> reversed.set(0, "y"));
-		assertThrows(UnsupportedOperationException.class,
-			() -> reversed.replaceAll(String::toUpperCase));
-		assertThrows(UnsupportedOperationException.class, () -> reversed.sort(null));
-		ListIterator<String> iterator = reversed.listIterator();
-		assertEquals("c", iterator.next());
-		assertThrows(UnsupportedOperationException.class, () -> iterator.set("y"));
-		assertThrows(UnsupportedOperationException.class, () -> iterator.add("y"));
-		assertThrows(UnsupportedOperationException.class,
-			() -> reversed.subList(0, 2).addFirst("0"));
-		assertEquals(Arrays.asList("a", "b", "c"), list);
-		assertEquals(Arrays.asList("c", "b", "a"), reversed);
 	}
 
 	/**
