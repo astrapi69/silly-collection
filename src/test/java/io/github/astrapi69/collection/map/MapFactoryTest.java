@@ -174,8 +174,6 @@ public class MapFactoryTest
 	{
 		final Map<String, String> entries = given();
 		final List<String> givenOrder = List.of("5", "1", "3", "2");
-		// the order of a HashMap of the keys 1, 2, 3 and 5, each in a bucket of its own (#115)
-		final List<String> hashOrder = List.of("1", "2", "3", "5");
 		final Map<String, String> repeated = Map.of("3", "d", "5", "b", "1", "c");
 		return Stream.of(
 			new Factory("newConcurrentHashMap(): empty", MapFactory::newConcurrentHashMap,
@@ -209,17 +207,16 @@ public class MapFactoryTest
 				() -> MapFactory.newInsertionOrderMap(given()), InsertionOrderMap.class, entries,
 				givenOrder),
 			new Factory(
-				"newInsertionOrderMap(collection of pairs): the pairs, but in the order of their hashes (#115)",
+				"newInsertionOrderMap(collection of pairs): the pairs in their order (#115)",
 				() -> MapFactory.newInsertionOrderMap(pairs()), InsertionOrderMap.class, entries,
-				hashOrder),
-			new Factory(
-				"newInsertionOrderMap(pairs...): the pairs, but in the order of their hashes (#115)",
+				givenOrder),
+			new Factory("newInsertionOrderMap(pairs...): the pairs in their order (#115)",
 				() -> MapFactory.newInsertionOrderMap(pairArray()), InsertionOrderMap.class,
-				entries, hashOrder),
+				entries, givenOrder),
 			new Factory(
-				"newInsertionOrderMap(pairs 3, 5, 1, 3 again): the last value of 3, but in the order of the hashes (#115)",
+				"newInsertionOrderMap(pairs 3, 5, 1, 3 again): the last value of 3, at the place of its last pair (#115)",
 				() -> MapFactory.newInsertionOrderMap(repeatedPairs()), InsertionOrderMap.class,
-				repeated, List.of("1", "3", "5")),
+				repeated, List.of("5", "1", "3")),
 			new Factory("newInsertionOrderMap(no pairs): empty",
 				() -> MapFactory.newInsertionOrderMap(List.<KeyValuePair<String, String>> of()),
 				InsertionOrderMap.class, Map.of(), List.of()),
@@ -230,18 +227,16 @@ public class MapFactoryTest
 			new Factory("newLinkedHashMap(map): its entries in its order",
 				() -> MapFactory.newLinkedHashMap(given()), LinkedHashMap.class, entries,
 				givenOrder),
-			new Factory(
-				"newLinkedHashMap(collection of pairs): the pairs, but in the order of their hashes (#115)",
+			new Factory("newLinkedHashMap(collection of pairs): the pairs in their order (#115)",
 				() -> MapFactory.newLinkedHashMap(pairs()), LinkedHashMap.class, entries,
-				hashOrder),
-			new Factory(
-				"newLinkedHashMap(pairs...): the pairs, but in the order of their hashes (#115)",
+				givenOrder),
+			new Factory("newLinkedHashMap(pairs...): the pairs in their order (#115)",
 				() -> MapFactory.newLinkedHashMap(pairArray()), LinkedHashMap.class, entries,
-				hashOrder),
+				givenOrder),
 			new Factory(
-				"newLinkedHashMap(pairs 3, 5, 1, 3 again): the last value of 3, but in the order of the hashes (#115)",
+				"newLinkedHashMap(pairs 3, 5, 1, 3 again): the last value of 3, at the place of its first pair (#115)",
 				() -> MapFactory.newLinkedHashMap(repeatedPairs()), LinkedHashMap.class, repeated,
-				List.of("1", "3", "5")),
+				List.of("3", "5", "1")),
 			new Factory("newLinkedHashMap(no pairs): empty",
 				() -> MapFactory.newLinkedHashMap(List.<KeyValuePair<String, String>> of()),
 				LinkedHashMap.class, Map.of(), List.of()));
@@ -251,7 +246,7 @@ public class MapFactoryTest
 	 * Test for the factory methods of {@link java.util.HashMap}, {@link LinkedHashMap},
 	 * {@link InsertionOrderMap} and {@link ConcurrentHashMap}: the new map is of the type the
 	 * Javadoc names and holds the given entries, a map that keeps an order in the order of the
-	 * given map
+	 * given map or pairs
 	 *
 	 * @param factory
 	 *            the call and the map it makes
