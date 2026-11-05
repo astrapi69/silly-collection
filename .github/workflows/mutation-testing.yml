@@ -43,11 +43,15 @@ jobs:
           distribution: 'temurin'
       - name: Check the JDK is the one .sdkmanrc names
         run: |
-          want=$(sed -n 's/^java=\([0-9.]*\)-tem$/\1/p' .sdkmanrc)
-          have=$(sed -n 's/^JAVA_VERSION="\(.*\)"$/\1/p' "$JAVA_HOME/release")
+          # sdkman names Temurin 25.0.5+8 "25.0.5.0+8-tem", the JDK's release file "Temurin-25.0.5+8". The
+          # build counts too: JAVA_VERSION, which this step read before, says 25.0.5 for every build of it
+          # (#106, as astrapi69/silly-strings#70)
+          candidate=$(sed -n 's/^java=\(.*\)-tem$/\1/p' .sdkmanrc)
+          want="Temurin-${candidate/.0+/+}"
+          have=$(sed -n 's/^IMPLEMENTOR_VERSION="\(.*\)"$/\1/p' "$JAVA_HOME/release")
           vendor=$(sed -n 's/^IMPLEMENTOR="\(.*\)"$/\1/p' "$JAVA_HOME/release")
-          echo ".sdkmanrc names Temurin $want; set up: $vendor $have"
-          [ -n "$want" ] && [ "$have" = "$want" ] && [ "$vendor" = "Eclipse Adoptium" ]
+          echo ".sdkmanrc names $candidate-tem, that is $want; set up: $vendor $have"
+          [ -n "$candidate" ] && [ "$have" = "$want" ] && [ "$vendor" = "Eclipse Adoptium" ]
       - name: Setup Gradle
         uses: gradle/actions/setup-gradle@v3
       - name: Mutation testing (PIT, fails below mutationThreshold in build.gradle)
