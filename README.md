@@ -28,8 +28,8 @@ a list that keeps itself sorted by a comparator, a set that keeps the insertion 
 element by its index, `Properties` that list their keys in order, and the small operations on
 lists, maps and arrays that are one line each but easy to get wrong. Every line of it is tested,
 and a mutation score close to 100% says that the tests check what the code does, not only that
-they run it. Its runtime dependencies are Apache Commons Collections and three small libraries of
-this family. If you need immutable or multi-valued collections, primitive collections or caches,
+they run it. Its dependencies are Apache Commons Collections and three small libraries of this
+family. If you need immutable or multi-valued collections, primitive collections or caches,
 [Guava](https://github.com/google/guava), [Apache Commons
 Collections](https://commons.apache.org/proper/commons-collections/) or [Eclipse
 Collections](https://github.com/eclipse/eclipse-collections) are the better choice: they are far
@@ -57,8 +57,11 @@ larger and used almost everywhere.
 
 **JDK 25 or newer**, at build and at runtime: from 29.0 on its jar holds Java 25 bytecode and does
 not load on an older JVM. **28.3 is the last release for Java 17**; a project below Java 25 stays on
-it (see [Upgrading from 28.x](#upgrading-from-28x)). The runtime dependencies are Apache Commons Collections 4.6.0, and jobj-core, silly-bean and
-comparator-extensions of this family, which run on Java 17 and 25 alike.
+it (see [Upgrading from 28.x](#upgrading-from-28x)). The dependencies are Apache Commons Collections 4.6.0, and jobj-core, silly-bean and
+comparator-extensions of this family, which run on Java 17 and 25 alike. silly-bean is an API
+dependency: `MapFactory` takes its `KeyValuePair`, so the module requires it `transitive`, and the
+pom and the Gradle module metadata put it on the compile class path of a project that declares this
+library. The other three are for the runtime only.
 
 ## Installation
 
@@ -101,6 +104,11 @@ dependencies {
 ```
 
 The module name is `io.github.astrapisixtynine.silly.collection`.
+
+29.0 publishes silly-bean for the runtime only (#95): a project on 29.0 that calls `MapFactory`
+declares `io.github.astrapi69:silly-bean:3.0` beside it, and a module that names `KeyValuePair`
+requires `io.github.astrapisixtynine.silly.bean` as well. From 29.1 on the declaration above is
+enough.
 
 ## Upgrading from 28.x
 
