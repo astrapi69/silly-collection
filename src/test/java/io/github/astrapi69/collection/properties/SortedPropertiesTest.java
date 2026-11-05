@@ -24,19 +24,28 @@
  */
 package io.github.astrapi69.collection.properties;
 
-import static org.junit.jupiter.api.Assertions.*;
+import static org.junit.jupiter.api.Assertions.assertEquals;
+import static org.junit.jupiter.api.Assertions.assertFalse;
+import static org.junit.jupiter.api.Assertions.assertThrows;
+import static org.junit.jupiter.api.Assertions.assertTrue;
 
 import java.io.IOException;
 import java.util.ArrayList;
 import java.util.Collections;
 import java.util.Comparator;
-import java.util.Enumeration;
 import java.util.Iterator;
 import java.util.List;
 import java.util.Properties;
 import java.util.Set;
+import java.util.function.Function;
+import java.util.function.Supplier;
+import java.util.stream.Collectors;
+import java.util.stream.Stream;
 
 import org.junit.jupiter.api.Test;
+import org.junit.jupiter.params.ParameterizedTest;
+import org.junit.jupiter.params.provider.Arguments;
+import org.junit.jupiter.params.provider.MethodSource;
 
 import io.github.astrapi69.collection.list.ListFactory;
 import io.github.astrapi69.comparator.NullCheckComparator;
@@ -51,304 +60,416 @@ public class SortedPropertiesTest
 {
 
 	/**
-	 * Test for constructor of {@link SortedProperties}: the given properties are its defaults,
-	 * which {@link Properties#getProperty(String)} finds, while {@link SortedProperties#keys()}
-	 * lists the keys of its own entries, sorted, and not the keys of the defaults
+	 * Properties of the given keys and values
+	 *
+	 * @param keysAndValues
+	 *            the keys and values, one after the other
+	 * @return the properties
 	 */
-	@Test
-	public void testConstructor()
+	static Properties propertiesOf(final String... keysAndValues)
 	{
-		final Properties defaults = new Properties();
-		defaults.put("E", "5");
-
-		final Properties unsortedProperties = new Properties();
-		unsortedProperties.put("B", "2");
-		unsortedProperties.put("C", "3");
-		unsortedProperties.put("A", "1");
-		unsortedProperties.put("D", "4");
-
-		Properties sortedProperties = new SortedProperties(defaults);
-		sortedProperties.putAll(unsortedProperties);
-		assertEquals("5", sortedProperties.getProperty("E"));
-
-		Enumeration<?> keys = sortedProperties.keys();
-		int count = 1;
-		while (keys.hasMoreElements())
+		final Properties properties = new Properties();
+		for (int i = 0; i < keysAndValues.length; i += 2)
 		{
-			final Object key = keys.nextElement();
-			if (count == 1)
-			{
-				assertEquals(key, "A");
-			}
-			if (count == 2)
-			{
-				assertEquals(key, "B");
-			}
-			if (count == 3)
-			{
-				assertEquals(key, "C");
-			}
-			if (count == 4)
-			{
-				assertEquals(key, "D");
-			}
-			count++;
+			properties.setProperty(keysAndValues[i], keysAndValues[i + 1]);
 		}
-		// count started at 1: the loop ran once for each of the four keys of its own entries, and
-		// not for the key E of the defaults
-		assertEquals(5, count);
+		return properties;
+	}
 
-		// Add a reverse comparator.
-		sortedProperties = new SortedProperties(defaults)
+	/**
+	 * Puts B = 2, C = 3, A = 1 and D = 4 into the given properties, in this order
+	 *
+	 * @param properties
+	 *            the properties
+	 * @return the given properties
+	 */
+	static <P extends Properties> P filled(final P properties)
+	{
+		properties.put("B", "2");
+		properties.put("C", "3");
+		properties.put("A", "1");
+		properties.put("D", "4");
+		return properties;
+	}
+
+	/**
+	 * A {@link SortedProperties} with the given defaults whose
+	 * {@link SortedProperties#newComparator()} sorts the keys in the reverse order of their string
+	 * form
+	 *
+	 * @param defaults
+	 *            the defaults
+	 * @return the new {@link SortedProperties}
+	 */
+	static SortedProperties reversed(final Properties defaults)
+	{
+		return new SortedProperties(defaults)
 		{
-			/**
-			 * The serialVersionUID
-			 */
 			private static final long serialVersionUID = 1L;
 
 			@Override
 			protected Comparator<Object> newComparator()
 			{
-
 				return NullCheckComparator.of(
-					(final Object o1,
-						final Object o2) -> ((o1.toString().compareTo(o2.toString())) * (-1)),
+					(final Object o1, final Object o2) -> o2.toString().compareTo(o1.toString()),
 					false);
 			}
 		};
-		sortedProperties.putAll(unsortedProperties);
-		assertEquals("5", sortedProperties.getProperty("E"));
-
-		keys = sortedProperties.keys();
-		count = 1;
-		while (keys.hasMoreElements())
-		{
-			final Object key = keys.nextElement();
-			if (count == 1)
-			{
-				assertEquals(key, "D");
-			}
-			if (count == 2)
-			{
-				assertEquals(key, "C");
-			}
-			if (count == 3)
-			{
-				assertEquals(key, "B");
-			}
-			if (count == 4)
-			{
-				assertEquals(key, "A");
-			}
-			count++;
-		}
-		assertEquals(5, count);
 	}
 
 	/**
-	 * Test for method {@link SortedProperties#keys()}
+	 * The comparator in the reverse order of the string form, for
+	 * {@link SortedProperties#of(Properties, Comparator)}
 	 */
-	@Test
-	public void testKeys()
+	static final Comparator<Object> DESCENDING = (o1, o2) -> o2.toString().compareTo(o1.toString());
+
+	/**
+	 * A view of the keys of a {@link SortedProperties}, as a list in its order
+	 *
+	 * @param name
+	 *            the name of the view
+	 * @param view
+	 *            the view
+	 */
+	record View(String name, Function<SortedProperties, List<Object>> view) {
+	}
+
+	/** The view {@link SortedProperties#keys()} */
+	static final View KEYS = new View("keys()", properties -> Collections.list(properties.keys()));
+
+	/** The view {@link SortedProperties#keySet()} */
+	static final View KEY_SET = new View("keySet()",
+		properties -> new ArrayList<>(properties.keySet()));
+
+	/** The view {@link SortedProperties#propertyNames()} */
+	static final View PROPERTY_NAMES = new View("propertyNames()",
+		properties -> new ArrayList<>(Collections.list(properties.propertyNames())));
+
+	/**
+	 * A {@link SortedProperties}, a view of its keys and their order
+	 *
+	 * @param description
+	 *            the name of the case
+	 * @param properties
+	 *            makes the properties
+	 * @param view
+	 *            the view
+	 * @param expected
+	 *            the keys in their order
+	 */
+	record Order(String description, Supplier<SortedProperties> properties, View view,
+		List<Object> expected) {
+		@Override
+		public String toString()
+		{
+			return description;
+		}
+	}
+
+	/**
+	 * The rows of the three views of the same properties, which have no defaults
+	 *
+	 * @param name
+	 *            the name of the properties
+	 * @param properties
+	 *            makes the properties
+	 * @param expected
+	 *            the keys in their order
+	 * @return a row for each view
+	 */
+	static Stream<Order> inEachView(final String name, final Supplier<SortedProperties> properties,
+		final List<Object> expected)
 	{
-		SortedProperties sortedProperties = new SortedProperties();
-		sortedProperties.put("B", "2");
-		sortedProperties.put("C", "3");
-		sortedProperties.put("A", "1");
-		sortedProperties.put("D", "4");
-		Enumeration<?> keys = sortedProperties.keys();
-		int count = 1;
-		while (keys.hasMoreElements())
-		{
-			final Object key = keys.nextElement();
-			if (count == 1)
-			{
-				assertEquals(key, "A");
-			}
-			if (count == 2)
-			{
-				assertEquals(key, "B");
-			}
-			if (count == 3)
-			{
-				assertEquals(key, "C");
-			}
-			if (count == 4)
-			{
-				assertEquals(key, "D");
-			}
-			count++;
-		}
-
-		// Add a reverse comparator.
-		sortedProperties = new SortedProperties()
-		{
-			/**
-			 * The serialVersionUID
-			 */
-			private static final long serialVersionUID = 1L;
-
-			@Override
-			protected Comparator<Object> newComparator()
-			{
-
-				return NullCheckComparator.of(
-					(final Object o1,
-						final Object o2) -> ((o1.toString().compareTo(o2.toString())) * (-1)),
-					false);
-			}
-		};
-		sortedProperties.put("B", "2");
-		sortedProperties.put("C", "3");
-		sortedProperties.put("A", "1");
-		sortedProperties.put("D", "4");
-
-		keys = sortedProperties.keys();
-		count = 1;
-		while (keys.hasMoreElements())
-		{
-			final Object key = keys.nextElement();
-			if (count == 1)
-			{
-				assertEquals(key, "D");
-			}
-			if (count == 2)
-			{
-				assertEquals(key, "C");
-			}
-			if (count == 3)
-			{
-				assertEquals(key, "B");
-			}
-			if (count == 4)
-			{
-				assertEquals(key, "A");
-			}
-			count++;
-		}
+		return Stream.of(KEYS, KEY_SET, PROPERTY_NAMES)
+			.map(view -> new Order(
+				name + ", " + view.name() + ": "
+					+ expected.stream().map(String::valueOf).collect(Collectors.joining(", ")),
+				properties, view, expected));
 	}
 
 	/**
-	 * Test for method {@link SortedProperties#keySet()}
+	 * The cases of {@link #testOrder(Order)}
+	 *
+	 * @return the cases
 	 */
-	@Test
-	public void testKeySet()
+	static Stream<Order> orders()
 	{
-		SortedProperties sortedProperties = new SortedProperties();
-		sortedProperties.put("B", "2");
-		sortedProperties.put("C", "3");
-		sortedProperties.put("A", "1");
-		sortedProperties.put("D", "4");
-		Set<Object> set = sortedProperties.keySet();
-		int count = 1;
-		for (final Object key : set)
-		{
-			if (count == 1)
-			{
-				assertEquals(key, "A");
-			}
-			if (count == 2)
-			{
-				assertEquals(key, "B");
-			}
-			if (count == 3)
-			{
-				assertEquals(key, "C");
-			}
-			if (count == 4)
-			{
-				assertEquals(key, "D");
-			}
-			count++;
-		}
-
-		// Add a reverse comparator.
-		sortedProperties = new SortedProperties()
-		{
-			/**
-			 * The serialVersionUID
-			 */
-			private static final long serialVersionUID = 1L;
-
-			@Override
-			protected Comparator<Object> newComparator()
-			{
-
-				return NullCheckComparator.of(
-					(final Object o1,
-						final Object o2) -> ((o1.toString().compareTo(o2.toString())) * (-1)),
-					false);
-			}
-		};
-		sortedProperties.put("B", "2");
-		sortedProperties.put("C", "3");
-		sortedProperties.put("A", "1");
-		sortedProperties.put("D", "4");
-
-		set = sortedProperties.keySet();
-		count = 1;
-		for (final Object key : set)
-		{
-			if (count == 1)
-			{
-				assertEquals(key, "D");
-			}
-			if (count == 2)
-			{
-				assertEquals(key, "C");
-			}
-			if (count == 3)
-			{
-				assertEquals(key, "B");
-			}
-			if (count == 4)
-			{
-				assertEquals(key, "A");
-			}
-			count++;
-		}
+		final List<Object> ascending = List.of("A", "B", "C", "D");
+		final List<Object> descending = List.of("D", "C", "B", "A");
+		return Stream.of(
+			inEachView("new SortedProperties() with B, C, A, D",
+				() -> filled(new SortedProperties()), ascending),
+			inEachView("of() with B, C, A, D", () -> filled(SortedProperties.of()), ascending),
+			inEachView("a reverse newComparator with B, C, A, D",
+				() -> filled(reversed(new Properties())), descending),
+			inEachView("of(new Properties(), descending) with B, C, A", () -> {
+				final SortedProperties properties = SortedProperties.of(new Properties(),
+					DESCENDING);
+				properties.setProperty("B", "2");
+				properties.setProperty("C", "3");
+				properties.setProperty("A", "1");
+				return properties;
+			}, List.of("C", "B", "A")),
+			Stream.of(
+				new Order("the keys 10, 9, 100, keys(): their string form, 10, 100, 9",
+					SortedPropertiesTest::numbers, KEYS, List.of(10, 100, 9)),
+				new Order("the keys 10, 9, 100, keySet(): their string form, 10, 100, 9",
+					SortedPropertiesTest::numbers, KEY_SET, List.of(10, 100, 9)),
+				new Order("defaults E with B, C, A, D, keys(): A, B, C, D, not E",
+					() -> filled(new SortedProperties(propertiesOf("E", "5"))), KEYS, ascending),
+				new Order("defaults E with B, C, A, D, keySet(): A, B, C, D, not E",
+					() -> filled(new SortedProperties(propertiesOf("E", "5"))), KEY_SET, ascending),
+				new Order("defaults E with B, C, A, D, propertyNames(): A, B, C, D, E",
+					() -> filled(new SortedProperties(propertiesOf("E", "5"))), PROPERTY_NAMES,
+					List.of("A", "B", "C", "D", "E")),
+				new Order("of(defaults E) with B, C, A, D, propertyNames(): A, B, C, D, E",
+					() -> filled(SortedProperties.of(propertiesOf("E", "5"))), PROPERTY_NAMES,
+					List.of("A", "B", "C", "D", "E")),
+				new Order("a reverse newComparator, defaults E with B, C, A, D, keys(): D, C, B, A",
+					() -> filled(reversed(propertiesOf("E", "5"))), KEYS, descending),
+				new Order("of(defaults B, C, A, D, descending), propertyNames(): D, C, B, A",
+					() -> SortedProperties.of(filled(new Properties()), DESCENDING), PROPERTY_NAMES,
+					descending),
+				new Order("of(defaults B, C, A, D, descending), keys(): none of the defaults",
+					() -> SortedProperties.of(filled(new Properties()), DESCENDING), KEYS,
+					List.of()),
+				new Order("defaults A, B, propertyNames(): A, B",
+					() -> new SortedProperties(propertiesOf("A", "1", "B", "2")), PROPERTY_NAMES,
+					List.of("A", "B")),
+				new Order("defaults A, B with C and B, propertyNames(): A, B, C, each once",
+					SortedPropertiesTest::withDefaults, PROPERTY_NAMES, List.of("A", "B", "C")),
+				new Order(
+					"of(defaults A, B, descending) with C and B, propertyNames(): C, B, A, each once",
+					() -> {
+						final SortedProperties properties = SortedProperties
+							.of(propertiesOf("A", "1", "B", "2"), DESCENDING);
+						properties.setProperty("C", "3");
+						properties.setProperty("B", "20");
+						return properties;
+					}, PROPERTY_NAMES, List.of("C", "B", "A")),
+				new Order(
+					"the defaults of the defaults, with D, propertyNames(): A, B, C, D, of all of them",
+					() -> {
+						final SortedProperties nested = new SortedProperties(withDefaults());
+						nested.setProperty("D", "4");
+						return nested;
+					}, PROPERTY_NAMES, List.of("A", "B", "C", "D"))))
+			.flatMap(Function.identity());
 	}
 
 	/**
-	 * Test the methods {@link SortedProperties#keys()} and {@link SortedProperties#keySet()} with
-	 * keys that are no strings: the default comparator sorts them by their string form, not by
-	 * their natural order
+	 * A {@link SortedProperties} of the keys 10, 9 and 100, which are no strings
+	 *
+	 * @return the new properties
 	 */
-	@Test
-	public void testKeysAreSortedByTheirStringForm()
-	{
-		final SortedProperties sortedProperties = new SortedProperties();
-		sortedProperties.put(10, "ten");
-		sortedProperties.put(9, "nine");
-		sortedProperties.put(100, "hundred");
-
-		// by their string form "10" < "100" < "9", by their natural order 9 < 10 < 100
-		final List<Integer> expected = ListFactory.newArrayList(10, 100, 9);
-		assertEquals(expected, Collections.list(sortedProperties.keys()));
-		assertEquals(expected, new ArrayList<>(sortedProperties.keySet()));
-	}
-
-	/**
-	 * Test the method {@link Set#remove(Object)} of {@link SortedProperties#keySet()}: the set is
-	 * backed by the properties, as {@link java.util.Map#keySet()} specifies, so removing a key from
-	 * it removes its entry, and a key that the properties do not hold is not removed
-	 */
-	@Test
-	public void testKeySetRemove()
+	static SortedProperties numbers()
 	{
 		final SortedProperties properties = new SortedProperties();
-		properties.setProperty("B", "2");
+		properties.put(10, "ten");
+		properties.put(9, "nine");
+		properties.put(100, "hundred");
+		return properties;
+	}
+
+	/**
+	 * A {@link SortedProperties} with the defaults A = 1 and B = 2 and the entries C = 3 and B = 20
+	 *
+	 * @return the new properties
+	 */
+	static SortedProperties withDefaults()
+	{
+		final SortedProperties properties = new SortedProperties(propertiesOf("A", "1", "B", "2"));
+		properties.setProperty("C", "3");
+		properties.setProperty("B", "20");
+		return properties;
+	}
+
+	/**
+	 * Test for the constructors, the factory methods and a subclass that overrides
+	 * {@link SortedProperties#newComparator()}, with the methods {@link SortedProperties#keys()},
+	 * {@link SortedProperties#keySet()} and {@link SortedProperties#propertyNames()}: each lists
+	 * the keys sorted with the comparator, by default by their string form; keys() and keySet()
+	 * list the keys of the entries, propertyNames() also those of the defaults, each once, as
+	 * {@link Properties#propertyNames()} does
+	 *
+	 * @param order
+	 *            the properties, the view and the order of the keys
+	 */
+	@ParameterizedTest(name = "{0}")
+	@MethodSource("orders")
+	public void testOrder(final Order order)
+	{
+		assertEquals(order.expected(), order.view().view().apply(order.properties().get()));
+	}
+
+	/**
+	 * Test for the constructor {@link SortedProperties#SortedProperties(Properties)} and the
+	 * factory methods {@link SortedProperties#of(Properties)} and
+	 * {@link SortedProperties#of(Properties, Comparator)}: the given properties are the defaults,
+	 * whose values {@link Properties#getProperty(String)} finds, unless an entry of the same key
+	 * has a value of its own
+	 *
+	 * @param description
+	 *            the name of the case
+	 * @param properties
+	 *            makes the properties
+	 * @param key
+	 *            the key
+	 * @param value
+	 *            the value getProperty finds
+	 */
+	@ParameterizedTest(name = "{0}", quoteTextArguments = false)
+	@MethodSource("defaults")
+	public void testDefaults(final String description, final Supplier<Properties> properties,
+		final String key, final String value)
+	{
+		assertEquals(value, properties.get().getProperty(key));
+	}
+
+	/**
+	 * The cases of {@link #testDefaults(String, Supplier, String, String)}
+	 *
+	 * @return the name of the case, the properties, the key and the value
+	 */
+	static Stream<Arguments> defaults()
+	{
+		return Stream.of(
+			Arguments.of("new SortedProperties(defaults E = 5) with B, C, A, D: E is 5",
+				(Supplier<Properties>)() -> filled(new SortedProperties(propertiesOf("E", "5"))),
+				"E", "5"),
+			Arguments.of("a reverse newComparator, defaults E = 5 with B, C, A, D: E is 5",
+				(Supplier<Properties>)() -> filled(reversed(propertiesOf("E", "5"))), "E", "5"),
+			Arguments.of("of(defaults E = 5): E is 5",
+				(Supplier<Properties>)() -> SortedProperties.of(propertiesOf("E", "5")), "E", "5"),
+			Arguments.of("of(defaults B, C, A, D, descending): D is 4",
+				(Supplier<Properties>)() -> SortedProperties.of(filled(new Properties()),
+					DESCENDING),
+				"D", "4"),
+			Arguments.of("defaults B = 2 with B = 20: B is 20, its own value",
+				(Supplier<Properties>)SortedPropertiesTest::withDefaults, "B", "20"));
+	}
+
+	/**
+	 * A change of the properties A = 1, B = 2, C = 3, D = 4 through their {@link Set} of keys, what
+	 * it returns and the keys that stay
+	 *
+	 * @param description
+	 *            the name of the case
+	 * @param change
+	 *            the change
+	 * @param result
+	 *            what it returns, null for nothing
+	 * @param keys
+	 *            the keys that stay, in their order
+	 */
+	record KeySetChange(String description, Function<Set<Object>, Object> change, Object result,
+		List<Object> keys) {
+		@Override
+		public String toString()
+		{
+			return description;
+		}
+	}
+
+	/**
+	 * The cases of {@link #testKeySetChange(KeySetChange)}
+	 *
+	 * @return the cases
+	 */
+	static Stream<KeySetChange> keySetChanges()
+	{
+		final List<Object> all = List.of("A", "B", "C", "D");
+		return Stream.of(
+			new KeySetChange("remove(A): true, A goes", keySet -> keySet.remove("A"), true,
+				List.of("B", "C", "D")),
+			new KeySetChange("remove(E), not a key: false, all stay", keySet -> keySet.remove("E"),
+				false, all),
+			new KeySetChange("removeAll(A, E): true, A goes",
+				keySet -> keySet.removeAll(List.of("A", "E")), true, List.of("B", "C", "D")),
+			new KeySetChange("removeAll(E), not a key: false, all stay",
+				keySet -> keySet.removeAll(List.of("E")), false, all),
+			new KeySetChange("retainAll(C, D): true, A and B go",
+				keySet -> keySet.retainAll(List.of("C", "D")), true, List.of("C", "D")),
+			new KeySetChange("retainAll(A, B, C, D), all of them: false, all stay",
+				keySet -> keySet.retainAll(all), false, all),
+			new KeySetChange("clear(): all go", keySet -> {
+				keySet.clear();
+				return null;
+			}, null, List.of()),
+			new KeySetChange("iterator(), next() and remove(): A goes", keySet -> {
+				final Iterator<Object> iterator = keySet.iterator();
+				final Object next = iterator.next();
+				iterator.remove();
+				return next;
+			}, "A", List.of("B", "C", "D")));
+	}
+
+	/**
+	 * Test for the {@link Set} of {@link SortedProperties#keySet()}: it is backed by the
+	 * properties, as {@link java.util.Map#keySet()} specifies, so removing keys from it removes
+	 * their entries, and the set and the properties hold the same keys afterwards
+	 *
+	 * @param change
+	 *            the change, what it returns and the keys that stay
+	 */
+	@ParameterizedTest(name = "{0}")
+	@MethodSource("keySetChanges")
+	public void testKeySetChange(final KeySetChange change)
+	{
+		final SortedProperties properties = new SortedProperties();
 		properties.setProperty("A", "1");
-
+		properties.setProperty("B", "2");
+		properties.setProperty("C", "3");
+		properties.setProperty("D", "4");
 		final Set<Object> keySet = properties.keySet();
-		assertTrue(keySet.remove("A"));
-		assertFalse(keySet.contains("A"));
-		assertFalse(properties.containsKey("A"));
-		assertEquals(1, properties.size());
-		assertEquals(1, keySet.size());
+		assertEquals(change.result(), change.change().apply(keySet));
+		assertEquals(change.keys(), Collections.list(properties.keys()));
+		assertEquals(change.keys(), new ArrayList<>(keySet));
+		assertEquals(change.keys().size(), keySet.size());
+		assertEquals(change.keys().size(), properties.size());
+		for (final String key : List.of("A", "B", "C", "D"))
+		{
+			assertEquals(change.keys().contains(key), keySet.contains(key), "contains " + key);
+			assertEquals(change.keys().contains(key), properties.containsKey(key),
+				"containsKey " + key);
+		}
+	}
 
-		assertFalse(keySet.remove("C"));
+	/**
+	 * Test for the methods {@link Set#add(Object)} and {@link Set#addAll(java.util.Collection)} of
+	 * {@link SortedProperties#keySet()}: the set does not support them, as
+	 * {@link java.util.Map#keySet()} specifies, and the properties stay as they are
+	 *
+	 * @param description
+	 *            the name of the case
+	 * @param add
+	 *            the call of add or addAll
+	 */
+	@ParameterizedTest(name = "{0}", quoteTextArguments = false)
+	@MethodSource("keySetAdds")
+	public void testKeySetAdd(final String description, final Function<Set<Object>, Object> add)
+	{
+		final SortedProperties properties = new SortedProperties();
+		properties.setProperty("A", "1");
+		final Set<Object> keySet = properties.keySet();
+		assertThrows(UnsupportedOperationException.class, () -> add.apply(keySet));
+		assertFalse(properties.containsKey("B"));
 		assertEquals(1, properties.size());
+	}
+
+	/**
+	 * The cases of {@link #testKeySetAdd(String, Function)}
+	 *
+	 * @return the name of the case and the call
+	 */
+	static Stream<Arguments> keySetAdds()
+	{
+		return Stream.of(
+			Arguments.of("add(B): UnsupportedOperationException",
+				(Function<Set<Object>, Object>)keySet -> keySet.add("B")),
+			Arguments.of("addAll(B): UnsupportedOperationException",
+				(Function<Set<Object>, Object>)keySet -> keySet
+					.addAll(ListFactory.newArrayList("B"))));
 	}
 
 	/**
@@ -395,265 +516,6 @@ public class SortedPropertiesTest
 		assertFalse(keySet.contains("A"));
 		assertTrue(keySet.contains("C"));
 		assertEquals(2, keySet.size());
-	}
-
-	/**
-	 * Test the methods {@link Set#add(Object)} and {@link Set#addAll(java.util.Collection)} of
-	 * {@link SortedProperties#keySet()}: the set does not support them, as
-	 * {@link java.util.Map#keySet()} specifies, and the properties stay as they are
-	 */
-	@Test
-	public void testKeySetAdd()
-	{
-		final SortedProperties properties = new SortedProperties();
-		properties.setProperty("A", "1");
-
-		final Set<Object> keySet = properties.keySet();
-		assertThrows(UnsupportedOperationException.class, () -> keySet.add("B"));
-		assertThrows(UnsupportedOperationException.class,
-			() -> keySet.addAll(ListFactory.newArrayList("B")));
-		assertFalse(properties.containsKey("B"));
-		assertEquals(1, properties.size());
-	}
-
-	/**
-	 * Test the methods {@link Set#removeAll(java.util.Collection)},
-	 * {@link Set#retainAll(java.util.Collection)} and {@link Set#clear()} of
-	 * {@link SortedProperties#keySet()}: each removes the entries of the keys it removes from the
-	 * set
-	 */
-	@Test
-	public void testKeySetRemoveAllRetainAllAndClear()
-	{
-		final SortedProperties properties = new SortedProperties();
-		properties.setProperty("A", "1");
-		properties.setProperty("B", "2");
-		properties.setProperty("C", "3");
-		properties.setProperty("D", "4");
-
-		final Set<Object> keySet = properties.keySet();
-		assertTrue(keySet.removeAll(ListFactory.newArrayList("A", "E")));
-		assertEquals(ListFactory.newArrayList("B", "C", "D"), Collections.list(properties.keys()));
-
-		assertTrue(keySet.retainAll(ListFactory.newArrayList("C", "D")));
-		assertEquals(ListFactory.newArrayList("C", "D"), Collections.list(properties.keys()));
-
-		keySet.clear();
-		assertTrue(properties.isEmpty());
-		assertTrue(keySet.isEmpty());
-	}
-
-	/**
-	 * Test for factory method {@link SortedProperties#of()}
-	 */
-	@Test
-	public void testOf()
-	{
-
-		final Properties sortedProperties = SortedProperties.of();
-		assertNotNull(sortedProperties);
-
-	}
-
-	/**
-	 * Test for factory method {@link SortedProperties#of(Properties)}
-	 */
-	@Test
-	public void testOfProperties()
-	{
-		final Properties unsortedProperties = new Properties();
-		unsortedProperties.put("B", "2");
-		unsortedProperties.put("C", "3");
-		unsortedProperties.put("A", "1");
-		unsortedProperties.put("D", "4");
-		unsortedProperties.put("E", "5");
-
-		final Properties properties = SortedProperties.of(unsortedProperties);
-		assertNotNull(properties);
-
-	}
-
-	/**
-	 * Test for factory method {@link SortedProperties#of(Properties, Comparator)}: the given
-	 * properties are the defaults of the new object, which {@link Properties#getProperty(String)}
-	 * finds and {@link SortedProperties#propertyNames()} lists, sorted with the given comparator
-	 */
-	@Test
-	public void testOfPropertiesComparatorOfObject()
-	{
-		final Properties unsortedProperties = new Properties();
-		unsortedProperties.put("B", "2");
-		unsortedProperties.put("C", "3");
-		unsortedProperties.put("A", "1");
-		unsortedProperties.put("D", "4");
-
-		final Properties sortedProperties = SortedProperties.of(unsortedProperties,
-			(final Object o1,
-				final Object o2) -> ((o1.toString().compareTo(o2.toString())) * (-1)));
-		assertNotNull(sortedProperties);
-		assertEquals("4", sortedProperties.getProperty("D"));
-		final Enumeration<?> propertyNames = sortedProperties.propertyNames();
-		int count = 1;
-		while (propertyNames.hasMoreElements())
-		{
-			final Object key = propertyNames.nextElement();
-			if (count == 1)
-			{
-				assertEquals("D", key);
-			}
-			if (count == 2)
-			{
-				assertEquals("C", key);
-			}
-			if (count == 3)
-			{
-				assertEquals("B", key);
-			}
-			if (count == 4)
-			{
-				assertEquals("A", key);
-			}
-			count++;
-		}
-		// count started at 1: the loop ran once for each of the four keys of the defaults
-		assertEquals(5, count);
-	}
-
-	/**
-	 * Test the factory method {@link SortedProperties#of(Properties, Comparator)} sorts the keys
-	 * with the given comparator in {@link SortedProperties#keys()},
-	 * {@link SortedProperties#keySet()} and {@link SortedProperties#propertyNames()}
-	 */
-	@Test
-	public void testOfPropertiesComparatorSortsTheKeysWithIt()
-	{
-		final SortedProperties sortedProperties = SortedProperties.of(new Properties(),
-			(o1, o2) -> o2.toString().compareTo(o1.toString()));
-		sortedProperties.setProperty("B", "2");
-		sortedProperties.setProperty("C", "3");
-		sortedProperties.setProperty("A", "1");
-
-		final List<String> expected = ListFactory.newArrayList("C", "B", "A");
-		assertEquals(expected, Collections.list(sortedProperties.keys()));
-		assertEquals(expected, new ArrayList<>(sortedProperties.keySet()));
-		assertEquals(expected, Collections.list(sortedProperties.propertyNames()));
-	}
-
-	/**
-	 * Test for method {@link SortedProperties#propertyNames()}
-	 */
-	@Test
-	public void testPropertyNames()
-	{
-		SortedProperties sortedProperties = new SortedProperties();
-		sortedProperties.put("B", "2");
-		sortedProperties.put("C", "3");
-		sortedProperties.put("A", "1");
-		sortedProperties.put("D", "4");
-		Enumeration<?> propertyNames = sortedProperties.propertyNames();
-		int count = 1;
-		while (propertyNames.hasMoreElements())
-		{
-			final Object key = propertyNames.nextElement();
-			if (count == 1)
-			{
-				assertEquals(key, "A");
-			}
-			if (count == 2)
-			{
-				assertEquals(key, "B");
-			}
-			if (count == 3)
-			{
-				assertEquals(key, "C");
-			}
-			if (count == 4)
-			{
-				assertEquals(key, "D");
-			}
-			count++;
-		}
-
-		// Add a reverse comparator.
-		sortedProperties = new SortedProperties()
-		{
-			/**
-			 * The serialVersionUID
-			 */
-			private static final long serialVersionUID = 1L;
-
-			@Override
-			protected Comparator<Object> newComparator()
-			{
-
-				return NullCheckComparator.of(
-					(final Object o1,
-						final Object o2) -> ((o1.toString().compareTo(o2.toString())) * (-1)),
-					false);
-			}
-		};
-		sortedProperties.put("B", "2");
-		sortedProperties.put("C", "3");
-		sortedProperties.put("A", "1");
-		sortedProperties.put("D", "4");
-
-		propertyNames = sortedProperties.propertyNames();
-		count = 1;
-		while (propertyNames.hasMoreElements())
-		{
-			final Object key = propertyNames.nextElement();
-			if (count == 1)
-			{
-				assertEquals(key, "D");
-			}
-			if (count == 2)
-			{
-				assertEquals(key, "C");
-			}
-			if (count == 3)
-			{
-				assertEquals(key, "B");
-			}
-			if (count == 4)
-			{
-				assertEquals(key, "A");
-			}
-			count++;
-		}
-	}
-
-	/**
-	 * Test the method {@link SortedProperties#propertyNames()} with defaults, one of their keys
-	 * also a key of the properties: it lists the keys of the properties and of the defaults, each
-	 * once, as {@link Properties#propertyNames()} does, and also those of the defaults of the
-	 * defaults, sorted with the comparator
-	 */
-	@Test
-	public void testPropertyNamesWithDefaults()
-	{
-		final Properties defaults = new Properties();
-		defaults.setProperty("A", "1");
-		defaults.setProperty("B", "2");
-		assertEquals(ListFactory.newArrayList("A", "B"),
-			Collections.list(new SortedProperties(defaults).propertyNames()));
-
-		final SortedProperties properties = new SortedProperties(defaults);
-		properties.setProperty("C", "3");
-		properties.setProperty("B", "20");
-		assertEquals(ListFactory.newArrayList("A", "B", "C"),
-			Collections.list(properties.propertyNames()));
-
-		final SortedProperties reversed = SortedProperties.of(defaults,
-			(o1, o2) -> o2.toString().compareTo(o1.toString()));
-		reversed.setProperty("C", "3");
-		reversed.setProperty("B", "20");
-		assertEquals(ListFactory.newArrayList("C", "B", "A"),
-			Collections.list(reversed.propertyNames()));
-
-		final SortedProperties nested = new SortedProperties(properties);
-		nested.setProperty("D", "4");
-		assertEquals(ListFactory.newArrayList("A", "B", "C", "D"),
-			Collections.list(nested.propertyNames()));
 	}
 
 	/**
