@@ -26,7 +26,6 @@ package io.github.astrapi69.collection.properties;
 
 import static org.junit.jupiter.api.Assertions.assertEquals;
 import static org.junit.jupiter.api.Assertions.assertNull;
-import static org.junit.jupiter.api.Assertions.assertThrows;
 import static org.junit.jupiter.api.Assertions.assertTrue;
 
 import java.io.IOException;
@@ -128,9 +127,8 @@ public class IndexSortedPropertiesTest
 	 * Asserts that the index of the given properties holds the given values in their order:
 	 * {@link IndexSortedProperties#get(int)} and {@link IndexSortedProperties#getProperty(int)}
 	 * give them, {@link IndexSortedProperties#indexOf(Object)} finds them at their index, and an
-	 * index out of range, the size or -1, gives null. Today indexOf(null) throws a
-	 * {@link NullPointerException} as soon as the index holds a key, as it calls equals on the
-	 * given object (#117); the fix of #117 changes it to -1
+	 * index out of range, the size or -1, gives null; indexOf gives -1 for a value of no key and
+	 * for null, which a {@link Properties} never holds, also for an empty index (#117)
 	 *
 	 * @param values
 	 *            the values in the order of the index, all different
@@ -153,15 +151,7 @@ public class IndexSortedPropertiesTest
 		assertNull(properties.get(-1), "get(-1)");
 		assertNull(properties.getProperty(-1), "getProperty(-1)");
 		assertEquals(-1, properties.indexOf("6"), "indexOf(6), a value of no key");
-		if (values.isEmpty())
-		{
-			assertEquals(-1, properties.indexOf(null), "indexOf(null), an empty index");
-		}
-		else
-		{
-			assertThrows(NullPointerException.class, () -> properties.indexOf(null),
-				"indexOf(null) today (#117)");
-		}
+		assertEquals(-1, properties.indexOf(null), "indexOf(null), never a value (#117)");
 	}
 
 	/**
@@ -427,6 +417,15 @@ public class IndexSortedPropertiesTest
 				List.of("2", "3")),
 			new Change("remove(X), not a key: null, all stay", properties -> properties.remove("X"),
 				null, unchanged),
+			new Change(
+				"put(D, the Integer 4), whose getProperty is null: indexOf(null) -1 (#117), remove(D)",
+				properties -> {
+					properties.put("D", 4);
+					final List<Object> found = Arrays.asList(properties.getProperty("D"),
+						properties.indexOf(null));
+					properties.remove("D");
+					return found;
+				}, Arrays.asList(null, -1), unchanged),
 			new Change("remove(A), remove(B), remove(C) and remove(C) again: 1, 2, 3, null",
 				properties -> Arrays.asList(properties.remove("A"), properties.remove("B"),
 					properties.remove("C"), properties.remove("C")),
