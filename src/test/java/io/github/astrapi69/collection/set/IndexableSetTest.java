@@ -25,13 +25,16 @@
 package io.github.astrapi69.collection.set;
 
 import static org.junit.jupiter.api.Assertions.assertEquals;
-import static org.junit.jupiter.api.Assertions.assertFalse;
+import static org.junit.jupiter.api.Assertions.assertThrows;
 
 import java.util.Arrays;
-import java.util.Collection;
+import java.util.List;
+import java.util.function.Function;
+import java.util.function.Supplier;
+import java.util.stream.Stream;
 
-import org.junit.jupiter.api.Assertions;
-import org.junit.jupiter.api.Test;
+import org.junit.jupiter.params.ParameterizedTest;
+import org.junit.jupiter.params.provider.MethodSource;
 
 /**
  * The unit test class for the class {@link IndexableSet}
@@ -42,195 +45,118 @@ public class IndexableSetTest
 {
 
 	/**
-	 * Test method for {@link IndexableSet#get(int)}
+	 * A new {@link IndexableSet} of the given elements, added in their order
+	 *
+	 * @param elements
+	 *            the elements
+	 * @return the set
 	 */
-	@Test
-	public void testGet()
-	{
-		String actual;
-		String expected;
-
-		IndexableSet<String> set;
-		// init test data
-		set = new IndexableSet<>();
-		set.add("value1");
-		set.add("value2");
-		set.add("value3");
-		set.add("value4");
-		// test
-		// new scenario..
-		actual = set.get(1);
-		expected = "value2";
-		assertEquals(actual, expected);
-		// new scenario..
-		set.add("value2");
-		actual = set.get(3);
-		expected = "value2";
-		assertEquals(actual, expected);
-		// new scenario..
-		actual = set.get(0);
-		expected = "value1";
-		assertEquals(actual, expected);
-		// new scenario..
-		actual = set.get(1);
-		expected = "value3";
-		assertEquals(actual, expected);
-		// new scenario..
-		actual = set.get(2);
-		expected = "value4";
-		assertEquals(actual, expected);
-	}
-
-	/**
-	 * Test method for {@link IndexableSet#getIndex(Object)}
-	 */
-	@Test
-	public void testGetIndex()
-	{
-		int actual;
-		int expected;
-		IndexableSet<String> set;
-		// init test data
-		set = new IndexableSet<>();
-		set.add("value1");
-		set.add("value2");
-		set.add("value3");
-		set.add("value4");
-		// test
-		// new scenario..
-		actual = set.getIndex("value2");
-		expected = 1;
-		assertEquals(actual, expected);
-		// new scenario..
-		set.add("value2");
-		actual = set.getIndex("value2");
-		expected = 3;
-		assertEquals(actual, expected);
-		// new scenario..
-		actual = set.getIndex("value5");
-		expected = -1;
-		assertEquals(actual, expected);
-
-	}
-
-
-	/**
-	 * Test method for {@link IndexableSet#get(int)} with index over the maximum
-	 */
-	@Test
-	public void testGetThrowIndexOutOfBoundsExceptionOverMaximun()
-	{
-		IndexableSet<String> set;
-		// init test data
-		set = new IndexableSet<>();
-		set.add("value1");
-		set.add("value2");
-		set.add("value3");
-		set.add("value4");
-		// test
-		// new scenario..
-		Assertions.assertThrows(IndexOutOfBoundsException.class, () -> {
-			set.get(5);
-		});
-	}
-
-	/**
-	 * Test method for {@link IndexableSet#get(int)} with index over the minimum
-	 */
-	@Test
-	public void testGetThrowIndexOutOfBoundsExceptionOverMinimum()
-	{
-		IndexableSet<String> set;
-		// init test data
-		set = new IndexableSet<>();
-		set.add("value1");
-		set.add("value2");
-		set.add("value3");
-		set.add("value4");
-		// test
-		Assertions.assertThrows(IndexOutOfBoundsException.class, () -> {
-			set.get(-1);
-		});
-	}
-
-	/**
-	 * Test the method {@link IndexableSet#get(int)} at the upper bound of the index, as its Javadoc
-	 * names it (index &gt;= size()): size() - 1 gives the last element, size() throws an
-	 * IndexOutOfBoundsException
-	 */
-	@Test
-	public void testGetThrowIndexOutOfBoundsExceptionAtSize()
+	static IndexableSet<String> setOf(final String... elements)
 	{
 		final IndexableSet<String> set = new IndexableSet<>();
-		set.add("value1");
-		set.add("value2");
-		set.add("value3");
-		assertEquals("value3", set.get(2));
-		Assertions.assertThrows(IndexOutOfBoundsException.class, () -> set.get(3));
+		for (final String element : elements)
+		{
+			set.add(element);
+		}
+		return set;
 	}
 
 	/**
-	 * Test method for {@link IndexableSet#get(int)} with index over the minimum
+	 * Asserts that {@link IndexableSet#get(int)} and {@link IndexableSet#getIndex(Object)} give the
+	 * given elements at their index, that getIndex gives -1 for an element the set does not hold,
+	 * and that get throws an {@link IndexOutOfBoundsException} for an index out of range, -1, the
+	 * size and beyond it, as its Javadoc says
+	 *
+	 * @param expected
+	 *            the elements in their order
+	 * @param set
+	 *            the set
 	 */
-	@Test
-	public void testGetThrowIndexOutOfBoundsExceptionWithEmptySet()
+	static void assertIndexes(final List<String> expected, final IndexableSet<String> set)
 	{
-		IndexableSet<String> set;
-		// init test data
-		set = new IndexableSet<>();
-		// test
-		Assertions.assertThrows(IndexOutOfBoundsException.class, () -> {
-			set.get(0);
-		});
+		assertEquals(expected.size(), set.size(), "size");
+		for (int index = 0; index < expected.size(); index++)
+		{
+			assertEquals(expected.get(index), set.get(index), "get(" + index + ")");
+			assertEquals(index, set.getIndex(expected.get(index)),
+				"getIndex(" + expected.get(index) + ")");
+		}
+		assertEquals(-1, set.getIndex("value5"), "getIndex of an element the set does not hold");
+		for (final int index : new int[] { -1, expected.size(), expected.size() + 1 })
+		{
+			assertThrows(IndexOutOfBoundsException.class, () -> set.get(index),
+				"get(" + index + ")");
+		}
 	}
 
 	/**
-	 * Test the method {@link IndexableSet#add(Object)}, inherited from {@link InsertionOrderSet},
-	 * with an element the set holds already: the element moves to the last index, and the method
-	 * returns false (#41)
+	 * A change of an {@link IndexableSet}, what it returns and the order of the elements afterwards
+	 *
+	 * @param description
+	 *            the name of the case
+	 * @param set
+	 *            makes the set
+	 * @param change
+	 *            the change, null for none
+	 * @param result
+	 *            what the change returns, null for none
+	 * @param expected
+	 *            the elements in their order afterwards
 	 */
-	@Test
-	public void testAddWithContainedElement()
-	{
-		final IndexableSet<String> set = new IndexableSet<>();
-		set.add("a");
-		set.add("b");
-
-		assertFalse(set.add("a"));
-		assertEquals(1, set.getIndex("a"));
-		assertEquals("b", set.get(0));
+	record IndexCase(String description, Supplier<IndexableSet<String>> set,
+		Function<IndexableSet<String>, Boolean> change, Boolean result, List<String> expected) {
+		@Override
+		public String toString()
+		{
+			return description;
+		}
 	}
 
 	/**
-	 * Test the method {@link IndexableSet#addAll(Collection)}, inherited from
-	 * {@link InsertionOrderSet}, with an element the set holds already: it returns false, as the
-	 * set holds no new element (#41)
+	 * The cases of {@link #testGetAndGetIndex(IndexCase)}
+	 *
+	 * @return the cases
 	 */
-	@Test
-	public void testAddAllWithContainedElement()
+	static Stream<IndexCase> indexes()
 	{
-		final IndexableSet<String> set = new IndexableSet<>();
-		set.add("a");
-
-		assertFalse(set.addAll(Arrays.asList("a")));
-		assertEquals(1, set.size());
+		final Supplier<IndexableSet<String>> oneToFour = () -> setOf("value1", "value2", "value3",
+			"value4");
+		return Stream.of(
+			new IndexCase("value1 to value4: in their order", oneToFour, null, null,
+				List.of("value1", "value2", "value3", "value4")),
+			new IndexCase("value1 to value4, value2 added again: false, value2 at the end",
+				oneToFour, set -> set.add("value2"), false,
+				List.of("value1", "value3", "value4", "value2")),
+			new IndexCase("an empty set: no index", IndexableSet::new, null, null, List.of()),
+			new IndexCase("null and a: null at 0, a at 1 (#41)", () -> setOf(null, "a"), null, null,
+				Arrays.asList(null, "a")),
+			new IndexCase("a, b, a added again: false, a at 1 (#41)", () -> setOf("a", "b"),
+				set -> set.add("a"), false, List.of("b", "a")),
+			new IndexCase("a, addAll of a: false, the set holds no new element (#41)",
+				() -> setOf("a"), set -> set.addAll(List.of("a")), false, List.of("a")),
+			new IndexCase("a, add of b: true, b at 1", () -> setOf("a"), set -> set.add("b"), true,
+				List.of("a", "b")));
 	}
 
 	/**
-	 * Test the method {@link IndexableSet#getIndex(Object)} with a set that holds null and "a":
-	 * getIndex("a") gives 1, getIndex(null) gives 0, and an element the set does not hold gives -1
-	 * (#41)
+	 * Test for the methods {@link IndexableSet#get(int)} and {@link IndexableSet#getIndex(Object)},
+	 * also after {@link IndexableSet#add(Object)} and
+	 * {@link IndexableSet#addAll(java.util.Collection)}, which it inherits from
+	 * {@link InsertionOrderSet}: an element added again moves to the last index
+	 *
+	 * @param indexCase
+	 *            the set, the change and the elements afterwards
 	 */
-	@Test
-	public void testGetIndexWithNullElement()
+	@ParameterizedTest(name = "{0}")
+	@MethodSource("indexes")
+	public void testGetAndGetIndex(final IndexCase indexCase)
 	{
-		final IndexableSet<String> set = new IndexableSet<>();
-		set.add(null);
-		set.add("a");
-
-		assertEquals(1, set.getIndex("a"));
-		assertEquals(0, set.getIndex(null));
-		assertEquals(-1, set.getIndex("b"));
+		final IndexableSet<String> set = indexCase.set().get();
+		if (indexCase.change() != null)
+		{
+			assertEquals(indexCase.result(), indexCase.change().apply(set));
+		}
+		assertIndexes(indexCase.expected(), set);
 	}
 
 }

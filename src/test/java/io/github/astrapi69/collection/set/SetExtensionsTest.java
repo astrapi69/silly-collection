@@ -26,159 +26,211 @@ package io.github.astrapi69.collection.set;
 
 import static org.junit.jupiter.api.Assertions.assertArrayEquals;
 import static org.junit.jupiter.api.Assertions.assertEquals;
-import static org.junit.jupiter.api.Assertions.assertNotNull;
 import static org.junit.jupiter.api.Assertions.assertThrows;
-import static org.junit.jupiter.api.Assertions.assertTrue;
 
+import java.util.ArrayList;
 import java.util.Arrays;
-import java.util.Collection;
 import java.util.HashSet;
 import java.util.LinkedHashSet;
+import java.util.List;
 import java.util.Set;
+import java.util.function.Supplier;
+import java.util.stream.Stream;
 
 import org.junit.jupiter.api.Test;
+import org.junit.jupiter.api.function.Executable;
+import org.junit.jupiter.params.ParameterizedTest;
+import org.junit.jupiter.params.provider.Arguments;
+import org.junit.jupiter.params.provider.MethodSource;
 import org.meanbean.test.BeanTester;
 
-import io.github.astrapi69.collection.array.ArrayFactory;
 import io.github.astrapi69.collection.list.ListFactory;
 
 /**
- * The unit test class for the class {@link SetExtensionsTest}.
+ * The unit test class for the class {@link SetExtensions}.
  */
 public class SetExtensionsTest
 {
 
-
 	/**
-	 * Test the method {@link SetExtensions#toArray(Set)}
+	 * A set and the array {@link SetExtensions#toArray(Set)} makes of it
+	 *
+	 * @param description
+	 *            the name of the case
+	 * @param set
+	 *            makes the set
+	 * @param expected
+	 *            the array, of the expected component type
 	 */
-	@Test
-	public void testToArray()
-	{
-		Integer[] actual;
-		Integer[] expected;
-		Set<Integer> numbers;
-		// new scenario...
-		numbers = SetFactory.newTreeSet(1, 2, 3);
-		actual = SetExtensions.toArray(numbers);
-		expected = ArrayFactory.newArray(1, 2, 3);
-		assertTrue(Arrays.equals(actual, expected));
+	record ToArray(String description, Supplier<Set<?>> set, Object[] expected) {
+		@Override
+		public String toString()
+		{
+			return description;
+		}
 	}
 
 	/**
-	 * Test the method {@link SetExtensions#toArray(Set)} with an empty set: the result is an empty
-	 * {@code Object[]}, whatever the type of the elements, so that a caller that assigns it to a
-	 * {@code String[]} gets a {@link ClassCastException}. The fix of #64 keeps this result and
-	 * documents it
+	 * A new {@link LinkedHashSet} of the given elements, in their order
+	 *
+	 * @param elements
+	 *            the elements
+	 * @return the set
 	 */
-	@Test
-	public void testToArrayWithException()
+	static Set<?> linkedSetOf(final Object... elements)
 	{
-		Object[] array = SetExtensions.toArray(SetFactory.newTreeSet());
-		assertNotNull(array);
-		assertTrue(array.length == 0);
-		assertEquals(Object[].class, array.getClass());
-		assertThrows(ClassCastException.class, () -> {
-			String[] strings = SetExtensions.toArray(new HashSet<String>());
-		});
+		return new LinkedHashSet<>(Arrays.asList(elements));
 	}
 
 	/**
-	 * Test the method {@link SetExtensions#toArray(Set)} with null: it throws the
-	 * {@link IllegalArgumentException} of {@code Argument.notNull}. The fix of #64 keeps this
-	 * result and names the exception in the Javadoc
+	 * The cases of {@link #testToArray(ToArray)}, the examples of the Javadoc of
+	 * {@link SetExtensions#toArray(Set)} among them
+	 *
+	 * @return the cases
 	 */
-	@Test
-	public void testToArrayWithNullSet()
+	static Stream<ToArray> toArrays()
 	{
-		assertThrows(IllegalArgumentException.class, () -> SetExtensions.toArray(null));
+		return Stream.of(
+			new ToArray("the TreeSet 1, 2, 3: an Integer[] 1, 2, 3",
+				() -> SetFactory.newTreeSet(1, 2, 3), new Integer[] { 1, 2, 3 }),
+			new ToArray("an empty TreeSet: an empty Object[]", SetFactory::newTreeSet,
+				new Object[0]),
+			new ToArray("null, a: a String[] of null and a (#64)", () -> linkedSetOf(null, "a"),
+				new String[] { null, "a" }),
+			new ToArray("2.5, 1: a Number[] in the order of the set (#64)",
+				() -> linkedSetOf(2.5, 1), new Number[] { 2.5, 1 }),
+			new ToArray("1, 2.5: a Number[]", () -> linkedSetOf(1, 2.5), new Number[] { 1, 2.5 }),
+			new ToArray("a, 1: an Object[], no common class below Object",
+				() -> linkedSetOf("a", 1), new Object[] { "a", 1 }),
+			new ToArray("null alone: an Object[]", () -> linkedSetOf((Object)null),
+				new Object[] { null }));
 	}
 
 	/**
-	 * Test the method {@link SetExtensions#toArray(Set)} with null as first element: the component
-	 * type is the class of the non-null elements, the result a {@code String[]} that holds null and
-	 * "a". Before the fix of #64 the method threw a {@link NullPointerException}
+	 * Test for method {@link SetExtensions#toArray(Set)}: the elements in the iteration order of
+	 * the set, in an array of their most specific common superclass, as its Javadoc says
+	 *
+	 * @param toArray
+	 *            the set and the array
 	 */
-	@Test
-	public void testToArrayWithNullFirstElement()
+	@ParameterizedTest(name = "{0}")
+	@MethodSource("toArrays")
+	public void testToArray(final ToArray toArray)
 	{
-		final Set<String> set = new LinkedHashSet<>(Arrays.asList(null, "a"));
-
-		final String[] actual = SetExtensions.toArray(set);
-		assertEquals(String[].class, actual.getClass());
-		assertArrayEquals(new String[] { null, "a" }, actual);
+		final Object[] actual = SetExtensions.toArray(toArray.set().get());
+		assertEquals(toArray.expected().getClass(), actual.getClass());
+		assertArrayEquals(toArray.expected(), actual);
 	}
 
 	/**
-	 * Test the method {@link SetExtensions#toArray(Set)} with elements of different classes: the
-	 * component type is their most specific common superclass, a {@code Number[]} for [2.5, 1], in
-	 * the iteration order of the set. Before the fix of #64 the component type was the class of the
-	 * first element, {@code Double}, and storing 1 threw an {@link ArrayStoreException}
+	 * Test for method {@link SetExtensions#toArray(Set)} with what it refuses: null, and the empty
+	 * {@code Object[]} of an empty set assigned to a {@code String[]}, which its Javadoc names
+	 *
+	 * @param description
+	 *            the name of the case
+	 * @param exception
+	 *            the class of the exception
+	 * @param call
+	 *            the call
 	 */
-	@Test
-	public void testToArrayWithElementsOfDifferentClasses()
+	@ParameterizedTest(name = "{0}", quoteTextArguments = false)
+	@MethodSource("refusedToArrays")
+	public void testToArrayRefused(final String description,
+		final Class<? extends RuntimeException> exception, final Executable call)
 	{
-		final Set<Number> set = new LinkedHashSet<>(Arrays.asList(2.5, 1));
-
-		final Number[] actual = SetExtensions.toArray(set);
-		assertEquals(Number[].class, actual.getClass());
-		assertArrayEquals(new Number[] { 2.5, 1 }, actual);
+		assertThrows(exception, call);
 	}
 
 	/**
-	 * Test the method {@link SetExtensions#toSet(Collection)}: the new set holds the elements of
-	 * the collection
+	 * The cases of {@link #testToArrayRefused(String, Class, Executable)}
+	 *
+	 * @return the name of the case, the class of the exception and the call
 	 */
-	@Test
-	public void testToSet()
+	static Stream<Arguments> refusedToArrays()
 	{
-		final Collection<String> nameList = ListFactory.newArrayList();
-
-		nameList.add("Anton");
-		nameList.add("Alex");
-		nameList.add("Berta");
-		nameList.add("Brad");
-		nameList.add("Caesar");
-		nameList.add("Leonardo");
-
-		final Set<String> set = SetExtensions.toSet(nameList);
-		assertNotNull(set);
-		assertEquals(SetFactory.newHashSet("Anton", "Alex", "Berta", "Brad", "Caesar", "Leonardo"),
-			set);
+		return Stream.of(
+			Arguments.of("null: IllegalArgumentException of Argument.notNull (#64)",
+				IllegalArgumentException.class, (Executable)() -> SetExtensions.toArray(null)),
+			Arguments.of("an empty HashSet<String> into a String[]: ClassCastException (#64)",
+				ClassCastException.class, (Executable)() -> {
+					final String[] strings = SetExtensions.toArray(new HashSet<String>());
+					assertEquals(0, strings.length);
+				}));
 	}
 
 	/**
-	 * Test the method {@link SetExtensions#toSet(Collection)} with a collection that holds an
-	 * element twice, with an empty collection and with null: the set holds each element once, and
-	 * an empty or a null collection gives an empty set, as the collection is optional for
-	 * {@link SetFactory#newHashSet(Collection, Object...)} that it delegates to
+	 * Test for the methods {@link SetExtensions#toSet(java.util.Collection)} and
+	 * {@link SetExtensions#toSortedSet(java.util.Collection)}: the set holds each element of the
+	 * collection once, the sorted set in their natural order
+	 *
+	 * @param description
+	 *            the name of the case
+	 * @param set
+	 *            the conversion
+	 * @param expected
+	 *            the elements, in their order for a sorted set
+	 * @param sorted
+	 *            true for a sorted set
 	 */
-	@Test
-	public void testToSetWithDuplicatesEmptyAndNull()
+	@ParameterizedTest(name = "{0}", quoteTextArguments = false)
+	@MethodSource("toSets")
+	public void testToSetAndToSortedSet(final String description, final Supplier<Set<String>> set,
+		final List<String> expected, final boolean sorted)
 	{
-		assertEquals(SetFactory.newHashSet("Anton", "Alex"),
-			SetExtensions.toSet(ListFactory.newArrayList("Anton", "Alex", "Anton")));
-		assertTrue(SetExtensions.toSet(ListFactory.<String> newArrayList()).isEmpty());
-		assertTrue(SetExtensions.toSet(null).isEmpty());
+		final Set<String> actual = set.get();
+		if (sorted)
+		{
+			assertEquals(expected, new ArrayList<>(actual));
+		}
+		else
+		{
+			assertEquals(Set.copyOf(expected), actual);
+		}
 	}
 
 	/**
-	 * Test for method {@link SetExtensions#toSortedSet(Collection)}
+	 * Six names, not in their natural order
+	 *
+	 * @return a new list of the names
 	 */
-	@Test
-	public void testToSortedSet()
+	static List<String> names()
 	{
-		final Collection<String> nameList = ListFactory.newArrayList();
+		return ListFactory.newArrayList("Anton", "Alex", "Berta", "Brad", "Caesar", "Leonardo");
+	}
 
-		nameList.add("Anton");
-		nameList.add("Alex");
-		nameList.add("Berta");
-		nameList.add("Brad");
-		nameList.add("Caesar");
-		nameList.add("Leonardo");
-
-		final Set<String> set = SetExtensions.toSortedSet(nameList);
-		assertNotNull(set);
+	/**
+	 * The cases of {@link #testToSetAndToSortedSet(String, Supplier, List, boolean)}
+	 *
+	 * @return the name of the case, the conversion, the elements and the flag sorted
+	 */
+	static Stream<Arguments> toSets()
+	{
+		final List<String> sortedNames = List.of("Alex", "Anton", "Berta", "Brad", "Caesar",
+			"Leonardo");
+		return Stream.of(
+			Arguments.of("toSet, six names: each of them",
+				(Supplier<Set<String>>)() -> SetExtensions.toSet(names()), names(), false),
+			Arguments.of("toSet, Anton twice: once",
+				(Supplier<Set<String>>)() -> SetExtensions
+					.toSet(ListFactory.newArrayList("Anton", "Alex", "Anton")),
+				List.of("Anton", "Alex"), false),
+			Arguments.of("toSet, an empty collection: an empty set",
+				(Supplier<Set<String>>)() -> SetExtensions
+					.toSet(ListFactory.<String> newArrayList()),
+				List.of(), false),
+			Arguments.of(
+				"toSet, null: an empty set, as the collection of SetFactory.newHashSet is optional",
+				(Supplier<Set<String>>)() -> SetExtensions.toSet(null), List.of(), false),
+			Arguments.of("toSortedSet, six names: in their natural order",
+				(Supplier<Set<String>>)() -> SetExtensions.toSortedSet(names()), sortedNames, true),
+			Arguments.of("toSortedSet, Anton twice: once, in the natural order",
+				(Supplier<Set<String>>)() -> SetExtensions
+					.toSortedSet(ListFactory.newArrayList("Anton", "Alex", "Anton")),
+				List.of("Alex", "Anton"), true),
+			Arguments.of("toSortedSet, an empty collection: an empty set",
+				(Supplier<Set<String>>)() -> SetExtensions
+					.toSortedSet(ListFactory.<String> newArrayList()),
+				List.of(), true));
 	}
 
 	/**

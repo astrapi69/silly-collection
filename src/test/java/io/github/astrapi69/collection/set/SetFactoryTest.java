@@ -25,20 +25,26 @@
 package io.github.astrapi69.collection.set;
 
 import static org.junit.jupiter.api.Assertions.assertEquals;
-import static org.junit.jupiter.api.Assertions.assertNotNull;
-import static org.junit.jupiter.api.Assertions.assertNull;
+import static org.junit.jupiter.api.Assertions.assertInstanceOf;
+import static org.junit.jupiter.api.Assertions.assertNotSame;
 import static org.junit.jupiter.api.Assertions.assertSame;
 
 import java.util.ArrayList;
 import java.util.Collection;
 import java.util.Comparator;
+import java.util.HashSet;
+import java.util.LinkedHashSet;
 import java.util.List;
 import java.util.Set;
 import java.util.SortedSet;
+import java.util.TreeSet;
 import java.util.function.Supplier;
 import java.util.stream.Collectors;
+import java.util.stream.Stream;
 
 import org.junit.jupiter.api.Test;
+import org.junit.jupiter.params.ParameterizedTest;
+import org.junit.jupiter.params.provider.MethodSource;
 import org.meanbean.test.BeanTester;
 
 import io.github.astrapi69.collection.list.ListFactory;
@@ -52,320 +58,238 @@ public class SetFactoryTest
 {
 
 	/**
-	 * Test for method {@link SetFactory#newHashSet(java.util.Collection, Object...)}
+	 * A new list of foo and fasel, the collection the factory methods are given
+	 *
+	 * @return the list
 	 */
-	@Test
-	public void testNewHashSetCollectionObjects()
+	static List<String> fooFasel()
 	{
-		int actual;
-		int expected;
-		Set<String> set;
-
-		set = SetFactory.newHashSet();
-		actual = set.size();
-		expected = 0;
-		assertEquals(actual, expected);
-
-		set.add("foo");
-		actual = set.size();
-		expected = 1;
-		assertEquals(actual, expected);
-
-		set = SetFactory.newHashSet(ListFactory.newArrayList("foo", "fasel"), "foo", "bar", "foo");
-		actual = set.size();
-		expected = 3;
-		assertEquals(actual, expected);
-
-		set = SetFactory.newHashSet(ListFactory.newArrayList(), "foo", "bar", "foo");
-		actual = set.size();
-		expected = 2;
-		assertEquals(actual, expected);
+		return ListFactory.newArrayList("foo", "fasel");
 	}
 
 	/**
-	 * Test for method {@link SetFactory#newHashSet(java.util.Collection, Object...)}
+	 * A new list of b and d
+	 *
+	 * @return the list
 	 */
-	@Test
-	public void testNewHashSetCollectionExcludeObjects()
+	static List<String> bd()
 	{
-		int actual;
-		int expected;
-		Set<String> set;
-
-		set = SetFactory.newHashSet();
-		actual = set.size();
-		expected = 0;
-		assertEquals(actual, expected);
-
-		set.add("foo");
-		actual = set.size();
-		expected = 1;
-		assertEquals(actual, expected);
-
-		set = SetFactory.newHashSet((Collection<String>)ListFactory.newArrayList("foo", "fasel"),
-			ListFactory.newArrayList("foo"), "foo", "bar", "foo");
-		actual = set.size();
-		expected = 2;
-		assertEquals(actual, expected);
-
-		set = SetFactory.newHashSet((Collection<String>)ListFactory.newArrayList("foo", "fasel"),
-			ListFactory.newArrayList("foo", "fasel"));
-		actual = set.size();
-		expected = 0;
-		assertEquals(actual, expected);
+		return ListFactory.newArrayList("b", "d");
 	}
 
 	/**
-	 * Test for method {@link SetFactory#newHashSet(Object...)}
+	 * A new empty list of strings
+	 *
+	 * @return the list
 	 */
-	@Test
-	public void testNewHashSetObjects()
+	static List<String> none()
 	{
-		int actual;
-		int expected;
-		Set<String> set;
-
-		set = SetFactory.newHashSet();
-		actual = set.size();
-		expected = 0;
-		assertEquals(actual, expected);
-
-		set = SetFactory.newHashSet("foo", "bar", "foo");
-		actual = set.size();
-		expected = 2;
-		assertEquals(actual, expected);
+		return ListFactory.newArrayList();
 	}
 
 	/**
-	 * Test for method {@link SetFactory#newInsertionOrderSet(java.util.Collection, Object...)}
+	 * A call of a factory method of a {@link HashSet}, {@link LinkedHashSet} or
+	 * {@link InsertionOrderSet}, and the set it makes
+	 *
+	 * @param description
+	 *            the name of the case
+	 * @param factory
+	 *            the call
+	 * @param type
+	 *            the type of the set, the one the Javadoc of the factory method names
+	 * @param expected
+	 *            the elements of the set, in its order if the type keeps one
+	 * @param ordered
+	 *            true if the type keeps an order
 	 */
-	@Test
-	public void testNewInsertionOrderSetCollectionObjects()
-	{
-		int actual;
-		int expected;
-		Set<String> set;
-
-		set = SetFactory.newInsertionOrderSet();
-		actual = set.size();
-		expected = 0;
-		assertEquals(actual, expected);
-
-		set.add("foo");
-		actual = set.size();
-		expected = 1;
-		assertEquals(actual, expected);
-
-		set = SetFactory.newInsertionOrderSet(ListFactory.newArrayList("foo", "fasel"), "foo",
-			"bar", "foo");
-		actual = set.size();
-		expected = 3;
-		assertEquals(actual, expected);
-
-		set = SetFactory.newInsertionOrderSet(ListFactory.newArrayList(), "foo", "bar", "foo");
-		actual = set.size();
-		expected = 2;
-		assertEquals(actual, expected);
+	record Factory(String description, Supplier<Set<String>> factory, Class<?> type,
+		List<String> expected, boolean ordered) {
+		@Override
+		public String toString()
+		{
+			return description;
+		}
 	}
 
 	/**
-	 * Test for method {@link SetFactory#newInsertionOrderSet(Object...)}
+	 * The cases of {@link #testFactory(Factory)}
+	 *
+	 * @return the cases
 	 */
-	@Test
-	public void testNewInsertionOrderSetObjects()
+	static Stream<Factory> factories()
 	{
-		int actual;
-		int expected;
-		Set<String> set;
-		set = SetFactory.newInsertionOrderSet();
-		actual = set.size();
-		expected = 0;
-		assertEquals(actual, expected);
-
-		set = SetFactory.newInsertionOrderSet("foo", "bar", "foo");
-		actual = set.size();
-		expected = 2;
-		assertEquals(actual, expected);
+		return Stream.of(
+			new Factory("newHashSet(): empty", SetFactory::newHashSet, HashSet.class, List.of(),
+				false),
+			new Factory("newHashSet(foo, bar, foo): foo and bar, each once",
+				() -> SetFactory.newHashSet("foo", "bar", "foo"), HashSet.class,
+				List.of("foo", "bar"), false),
+			new Factory("newHashSet(foo, fasel; foo, bar, foo): foo, fasel, bar",
+				() -> SetFactory.newHashSet(fooFasel(), "foo", "bar", "foo"), HashSet.class,
+				List.of("foo", "fasel", "bar"), false),
+			new Factory("newHashSet(an empty collection; foo, bar, foo): foo, bar",
+				() -> SetFactory.newHashSet(none(), "foo", "bar", "foo"), HashSet.class,
+				List.of("foo", "bar"), false),
+			new Factory("newHashSet(null; foo), the collection is optional: foo",
+				() -> SetFactory.newHashSet((Collection<String>)null, "foo"), HashSet.class,
+				List.of("foo"), false),
+			new Factory("newHashSet(foo, fasel; exclude foo; foo, bar, foo): fasel, bar",
+				() -> SetFactory.newHashSet((Collection<String>)fooFasel(), List.of("foo"), "foo",
+					"bar", "foo"),
+				HashSet.class, List.of("fasel", "bar"), false),
+			new Factory("newHashSet(foo, fasel; exclude foo, fasel): empty",
+				() -> SetFactory.newHashSet((Collection<String>)fooFasel(), fooFasel()),
+				HashSet.class, List.of(), false),
+			new Factory("newInsertionOrderSet(): empty", SetFactory::newInsertionOrderSet,
+				InsertionOrderSet.class, List.of(), true),
+			new Factory("newInsertionOrderSet(foo, bar, foo): foo moves behind bar",
+				() -> SetFactory.newInsertionOrderSet("foo", "bar", "foo"), InsertionOrderSet.class,
+				List.of("bar", "foo"), true),
+			new Factory("newInsertionOrderSet(foo, fasel; foo, bar, foo): fasel, bar, foo",
+				() -> SetFactory.newInsertionOrderSet(fooFasel(), "foo", "bar", "foo"),
+				InsertionOrderSet.class, List.of("fasel", "bar", "foo"), true),
+			new Factory("newInsertionOrderSet(an empty collection; foo, bar, foo): bar, foo",
+				() -> SetFactory.newInsertionOrderSet(none(), "foo", "bar", "foo"),
+				InsertionOrderSet.class, List.of("bar", "foo"), true),
+			new Factory("newLinkedHashSet(): empty", SetFactory::newLinkedHashSet,
+				LinkedHashSet.class, List.of(), true),
+			new Factory("newLinkedHashSet(foo, bar, foo): foo keeps its place",
+				() -> SetFactory.newLinkedHashSet("foo", "bar", "foo"), LinkedHashSet.class,
+				List.of("foo", "bar"), true),
+			new Factory("newLinkedHashSet(foo, fasel; foo, bar, foo): foo, fasel, bar",
+				() -> SetFactory.newLinkedHashSet(fooFasel(), "foo", "bar", "foo"),
+				LinkedHashSet.class, List.of("foo", "fasel", "bar"), true),
+			new Factory("newLinkedHashSet(an empty collection; foo, bar, foo): foo, bar",
+				() -> SetFactory.newLinkedHashSet(none(), "foo", "bar", "foo"), LinkedHashSet.class,
+				List.of("foo", "bar"), true));
 	}
 
 	/**
-	 * Test for method {@link SetFactory#newLinkedHashSet(java.util.Collection, Object...)}
+	 * Test for the factory methods of {@link HashSet}, {@link LinkedHashSet} and
+	 * {@link InsertionOrderSet}: the new set is of the type the Javadoc names and holds the
+	 * elements of the optional collection and the given elements, each once, without the excluded
+	 * ones; a {@link LinkedHashSet} keeps the place of an element added again, an
+	 * {@link InsertionOrderSet} moves it to the end
+	 *
+	 * @param factory
+	 *            the call and the set it makes
 	 */
-	@Test
-	public void testNewLinkedHashSetCollectionObjects()
+	@ParameterizedTest(name = "{0}")
+	@MethodSource("factories")
+	public void testFactory(final Factory factory)
 	{
-		int actual;
-		int expected;
-		Set<String> set;
-		set = SetFactory.newLinkedHashSet();
-		actual = set.size();
-		expected = 0;
-		assertEquals(actual, expected);
-
-		set.add("foo");
-		actual = set.size();
-		expected = 1;
-		assertEquals(actual, expected);
-
-		set = SetFactory.newLinkedHashSet(ListFactory.newArrayList("foo", "fasel"), "foo", "bar",
-			"foo");
-		actual = set.size();
-		expected = 3;
-		assertEquals(actual, expected);
-
-		set = SetFactory.newLinkedHashSet(ListFactory.newArrayList(), "foo", "bar", "foo");
-		actual = set.size();
-		expected = 2;
-		assertEquals(actual, expected);
+		final Set<String> set = factory.factory().get();
+		assertInstanceOf(factory.type(), set);
+		if (factory.ordered())
+		{
+			assertEquals(factory.expected(), new ArrayList<>(set));
+		}
+		else
+		{
+			assertEquals(Set.copyOf(factory.expected()), set);
+		}
 	}
 
 	/**
-	 * Test for method {@link SetFactory#newLinkedHashSet(Object...)}
+	 * A call of a factory method of a {@link TreeSet}, and the set it makes
+	 *
+	 * @param description
+	 *            the name of the case
+	 * @param factory
+	 *            the call
+	 * @param comparator
+	 *            the comparator of the set, null for the natural order
+	 * @param expected
+	 *            the elements of the set in its order
 	 */
-	@Test
-	public void testNewLinkedHashSetObjects()
-	{
-		int actual;
-		int expected;
-		Set<String> set;
-		set = SetFactory.newLinkedHashSet();
-		actual = set.size();
-		expected = 0;
-		assertEquals(actual, expected);
-
-		set = SetFactory.newLinkedHashSet("foo", "bar", "foo");
-		actual = set.size();
-		expected = 2;
-		assertEquals(actual, expected);
+	record TreeFactory(String description, Supplier<SortedSet<String>> factory,
+		Comparator<String> comparator, List<String> expected) {
+		@Override
+		public String toString()
+		{
+			return description;
+		}
 	}
 
 	/**
-	 * Test for method {@link SetFactory#newTreeSet(Collection, Object...)}
+	 * The cases of {@link #testTreeFactory(TreeFactory)}
+	 *
+	 * @return the cases
 	 */
-	@Test
-	public void testNewTreeSetCollectionObjects()
+	static Stream<TreeFactory> treeFactories()
 	{
-		int actual;
-		int expected;
-		SortedSet<String> set;
-		set = SetFactory.newTreeSet();
-		actual = set.size();
-		expected = 0;
-		assertEquals(actual, expected);
-
-		set.add("foo");
-		actual = set.size();
-		expected = 1;
-		assertEquals(actual, expected);
-
-		set = SetFactory.newTreeSet(ListFactory.newArrayList("foo", "fasel"), "foo", "bar", "foo");
-		actual = set.size();
-		expected = 3;
-		assertEquals(actual, expected);
-
-		set = SetFactory.newTreeSet(ListFactory.newArrayList(), "foo", "bar", "foo");
-		actual = set.size();
-		expected = 2;
-		assertEquals(actual, expected);
+		final Comparator<String> longerFirst = StringLengthComparator.of(SortOrder.ASCENDING);
+		final Comparator<String> reverse = Comparator.reverseOrder();
+		final Comparator<String> natural = Comparator.naturalOrder();
+		final Comparator<String> none = null;
+		return Stream.of(
+			new TreeFactory("newTreeSet(): empty", SetFactory::newTreeSet, null, List.of()),
+			new TreeFactory("newTreeSet(foo, bar, foo): bar, foo",
+				() -> SetFactory.newTreeSet("foo", "bar", "foo"), null, List.of("bar", "foo")),
+			new TreeFactory("newTreeSet(foo, fasel; foo, bar, foo): bar, fasel, foo",
+				() -> SetFactory.newTreeSet(fooFasel(), "foo", "bar", "foo"), null,
+				List.of("bar", "fasel", "foo")),
+			new TreeFactory("newTreeSet(an empty collection; foo, bar, foo): bar, foo",
+				() -> SetFactory.newTreeSet(none(), "foo", "bar", "foo"), null,
+				List.of("bar", "foo")),
+			new TreeFactory(
+				"newTreeSet(foo, fasel; the longer first; food, barista, fao): five, the longer first",
+				() -> SetFactory.newTreeSet(fooFasel(), longerFirst, "food", "barista", "fao"),
+				longerFirst, List.of("barista", "fasel", "food", "fao", "foo")),
+			new TreeFactory(
+				"newTreeSet(an empty collection; the longer first; foo, bar, foo): bar, foo",
+				() -> SetFactory.newTreeSet(none(), longerFirst, "foo", "bar", "foo"), longerFirst,
+				List.of("bar", "foo")),
+			new TreeFactory("newTreeSet(b, d; reverseOrder; a, c): d, c, b, a",
+				() -> SetFactory.newTreeSet(bd(), reverse, "a", "c"), reverse,
+				List.of("d", "c", "b", "a")),
+			new TreeFactory("newTreeSet(b, d; a null comparator; a, c): the natural order",
+				() -> SetFactory.newTreeSet(bd(), none, "a", "c"), null,
+				List.of("a", "b", "c", "d")),
+			new TreeFactory("newTreeSet(naturalOrder; foo, fasel, food, barista, fao): sorted",
+				() -> SetFactory.newTreeSet(natural, "foo", "fasel", "food", "barista", "fao"),
+				natural, List.of("barista", "fao", "fasel", "foo", "food")),
+			new TreeFactory(
+				"newTreeSetSupplier(naturalOrder), collecting foo, fasel, food, barista, fao: sorted",
+				() -> Stream.of("foo", "fasel", "food", "barista", "fao")
+					.collect(Collectors.toCollection(SetFactory.newTreeSetSupplier(natural))),
+				natural, List.of("barista", "fao", "fasel", "foo", "food")));
 	}
 
 	/**
-	 * Test method for {@link SetFactory#newTreeSet(Collection, Comparator, Object[])}
+	 * Test for the factory methods of a {@link TreeSet} and for
+	 * {@link SetFactory#newTreeSetSupplier(Comparator)}: the new set is a {@link TreeSet} with the
+	 * given comparator or none, and holds the elements of the optional collection and the given
+	 * elements in the order of its comparator
+	 *
+	 * @param factory
+	 *            the call and the set it makes
 	 */
-	@Test
-	public void testNewTreeSetCollectionOfTComparatorOfTTArray()
+	@ParameterizedTest(name = "{0}")
+	@MethodSource("treeFactories")
+	public void testTreeFactory(final TreeFactory factory)
 	{
-		int actual;
-		int expected;
-		SortedSet<String> set;
-
-		set = SetFactory.newTreeSet();
-		actual = set.size();
-		expected = 0;
-		assertEquals(actual, expected);
-
-		set.add("foo");
-		actual = set.size();
-		expected = 1;
-		assertEquals(actual, expected);
-
-		final Comparator<String> comparator = StringLengthComparator.of(SortOrder.ASCENDING);
-		final List<String> list = ListFactory.newArrayList("foo", "fasel");
-		set = SetFactory.newTreeSet(list, comparator, "food", "barista", "fao");
-		actual = set.size();
-		expected = 5;
-		assertEquals(actual, expected);
-
-		set = SetFactory.newTreeSet(ListFactory.<String> newArrayList(), comparator, "foo", "bar",
-			"foo");
-		actual = set.size();
-		expected = 2;
-		assertEquals(actual, expected);
+		final SortedSet<String> set = factory.factory().get();
+		assertInstanceOf(TreeSet.class, set);
+		assertSame(factory.comparator(), set.comparator());
+		assertEquals(factory.expected(), new ArrayList<>(set));
 	}
 
 	/**
-	 * Test the method {@link SetFactory#newTreeSet(Collection, Comparator, Object[])}: with a
-	 * comparator the set sorts the elements of the collection and the given elements by it, and
-	 * with a null comparator by their natural order
+	 * Test for method {@link SetFactory#newTreeSetSupplier(Comparator)}: the supplier makes a new
+	 * empty {@link TreeSet} with the given comparator each time
 	 */
 	@Test
-	public void testNewTreeSetSortsByTheComparator()
+	public void testNewTreeSetSupplierMakesANewSetEachTime()
 	{
-		SortedSet<String> set;
-		final Comparator<String> comparator = Comparator.reverseOrder();
-		final List<String> list = ListFactory.newArrayList("b", "d");
-		// new scenario...
-		set = SetFactory.newTreeSet(list, comparator, "a", "c");
-		assertSame(comparator, set.comparator());
-		assertEquals(ListFactory.newArrayList("d", "c", "b", "a"), new ArrayList<>(set));
-		// new scenario...
-		set = SetFactory.newTreeSet(list, (Comparator<String>)null, "a", "c");
-		assertNull(set.comparator());
-		assertEquals(ListFactory.newArrayList("a", "b", "c", "d"), new ArrayList<>(set));
-	}
-
-
-	/**
-	 * Test for method {@link SetFactory#newTreeSetSupplier}
-	 */
-	@Test
-	public void testNewTreeSetSupplier()
-	{
-		SortedSet<String> expected;
-		SortedSet<String> actual;
-		List<String> list;
-		List<String> list2;
-		Comparator<String> comparator;
-
-		list = ListFactory.newArrayList("foo", "fasel", "food", "barista", "fao");
-		Comparator<String> stringComparator = Comparator.naturalOrder();
-		Supplier<SortedSet<String>> supplier = SetFactory.newTreeSetSupplier(stringComparator);
-		assertNotNull(supplier);
-		actual = list.stream().collect(Collectors.toCollection(supplier));
-		assertEquals(actual.size(), 5);
-		comparator = StringLengthComparator.of(SortOrder.ASCENDING);
-		list2 = ListFactory.newArrayList("foo", "fasel");
-		expected = SetFactory.newTreeSet(list2, comparator, "food", "barista", "fao");
-		assertEquals(actual, expected);
-	}
-
-	/**
-	 * Test for method {@link SetFactory#newTreeSet(Comparator, Object[])}
-	 */
-	@Test
-	public void testNewTreeSetWithComparator()
-	{
-		SortedSet<String> expected;
-		SortedSet<String> actual;
-		List<String> list;
-		Comparator<String> comparator;
-
-		comparator = Comparator.naturalOrder();
-		actual = SetFactory.newTreeSet(comparator, "foo", "fasel", "food", "barista", "fao");
-		assertEquals(actual.size(), 5);
-		list = ListFactory.newArrayList("foo", "fasel", "food", "barista", "fao");
-		expected = SetFactory.newTreeSet(list, comparator, "food", "barista", "fao");
-		assertEquals(actual, expected);
+		final Comparator<String> comparator = Comparator.naturalOrder();
+		final Supplier<SortedSet<String>> supplier = SetFactory.newTreeSetSupplier(comparator);
+		final SortedSet<String> first = supplier.get();
+		first.add("a");
+		final SortedSet<String> second = supplier.get();
+		assertNotSame(first, second);
+		assertEquals(Set.of(), second);
+		assertSame(comparator, second.comparator());
 	}
 
 	/**
