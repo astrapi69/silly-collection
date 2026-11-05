@@ -140,9 +140,9 @@ public class SetEnumerationTest
 	@ParameterizedTest(name = "{0}", quoteTextArguments = false)
 	@CsvSource(value = {
 			"the set a and the enumeration a, b: more elements as often as asked, a, then b | a | a b | hasNext hasNext next next hasNext | true true a b false",
-			"the set null, a and no enumeration: no more elements at first, though null and a are left, then a (#118) | null a | | hasNext next next hasNext | false a NoSuchElementException false",
-			"the set a and the enumeration null, b: a, then b, the null of the enumeration is lost (#118) | a | null b | next next next hasNext | a b NoSuchElementException false",
-			"the set null and the enumeration null, b: no element at first, then b (#118) | null | null b | next next next hasNext | NoSuchElementException b NoSuchElementException false" }, delimiter = '|')
+			"the set null, a and no enumeration: null, then a (#118) | null a | | hasNext next next hasNext | true null a false",
+			"the set a and the enumeration null, b: a, then the null and b of the enumeration (#118) | a | null b | next next next hasNext | a null b false",
+			"the set null and the enumeration null, b: null once, then b (#118) | null | null b | next next next hasNext | null b NoSuchElementException false" }, delimiter = '|')
 	public void testSteps(final String description, final String set, final String enumeration,
 		final String steps, final String results)
 	{
