@@ -390,7 +390,12 @@ public class ArrayFactoryTest
 			new RangeCase("-2 to 1, across zero: -2, -1, 0, 1", -2, 1,
 				new Integer[] { -2, -1, 0, 1 }),
 			new RangeCase("Integer.MIN_VALUE to Integer.MIN_VALUE + 1: both", Integer.MIN_VALUE,
-				Integer.MIN_VALUE + 1, new Integer[] { Integer.MIN_VALUE, Integer.MIN_VALUE + 1 }));
+				Integer.MIN_VALUE + 1, new Integer[] { Integer.MIN_VALUE, Integer.MIN_VALUE + 1 }),
+			new RangeCase("Integer.MAX_VALUE - 1 to Integer.MAX_VALUE: both (#113)",
+				Integer.MAX_VALUE - 1, Integer.MAX_VALUE,
+				new Integer[] { Integer.MAX_VALUE - 1, Integer.MAX_VALUE }),
+			new RangeCase("Integer.MAX_VALUE to Integer.MAX_VALUE: Integer.MAX_VALUE alone (#113)",
+				Integer.MAX_VALUE, Integer.MAX_VALUE, new Integer[] { Integer.MAX_VALUE }));
 	}
 
 	/**
@@ -407,26 +412,33 @@ public class ArrayFactoryTest
 	}
 
 	/**
-	 * Test for method {@link ArrayFactory#newRangeArray(int, int)} where the end is less than the
-	 * start: the message of the exception says that end must not be less than start
+	 * Test for method {@link ArrayFactory#newRangeArray(int, int)} with a range it throws for, and
+	 * the exception with its message: an end less than the start, and a range of more numbers than
+	 * an array can hold, more than Integer.MAX_VALUE (#113)
 	 *
 	 * @param description
 	 *            the name of the case
 	 * @param start
 	 *            the start
 	 * @param end
-	 *            the end, less than the start
+	 *            the end
+	 * @param exception
+	 *            the class of the exception
+	 * @param message
+	 *            the message of the exception
 	 */
 	@ParameterizedTest(name = "{0}", quoteTextArguments = false)
-	@CsvSource({ "9 to 8: the end one less than the start, 9, 8",
-			"9 to -9: the end far less than the start, 9, -9" })
-	public void testNewRangeArrayWithEndLessThanStart(final String description, final int start,
-		final int end)
+	@CsvSource({
+			"9 to 8: the end one less than the start, 9, 8, java.lang.IllegalArgumentException, Parameter end must not be less than parameter start.",
+			"9 to -9: the end far less than the start, 9, -9, java.lang.IllegalArgumentException, Parameter end must not be less than parameter start.",
+			"Integer.MIN_VALUE to Integer.MAX_VALUE: all the int values (#113), -2147483648, 2147483647, java.lang.IllegalArgumentException, The range from -2147483648 to 2147483647 holds 4294967296 numbers and an array holds at most 2147483647.",
+			"0 to Integer.MAX_VALUE: one number more than an array holds (#113), 0, 2147483647, java.lang.IllegalArgumentException, The range from 0 to 2147483647 holds 2147483648 numbers and an array holds at most 2147483647." })
+	public void testNewRangeArrayThrows(final String description, final int start, final int end,
+		final Class<? extends RuntimeException> exception, final String message)
 	{
-		final IllegalArgumentException exception = assertThrows(IllegalArgumentException.class,
+		final RuntimeException actual = assertThrows(exception,
 			() -> ArrayFactory.newRangeArray(start, end));
-		assertEquals("Parameter end must not be less than parameter start.",
-			exception.getMessage());
+		assertEquals(message, actual.getMessage());
 	}
 
 	/**
