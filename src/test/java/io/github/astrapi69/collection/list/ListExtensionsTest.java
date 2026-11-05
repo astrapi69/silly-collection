@@ -268,7 +268,29 @@ public class ListExtensionsTest
 	 */
 	static Stream<EndCall> endCalls()
 	{
+		final Supplier<List<String>> none = () -> null;
 		return Stream.of(
+			new EndCall("getFirst of null: null (#126)", none, ListExtensions::getFirst, null,
+				null),
+			new EndCall("getLast of null: null (#126)", none, ListExtensions::getLast, null, null),
+			new EndCall("removeFirst of null: null (#126)", none, ListExtensions::removeFirst, null,
+				null),
+			new EndCall("removeLast of null: null (#126)", none, ListExtensions::removeLast, null,
+				null),
+			new EndCall("isLast of null and x: false (#126)", none,
+				list -> ListExtensions.isLast(list, "x"), false, null),
+			new EndCall("getFirst of null, a: null (#126)", ListExtensionsTest::nullAndA,
+				ListExtensions::getFirst, null, Arrays.asList(null, "a")),
+			new EndCall("getLast of a, null: null (#126)", ListExtensionsTest::aAndNull,
+				ListExtensions::getLast, null, Arrays.asList("a", null)),
+			new EndCall("removeFirst of null, a: null, a stays (#126)",
+				ListExtensionsTest::nullAndA, ListExtensions::removeFirst, null, List.of("a")),
+			new EndCall("removeLast of a, null: null, a stays (#126)", ListExtensionsTest::aAndNull,
+				ListExtensions::removeLast, null, List.of("a")),
+			new EndCall("isLast of a, null and x: false (#126)", ListExtensionsTest::aAndNull,
+				list -> ListExtensions.isLast(list, "x"), false, Arrays.asList("a", null)),
+			new EndCall("isLast of a, null and null: true (#126)", ListExtensionsTest::aAndNull,
+				list -> ListExtensions.isLast(list, null), true, Arrays.asList("a", null)),
 			new EndCall("getFirst of a, null: a", ListExtensionsTest::aAndNull,
 				ListExtensions::getFirst, "a", Arrays.asList("a", null)),
 			new EndCall("getLast of null, a: a", ListExtensionsTest::nullAndA,
@@ -335,13 +357,9 @@ public class ListExtensionsTest
 	}
 
 	/**
-	 * The cases of {@link #testRefusedEndCall(RefusedEndCall)}. Today the methods without
-	 * {@link Optional} throw for a null list, where their Javadoc promises null, and for a null
-	 * first or last element, where it promises the element (#126): they give their list to the
-	 * {@link Optional} variants, which check it with Argument.notNull and give the element to
-	 * {@link Optional#of(Object)}; removeFirst, removeLast, removeFirstElement and
-	 * removeLastElement remove the null before they throw. isLast throws for a null list and for a
-	 * list that ends with null. The fix of #126 changes the rows that name it
+	 * The cases of {@link #testRefusedEndCall(RefusedEndCall)}: the {@link Optional} variants
+	 * refuse a null list, and a null first or last element, which an {@link Optional} cannot hold,
+	 * as {@link java.util.stream.Stream#findFirst()} does, before they remove anything (#126)
 	 *
 	 * @return the cases
 	 */
@@ -349,50 +367,20 @@ public class ListExtensionsTest
 	{
 		final Supplier<List<String>> none = () -> null;
 		return Stream.of(
-			new RefusedEndCall("getFirst of null: today IllegalArgumentException (#126)", none,
-				ListExtensions::getFirst, IllegalArgumentException.class, null),
-			new RefusedEndCall("getLast of null: today IllegalArgumentException (#126)", none,
-				ListExtensions::getLast, IllegalArgumentException.class, null),
-			new RefusedEndCall("removeFirst of null: today IllegalArgumentException (#126)", none,
-				ListExtensions::removeFirst, IllegalArgumentException.class, null),
-			new RefusedEndCall("removeLast of null: today IllegalArgumentException (#126)", none,
-				ListExtensions::removeLast, IllegalArgumentException.class, null),
-			new RefusedEndCall("isLast of null and x: today IllegalArgumentException (#126)", none,
-				list -> ListExtensions.isLast(list, "x"), IllegalArgumentException.class, null),
-			new RefusedEndCall("getFirst of null, a: today NullPointerException (#126)",
-				ListExtensionsTest::nullAndA, ListExtensions::getFirst, NullPointerException.class,
-				Arrays.asList(null, "a")),
-			new RefusedEndCall("getLast of a, null: today NullPointerException (#126)",
-				ListExtensionsTest::aAndNull, ListExtensions::getLast, NullPointerException.class,
-				Arrays.asList("a", null)),
-			new RefusedEndCall(
-				"removeFirst of null, a: today NullPointerException, null removed (#126)",
-				ListExtensionsTest::nullAndA, ListExtensions::removeFirst,
-				NullPointerException.class, List.of("a")),
-			new RefusedEndCall(
-				"removeLast of a, null: today NullPointerException, null removed (#126)",
-				ListExtensionsTest::aAndNull, ListExtensions::removeLast,
-				NullPointerException.class, List.of("a")),
-			new RefusedEndCall("isLast of a, null and x: today NullPointerException (#126)",
-				ListExtensionsTest::aAndNull, list -> ListExtensions.isLast(list, "x"),
-				NullPointerException.class, Arrays.asList("a", null)),
-			new RefusedEndCall("isLast of a, null and null: today NullPointerException (#126)",
-				ListExtensionsTest::aAndNull, list -> ListExtensions.isLast(list, null),
-				NullPointerException.class, Arrays.asList("a", null)),
-			new RefusedEndCall("getFirstElement of null, a: NullPointerException",
+			new RefusedEndCall("getFirstElement of null, a: NullPointerException (#126)",
 				ListExtensionsTest::nullAndA, ListExtensions::getFirstElement,
 				NullPointerException.class, Arrays.asList(null, "a")),
-			new RefusedEndCall("getLastElement of a, null: NullPointerException",
+			new RefusedEndCall("getLastElement of a, null: NullPointerException (#126)",
 				ListExtensionsTest::aAndNull, ListExtensions::getLastElement,
 				NullPointerException.class, Arrays.asList("a", null)),
 			new RefusedEndCall(
-				"removeFirstElement of null, a: NullPointerException, today null removed (#126)",
+				"removeFirstElement of null, a: NullPointerException, nothing removed (#126)",
 				ListExtensionsTest::nullAndA, ListExtensions::removeFirstElement,
-				NullPointerException.class, List.of("a")),
+				NullPointerException.class, Arrays.asList(null, "a")),
 			new RefusedEndCall(
-				"removeLastElement of a, null: NullPointerException, today null removed (#126)",
+				"removeLastElement of a, null: NullPointerException, nothing removed (#126)",
 				ListExtensionsTest::aAndNull, ListExtensions::removeLastElement,
-				NullPointerException.class, List.of("a")),
+				NullPointerException.class, Arrays.asList("a", null)),
 			new RefusedEndCall("getFirstElement of null: IllegalArgumentException", none,
 				ListExtensions::getFirstElement, IllegalArgumentException.class, null),
 			new RefusedEndCall("getLastElement of null: IllegalArgumentException", none,
@@ -1155,11 +1143,9 @@ public class ListExtensionsTest
 	/**
 	 * Test the method {@link ListExtensions#shuffle(List, List, int[])}: the elements at the given
 	 * indexes move from the source to the destination, the others stay in the source in their
-	 * order, and the given indexes do not change. Today shuffle removes by index from the last
-	 * given index to the first (#126): the elements move in the reverse order of the indexes, and
-	 * for indexes that are not ascending every removal moves the elements behind it, so other
-	 * elements move than the indexes name; an index given twice moves two elements. The fix of #126
-	 * changes the rows that name it
+	 * order, and the given indexes do not change: the elements move in the order of the indexes,
+	 * those the indexes of the source name in any order, and an index given twice moves its element
+	 * once (#126)
 	 *
 	 * @param description
 	 *            the name of the case
@@ -1174,12 +1160,12 @@ public class ListExtensionsTest
 	 */
 	@ParameterizedTest(name = "{0}", quoteTextArguments = false)
 	@CsvSource(value = {
-			"indexes 1, 2 of Anton to Franz: today Caesar and Berta move (#126) | Anton Berta Caesar Dora Emil Franz | 1 2 | Caesar Berta | Anton Dora Emil Franz",
-			"indexes 0, 1 of Anton, Dora, Emil, Franz: today Dora and Anton move (#126) | Anton Dora Emil Franz | 0 1 | Dora Anton | Emil Franz",
+			"indexes 1, 2 of Anton to Franz: Berta and Caesar move (#126) | Anton Berta Caesar Dora Emil Franz | 1 2 | Berta Caesar | Anton Dora Emil Franz",
+			"indexes 0, 1 of Anton, Dora, Emil, Franz: Anton and Dora move (#126) | Anton Dora Emil Franz | 0 1 | Anton Dora | Emil Franz",
 			"index 5, the last of Anton to Franz: Franz moves | Anton Berta Caesar Dora Emil Franz | 5 | Franz | Anton Berta Caesar Dora Emil",
 			"no indexes: nothing moves | Anton Berta Caesar | '' | '' | Anton Berta Caesar",
-			"indexes 2, 1 of Anton to Dora: today Berta and Dora move (#126) | Anton Berta Caesar Dora | 2 1 | Berta Dora | Anton Caesar",
-			"index 1 twice of Anton, Berta, Caesar: today Berta and Caesar move (#126) | Anton Berta Caesar | 1 1 | Berta Caesar | Anton" }, delimiter = '|')
+			"indexes 2, 1 of Anton to Dora: Caesar and Berta move (#126) | Anton Berta Caesar Dora | 2 1 | Caesar Berta | Anton Dora",
+			"index 1 twice of Anton, Berta, Caesar: Berta moves once (#126) | Anton Berta Caesar | 1 1 | Berta | Anton Caesar" }, delimiter = '|')
 	public void testShuffle(final String description, final String source, final String indexes,
 		final String moved, final String rest)
 	{
@@ -1195,8 +1181,8 @@ public class ListExtensionsTest
 
 	/**
 	 * Test the method {@link ListExtensions#shuffle(List, List, int[])} with an index out of the
-	 * range of the source: an {@link IndexOutOfBoundsException}. Today the elements at the indexes
-	 * after it in the array have moved before it throws (#126); the fix of #126 changes that row
+	 * range of the source: an {@link IndexOutOfBoundsException} before any element moves, wherever
+	 * the index is in the array (#126)
 	 *
 	 * @param description
 	 *            the name of the case
@@ -1211,7 +1197,7 @@ public class ListExtensionsTest
 	 */
 	@ParameterizedTest(name = "{0}", quoteTextArguments = false)
 	@CsvSource(value = {
-			"indexes 3, 0 of Anton, Berta, Caesar: today Anton moves before it throws (#126) | Anton Berta Caesar | 3 0 | Anton | Berta Caesar",
+			"indexes 3, 0 of Anton, Berta, Caesar: nothing moves (#126) | Anton Berta Caesar | 3 0 | '' | Anton Berta Caesar",
 			"indexes 0, 3 of Anton, Berta, Caesar: nothing moves | Anton Berta Caesar | 0 3 | '' | Anton Berta Caesar" }, delimiter = '|')
 	public void testShuffleWithAnIndexOutOfRange(final String description, final String source,
 		final String indexes, final String moved, final String rest)
