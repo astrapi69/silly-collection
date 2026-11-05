@@ -185,8 +185,9 @@ public class InsertionOrderMapTest
 
 	/**
 	 * Test for method {@link InsertionOrderMap#putAll(Map)} on a map of 1 = value1, 3 = null, 4 =
-	 * value4: each key of the given map takes its value, a new key comes last, in the order of the
-	 * given map, and the keys afterwards are in the order given
+	 * value4: as {@link Map#putAll(Map)} says, the effect is that of put for each mapping, in the
+	 * order of the given map, so each key takes its value, a key that is there moves to the end and
+	 * a new key comes last
 	 *
 	 * @param description
 	 *            the name of the case
@@ -200,10 +201,10 @@ public class InsertionOrderMapTest
 	@CsvSource(value = { "no entries: the map unchanged | '' | 1 3 4",
 			"the new key 2: 2 last | 2=value2 | 1 3 4 2",
 			"the new keys 5, 2: last, in the order of the given map | 5=value5 2=value2 | 1 3 4 5 2",
-			"1, which holds value1: 1 keeps its place, which put does not (#127) | 1=value5 | 1 3 4",
-			"1 with null, which holds value1: 1 keeps its place, which put does not (#127) | 1= | 1 3 4",
-			"3, which holds null: 3 keeps its place, which put does not (#127) | 3=value5 | 1 3 4",
-			"4, 2, 1: 4 and 1 keep their places, which put does not, 2 last (#127) | 4=value5 2=value2 1=value6 | 1 3 4 2" }, delimiter = '|')
+			"1, which holds value1: 1 moves to the end, as put does (#127) | 1=value5 | 3 4 1",
+			"1 with null, which holds value1: 1 moves to the end, as put does (#127) | 1= | 3 4 1",
+			"3, which holds null: 3 moves to the end, as put does (#127) | 3=value5 | 1 4 3",
+			"4, 2, 1: each moves to the end in turn, as put does (#127) | 4=value5 2=value2 1=value6 | 3 4 2 1" }, delimiter = '|')
 	public void testPutAll(final String description, final String entries, final String keys)
 	{
 		final Map<String, String> given = new LinkedHashMap<>();
