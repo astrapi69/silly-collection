@@ -26,6 +26,7 @@ package io.github.astrapi69.collection.properties;
 
 import static org.junit.jupiter.api.Assertions.assertEquals;
 import static org.junit.jupiter.api.Assertions.assertNull;
+import static org.junit.jupiter.api.Assertions.assertThrows;
 import static org.junit.jupiter.api.Assertions.assertTrue;
 
 import java.io.IOException;
@@ -127,7 +128,9 @@ public class IndexSortedPropertiesTest
 	 * Asserts that the index of the given properties holds the given values in their order:
 	 * {@link IndexSortedProperties#get(int)} and {@link IndexSortedProperties#getProperty(int)}
 	 * give them, {@link IndexSortedProperties#indexOf(Object)} finds them at their index, and an
-	 * index out of range, the size or -1, gives null
+	 * index out of range, the size or -1, gives null. Today indexOf(null) throws a
+	 * {@link NullPointerException} as soon as the index holds a key, as it calls equals on the
+	 * given object (#117); the fix of #117 changes it to -1
 	 *
 	 * @param values
 	 *            the values in the order of the index, all different
@@ -150,6 +153,15 @@ public class IndexSortedPropertiesTest
 		assertNull(properties.get(-1), "get(-1)");
 		assertNull(properties.getProperty(-1), "getProperty(-1)");
 		assertEquals(-1, properties.indexOf("6"), "indexOf(6), a value of no key");
+		if (values.isEmpty())
+		{
+			assertEquals(-1, properties.indexOf(null), "indexOf(null), an empty index");
+		}
+		else
+		{
+			assertThrows(NullPointerException.class, () -> properties.indexOf(null),
+				"indexOf(null) today (#117)");
+		}
 	}
 
 	/**
