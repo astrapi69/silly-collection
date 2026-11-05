@@ -46,6 +46,7 @@ import java.util.stream.Collectors;
 import java.util.stream.Stream;
 
 import org.junit.jupiter.api.Test;
+import org.junit.jupiter.api.function.Executable;
 import org.junit.jupiter.params.ParameterizedTest;
 import org.junit.jupiter.params.provider.Arguments;
 import org.junit.jupiter.params.provider.CsvSource;
@@ -676,33 +677,106 @@ public class ArrayExtensionsTest
 	}
 
 	/**
-	 * Test for the methods {@link ArrayExtensions#isFirst(Object[], Object)} and
-	 * {@link ArrayExtensions#isLast(Object[], Object)}
+	 * Test for method {@link ArrayExtensions#isFirst(Object[], Object)}
 	 *
 	 * @param description
 	 *            the name of the case
 	 * @param array
-	 *            the array, its elements separated by a space
+	 *            the array, its elements separated by a space, '' for an empty one
 	 * @param element
 	 *            the element, may be null
-	 * @param first
+	 * @param expected
 	 *            the answer of isFirst
-	 * @param last
+	 */
+	@ParameterizedTest(name = "{0}", quoteTextArguments = false)
+	@CsvSource({ "1 in 1 to 7: first, 1 2 3 4 5 6 7, 1, true",
+			"7 in 1 to 7: not first, 1 2 3 4 5 6 7, 7, false",
+			"4 in 1 to 7: not first, 1 2 3 4 5 6 7, 4, false",
+			"8 not in 1 to 7: not first, 1 2 3 4 5 6 7, 8, false",
+			"null not in 1 to 7: not first, 1 2 3 4 5 6 7, , false", "x alone: first, x, x, true",
+			"2 twice at the start of 2 2 3: first, 2 2 3, 2, true",
+			"2 twice at the end of 1 2 2: not first, 1 2 2, 2, false",
+			"x in an empty array: not first, '', x, false",
+			"null in an empty array: not first, '', , false" })
+	public void testIsFirst(final String description, final String array, final String element,
+		final boolean expected)
+	{
+		assertEquals(expected, ArrayExtensions.isFirst(elements(array), element));
+	}
+
+	/**
+	 * Test for method {@link ArrayExtensions#isLast(Object[], Object)}. Today it compares the last
+	 * index with the index of the first occurrence (#114): an empty array is last for any element,
+	 * as both are -1, and an element twice at the end is not last. The fix of #114 changes these
+	 * three rows
+	 *
+	 * @param description
+	 *            the name of the case
+	 * @param array
+	 *            the array, its elements separated by a space, '' for an empty one
+	 * @param element
+	 *            the element, may be null
+	 * @param expected
 	 *            the answer of isLast
 	 */
 	@ParameterizedTest(name = "{0}", quoteTextArguments = false)
-	@CsvSource({ "1 in 1 to 7: first, 1 2 3 4 5 6 7, 1, true, false",
-			"7 in 1 to 7: last, 1 2 3 4 5 6 7, 7, false, true",
-			"4 in 1 to 7: neither, 1 2 3 4 5 6 7, 4, false, false",
-			"8 not in 1 to 7: neither, 1 2 3 4 5 6 7, 8, false, false",
-			"null not in 1 to 7: neither, 1 2 3 4 5 6 7, , false, false",
-			"x alone: first and last, x, x, true, true" })
-	public void testIsFirstAndIsLast(final String description, final String array,
-		final String element, final boolean first, final boolean last)
+	@CsvSource({ "7 in 1 to 7: last, 1 2 3 4 5 6 7, 7, true",
+			"1 in 1 to 7: not last, 1 2 3 4 5 6 7, 1, false",
+			"4 in 1 to 7: not last, 1 2 3 4 5 6 7, 4, false",
+			"8 not in 1 to 7: not last, 1 2 3 4 5 6 7, 8, false",
+			"null not in 1 to 7: not last, 1 2 3 4 5 6 7, , false", "x alone: last, x, x, true",
+			"2 twice at the start of 2 2 3: not last, 2 2 3, 2, false",
+			"2 twice at the end of 1 2 2: today not last (#114), 1 2 2, 2, false",
+			"x in an empty array: today last (#114), '', x, true",
+			"null in an empty array: today last (#114), '', , true" })
+	public void testIsLast(final String description, final String array, final String element,
+		final boolean expected)
 	{
-		final String[] elements = array.split(" ");
-		assertEquals(first, ArrayExtensions.isFirst(elements, element), "isFirst");
-		assertEquals(last, ArrayExtensions.isLast(elements, element), "isLast");
+		assertEquals(expected, ArrayExtensions.isLast(elements(array), element));
+	}
+
+	/**
+	 * Test for the methods {@link ArrayExtensions#isLast(Object[], Object)},
+	 * {@link ArrayExtensions#getFirst(Object[])},
+	 * {@link ArrayExtensions#getFirstElement(Object[])}, {@link ArrayExtensions#getLast(Object[])}
+	 * and {@link ArrayExtensions#getLastElement(Object[])} with what throws a
+	 * {@link NullPointerException} today (#114): isLast of a null array, as
+	 * {@link Arrays#asList(Object...)} refuses it, and the first or the last element when it is
+	 * null, as getFirstElement and getLastElement give it to {@link Optional#of(Object)}. The fix
+	 * of #114 changes all rows
+	 *
+	 * @param description
+	 *            the name of the case
+	 * @param call
+	 *            the call
+	 */
+	@ParameterizedTest(name = "{0}", quoteTextArguments = false)
+	@MethodSource("nullPointersToday")
+	public void testNullPointerExceptionToday(final String description, final Executable call)
+	{
+		assertThrows(NullPointerException.class, call);
+	}
+
+	/**
+	 * The cases of {@link #testNullPointerExceptionToday(String, Executable)}
+	 *
+	 * @return the name of the case and the call
+	 */
+	static Stream<Arguments> nullPointersToday()
+	{
+		return Stream.of(
+			Arguments.of("isLast, x in a null array (#114)",
+				(Executable)() -> ArrayExtensions.isLast(null, "x")),
+			Arguments.of("isLast, null in a null array (#114)",
+				(Executable)() -> ArrayExtensions.isLast((String[])null, null)),
+			Arguments.of("getFirst of null, a (#114)",
+				(Executable)() -> ArrayExtensions.getFirst(new String[] { null, "a" })),
+			Arguments.of("getFirstElement of null, a (#114)",
+				(Executable)() -> ArrayExtensions.getFirstElement(new String[] { null, "a" })),
+			Arguments.of("getLast of a, null (#114)",
+				(Executable)() -> ArrayExtensions.getLast(new String[] { "a", null })),
+			Arguments.of("getLastElement of a, null (#114)",
+				(Executable)() -> ArrayExtensions.getLastElement(new String[] { "a", null })));
 	}
 
 	/**
