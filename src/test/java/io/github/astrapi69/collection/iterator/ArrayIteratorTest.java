@@ -77,6 +77,7 @@ public class ArrayIteratorTest
 			"foo, bar, jack: next twice, remove bar, next jack (#118) | foo bar jack | next next remove next hasNext | foo bar removed jack false | foo jack null",
 			"foo, null, bar: next twice, remove null, bar moves to 1 (#118) | foo null bar | next next remove next hasNext | foo null removed bar false | foo bar null",
 			"foo, bar: next twice, remove bar, the last, no next | foo bar | next next remove hasNext | foo bar removed false | foo null",
+			"foo, bar, jack: next and remove twice, next jack, the array ends with two nulls (#118) | foo bar jack | next remove next remove next hasNext | foo removed bar removed jack false | jack null null",
 			"foo alone: next, remove, next throws NoSuchElementException | foo | next remove next | foo removed NoSuchElementException | null",
 			"foo, null, bar: next foo, has next, next null, then bar (#118) | foo null bar | next hasNext next next hasNext | foo true null bar false | foo null bar",
 			"empty: remove throws IllegalStateException | '' | remove | IllegalStateException | ''",
