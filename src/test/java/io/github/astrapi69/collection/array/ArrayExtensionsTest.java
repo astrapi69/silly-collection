@@ -651,14 +651,17 @@ public class ArrayExtensionsTest
 				"7"),
 			new Ends("a single element: it, first and last", new String[] { "x" }, "x", "x"),
 			new Ends("an empty array: none", new String[0], null, null),
-			new Ends("null: none", null, null, null));
+			new Ends("null: none", null, null, null),
+			new Ends("null, a: null and a (#114)", new String[] { null, "a" }, null, "a"),
+			new Ends("a, null: a and null (#114)", new String[] { "a", null }, "a", null));
 	}
 
 	/**
 	 * Test for the methods {@link ArrayExtensions#getFirst(Object[])},
 	 * {@link ArrayExtensions#getFirstElement(Object[])}, {@link ArrayExtensions#getLast(Object[])}
 	 * and {@link ArrayExtensions#getLastElement(Object[])}: the first and the last element, null or
-	 * an empty {@link Optional} for an empty array and for null
+	 * an empty {@link Optional} for an empty array and for null, and for a first or last element
+	 * that is null (#114)
 	 *
 	 * @param ends
 	 *            the array and its first and last element
@@ -676,33 +679,70 @@ public class ArrayExtensionsTest
 	}
 
 	/**
-	 * Test for the methods {@link ArrayExtensions#isFirst(Object[], Object)} and
-	 * {@link ArrayExtensions#isLast(Object[], Object)}
+	 * Test for method {@link ArrayExtensions#isFirst(Object[], Object)}
 	 *
 	 * @param description
 	 *            the name of the case
 	 * @param array
-	 *            the array, its elements separated by a space
+	 *            the array, its elements separated by a space, '' for an empty one
 	 * @param element
 	 *            the element, may be null
-	 * @param first
+	 * @param expected
 	 *            the answer of isFirst
-	 * @param last
+	 */
+	@ParameterizedTest(name = "{0}", quoteTextArguments = false)
+	@CsvSource({ "1 in 1 to 7: first, 1 2 3 4 5 6 7, 1, true",
+			"7 in 1 to 7: not first, 1 2 3 4 5 6 7, 7, false",
+			"4 in 1 to 7: not first, 1 2 3 4 5 6 7, 4, false",
+			"8 not in 1 to 7: not first, 1 2 3 4 5 6 7, 8, false",
+			"null not in 1 to 7: not first, 1 2 3 4 5 6 7, , false", "x alone: first, x, x, true",
+			"2 twice at the start of 2 2 3: first, 2 2 3, 2, true",
+			"2 twice at the end of 1 2 2: not first, 1 2 2, 2, false",
+			"x in an empty array: not first, '', x, false",
+			"null in an empty array: not first, '', , false" })
+	public void testIsFirst(final String description, final String array, final String element,
+		final boolean expected)
+	{
+		assertEquals(expected, ArrayExtensions.isFirst(elements(array), element));
+	}
+
+	/**
+	 * Test for method {@link ArrayExtensions#isLast(Object[], Object)}: the element is compared
+	 * with the last element, so an element twice at the end is last, and an empty array and null
+	 * have no last element (#114)
+	 *
+	 * @param description
+	 *            the name of the case
+	 * @param array
+	 *            the array, its elements separated by a space, null for a null element, '' for an
+	 *            empty array, empty for null
+	 * @param element
+	 *            the element, may be null
+	 * @param expected
 	 *            the answer of isLast
 	 */
 	@ParameterizedTest(name = "{0}", quoteTextArguments = false)
-	@CsvSource({ "1 in 1 to 7: first, 1 2 3 4 5 6 7, 1, true, false",
-			"7 in 1 to 7: last, 1 2 3 4 5 6 7, 7, false, true",
-			"4 in 1 to 7: neither, 1 2 3 4 5 6 7, 4, false, false",
-			"8 not in 1 to 7: neither, 1 2 3 4 5 6 7, 8, false, false",
-			"null not in 1 to 7: neither, 1 2 3 4 5 6 7, , false, false",
-			"x alone: first and last, x, x, true, true" })
-	public void testIsFirstAndIsLast(final String description, final String array,
-		final String element, final boolean first, final boolean last)
+	@CsvSource({ "7 in 1 to 7: last, 1 2 3 4 5 6 7, 7, true",
+			"1 in 1 to 7: not last, 1 2 3 4 5 6 7, 1, false",
+			"4 in 1 to 7: not last, 1 2 3 4 5 6 7, 4, false",
+			"8 not in 1 to 7: not last, 1 2 3 4 5 6 7, 8, false",
+			"null not in 1 to 7: not last, 1 2 3 4 5 6 7, , false", "x alone: last, x, x, true",
+			"2 twice at the start of 2 2 3: not last, 2 2 3, 2, false",
+			"2 twice at the end of 1 2 2: last (#114), 1 2 2, 2, true",
+			"x in an empty array: not last (#114), '', x, false",
+			"null in an empty array: not last (#114), '', , false",
+			"null at the end of a null: last (#114), a null, , true",
+			"null at the start of null a: not last, null a, , false",
+			"x in a null array: not last (#114), , x, false",
+			"null in a null array: not last (#114), , , false" })
+	public void testIsLast(final String description, final String array, final String element,
+		final boolean expected)
 	{
-		final String[] elements = array.split(" ");
-		assertEquals(first, ArrayExtensions.isFirst(elements, element), "isFirst");
-		assertEquals(last, ArrayExtensions.isLast(elements, element), "isLast");
+		final String[] elements = array == null
+			? null
+			: Arrays.stream(elements(array)).map(each -> "null".equals(each) ? null : each)
+				.toArray(String[]::new);
+		assertEquals(expected, ArrayExtensions.isLast(elements, element));
 	}
 
 	/**

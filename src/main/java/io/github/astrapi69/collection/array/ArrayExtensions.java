@@ -239,13 +239,13 @@ public final class ArrayExtensions
 	 * @param array
 	 *            the array
 	 * @return an {@link Optional} with the first object from the given array or an empty
-	 *         {@link Optional} if the array is null or empty
+	 *         {@link Optional} if the array is null or empty or its first object is null
 	 */
 	public static <T> Optional<T> getFirstElement(final T[] array)
 	{
 		if (array != null && array.length != 0)
 		{
-			return Optional.of(array[0]);
+			return Optional.ofNullable(array[0]);
 		}
 		return Optional.empty();
 	}
@@ -288,13 +288,13 @@ public final class ArrayExtensions
 	 * @param array
 	 *            the array
 	 * @return an {@link Optional} with the last object from the given array or an empty
-	 *         {@link Optional} if the array is null or empty
+	 *         {@link Optional} if the array is null or empty or its last object is null
 	 */
 	public static <T> Optional<T> getLastElement(final T[] array)
 	{
 		if (array != null && array.length != 0)
 		{
-			return Optional.of(array[getLastIndex(array)]);
+			return Optional.ofNullable(array[getLastIndex(array)]);
 		}
 		return Optional.empty();
 	}
@@ -713,21 +713,24 @@ public final class ArrayExtensions
 	}
 
 	/**
-	 * Checks if the given element is the last in the given array
+	 * Checks if the given element is the last in the given array. The element is compared with the
+	 * last element of the array with {@link Objects#equals(Object, Object)}, so an element that is
+	 * also at an index before the last is the last too, and null is the last of an array that ends
+	 * with null. An empty array and null have no last element
 	 *
 	 * @param <T>
 	 *            the generic type
 	 * @param array
-	 *            the array
+	 *            the array, may be null
 	 * @param element
-	 *            the element
-	 * @return true if the given element is the last otherwise false
+	 *            the element, may be null
+	 * @return true if the given element is the last otherwise false, also if the array is empty or
+	 *         null
 	 */
 	public static <T> boolean isLast(final T[] array, final T element)
 	{
-		final int lastIndex = getLastIndex(array);
-		final int indexOfElement = Arrays.asList(array).indexOf(element);
-		return indexOfElement == lastIndex;
+		return array != null && array.length != 0
+			&& Objects.equals(array[array.length - 1], element);
 	}
 
 	/**
