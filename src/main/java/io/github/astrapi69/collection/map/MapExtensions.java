@@ -116,14 +116,16 @@ public final class MapExtensions
 
 	/**
 	 * Merge and summarize the values of the given map with the given collection of keys. Every key
-	 * of the collection will be summarized with the value of the given map.
+	 * of the collection will be summarized with the value of the given map: each occurrence of a
+	 * key in the collection counts one, so a key that appears n times adds n to its value. Only the
+	 * keys of the given map are considered
 	 *
 	 * @param <K>
 	 *            the generic type of the elements
 	 * @param valueCounterMap
 	 *            the counter map
 	 * @param summarizeWithThisValueCounterMap
-	 *            the set with the key values that will be summarized with the first map
+	 *            the collection of the keys to count, a key may appear more than once
 	 * @return the new map ready to count elements
 	 */
 	public static <K> Map<K, Integer> mergeAndSummarize(final Map<K, Integer> valueCounterMap,
@@ -134,28 +136,27 @@ public final class MapExtensions
 
 	/**
 	 * Merge and summarize the values of the given map with the given collection of keys. Every key
-	 * of the collection will be summarized with the value of the given map. If the flag fullMerge
-	 * is true all keys from the collection and the map will be considered by the merge otherwise
-	 * only the keys of the first map will be considered
+	 * of the collection will be summarized with the value of the given map: each occurrence of a
+	 * key in the collection counts one, so a key that appears n times adds n to its value. If the
+	 * flag fullMerge is true all keys from the collection and the map will be considered by the
+	 * merge otherwise only the keys of the first map will be considered
 	 *
 	 * @param <K>
 	 *            the generic type of the elements
 	 * @param valueCounterMap
 	 *            the counter map
 	 * @param summarizeWithThisValueCounterMap
-	 *            the set with the key values that will be summarized with the first map
+	 *            the collection of the keys to count, a key may appear more than once
 	 * @param fullMerge
-	 *            if true all keys from both maps will be considered by the merge otherwise only the
-	 *            keys of the first map will be considered
+	 *            if true all keys from the collection and the map will be considered by the merge
+	 *            otherwise only the keys of the first map will be considered
 	 * @return the new map ready to count elements
 	 */
 	public static <K> Map<K, Integer> mergeAndSummarize(final Map<K, Integer> valueCounterMap,
 		final Collection<K> summarizeWithThisValueCounterMap, boolean fullMerge)
 	{
 		return mergeAndSummarize(valueCounterMap,
-			MapFactory.newCounterMap(MapFactory.newCounterMap(summarizeWithThisValueCounterMap),
-				summarizeWithThisValueCounterMap),
-			fullMerge);
+			MapFactory.newCounterMap(summarizeWithThisValueCounterMap, false), fullMerge);
 	}
 
 	/**
