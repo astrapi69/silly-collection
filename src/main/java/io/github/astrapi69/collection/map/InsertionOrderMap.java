@@ -31,7 +31,8 @@ import java.util.Map;
  * The class {@link InsertionOrderMap} overwrites the put-method from the
  * <code>LinkedHashMap</code>. That inserts the value to the right order it was inserted in the Map.
  * Note that the difference in the LinkedHashMap is the order does not change if we put the same key
- * with a new value. In this class the order changes when we put a new value with the same key.
+ * with a new value. In this class the order changes when we put a new value with the same key, with
+ * {@link #put(Object, Object)} and with {@link #putAll(Map)}, which calls put for each mapping.
  * 
  * @author Asterios Raptis
  * @version 1.0
@@ -153,6 +154,26 @@ public class InsertionOrderMap<K, V> extends LinkedHashMap<K, V>
 			retObj = super.put(key, value);
 		}
 		return retObj;
+	}
+
+	/**
+	 * Copies all of the mappings from the specified map to this map. As the contract of
+	 * {@link Map#putAll(Map)} says, the effect is that of calling {@link #put(Object, Object)} once
+	 * for each mapping of the specified map, in its order: a key this map holds already takes the
+	 * new value and moves to the end, a new key comes last (#127).
+	 *
+	 * @param m
+	 *            the mappings to be stored in this map
+	 * @throws NullPointerException
+	 *             if the specified map is null
+	 */
+	@Override
+	public void putAll(final Map<? extends K, ? extends V> m)
+	{
+		for (final Map.Entry<? extends K, ? extends V> entry : m.entrySet())
+		{
+			put(entry.getKey(), entry.getValue());
+		}
 	}
 
 }

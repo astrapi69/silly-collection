@@ -31,7 +31,8 @@ import java.util.Set;
 
 /**
  * The class {@link SetEnumeration} associates the elements of the given {@link Set} and the given
- * {@link Enumeration}.
+ * {@link Enumeration}: it gives the elements of the set first, then those of the enumeration that
+ * the set does not contain, null elements too.
  *
  * @param <T>
  *            the generic type
@@ -48,6 +49,11 @@ public class SetEnumeration<T> implements Enumeration<T>
 	private final Set<T> set;
 	/** The next. */
 	private T next;
+	/**
+	 * True if {@link #next} holds the element {@link #nextElement()} gives next, which may be null
+	 * (#118).
+	 */
+	private boolean hasNext;
 
 	/**
 	 * Instantiates a new {@link SetEnumeration} from the given {@link Set} and the given
@@ -71,25 +77,23 @@ public class SetEnumeration<T> implements Enumeration<T>
 	@Override
 	public boolean hasMoreElements()
 	{
-		if (next == null)
+		if (!hasNext)
 		{
 			if (iterator.hasNext())
 			{
 				next = iterator.next();
+				hasNext = true;
 			}
 			else if (enumeration != null)
 			{
-				while (next == null && enumeration.hasMoreElements())
+				while (!hasNext && enumeration.hasMoreElements())
 				{
 					next = enumeration.nextElement();
-					if (set.contains(next))
-					{
-						next = null;
-					}
+					hasNext = !set.contains(next);
 				}
 			}
 		}
-		return next != null;
+		return hasNext;
 	}
 
 	/**
@@ -100,9 +104,8 @@ public class SetEnumeration<T> implements Enumeration<T>
 	{
 		if (hasMoreElements())
 		{
-			T result = next;
-			next = null;
-			return result;
+			hasNext = false;
+			return next;
 		}
 		else
 		{

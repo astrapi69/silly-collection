@@ -27,13 +27,21 @@ package io.github.astrapi69.collection.array;
 import static org.junit.jupiter.api.Assertions.assertArrayEquals;
 import static org.junit.jupiter.api.Assertions.assertEquals;
 import static org.junit.jupiter.api.Assertions.assertNotSame;
-import static org.junit.jupiter.api.Assertions.assertNull;
+import static org.junit.jupiter.api.Assertions.assertThrows;
 import static org.junit.jupiter.api.Assertions.assertTrue;
 
 import java.util.Arrays;
+import java.util.Objects;
+import java.util.function.Function;
+import java.util.function.Supplier;
+import java.util.function.UnaryOperator;
+import java.util.stream.IntStream;
+import java.util.stream.Stream;
 
-import org.junit.jupiter.api.Assertions;
 import org.junit.jupiter.api.Test;
+import org.junit.jupiter.params.ParameterizedTest;
+import org.junit.jupiter.params.provider.CsvSource;
+import org.junit.jupiter.params.provider.MethodSource;
 import org.meanbean.test.BeanTester;
 
 /**
@@ -43,427 +51,426 @@ public class ArrayFactoryTest
 {
 
 	/**
-	 * Test for method {@link ArrayFactory#newArray(Object...)}
+	 * A call of one of the factory methods that copy the given values into a new array, and what it
+	 * returns
+	 *
+	 * @param description
+	 *            the name of the case
+	 * @param given
+	 *            makes the array the factory method is given, may make null
+	 * @param factory
+	 *            the factory method
+	 * @param expected
+	 *            the values of the returned array, or null if it returns null
 	 */
-	@Test
-	public void testNewArray()
-	{
-		Integer actual;
-		Integer expected;
-		final Integer[] numbers = { 1, 2, 3 };
-		final Integer[] array = ArrayFactory.newArray(1, 2, 3);
-		for (int i = 0; i < numbers.length; i++)
+	record CopyCase(String description, Supplier<Object> given, UnaryOperator<Object> factory,
+		Object expected) {
+		@Override
+		public String toString()
 		{
-			expected = numbers[i];
-			actual = array[i];
-			assertEquals(expected, actual);
+			return description;
 		}
-
-		final Object[] objects = ArrayFactory.newArray();
-		expected = 0;
-		actual = objects.length;
-		assertEquals(expected, actual);
 	}
 
 	/**
-	 * Test for method {@link ArrayFactory#newArray(Object...)} with a given array: the result is a
-	 * new array with the elements of the given array, also for an empty one, and a write to the
-	 * result does not change the array of the caller. Before the fix of #62 the method returned the
+	 * The three cases of a factory method that copies the given values: values, no values and null
+	 *
+	 * @param name
+	 *            the name of the factory method
+	 * @param factory
+	 *            the factory method
+	 * @param values
+	 *            makes an array of values
+	 * @param empty
+	 *            makes an empty array of the same type
+	 * @return the cases
+	 */
+	static Stream<CopyCase> copiesOf(final String name, final UnaryOperator<Object> factory,
+		final Supplier<Object> values, final Supplier<Object> empty)
+	{
+		return Stream.of(
+			new CopyCase(name + ", values: a new array with the same values", values, factory,
+				values.get()),
+			new CopyCase(name + ", no values: a new empty array", empty, factory, empty.get()),
+			new CopyCase(name + ", null: null", () -> null, factory, null));
+	}
+
+	/**
+	 * The cases of {@link ArrayFactory#newArray(Object...)} and of the factory methods of the
+	 * primitive types, which copy the given values: a new array also when no values are given (#62,
+	 * #75), and null for null
+	 *
+	 * @return the cases
+	 */
+	static Stream<CopyCase> copies()
+	{
+		return Stream.of(
+			copiesOf("newArray(Object...)", given -> ArrayFactory.newArray((Integer[])given),
+				() -> new Integer[] { 1, 2, 3 }, () -> new Integer[0]),
+			copiesOf("newBooleanArray", given -> ArrayFactory.newBooleanArray((boolean[])given),
+				() -> new boolean[] { true, true, false }, () -> new boolean[0]),
+			copiesOf("newByteArray(byte...)", given -> ArrayFactory.newByteArray((byte[])given),
+				() -> new byte[] { -84, -19, 0, 5, 116, 0, 7, 70, 111, 111, 32, 98, 97, 114 },
+				() -> new byte[0]),
+			copiesOf("newCharArray", given -> ArrayFactory.newCharArray((char[])given),
+				() -> new char[] { 'f', 'o', 'o' }, () -> new char[0]),
+			copiesOf("newDoubleArray", given -> ArrayFactory.newDoubleArray((double[])given),
+				() -> new double[] { 1.1D, 2.1D, 3.1D }, () -> new double[0]),
+			copiesOf("newFloatArray", given -> ArrayFactory.newFloatArray((float[])given),
+				() -> new float[] { 1.0F, 2.0F, 3.0F }, () -> new float[0]),
+			copiesOf("newIntArray", given -> ArrayFactory.newIntArray((int[])given),
+				() -> new int[] { 1, 2, 3 }, () -> new int[0]),
+			copiesOf("newLongArray", given -> ArrayFactory.newLongArray((long[])given),
+				() -> new long[] { 1L, 2L, 3L }, () -> new long[0]),
+			copiesOf("newShortArray", given -> ArrayFactory.newShortArray((short[])given),
+				() -> new short[] { 1, 2, 3 }, () -> new short[0]))
+			.flatMap(Function.identity());
+	}
+
+	/**
+	 * Test for the methods {@link ArrayFactory#newArray(Object...)},
+	 * {@link ArrayFactory#newBooleanArray(boolean...)}, {@link ArrayFactory#newByteArray(byte...)},
+	 * {@link ArrayFactory#newCharArray(char...)}, {@link ArrayFactory#newDoubleArray(double...)},
+	 * {@link ArrayFactory#newFloatArray(float...)}, {@link ArrayFactory#newIntArray(int...)},
+	 * {@link ArrayFactory#newLongArray(long...)} and {@link ArrayFactory#newShortArray(short...)}:
+	 * the result has the given values, and it is a new array, not the given one, so a write to it
+	 * does not change the array of the caller. Before the fix of #62 and #75 they returned the
 	 * given array itself
+	 *
+	 * @param copy
+	 *            the factory method, what it is given and what it returns
 	 */
-	@Test
-	public void testNewArrayWithGivenArray()
+	@ParameterizedTest(name = "{0}")
+	@MethodSource("copies")
+	public void testNewArrayCopiesTheGivenValues(final CopyCase copy)
 	{
-		final String[] given = { "a", "b" };
-		final String[] actual = ArrayFactory.newArray(given);
-		assertNotSame(given, actual);
-		assertArrayEquals(given, actual);
-		actual[0] = "z";
-		assertEquals("a", given[0]);
-
-		final String[] empty = new String[0];
-		final String[] actualEmpty = ArrayFactory.newArray(empty);
-		assertNotSame(empty, actualEmpty);
-		assertArrayEquals(empty, actualEmpty);
+		final Object given = copy.given().get();
+		final Object actual = copy.factory().apply(given);
+		assertTrue(Objects.deepEquals(copy.expected(), actual),
+			() -> "expected " + Arrays.deepToString(new Object[] { copy.expected() }) + " but was "
+				+ Arrays.deepToString(new Object[] { actual }));
+		if (actual != null)
+		{
+			assertEquals(given.getClass(), actual.getClass());
+			assertNotSame(given, actual);
+		}
 	}
 
 	/**
-	 * Test for method {@link ArrayFactory#newArray(Object...)} with null: the result is null, as
-	 * before the fix of #62
+	 * A call of {@link ArrayFactory#newByteArray(int...)} and the bytes it returns
+	 *
+	 * @param description
+	 *            the name of the case
+	 * @param given
+	 *            the given int values, may be null
+	 * @param expected
+	 *            the bytes of the returned array
 	 */
-	@Test
-	public void testNewArrayWithNull()
-	{
-		assertNull(ArrayFactory.newArray((String[])null));
+	record ByteArrayOfInts(String description, int[] given, byte[] expected) {
+		@Override
+		public String toString()
+		{
+			return description;
+		}
 	}
 
 	/**
-	 * Test for method {@link ArrayFactory#newArray(Object[], Object[])}
+	 * The cases of {@link ArrayFactory#newByteArray(int...)}: unlike the other factory methods it
+	 * returns an empty array for null
+	 *
+	 * @return the cases
 	 */
-	@Test
-	public void testNewArrayWithExistingArray()
+	static Stream<ByteArrayOfInts> byteArraysOfInts()
 	{
-		Integer[] actual;
-		Integer[] expected;
-		final Integer[] numbers = { 1, 2, 3 };
-
-		actual = ArrayFactory.newArray(numbers, 4, 5, 6);
-		expected = ArrayFactory.newArray(1, 2, 3, 4, 5, 6);
-		assertArrayEquals(actual, expected);
-
-		actual = ArrayFactory.newArray(ArrayFactory.newArray(), 1, 2, 3);
-		expected = ArrayFactory.newArray(numbers);
-		assertArrayEquals(actual, expected);
-
-		actual = ArrayFactory.newArray(null, 1, 2, 3);
-		expected = ArrayFactory.newArray(numbers);
-		assertArrayEquals(actual, expected);
+		return Stream.of(
+			new ByteArrayOfInts("values: the same values as bytes",
+				new int[] { -84, -19, 0, 5, 116, 0, 7, 70, 111, 111, 32, 98, 97, 114 },
+				new byte[] { -84, -19, 0, 5, 116, 0, 7, 70, 111, 111, 32, 98, 97, 114 }),
+			new ByteArrayOfInts("no values: an empty array", new int[0], new byte[0]),
+			new ByteArrayOfInts("null: an empty array, not null", null, new byte[0]));
 	}
 
 	/**
-	 * Test for method {@link ArrayFactory#newArray(Object[], Object[])} without elements: the
-	 * result is a new array with the elements of the existing array, for empty elements as for
-	 * null. Before the fix of #62 the method returned the existing array itself
+	 * Test for method {@link ArrayFactory#newByteArray(int...)}
+	 *
+	 * @param byteArray
+	 *            the given int values and the returned bytes
 	 */
-	@Test
-	public void testNewArrayWithExistingArrayAndNoElements()
+	@ParameterizedTest(name = "{0}")
+	@MethodSource("byteArraysOfInts")
+	public void testNewByteArrayOfInts(final ByteArrayOfInts byteArray)
 	{
-		final String[] existing = { "a", "b" };
-		String[] actual;
-
-		actual = ArrayFactory.newArray(existing, new String[0]);
-		assertNotSame(existing, actual);
-		assertArrayEquals(existing, actual);
-
-		actual = ArrayFactory.newArray(existing, (String[])null);
-		assertNotSame(existing, actual);
-		assertArrayEquals(existing, actual);
+		assertArrayEquals(byteArray.expected(), ArrayFactory.newByteArray(byteArray.given()));
 	}
 
 	/**
-	 * Test for method {@link ArrayFactory#newArray(Object[], Object[])} without an existing array:
-	 * the result is a new array with the given elements. Before the fix of #62 the method returned
-	 * the elements array itself
+	 * A call of {@link ArrayFactory#newArray(Object[], Object...)} and what it returns
+	 *
+	 * @param description
+	 *            the name of the case
+	 * @param existingArray
+	 *            the existing array, may be null
+	 * @param elements
+	 *            the elements, may be null
+	 * @param expected
+	 *            the returned array, or null if it returns null
 	 */
-	@Test
-	public void testNewArrayWithoutExistingArray()
-	{
-		final String[] elements = { "a", "b" };
-		final String[] actual = ArrayFactory.newArray((String[])null, elements);
-		assertNotSame(elements, actual);
-		assertArrayEquals(elements, actual);
+	record ExistingArrayCase(String description, Integer[] existingArray, Integer[] elements,
+		Integer[] expected) {
+		@Override
+		public String toString()
+		{
+			return description;
+		}
 	}
 
 	/**
-	 * Test for method {@link ArrayFactory#newArray(Object[], Object[])} without an existing array
-	 * and without elements: the result is null, for empty elements as for null, as before the fix
-	 * of #62
+	 * The cases of {@link ArrayFactory#newArray(Object[], Object...)}: the existing array followed
+	 * by the elements, a copy of one of them if the other is null or empty (#62), and null if there
+	 * is neither, as before the fix of #62
+	 *
+	 * @return the cases
 	 */
-	@Test
-	public void testNewArrayWithoutExistingArrayAndNoElements()
+	static Stream<ExistingArrayCase> existingArrays()
 	{
-		assertNull(ArrayFactory.newArray((String[])null, new String[0]));
-		assertNull(ArrayFactory.newArray((String[])null, (String[])null));
+		return Stream.of(
+			new ExistingArrayCase("1, 2, 3 followed by 4, 5, 6: 1 to 6", new Integer[] { 1, 2, 3 },
+				new Integer[] { 4, 5, 6 }, new Integer[] { 1, 2, 3, 4, 5, 6 }),
+			new ExistingArrayCase(
+				"an empty existing array followed by 1, 2, 3: a new array of 1, 2, 3",
+				new Integer[0], new Integer[] { 1, 2, 3 }, new Integer[] { 1, 2, 3 }),
+			new ExistingArrayCase("no existing array followed by 1, 2, 3: a new array of 1, 2, 3",
+				null, new Integer[] { 1, 2, 3 }, new Integer[] { 1, 2, 3 }),
+			new ExistingArrayCase("1, 2 followed by no elements: a new array of 1, 2",
+				new Integer[] { 1, 2 }, new Integer[0], new Integer[] { 1, 2 }),
+			new ExistingArrayCase("1, 2 followed by null: a new array of 1, 2",
+				new Integer[] { 1, 2 }, null, new Integer[] { 1, 2 }),
+			new ExistingArrayCase("no existing array and no elements: null", null, new Integer[0],
+				null),
+			new ExistingArrayCase("no existing array and null elements: null", null, null, null));
 	}
 
 	/**
-	 * Test for method {@link ArrayFactory#newArray(Class, int)}
+	 * Test for method {@link ArrayFactory#newArray(Object[], Object...)}: the result is never one
+	 * of the given arrays itself. Before the fix of #62 the method returned the existing array if
+	 * no elements were given, and the elements array if no existing array was given
+	 *
+	 * @param existingArray
+	 *            the given arrays and the returned one
 	 */
-	@Test
-	public void testNewArrayTypeWithLength()
+	@ParameterizedTest(name = "{0}")
+	@MethodSource("existingArrays")
+	public void testNewArrayWithExistingArray(final ExistingArrayCase existingArray)
 	{
-		int actual;
-		int expected;
-		final Integer[] array = ArrayFactory.newArray(Integer.class, 3);
-		actual = array.length;
-		expected = 3;
-		assertEquals(expected, actual);
+		final Integer[] actual = ArrayFactory.newArray(existingArray.existingArray(),
+			existingArray.elements());
+		assertArrayEquals(existingArray.expected(), actual);
+		if (actual != null)
+		{
+			assertNotSame(existingArray.existingArray(), actual, "the existing array itself");
+			assertNotSame(existingArray.elements(), actual, "the elements array itself");
+		}
 	}
 
 	/**
-	 * Test method for {@link ArrayFactory#newBooleanArray(boolean[])}.
+	 * Test for method {@link ArrayFactory#newArray(Class, int)}: a new array of the given component
+	 * type and length, which holds nulls only
+	 *
+	 * @param description
+	 *            the name of the case
+	 * @param componentType
+	 *            the given class type
+	 * @param length
+	 *            the given length
 	 */
-	@Test
-	public void testNewBooleanArray()
+	@ParameterizedTest(name = "{0}", quoteTextArguments = false)
+	@CsvSource({ "Integer of length 3: three nulls, java.lang.Integer, 3",
+			"String of length 0: an empty array, java.lang.String, 0" })
+	public void testNewArrayTypeWithLength(final String description, final Class<?> componentType,
+		final int length)
 	{
-		boolean[] actual;
-		boolean[] expected = { true, true, false };
-		actual = ArrayFactory.newBooleanArray(true, true, false);
-		assertTrue(Arrays.equals(actual, expected));
-
-		expected = new boolean[0];
-		actual = ArrayFactory.newBooleanArray();
-		assertTrue(Arrays.equals(actual, expected));
+		final Object[] actual = ArrayFactory.newArray(componentType, length);
+		assertEquals(componentType, actual.getClass().getComponentType());
+		assertEquals(length, actual.length);
+		assertTrue(Arrays.stream(actual).allMatch(Objects::isNull));
 	}
 
 	/**
-	 * Test method for {@link ArrayFactory#newByteArray(byte[])}.
+	 * A call of {@link ArrayFactory#newEmptyArray(Object[])} or
+	 * {@link ArrayFactory#newEmptyArray(Object[], int)} and the array it returns
+	 *
+	 * @param description
+	 *            the name of the case
+	 * @param call
+	 *            the call
+	 * @param componentType
+	 *            the component type of the returned array
+	 * @param length
+	 *            the length of the returned array
 	 */
-	@Test
-	public void testNewByteArray()
-	{
-		byte[] actual;
-		byte[] expected = { -84, -19, 0, 5, 116, 0, 7, 70, 111, 111, 32, 98, 97, 114 };
-		actual = ArrayFactory.newByteArray((byte)-84, (byte)-19, (byte)0, (byte)5, (byte)116,
-			(byte)0, (byte)7, (byte)70, (byte)111, (byte)111, (byte)32, (byte)98, (byte)97,
-			(byte)114);
-		assertTrue(Arrays.equals(actual, expected));
-
-		expected = new byte[0];
-		actual = ArrayFactory.newByteArray();
-		assertTrue(Arrays.equals(actual, expected));
+	record EmptyArrayCase(String description, Supplier<Object[]> call, Class<?> componentType,
+		int length) {
+		@Override
+		public String toString()
+		{
+			return description;
+		}
 	}
 
 	/**
-	 * Test method for {@link ArrayFactory#newByteArray(int[])}
+	 * The cases of {@link ArrayFactory#newEmptyArray(Object[])}, which takes the length of the
+	 * given array, and of {@link ArrayFactory#newEmptyArray(Object[], int)}, which takes the given
+	 * length
+	 *
+	 * @return the cases
 	 */
-	@Test
-	public void testNewByteArrayWithIntArray()
+	static Stream<EmptyArrayCase> emptyArrays()
 	{
-		byte[] actual;
-		byte[] expected = { -84, -19, 0, 5, 116, 0, 7, 70, 111, 111, 32, 98, 97, 114 };
-		int[] intArray = { -84, -19, 0, 5, 116, 0, 7, 70, 111, 111, 32, 98, 97, 114 };
-		actual = ArrayFactory.newByteArray(intArray);
-		assertTrue(Arrays.equals(actual, expected));
-
-		expected = new byte[0];
-		actual = ArrayFactory.newByteArray(new int[0]);
-		assertTrue(Arrays.equals(actual, expected));
+		return Stream.of(
+			new EmptyArrayCase("newEmptyArray of 1, 2, 3: three nulls",
+				() -> ArrayFactory.newEmptyArray(new Integer[] { 1, 2, 3 }), Integer.class, 3),
+			new EmptyArrayCase("newEmptyArray of an empty String array: an empty String array",
+				() -> ArrayFactory.newEmptyArray(new String[0]), String.class, 0),
+			new EmptyArrayCase("newEmptyArray of 1, 2, 3 with length 5: five nulls",
+				() -> ArrayFactory.newEmptyArray(new Integer[] { 1, 2, 3 }, 5), Integer.class, 5),
+			new EmptyArrayCase("newEmptyArray of 1, 2, 3 with length 0: an empty Integer array",
+				() -> ArrayFactory.newEmptyArray(new Integer[] { 1, 2, 3 }, 0), Integer.class, 0));
 	}
 
 	/**
-	 * Test the method {@link ArrayFactory#newByteArray(int[])} with null instead of an array: the
-	 * result is an empty array
+	 * Test for the methods {@link ArrayFactory#newEmptyArray(Object[])} and
+	 * {@link ArrayFactory#newEmptyArray(Object[], int)}: a new array of the component type of the
+	 * given array, which holds nulls only
+	 *
+	 * @param emptyArray
+	 *            the call and the returned array
 	 */
-	@Test
-	public void testNewByteArrayWithIntArrayNull()
+	@ParameterizedTest(name = "{0}")
+	@MethodSource("emptyArrays")
+	public void testNewEmptyArray(final EmptyArrayCase emptyArray)
 	{
-		final byte[] expected = new byte[0];
-		final byte[] actual = ArrayFactory.newByteArray((int[])null);
-		assertArrayEquals(expected, actual);
+		final Object[] actual = emptyArray.call().get();
+		assertEquals(emptyArray.componentType(), actual.getClass().getComponentType());
+		assertEquals(emptyArray.length(), actual.length);
+		assertTrue(Arrays.stream(actual).allMatch(Objects::isNull));
 	}
 
 	/**
-	 * Test method for {@link ArrayFactory#newCharArray(char[])}.
+	 * A range of {@link ArrayFactory#newRangeArray(int, int)} and the numbers it holds
+	 *
+	 * @param description
+	 *            the name of the case
+	 * @param start
+	 *            the start, inclusive
+	 * @param end
+	 *            the end, inclusive
+	 * @param expected
+	 *            the numbers of the range
 	 */
-	@Test
-	public void testNewCharArray()
-	{
-		char[] actual;
-		char[] expected = { 'f', 'o', 'o' };
-		actual = ArrayFactory.newCharArray('f', 'o', 'o');
-		assertTrue(Arrays.equals(actual, expected));
-
-		expected = new char[0];
-		actual = ArrayFactory.newCharArray();
-		assertTrue(Arrays.equals(actual, expected));
+	record RangeCase(String description, int start, int end, Integer[] expected) {
+		@Override
+		public String toString()
+		{
+			return description;
+		}
 	}
 
 	/**
-	 * Test method for {@link ArrayFactory#newDoubleArray(double[])}.
+	 * The cases of {@link ArrayFactory#newRangeArray(int, int)}, both ends inclusive
+	 *
+	 * @return the cases
 	 */
-	@Test
-	public void testNewDoubleArray()
+	static Stream<RangeCase> ranges()
 	{
-		double[] actual;
-		double[] expected = { 1.1D, 2.1D, 3.1D };
-		actual = ArrayFactory.newDoubleArray(1.1D, 2.1D, 3.1D);
-		assertTrue(Arrays.equals(actual, expected));
-
-		expected = new double[0];
-		actual = ArrayFactory.newDoubleArray();
-		assertTrue(Arrays.equals(actual, expected));
+		return Stream.of(
+			new RangeCase("5 to 9: 5, 6, 7, 8, 9", 5, 9, new Integer[] { 5, 6, 7, 8, 9 }),
+			new RangeCase("1 to 49: the 49 numbers", 1, 49,
+				IntStream.rangeClosed(1, 49).boxed().toArray(Integer[]::new)),
+			new RangeCase("5 to 5, start equal to end: 5 alone", 5, 5, new Integer[] { 5 }),
+			new RangeCase("-2 to 1, across zero: -2, -1, 0, 1", -2, 1,
+				new Integer[] { -2, -1, 0, 1 }),
+			new RangeCase("Integer.MIN_VALUE to Integer.MIN_VALUE + 1: both", Integer.MIN_VALUE,
+				Integer.MIN_VALUE + 1, new Integer[] { Integer.MIN_VALUE, Integer.MIN_VALUE + 1 }),
+			new RangeCase("Integer.MAX_VALUE - 1 to Integer.MAX_VALUE: both (#113)",
+				Integer.MAX_VALUE - 1, Integer.MAX_VALUE,
+				new Integer[] { Integer.MAX_VALUE - 1, Integer.MAX_VALUE }),
+			new RangeCase("Integer.MAX_VALUE to Integer.MAX_VALUE: Integer.MAX_VALUE alone (#113)",
+				Integer.MAX_VALUE, Integer.MAX_VALUE, new Integer[] { Integer.MAX_VALUE }));
 	}
 
 	/**
-	 * Test for method {@link ArrayFactory#newEmptyArray(Object[])}
+	 * Test for method {@link ArrayFactory#newRangeArray(int, int)}
+	 *
+	 * @param range
+	 *            the range and its numbers
 	 */
-	@Test
-	public void testNewEmptyArray()
+	@ParameterizedTest(name = "{0}")
+	@MethodSource("ranges")
+	public void testNewRangeArray(final RangeCase range)
 	{
-		Integer[] actual;
-		Integer[] expected;
-		final Integer[] numbers = { 1, 2, 3 };
-		expected = new Integer[3];
-		actual = ArrayFactory.newEmptyArray(numbers);
-		assertTrue(Arrays.equals(actual, expected));
-
+		assertArrayEquals(range.expected(), ArrayFactory.newRangeArray(range.start(), range.end()));
 	}
 
 	/**
-	 * Test method for {@link ArrayFactory#newFloatArray(float[])}.
+	 * Test for method {@link ArrayFactory#newRangeArray(int, int)} with a range it throws for, and
+	 * the exception with its message: an end less than the start, and a range of more numbers than
+	 * an array can hold, more than Integer.MAX_VALUE (#113)
+	 *
+	 * @param description
+	 *            the name of the case
+	 * @param start
+	 *            the start
+	 * @param end
+	 *            the end
+	 * @param exception
+	 *            the class of the exception
+	 * @param message
+	 *            the message of the exception
 	 */
-	@Test
-	public void testNewFloatArray()
+	@ParameterizedTest(name = "{0}", quoteTextArguments = false)
+	@CsvSource({
+			"9 to 8: the end one less than the start, 9, 8, java.lang.IllegalArgumentException, Parameter end must not be less than parameter start.",
+			"9 to -9: the end far less than the start, 9, -9, java.lang.IllegalArgumentException, Parameter end must not be less than parameter start.",
+			"Integer.MIN_VALUE to Integer.MAX_VALUE: all the int values (#113), -2147483648, 2147483647, java.lang.IllegalArgumentException, The range from -2147483648 to 2147483647 holds 4294967296 numbers and an array holds at most 2147483647.",
+			"0 to Integer.MAX_VALUE: one number more than an array holds (#113), 0, 2147483647, java.lang.IllegalArgumentException, The range from 0 to 2147483647 holds 2147483648 numbers and an array holds at most 2147483647." })
+	public void testNewRangeArrayThrows(final String description, final int start, final int end,
+		final Class<? extends RuntimeException> exception, final String message)
 	{
-		float[] actual;
-		float[] expected = { 1.0F, 2.0F, 3.0F };
-		actual = ArrayFactory.newFloatArray(1.0F, 2.0F, 3.0F);
-		assertTrue(Arrays.equals(actual, expected));
-
-		expected = new float[0];
-		actual = ArrayFactory.newFloatArray();
-		assertTrue(Arrays.equals(actual, expected));
+		final RuntimeException actual = assertThrows(exception,
+			() -> ArrayFactory.newRangeArray(start, end));
+		assertEquals(message, actual.getMessage());
 	}
 
 	/**
-	 * Test method for {@link ArrayFactory#newIntArray(int[])}.
+	 * Test for method {@link ArrayFactory#newSubArray(Object[], int, int)}: the elements from the
+	 * start index, inclusive, to the end index, exclusive, of 1 to 7, in a new array of the
+	 * component type of the source
+	 *
+	 * @param description
+	 *            the name of the case
+	 * @param startIndex
+	 *            the start index, inclusive
+	 * @param endIndex
+	 *            the end index, exclusive
+	 * @param expected
+	 *            the elements of the sub array, separated by a space
 	 */
-	@Test
-	public void testNewIntArray()
+	@ParameterizedTest(name = "{0}", quoteTextArguments = false)
+	@CsvSource(value = { "2 to 5: 3, 4, 5 | 2 | 5 | 3 4 5", "0 to 1: the first | 0 | 1 | 1",
+			"6 to 7: the last | 6 | 7 | 7", "0 to 7: all of them | 0 | 7 | 1 2 3 4 5 6 7",
+			"2 to 2: none | 2 | 2 | ''" }, delimiter = '|')
+	public void testNewSubArray(final String description, final int startIndex, final int endIndex,
+		final String expected)
 	{
-		int[] actual;
-		int[] expected = { 1, 2, 3 };
-		actual = ArrayFactory.newIntArray(1, 2, 3);
-		assertTrue(Arrays.equals(actual, expected));
-
-		expected = new int[0];
-		actual = ArrayFactory.newIntArray();
-		assertTrue(Arrays.equals(actual, expected));
-	}
-
-	/**
-	 * Test method for {@link ArrayFactory#newLongArray(long[])}.
-	 */
-	@Test
-	public void testNewLongArray()
-	{
-		long[] actual;
-		long[] expected = { 1L, 2L, 3L };
-		actual = ArrayFactory.newLongArray(1L, 2L, 3L);
-		assertTrue(Arrays.equals(actual, expected));
-
-		expected = new long[0];
-		actual = ArrayFactory.newLongArray();
-		assertTrue(Arrays.equals(actual, expected));
-	}
-
-	/**
-	 * Test the method {@link ArrayFactory#newRangeArray(int, int)}
-	 */
-	@Test
-	public void testNewRangeArray()
-	{
-		Integer[] actual;
-		Integer[] expected;
-		actual = ArrayFactory.newRangeArray(5, 9);
-		expected = ArrayFactory.newArray(5, 6, 7, 8, 9);
-		assertTrue(Arrays.deepEquals(actual, expected));
-
-		actual = ArrayFactory.newRangeArray(1, 49);
-		expected = ArrayFactory.newArray(1, 2, 3, 4, 5, 6, 7, 8, 9, 10, 11, 12, 13, 14, 15, 16, 17,
-			18, 19, 20, 21, 22, 23, 24, 25, 26, 27, 28, 29, 30, 31, 32, 33, 34, 35, 36, 37, 38, 39,
-			40, 41, 42, 43, 44, 45, 46, 47, 48, 49);
-
-		assertTrue(Arrays.deepEquals(actual, expected));
-	}
-
-	/**
-	 * Test the method {@link ArrayFactory#newRangeArray(int, int)} where end is smaller than start:
-	 * the message of the exception says that end must not be less than start
-	 */
-	@Test
-	public void testNewRangeArrayException()
-	{
-		final IllegalArgumentException exception = Assertions
-			.assertThrows(IllegalArgumentException.class, () -> {
-				ArrayFactory.newRangeArray(9, 8);
-			});
-		assertEquals("Parameter end must not be less than parameter start.",
-			exception.getMessage());
-	}
-
-	/**
-	 * Test the method {@link ArrayFactory#newRangeArray(int, int)} where start and end are equal:
-	 * the range holds this one number
-	 */
-	@Test
-	public void testNewRangeArrayWithEqualStartAndEnd()
-	{
-		final Integer[] expected = { 5 };
-		final Integer[] actual = ArrayFactory.newRangeArray(5, 5);
-		assertArrayEquals(expected, actual);
-	}
-
-	/**
-	 * Test method for {@link ArrayFactory#newShortArray(short[])}.
-	 */
-	@Test
-	public void testNewShortArray()
-	{
-		short[] actual;
-		short[] expected = { 1, 2, 3 };
-		actual = ArrayFactory.newShortArray((short)1, (short)2, (short)3);
-		assertTrue(Arrays.equals(actual, expected));
-
-		expected = new short[0];
-		actual = ArrayFactory.newShortArray();
-		assertTrue(Arrays.equals(actual, expected));
-	}
-
-	/**
-	 * Test the factory methods of the primitive types with a given array: the result is a new array
-	 * with the same values, not the given array itself (#75).
-	 */
-	@Test
-	public void testNewPrimitiveArrayWithGivenArray()
-	{
-		final boolean[] booleans = { true, false };
-		Assertions.assertNotSame(booleans, ArrayFactory.newBooleanArray(booleans));
-		Assertions.assertArrayEquals(booleans, ArrayFactory.newBooleanArray(booleans));
-		final byte[] bytes = { 1, 2 };
-		Assertions.assertNotSame(bytes, ArrayFactory.newByteArray(bytes));
-		Assertions.assertArrayEquals(bytes, ArrayFactory.newByteArray(bytes));
-		final char[] chars = { 'a', 'b' };
-		Assertions.assertNotSame(chars, ArrayFactory.newCharArray(chars));
-		Assertions.assertArrayEquals(chars, ArrayFactory.newCharArray(chars));
-		final double[] doubles = { 1.0D, 2.0D };
-		Assertions.assertNotSame(doubles, ArrayFactory.newDoubleArray(doubles));
-		Assertions.assertArrayEquals(doubles, ArrayFactory.newDoubleArray(doubles));
-		final float[] floats = { 1.0F, 2.0F };
-		Assertions.assertNotSame(floats, ArrayFactory.newFloatArray(floats));
-		Assertions.assertArrayEquals(floats, ArrayFactory.newFloatArray(floats));
-		final int[] ints = { 1, 2 };
-		Assertions.assertNotSame(ints, ArrayFactory.newIntArray(ints));
-		Assertions.assertArrayEquals(ints, ArrayFactory.newIntArray(ints));
-		final long[] longs = { 1L, 2L };
-		Assertions.assertNotSame(longs, ArrayFactory.newLongArray(longs));
-		Assertions.assertArrayEquals(longs, ArrayFactory.newLongArray(longs));
-		final short[] shorts = { 1, 2 };
-		Assertions.assertNotSame(shorts, ArrayFactory.newShortArray(shorts));
-		Assertions.assertArrayEquals(shorts, ArrayFactory.newShortArray(shorts));
-	}
-
-	/**
-	 * Test the factory methods of the primitive types with null instead of an array: the result is
-	 * null.
-	 */
-	@Test
-	public void testNewPrimitiveArrayWithNull()
-	{
-		Assertions.assertNull(ArrayFactory.newBooleanArray((boolean[])null));
-		Assertions.assertNull(ArrayFactory.newByteArray((byte[])null));
-		Assertions.assertNull(ArrayFactory.newCharArray((char[])null));
-		Assertions.assertNull(ArrayFactory.newDoubleArray((double[])null));
-		Assertions.assertNull(ArrayFactory.newFloatArray((float[])null));
-		Assertions.assertNull(ArrayFactory.newIntArray((int[])null));
-		Assertions.assertNull(ArrayFactory.newLongArray((long[])null));
-		Assertions.assertNull(ArrayFactory.newShortArray((short[])null));
-	}
-
-	/**
-	 * Test method for {@link ArrayFactory#newSubArray(Object[], int, int)}
-	 */
-	@Test
-	public void testnewSubArray()
-	{
-		Integer[] actual;
-		Integer[] expected;
-		Integer[] data;
-		data = ArrayFactory.newArray(1, 2, 3, 4, 5, 6, 7);
-		actual = ArrayFactory.newSubArray(data, 2, 5);
-		expected = ArrayFactory.newArray(3, 4, 5);
-		assertTrue(Arrays.deepEquals(actual, expected));
+		final Integer[] source = { 1, 2, 3, 4, 5, 6, 7 };
+		final Integer[] actual = ArrayFactory.newSubArray(source, startIndex, endIndex);
+		assertEquals(Integer[].class, actual.getClass());
+		assertArrayEquals(
+			expected.isEmpty()
+				? new Integer[0]
+				: Arrays.stream(expected.split(" ")).map(Integer::valueOf).toArray(Integer[]::new),
+			actual);
+		assertNotSame(source, actual);
 	}
 
 	/**

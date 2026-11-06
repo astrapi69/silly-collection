@@ -2,11 +2,17 @@ pitest {
     junit5PluginVersion = libs.versions.pitest.junit5.plugin.version.get()
     pitestVersion = libs.versions.pitest.version.get()
     targetClasses = ["io.github.astrapi69.collection.*"]
+    // ModulePathTest compiles consumers against the built jar, not against the classes PIT mutates,
+    // and PublishedPomTest reads the generated pom, so neither can notice a mutant; both read system
+    // properties that only the test task sets (gradle/testing.gradle, #95)
+    excludedTestClasses = ["io.github.astrapi69.collection.ModulePathTest",
+                           "io.github.astrapi69.collection.PublishedPomTest"]
     threads = 4
     // The mutator set, named so a reader of the score knows it: DEFAULTS is what
     // PIT runs when nothing is said.
     mutators = ["DEFAULTS"]
-    // XML is what the mutation-context step in .github/workflows/gradle.yml reads.
+    // XML is what the summary, mutation-context and badge steps in
+    // .github/workflows/mutation-testing.yml read.
     outputFormats = ["HTML", "XML"]
     timestampedReports = false
 }

@@ -26,35 +26,34 @@ package io.github.astrapi69.collection.list;
 
 import static org.junit.jupiter.api.Assertions.assertArrayEquals;
 import static org.junit.jupiter.api.Assertions.assertEquals;
-import static org.junit.jupiter.api.Assertions.assertFalse;
-import static org.junit.jupiter.api.Assertions.assertNotNull;
 import static org.junit.jupiter.api.Assertions.assertNotSame;
-import static org.junit.jupiter.api.Assertions.assertNull;
+import static org.junit.jupiter.api.Assertions.assertThrows;
 import static org.junit.jupiter.api.Assertions.assertTrue;
 
 import java.util.ArrayList;
 import java.util.Arrays;
-import java.util.Collection;
 import java.util.Collections;
-import java.util.Enumeration;
+import java.util.HashSet;
+import java.util.LinkedHashSet;
 import java.util.List;
 import java.util.Map;
 import java.util.Optional;
 import java.util.Set;
 import java.util.function.Function;
+import java.util.function.Supplier;
+import java.util.stream.Collectors;
+import java.util.stream.IntStream;
+import java.util.stream.Stream;
 
-import org.junit.jupiter.api.AfterEach;
-import org.junit.jupiter.api.Assertions;
-import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.Disabled;
 import org.junit.jupiter.api.Test;
+import org.junit.jupiter.params.ParameterizedTest;
+import org.junit.jupiter.params.provider.CsvSource;
+import org.junit.jupiter.params.provider.MethodSource;
+import org.junit.jupiter.params.provider.NullAndEmptySource;
 import org.meanbean.test.BeanTester;
 
-import io.github.astrapi69.collection.CollectionExtensions;
-import io.github.astrapi69.collection.array.ArrayFactory;
-import io.github.astrapi69.collection.map.MapFactory;
 import io.github.astrapi69.collection.modification.ModifiedCollections;
-import io.github.astrapi69.collection.set.SetFactory;
 import io.github.astrapi69.comparator.factory.ComparatorFactory;
 import io.github.astrapi69.test.object.Person;
 import io.github.astrapi69.test.object.enumeration.Gender;
@@ -68,1395 +67,1213 @@ public class ListExtensionsTest
 {
 
 	/**
-	 * Sets up method will be invoked before every unit test method
+	 * The elements of a column of a table, separated by a space
+	 *
+	 * @param column
+	 *            the column, empty for no elements
+	 * @return the elements in a new {@link ArrayList}, which the test may change
 	 */
-	@BeforeEach
-	protected void setUp()
+	private static List<String> elements(final String column)
 	{
+		return column.isEmpty()
+			? new ArrayList<>()
+			: Arrays.stream(column.split(" ")).collect(Collectors.toCollection(ArrayList::new));
 	}
 
 	/**
-	 * Tear down method will be invoked after every unit test method
+	 * The numbers of a column of a table, separated by a space
+	 *
+	 * @param column
+	 *            the column, empty for no numbers
+	 * @return the numbers in a new {@link ArrayList}, which the test may change
 	 */
-	@AfterEach
-	protected void tearDown()
+	private static List<Integer> numbers(final String column)
 	{
+		return elements(column).stream().map(Integer::valueOf)
+			.collect(Collectors.toCollection(ArrayList::new));
 	}
 
 	/**
-	 * Test method for {@link ListExtensions#subList(List, int, int)}
+	 * Test method for {@link ListExtensions#subList(List, int, int)} on 1, 2, 3, 4, 5: a view of
+	 * the range, with a negative start taken as 0 and an end beyond the size as the size, and a
+	 * modifiable empty list of its own, not a view, where the range holds no element
+	 *
+	 * @param description
+	 *            the name of the case
+	 * @param fromIndex
+	 *            the start index, inclusive
+	 * @param toIndex
+	 *            the end index, exclusive
+	 * @param expected
+	 *            the elements of the result, separated by a space
 	 */
-	@Test
-	public void testSubListNormalRange()
+	@ParameterizedTest(name = "{0}", quoteTextArguments = false)
+	@CsvSource(value = { "1 to 4: 2, 3, 4, a view | 1 | 4 | 2 3 4",
+			"0 to 5, the full range: all of them, a view | 0 | 5 | 1 2 3 4 5",
+			"-2 to 2, a negative start: 1, 2, from 0 on | -2 | 2 | 1 2",
+			"3 to 9, an end beyond the size: 4, 5, to the size | 3 | 9 | 4 5",
+			"5 to 7, the start at the size: an empty list of its own | 5 | 7 | ''",
+			"-1 to 0, the end at 0: an empty list of its own | -1 | 0 | ''",
+			"3 to 3, the start equal to the end: an empty list of its own | 3 | 3 | ''",
+			"4 to 2, the start greater than the end: an empty list of its own | 4 | 2 | ''" }, delimiter = '|')
+	public void testSubList(final String description, final int fromIndex, final int toIndex,
+		final String expected)
 	{
-		List<Integer> original = Arrays.asList(1, 2, 3, 4, 5);
-		List<Integer> expected = Arrays.asList(2, 3, 4);
-		List<Integer> result = ListExtensions.subList(original, 1, 4);
-		assertEquals(expected, result);
-	}
-
-	/**
-	 * Test method for {@link ListExtensions#subList(List, int, int)}
-	 */
-	@Test
-	public void testSubListFullRange()
-	{
-		List<Integer> original = Arrays.asList(1, 2, 3, 4, 5);
-		List<Integer> expected = original;
-		List<Integer> result = ListExtensions.subList(original, 0, 5);
-		assertEquals(expected, result);
-	}
-
-	/**
-	 * Test method for {@link ListExtensions#subList(List, int, int)}
-	 */
-	@Test
-	public void testSubListEmptyResultFromIndexOutOfBounds()
-	{
-		List<Integer> original = Arrays.asList(1, 2, 3, 4, 5);
-		assertTrue(ListExtensions.subList(original, 5, 7).isEmpty());
-	}
-
-	/**
-	 * Test method for {@link ListExtensions#subList(List, int, int)}
-	 */
-	@Test
-	public void testSubListEmptyResultToIndexOutOfBounds()
-	{
-		List<Integer> original = Arrays.asList(1, 2, 3, 4, 5);
-		assertTrue(ListExtensions.subList(original, -1, 0).isEmpty());
-	}
-
-	/**
-	 * Test method for {@link ListExtensions#subList(List, int, int)}
-	 */
-	@Test
-	public void testSubListEmptyResultFromIndexEqualsToIndex()
-	{
-		List<Integer> original = Arrays.asList(1, 2, 3, 4, 5);
-		assertTrue(ListExtensions.subList(original, 3, 3).isEmpty());
-	}
-
-	/**
-	 * Test method for {@link ListExtensions#subList(List, int, int)}
-	 */
-	@Test
-	public void testSubListEmptyResultFromIndexGreaterThanToIndex()
-	{
-		List<Integer> original = Arrays.asList(1, 2, 3, 4, 5);
-		assertTrue(ListExtensions.subList(original, 4, 2).isEmpty());
-	}
-
-	/**
-	 * Characterization: pins that {@link ListExtensions#subList(List, int, int)} returns a
-	 * modifiable empty list of its own, not a view of the original list, where fromIndex equals the
-	 * size of the list: adding to the result leaves the original list unchanged
-	 */
-	@Test
-	public void testSubListFromIndexEqualsSizeIsNoView()
-	{
-		List<Integer> original = ListFactory.newArrayList(1, 2, 3, 4, 5);
-		List<Integer> actual = ListExtensions.subList(original, 5, 7);
-		actual.add(6);
-		assertEquals(ListFactory.newArrayList(6), actual);
-		assertEquals(ListFactory.newArrayList(1, 2, 3, 4, 5), original);
-	}
-
-	/**
-	 * Characterization: pins that {@link ListExtensions#subList(List, int, int)} returns a
-	 * modifiable empty list of its own, not a view of the original list, where toIndex is zero and
-	 * fromIndex is negative: adding to the result leaves the original list unchanged
-	 */
-	@Test
-	public void testSubListToIndexZeroIsNoView()
-	{
-		List<Integer> original = ListFactory.newArrayList(1, 2, 3, 4, 5);
-		List<Integer> actual = ListExtensions.subList(original, -1, 0);
-		actual.add(0);
-		assertEquals(ListFactory.newArrayList(0), actual);
-		assertEquals(ListFactory.newArrayList(1, 2, 3, 4, 5), original);
-	}
-
-	/**
-	 * Characterization: pins that {@link ListExtensions#subList(List, int, int)} returns a
-	 * modifiable empty list of its own, not a view of the original list, where fromIndex equals
-	 * toIndex: adding to the result leaves the original list unchanged
-	 */
-	@Test
-	public void testSubListFromIndexEqualsToIndexIsNoView()
-	{
-		List<Integer> original = ListFactory.newArrayList(1, 2, 3, 4, 5);
-		List<Integer> actual = ListExtensions.subList(original, 3, 3);
-		actual.add(42);
-		assertEquals(ListFactory.newArrayList(42), actual);
-		assertEquals(ListFactory.newArrayList(1, 2, 3, 4, 5), original);
-	}
-
-	/**
-	 * Test method for {@link ListExtensions#getFirst(List)}
-	 */
-	@Test
-	public void testGetFirst()
-	{
-		String actual;
-		String expected;
-		List<String> search;
-
-		expected = "Leonidas";
-		search = ListFactory.newArrayList();
-		search.add(expected);
-		search.add("Berta");
-		search.add("Caesar");
-		search.add("Dora");
-		search.add("Emil");
-		search.add("Anton");
-
-		actual = ListExtensions.getFirst(search);
-		assertEquals(expected, actual);
-
-		search = ListFactory.newArrayList();
-		actual = ListExtensions.getFirst(search);
-		expected = null;
-		assertEquals(expected, actual);
-	}
-
-	/**
-	 * Test method for {@link ListExtensions#getLast(List)}
-	 */
-	@Test
-	public void testGetLast()
-	{
-		final String expected = "Leonidas";
-		final List<String> search = ListFactory.newArrayList();
-		String compare = ListExtensions.getLast(search);
-		assertNull(compare);
-		search.add("Anton");
-		search.add("Berta");
-		search.add("Caesar");
-		search.add("Dora");
-		search.add("Emil");
-		search.add(expected);
-		compare = ListExtensions.getLast(search);
-		assertEquals(compare, expected);
-	}
-
-	/**
-	 * Test method for the combination methods
-	 */
-	@Test
-	@Disabled
-	public void testBenchmarkCombinations()
-	{
-
-		long start;
-		long end;
-		List<Integer> possibleNumbers;
-		int combinationSize;
-
-		possibleNumbers = ListFactory.newRangeList(1, 49);
-		combinationSize = 6;
-
-		start = System.currentTimeMillis();
-		ListExtensions.getCombinations(possibleNumbers, combinationSize);
-		end = System.currentTimeMillis();
-		System.err.println("getCombinations time:" + (end - start));
-
-		ListExtensions.getAllCombinations(possibleNumbers, combinationSize);
-		end = System.currentTimeMillis();
-		System.err.println("getAllCombinations time:" + (end - start));
-	}
-
-	/**
-	 * Test the method {@link ListExtensions#clone(List)}
-	 */
-	@Test
-	public void testClone()
-	{
-		List<String> actual;
-		List<String> expected;
-		expected = ListFactory.newArrayList();
-		expected.add("Dora");
-		expected.add("Emil");
-		expected.add("Franz");
-		actual = ListExtensions.clone(expected);
-		assertTrue(CollectionExtensions.isEqualCollection(actual, expected));
-	}
-
-	/**
-	 * Test the method {@link ListExtensions#containAtLeastOneObject(List, List)}
-	 */
-	@Test
-	public void testContainAtleastOneObject()
-	{
-		final List<String> toSearch = ListFactory.newArrayList();
-		final List<String> search = ListFactory.newArrayList();
-		final List<String> atLeastOneSameObject = ListFactory.newArrayList();
-		toSearch.add("Anton");
-		toSearch.add("Berta");
-		toSearch.add("Caesar");
-		search.add("Dora");
-		search.add("Emil");
-		search.add("Franz");
-		final boolean isFalse = ListExtensions.containAtLeastOneObject(toSearch, search);
-		assertFalse(isFalse);
-		atLeastOneSameObject.add("Anton");
-		atLeastOneSameObject.add("Dora");
-		boolean isTrue = ListExtensions.containAtLeastOneObject(toSearch, atLeastOneSameObject);
-		assertTrue(isTrue);
-		isTrue = ListExtensions.containAtLeastOneObject(search, atLeastOneSameObject);
-		assertTrue(isTrue);
-	}
-
-	/**
-	 * Test the method {@link ListExtensions#getAllCombinations(List, int)}
-	 */
-	@Test
-	public void testGetAllCombinations()
-	{
-		List<Integer> values;
-		List<List<Integer>> actual;
-		List<List<Integer>> expected;
-		// new scenario...
-		expected = ListFactory.newArrayList();
-		values = ListFactory.newArrayList(1, 2, 3, 4);
-		actual = ListExtensions.getAllCombinations(values, 3);
-		expected.add(ListFactory.newArrayList(1, 2, 3));
-		expected.add(ListFactory.newArrayList(1, 2, 4));
-		expected.add(ListFactory.newArrayList(1, 3, 4));
-		expected.add(ListFactory.newArrayList(2, 3, 4));
-		assertTrue(CollectionExtensions.isEqualCollection(actual, expected));
-		// new scenario...
-		expected = ListFactory.newArrayList();
-		values = ListFactory.newArrayList(1, 2, 3, 4, 5);
-		actual = ListExtensions.getAllCombinations(values, 3);
-		expected.add(ListFactory.newArrayList(1, 2, 3));
-		expected.add(ListFactory.newArrayList(1, 2, 4));
-		expected.add(ListFactory.newArrayList(1, 2, 5));
-		expected.add(ListFactory.newArrayList(1, 3, 4));
-		expected.add(ListFactory.newArrayList(1, 3, 5));
-		expected.add(ListFactory.newArrayList(1, 4, 5));
-		expected.add(ListFactory.newArrayList(2, 3, 4));
-		expected.add(ListFactory.newArrayList(2, 3, 5));
-		expected.add(ListFactory.newArrayList(2, 4, 5));
-		expected.add(ListFactory.newArrayList(3, 4, 5));
-		assertTrue(CollectionExtensions.isEqualCollection(actual, expected));
-
-		values = ListFactory.newRangeList(1, 11);
-		actual = ListExtensions.getAllCombinations(values, 3);
-		System.err.println(actual.size());
-		// new scenario...
-		expected = ListFactory.newArrayList();
-		values = ListFactory.newArrayList(1, 2, 3, 4, 5, 6, 7);
-		actual = ListExtensions.getAllCombinations(values, 6);
-		expected.add(ListFactory.newArrayList(1, 2, 3, 4, 5, 6));
-		expected.add(ListFactory.newArrayList(1, 2, 3, 4, 5, 7));
-		expected.add(ListFactory.newArrayList(1, 2, 3, 4, 6, 7));
-		expected.add(ListFactory.newArrayList(1, 2, 3, 5, 6, 7));
-		expected.add(ListFactory.newArrayList(1, 2, 4, 5, 6, 7));
-		expected.add(ListFactory.newArrayList(1, 3, 4, 5, 6, 7));
-		expected.add(ListFactory.newArrayList(2, 3, 4, 5, 6, 7));
-		assertTrue(CollectionExtensions.isEqualCollection(actual, expected));
-	}
-
-	/**
-	 * Test the method {@link ListExtensions#getAllCombinations(List, int)} where the combination
-	 * size equals the number of values: the only combination holds all values in their order
-	 */
-	@Test
-	public void testGetAllCombinationsWithSizeOfAllValues()
-	{
-		// the search drops every branch that has too few values left to fill the combination, which
-		// leaves one path for 32 of 32 values; without that it would run through 2^32 branches
-		List<Integer> values = ListFactory.newRangeList(1, 32);
-		List<List<Integer>> expected = ListFactory.newArrayList();
-		expected.add(ListFactory.newRangeList(1, 32));
-		List<List<Integer>> actual = ListExtensions.getAllCombinations(values, 32);
-		assertEquals(expected, actual);
-	}
-
-	/**
-	 * Test the method {@link ListExtensions#getCombinations(List, int)}. Its Javadoc promises no
-	 * order of the values within a combination, so each combination is sorted before the comparison
-	 */
-	@Test
-	public void testGetCombinations()
-	{
-		List<String> values;
-		List<List<String>> actual;
-		List<List<String>> expected;
-		// new scenario...
-		expected = ListFactory.newArrayList();
-		values = ListFactory.newArrayList("1", "2", "3", "4");
-		actual = ListExtensions.getCombinations(values, 3);
-		actual.forEach(Collections::sort);
-		expected.add(ListFactory.newArrayList("1", "2", "3"));
-		expected.add(ListFactory.newArrayList("1", "2", "4"));
-		expected.add(ListFactory.newArrayList("1", "3", "4"));
-		expected.add(ListFactory.newArrayList("2", "3", "4"));
-		assertTrue(CollectionExtensions.isEqualCollection(actual, expected));
-		// new scenario...
-		expected = ListFactory.newArrayList();
-		values = ListFactory.newArrayList("1", "2", "3", "4", "5", "6", "7");
-		actual = ListExtensions.getCombinations(values, 6);
-		actual.forEach(Collections::sort);
-		expected.add(ListFactory.newArrayList("1", "2", "3", "4", "5", "6"));
-		expected.add(ListFactory.newArrayList("1", "2", "3", "4", "5", "7"));
-		expected.add(ListFactory.newArrayList("1", "2", "3", "4", "6", "7"));
-		expected.add(ListFactory.newArrayList("1", "2", "3", "5", "6", "7"));
-		expected.add(ListFactory.newArrayList("1", "2", "4", "5", "6", "7"));
-		expected.add(ListFactory.newArrayList("1", "3", "4", "5", "6", "7"));
-		expected.add(ListFactory.newArrayList("2", "3", "4", "5", "6", "7"));
-		assertTrue(CollectionExtensions.isEqualCollection(actual, expected));
-	}
-
-	/**
-	 * Test method for {@link ListExtensions#getFirstElement(List)}
-	 */
-	@Test
-	public final void testGetFirstElement()
-	{
-		Optional<String> expected;
-		Optional<String> actual;
-		List<String> search;
-
-		expected = Optional.of("Leonidas");
-		search = ListFactory.newArrayList();
-		search.add(expected.get());
-		search.add("Berta");
-		search.add("Caesar");
-		search.add("Dora");
-		search.add("Emil");
-		search.add("Anton");
-
-		actual = ListExtensions.getFirstElement(search);
-		assertEquals(expected, actual);
-
-		search = ListFactory.newArrayList();
-		actual = ListExtensions.getFirstElement(search);
-		expected = Optional.empty();
-		assertEquals(expected, actual);
-	}
-
-	/**
-	 * Test method for {@link ListExtensions#getLastElement(List)}
-	 */
-	@Test
-	public final void testGetLastElement()
-	{
-		Optional<String> expected;
-		Optional<String> actual;
-
-		final List<String> search = ListFactory.newArrayList();
-		actual = ListExtensions.getLastElement(search);
-		expected = Optional.empty();
-		assertEquals(expected, actual);
-		search.add("Anton");
-		search.add("Berta");
-		search.add("Caesar");
-		search.add("Dora");
-		search.add("Emil");
-		search.add("Leonidas");
-		actual = ListExtensions.getLastElement(search);
-		expected = Optional.of("Leonidas");
-		assertEquals(expected, actual);
-	}
-
-	/**
-	 * Test method for {@link ListExtensions#getModifiedCollections(Collection, Collection)}
-	 */
-	@Test
-	public void testGetModifiedLists()
-	{
-		final String[] previous = { "1", "2", "3", "4", "5", "6", "7" };
-		final String[] next = { "2", "5", "6", "7", "8", "9" };
-
-		final String[] expectedAdded = { "8", "9" };
-		final String[] expectedRemoved = { "1", "3", "4" };
-
-		final List<String> previousList = ListFactory.newArrayList(Arrays.asList(previous));
-		final List<String> nextList = Arrays.asList(next);
-
-		final List<String> expectedAddedList = Arrays.asList(expectedAdded);
-		final List<String> expectedRemovedList = Arrays.asList(expectedRemoved);
-
-		final ModifiedCollections<String> result = ListExtensions
-			.getModifiedCollections(previousList, nextList);
-		assertEquals(result.getRemovedElements(), expectedRemovedList);
-		assertEquals(result.getAddedElements(), expectedAddedList);
-	}
-
-	/**
-	 * Test method for {@link ListExtensions#getNextElement(List, Object)}
-	 */
-	@Test
-	public final void testGetNext()
-	{
-		Optional<String> expected;
-		Optional<String> actual;
-		List<String> search;
-
-		String caeser = "Caesar";
-		String dora = "Dora";
-		String emil = "Emil";
-		String anton = "Anton";
-		search = ListFactory.newArrayList();
-		search.add(caeser);
-		search.add(dora);
-		search.add(emil);
-		search.add(anton);
-
-		actual = ListExtensions.getNextElement(search, "foo");
-		expected = Optional.empty();
-		assertEquals(expected, actual);
-
-		actual = ListExtensions.getNextElement(search, null);
-		expected = Optional.empty();
-		assertEquals(expected, actual);
-
-		actual = ListExtensions.getNextElement(search, anton);
-		expected = Optional.empty();
-		assertEquals(expected, actual);
-
-		actual = ListExtensions.getNextElement(search, emil);
-		expected = Optional.of(anton);
-		assertEquals(expected, actual);
-
-		actual = ListExtensions.getNextElement(search, dora);
-		expected = Optional.of(emil);
-		assertEquals(expected, actual);
-
-		actual = ListExtensions.getNextElement(search, caeser);
-		expected = Optional.of(dora);
-		assertEquals(expected, actual);
-	}
-
-	/**
-	 * Test method for {@link ListExtensions#getPreviousElement(List, Object)}
-	 */
-	@Test
-	public final void testGetPrevious()
-	{
-		Optional<String> expected;
-		Optional<String> actual;
-		List<String> search;
-
-		String caeser = "Caesar";
-		String dora = "Dora";
-		String emil = "Emil";
-		String anton = "Anton";
-		search = ListFactory.newArrayList();
-		search.add(caeser);
-		search.add(dora);
-		search.add(emil);
-		search.add(anton);
-
-		actual = ListExtensions.getPreviousElement(search, "foo");
-		expected = Optional.empty();
-		assertEquals(expected, actual);
-
-		actual = ListExtensions.getPreviousElement(search, null);
-		expected = Optional.empty();
-		assertEquals(expected, actual);
-
-		actual = ListExtensions.getPreviousElement(search, caeser);
-		expected = Optional.empty();
-		assertEquals(expected, actual);
-
-		actual = ListExtensions.getPreviousElement(search, dora);
-		expected = Optional.of(caeser);
-		assertEquals(expected, actual);
-
-		actual = ListExtensions.getPreviousElement(search, emil);
-		expected = Optional.of(dora);
-		assertEquals(expected, actual);
-
-		actual = ListExtensions.getPreviousElement(search, anton);
-		expected = Optional.of(emil);
-		assertEquals(expected, actual);
-	}
-
-	/**
-	 * Test method for {@link ListExtensions#getSameElementsFromLists(List, List)}
-	 */
-	@Test
-	public void testGetSameElementsFromLists()
-	{
-		final List<String> toSearch = ListFactory.newArrayList();
-		final List<String> search = ListFactory.newArrayList();
-		final List<String> atLeastOneSameObject = ListFactory.newArrayList();
-		toSearch.add("Anton");
-		toSearch.add("Berta");
-		toSearch.add("Caesar");
-		search.add("Dora");
-		search.add("Emil");
-		search.add("Franz");
-		atLeastOneSameObject.add("Anton");
-		atLeastOneSameObject.add("Dora");
-		atLeastOneSameObject.add("Emil");
-		final List<String> expectedElements = ListFactory.newArrayList();
-		expectedElements.add("Dora");
-		expectedElements.add("Emil");
-		final List<String> foundElements = ListExtensions.getSameElementsFromLists(search,
-			atLeastOneSameObject);
-		final boolean isTrue = expectedElements.equals(foundElements);
-		assertTrue(isTrue);
-		for (final String string : foundElements)
+		final List<Integer> list = numbers("1 2 3 4 5");
+		final List<Integer> actual = ListExtensions.subList(list, fromIndex, toIndex);
+		assertEquals(numbers(expected), actual);
+		final List<Integer> afterwards = numbers("1 2 3 4 5");
+		if (actual.isEmpty())
 		{
-			assertTrue(expectedElements.contains(string));
-
+			actual.add(42);
+			assertEquals(List.of(42), actual);
 		}
-		final List<String> empty = ListExtensions.getSameElementsFromLists(toSearch, search);
-		assertTrue(empty.isEmpty(), "List should be empty.");
+		else
+		{
+			actual.clear();
+			afterwards.removeAll(numbers(expected));
+		}
+		assertEquals(afterwards, list);
 	}
 
 	/**
-	 * Test method for {@link ListExtensions#hasNext(List, Object)}
+	 * Test method for {@link ListExtensions#getFirst(List)}, {@link ListExtensions#getLast(List)},
+	 * {@link ListExtensions#getFirstElement(List)} and {@link ListExtensions#getLastElement(List)}:
+	 * the first and the last element, null or an empty {@link Optional} for an empty list, and the
+	 * list does not change
+	 *
+	 * @param description
+	 *            the name of the case
+	 * @param elements
+	 *            the elements of the list, separated by a space
+	 * @param first
+	 *            the first element, null if there is none
+	 * @param last
+	 *            the last element, null if there is none
 	 */
-	@Test
-	public void testHasNext()
+	@ParameterizedTest(name = "{0}", quoteTextArguments = false)
+	@CsvSource(value = {
+			"Leonidas, Berta, Caesar, Dora, Emil, Anton: Leonidas first, Anton last | Leonidas Berta Caesar Dora Emil Anton | Leonidas | Anton",
+			"Anton, Berta, Caesar, Dora, Emil, Leonidas: Anton first, Leonidas last | Anton Berta Caesar Dora Emil Leonidas | Anton | Leonidas",
+			"a single element a: first and last | a | a | a",
+			"an empty list: none | '' | none | none" }, delimiter = '|', nullValues = "none")
+	public void testGetFirstAndGetLast(final String description, final String elements,
+		final String first, final String last)
 	{
-		boolean expected;
-		boolean actual;
-		List<String> search;
-		String emil = "Emil";
-		String anton = "Anton";
-		search = ListFactory.newArrayList();
-		search.add("Caesar");
-		search.add("Dora");
-		search.add(emil);
-		search.add(anton);
-
-		expected = false;
-		actual = ListExtensions.hasNext(search, null);
-		assertEquals(expected, actual);
-
-		expected = true;
-		actual = ListExtensions.hasNext(search, emil);
-		assertEquals(expected, actual);
-
-		expected = false;
-		actual = ListExtensions.hasNext(search, anton);
-		assertEquals(expected, actual);
+		final List<String> list = elements(elements);
+		assertEquals(first, ListExtensions.getFirst(list), "getFirst");
+		assertEquals(last, ListExtensions.getLast(list), "getLast");
+		assertEquals(Optional.ofNullable(first), ListExtensions.getFirstElement(list),
+			"getFirstElement");
+		assertEquals(Optional.ofNullable(last), ListExtensions.getLastElement(list),
+			"getLastElement");
+		assertEquals(elements(elements), list, "the list changed");
 	}
 
 	/**
-	 * Test method for {@link ListExtensions#hasPrevious(List, Object)}
+	 * Test method for {@link ListExtensions#removeFirst(List)},
+	 * {@link ListExtensions#removeFirstElement(List)}, {@link ListExtensions#removeLast(List)} and
+	 * {@link ListExtensions#removeLastElement(List)}, each on a list of its own: the removed
+	 * element, null or an empty {@link Optional} for an empty list, and the list without it
+	 *
+	 * @param description
+	 *            the name of the case
+	 * @param elements
+	 *            the elements of the list, separated by a space
+	 * @param first
+	 *            the first element, null if there is none
+	 * @param last
+	 *            the last element, null if there is none
 	 */
-	@Test
-	public void testHasPrevious()
+	@ParameterizedTest(name = "{0}", quoteTextArguments = false)
+	@CsvSource(value = {
+			"Berta, Leonidas, Caesar, Dora, Emil, Anton: Berta first, Anton last | Berta Leonidas Caesar Dora Emil Anton | Berta | Anton",
+			"Anton, Caesar, Dora, Emil, Leonidas, Berta: Anton first, Berta last | Anton Caesar Dora Emil Leonidas Berta | Anton | Berta",
+			"a single element a: first and last, the list is empty then | a | a | a",
+			"an empty list: none, the list stays empty | '' | none | none" }, delimiter = '|', nullValues = "none")
+	public void testRemoveFirstAndRemoveLast(final String description, final String elements,
+		final String first, final String last)
 	{
-		boolean expected;
-		boolean actual;
-		List<String> search;
-
-		String caeser = "Caesar";
-		String dora = "Dora";
-		String emil = "Emil";
-		String anton = "Anton";
-		search = ListFactory.newArrayList();
-		search.add(caeser);
-		search.add(dora);
-		search.add(emil);
-		search.add(anton);
-
-		expected = false;
-		actual = ListExtensions.hasPrevious(search, null);
-		assertEquals(expected, actual);
-
-		actual = ListExtensions.hasPrevious(search, "foo");
-		assertEquals(expected, actual);
-
-		actual = ListExtensions.hasPrevious(search, caeser);
-		assertEquals(expected, actual);
-
-		expected = true;
-		actual = ListExtensions.hasPrevious(search, dora);
-		assertEquals(expected, actual);
-
-		actual = ListExtensions.hasPrevious(search, emil);
-		assertEquals(expected, actual);
-
-		actual = ListExtensions.hasPrevious(search, anton);
-		assertEquals(expected, actual);
+		final List<String> given = elements(elements);
+		final List<String> withoutFirst = given.isEmpty()
+			? List.of()
+			: given.subList(1, given.size());
+		final List<String> withoutLast = given.isEmpty()
+			? List.of()
+			: given.subList(0, given.size() - 1);
+		List<String> list = elements(elements);
+		assertEquals(first, ListExtensions.removeFirst(list), "removeFirst");
+		assertEquals(withoutFirst, list, "the list after removeFirst");
+		list = elements(elements);
+		assertEquals(Optional.ofNullable(first), ListExtensions.removeFirstElement(list),
+			"removeFirstElement");
+		assertEquals(withoutFirst, list, "the list after removeFirstElement");
+		list = elements(elements);
+		assertEquals(last, ListExtensions.removeLast(list), "removeLast");
+		assertEquals(withoutLast, list, "the list after removeLast");
+		list = elements(elements);
+		assertEquals(Optional.ofNullable(last), ListExtensions.removeLastElement(list),
+			"removeLastElement");
+		assertEquals(withoutLast, list, "the list after removeLastElement");
 	}
 
 	/**
-	 * Test method for {@link ListExtensions#isEqualListOfArrays(List, List)}.
+	 * The elements a, null in a new {@link ArrayList}, which the test may change
+	 *
+	 * @return the new list
 	 */
-	@Test
-	public void testIsEqualListOfArrays()
+	private static List<String> aAndNull()
 	{
-		boolean actual;
-		boolean expected;
-		String[] lineOne;
-		String[] lineTwo;
-		String[] lineThree;
-		String[] lineFour;
-		String[] lineFive;
-		String[] lineSix;
-		List<String[]> one;
-		List<String[]> other;
-		lineOne = ArrayFactory.newArray("1", "23", "3");
-		lineTwo = ArrayFactory.newArray("4", "25", "9");
-		lineThree = ArrayFactory.newArray("6", "21", "8");
-		lineFour = ArrayFactory.newArray("1", "23", "3");
-		lineFive = ArrayFactory.newArray("4", "25", "9");
-		lineSix = ArrayFactory.newArray("6", "21", "8");
-		//
-		one = ListFactory.newArrayList(lineOne, lineTwo, lineThree);
-		other = ListFactory.newArrayList(lineFour, lineFive, lineSix);
-		actual = ListExtensions.isEqualListOfArrays(one, other);
-		expected = true;
-		assertEquals(expected, actual);
-		//
-		one = null;
-		other = null;
-		actual = ListExtensions.isEqualListOfArrays(one, other);
-		assertEquals(expected, actual);
-		//
-		other = ListFactory.newArrayList(lineFour, lineFive, lineSix);
-		actual = ListExtensions.isEqualListOfArrays(one, other);
-		expected = false;
-		assertEquals(expected, actual);
-		//
-		one = ListFactory.newArrayList(lineOne, lineTwo, lineThree);
-		other = null;
-		actual = ListExtensions.isEqualListOfArrays(one, other);
-		assertEquals(expected, actual);
-		//
-		one = ListFactory.newArrayList(lineOne, lineTwo);
-		other = ListFactory.newArrayList(lineFour, lineFive, lineSix);
-		actual = ListExtensions.isEqualListOfArrays(one, other);
-		assertEquals(expected, actual);
-		//
-		lineThree = ArrayFactory.newArray("6", "21", "777");
-		one = ListFactory.newArrayList(lineOne, lineTwo, lineThree);
-		other = ListFactory.newArrayList(lineFour, lineFive, lineSix);
-		actual = ListExtensions.isEqualListOfArrays(one, other);
-		assertEquals(expected, actual);
+		return new ArrayList<>(Arrays.asList("a", null));
 	}
 
 	/**
-	 * Test method for {@link ListExtensions#isFirst(List, Object)}
+	 * The elements null, a in a new {@link ArrayList}, which the test may change
+	 *
+	 * @return the new list
 	 */
-	@Test
-	public void testIsFirst()
+	private static List<String> nullAndA()
 	{
-		String expected;
-		expected = "Leonidas";
-		final List<String> search = ListFactory.newArrayList();
-		search.add(expected);
-		search.add("Berta");
-		search.add("Caesar");
-		search.add("Dora");
-		search.add("Emil");
-		search.add("Anton");
-		final boolean actual = ListExtensions.isFirst(search, expected);
-		assertTrue(actual);
+		return new ArrayList<>(Arrays.asList(null, "a"));
 	}
 
 	/**
-	 * Test the method {@link ListExtensions#isFirst(List, Object)} with an element that is not the
-	 * first one and with an element that is not in the list
+	 * A call of one of the methods at the ends of a list, with a null list or a list that holds
+	 * null, what it returns and the list afterwards
+	 *
+	 * @param description
+	 *            the name of the case
+	 * @param list
+	 *            makes the given list, may make null
+	 * @param call
+	 *            the call with the given list
+	 * @param result
+	 *            what it returns
+	 * @param after
+	 *            the list afterwards, null for a null list
 	 */
-	@Test
-	public void testIsFirstWithOtherElements()
-	{
-		final List<String> search = ListFactory.newArrayList("Leonidas", "Berta", "Caesar");
-		assertFalse(ListExtensions.isFirst(search, "Berta"));
-		assertFalse(ListExtensions.isFirst(search, "Foo"));
+	record EndCall(String description, Supplier<List<String>> list,
+		Function<List<String>, Object> call, Object result, List<String> after) {
+		@Override
+		public String toString()
+		{
+			return description;
+		}
 	}
 
 	/**
-	 * Test method for {@link ListExtensions#isLast(List, Object)}
+	 * The cases of {@link #testEndCall(EndCall)}
+	 *
+	 * @return the cases
 	 */
-	@Test
-	public void testIsLast()
+	static Stream<EndCall> endCalls()
 	{
-		boolean actual;
-		boolean expected;
-		String name;
-		name = "Leonidas";
-		final List<String> search = ListFactory.newArrayList();
-		search.add("Anton");
-		search.add("Berta");
-		search.add("Caesar");
-		search.add("Dora");
-		search.add("Emil");
-		search.add(name);
-		actual = ListExtensions.isLast(search, name);
-		expected = true;
-		assertEquals(expected, actual);
-
-		actual = ListExtensions.isLast(search, "Foo");
-		expected = false;
-		assertEquals(expected, actual);
-
-		actual = ListExtensions.isLast(ListFactory.newArrayList(), "Foo");
-		assertEquals(expected, actual);
+		final Supplier<List<String>> none = () -> null;
+		return Stream.of(
+			new EndCall("getFirst of null: null (#126)", none, ListExtensions::getFirst, null,
+				null),
+			new EndCall("getLast of null: null (#126)", none, ListExtensions::getLast, null, null),
+			new EndCall("removeFirst of null: null (#126)", none, ListExtensions::removeFirst, null,
+				null),
+			new EndCall("removeLast of null: null (#126)", none, ListExtensions::removeLast, null,
+				null),
+			new EndCall("isLast of null and x: false (#126)", none,
+				list -> ListExtensions.isLast(list, "x"), false, null),
+			new EndCall("getFirst of null, a: null (#126)", ListExtensionsTest::nullAndA,
+				ListExtensions::getFirst, null, Arrays.asList(null, "a")),
+			new EndCall("getLast of a, null: null (#126)", ListExtensionsTest::aAndNull,
+				ListExtensions::getLast, null, Arrays.asList("a", null)),
+			new EndCall("removeFirst of null, a: null, a stays (#126)",
+				ListExtensionsTest::nullAndA, ListExtensions::removeFirst, null, List.of("a")),
+			new EndCall("removeLast of a, null: null, a stays (#126)", ListExtensionsTest::aAndNull,
+				ListExtensions::removeLast, null, List.of("a")),
+			new EndCall("isLast of a, null and x: false (#126)", ListExtensionsTest::aAndNull,
+				list -> ListExtensions.isLast(list, "x"), false, Arrays.asList("a", null)),
+			new EndCall("isLast of a, null and null: true (#126)", ListExtensionsTest::aAndNull,
+				list -> ListExtensions.isLast(list, null), true, Arrays.asList("a", null)),
+			new EndCall("getFirst of a, null: a", ListExtensionsTest::aAndNull,
+				ListExtensions::getFirst, "a", Arrays.asList("a", null)),
+			new EndCall("getLast of null, a: a", ListExtensionsTest::nullAndA,
+				ListExtensions::getLast, "a", Arrays.asList(null, "a")),
+			new EndCall("removeFirst of a, null: a, null stays", ListExtensionsTest::aAndNull,
+				ListExtensions::removeFirst, "a", Arrays.asList((String)null)),
+			new EndCall("removeLast of null, a: a, null stays", ListExtensionsTest::nullAndA,
+				ListExtensions::removeLast, "a", Arrays.asList((String)null)),
+			new EndCall("getFirstElement of a, null: a", ListExtensionsTest::aAndNull,
+				ListExtensions::getFirstElement, Optional.of("a"), Arrays.asList("a", null)),
+			new EndCall("getLastElement of null, a: a", ListExtensionsTest::nullAndA,
+				ListExtensions::getLastElement, Optional.of("a"), Arrays.asList(null, "a")),
+			new EndCall("removeFirstElement of a, null: a, null stays",
+				ListExtensionsTest::aAndNull, ListExtensions::removeFirstElement, Optional.of("a"),
+				Arrays.asList((String)null)),
+			new EndCall("removeLastElement of null, a: a, null stays", ListExtensionsTest::nullAndA,
+				ListExtensions::removeLastElement, Optional.of("a"), Arrays.asList((String)null)),
+			new EndCall("isLast of null, a and a: true", ListExtensionsTest::nullAndA,
+				list -> ListExtensions.isLast(list, "a"), true, Arrays.asList(null, "a")));
 	}
 
 	/**
-	 * Test method for {@link ListExtensions#isAfter(List, Object, Object)}
+	 * Test for the methods {@link ListExtensions#getFirst(List)},
+	 * {@link ListExtensions#getLast(List)}, {@link ListExtensions#removeFirst(List)},
+	 * {@link ListExtensions#removeLast(List)}, their {@link Optional} variants and
+	 * {@link ListExtensions#isLast(List, Object)} with a null list or a list that holds null: what
+	 * they return, and the list afterwards
+	 *
+	 * @param endCall
+	 *            the list, the call, what it returns and the list afterwards
 	 */
-	@Test
-	public void testIsAfter()
+	@ParameterizedTest(name = "{0}")
+	@MethodSource("endCalls")
+	public void testEndCall(final EndCall endCall)
 	{
-		boolean actual;
-		boolean expected;
-		List<String> list;
-
-		String content = "Content";
-		String donate = "Donate";
-		String diagnostic = "Diagnostic";
-		String license = "License";
-		String info = "Info";
-		list = ListFactory.newArrayList();
-		list.add(content);
-		list.add(donate);
-		list.add(diagnostic);
-		list.add(license);
-		list.add(info);
-
-		actual = ListExtensions.isAfter(list, content, diagnostic);
-		expected = true;
-		assertEquals(expected, actual);
-		actual = ListExtensions.isAfter(list, diagnostic, content);
-		expected = false;
-		assertEquals(expected, actual);
-		actual = ListExtensions.isAfter(list, "foo", diagnostic);
-		assertEquals(expected, actual);
+		final List<String> list = endCall.list().get();
+		assertEquals(endCall.result(), endCall.call().apply(list));
+		assertEquals(endCall.after(), list, "the list afterwards");
 	}
 
 	/**
-	 * Test the method {@link ListExtensions#isAfter(List, Object, Object)} with the same element
-	 * twice: an element is not after itself
+	 * A call of one of the methods at the ends of a list, with a null list or a list that holds
+	 * null, which throws, and the list afterwards
+	 *
+	 * @param description
+	 *            the name of the case
+	 * @param list
+	 *            makes the given list, may make null
+	 * @param call
+	 *            the call with the given list
+	 * @param exception
+	 *            the class of the exception
+	 * @param after
+	 *            the list afterwards, null for a null list
 	 */
-	@Test
-	public void testIsAfterWithSameElement()
-	{
-		final List<String> list = ListFactory.newArrayList("Content", "Donate", "Diagnostic");
-		assertFalse(ListExtensions.isAfter(list, "Donate", "Donate"));
+	record RefusedEndCall(String description, Supplier<List<String>> list,
+		Function<List<String>, Object> call, Class<? extends RuntimeException> exception,
+		List<String> after) {
+		@Override
+		public String toString()
+		{
+			return description;
+		}
 	}
 
 	/**
-	 * Test method for {@link ListExtensions#isBefore(List, Object, Object)}
+	 * The cases of {@link #testRefusedEndCall(RefusedEndCall)}: the {@link Optional} variants
+	 * refuse a null list, and a null first or last element, which an {@link Optional} cannot hold,
+	 * as {@link java.util.stream.Stream#findFirst()} does, before they remove anything (#126)
+	 *
+	 * @return the cases
 	 */
-	@Test
-	public void testIsBefore()
+	static Stream<RefusedEndCall> refusedEndCalls()
 	{
-		boolean actual;
-		boolean expected;
-		List<String> list;
-
-		String content = "Content";
-		String donate = "Donate";
-		String diagnostic = "Diagnostic";
-		String license = "License";
-		String info = "Info";
-		list = ListFactory.newArrayList();
-		list.add(content);
-		list.add(donate);
-		list.add(diagnostic);
-		list.add(license);
-		list.add(info);
-
-		actual = ListExtensions.isBefore(list, content, diagnostic);
-		expected = false;
-		assertEquals(expected, actual);
-		actual = ListExtensions.isBefore(list, diagnostic, content);
-		expected = true;
-		assertEquals(expected, actual);
-		actual = ListExtensions.isBefore(list, "foo", diagnostic);
-		expected = false;
-		assertEquals(expected, actual);
+		final Supplier<List<String>> none = () -> null;
+		return Stream.of(
+			new RefusedEndCall("getFirstElement of null, a: NullPointerException (#126)",
+				ListExtensionsTest::nullAndA, ListExtensions::getFirstElement,
+				NullPointerException.class, Arrays.asList(null, "a")),
+			new RefusedEndCall("getLastElement of a, null: NullPointerException (#126)",
+				ListExtensionsTest::aAndNull, ListExtensions::getLastElement,
+				NullPointerException.class, Arrays.asList("a", null)),
+			new RefusedEndCall(
+				"removeFirstElement of null, a: NullPointerException, nothing removed (#126)",
+				ListExtensionsTest::nullAndA, ListExtensions::removeFirstElement,
+				NullPointerException.class, Arrays.asList(null, "a")),
+			new RefusedEndCall(
+				"removeLastElement of a, null: NullPointerException, nothing removed (#126)",
+				ListExtensionsTest::aAndNull, ListExtensions::removeLastElement,
+				NullPointerException.class, Arrays.asList("a", null)),
+			new RefusedEndCall("getFirstElement of null: IllegalArgumentException", none,
+				ListExtensions::getFirstElement, IllegalArgumentException.class, null),
+			new RefusedEndCall("getLastElement of null: IllegalArgumentException", none,
+				ListExtensions::getLastElement, IllegalArgumentException.class, null),
+			new RefusedEndCall("removeFirstElement of null: IllegalArgumentException", none,
+				ListExtensions::removeFirstElement, IllegalArgumentException.class, null),
+			new RefusedEndCall("removeLastElement of null: IllegalArgumentException", none,
+				ListExtensions::removeLastElement, IllegalArgumentException.class, null));
 	}
 
 	/**
-	 * Test the method {@link ListExtensions#isBefore(List, Object, Object)} with the same element
-	 * twice: an element is not before itself
+	 * Test for the methods {@link ListExtensions#getFirst(List)},
+	 * {@link ListExtensions#getLast(List)}, {@link ListExtensions#removeFirst(List)},
+	 * {@link ListExtensions#removeLast(List)}, their {@link Optional} variants and
+	 * {@link ListExtensions#isLast(List, Object)} with a null list or a list that holds null, where
+	 * they throw: the exception, and the list afterwards
+	 *
+	 * @param refused
+	 *            the list, the call, the class of the exception and the list afterwards
 	 */
-	@Test
-	public void testIsBeforeWithSameElement()
+	@ParameterizedTest(name = "{0}")
+	@MethodSource("refusedEndCalls")
+	public void testRefusedEndCall(final RefusedEndCall refused)
 	{
-		final List<String> list = ListFactory.newArrayList("Content", "Donate", "Diagnostic");
-		assertFalse(ListExtensions.isBefore(list, "Donate", "Donate"));
+		final List<String> list = refused.list().get();
+		assertThrows(refused.exception(), () -> refused.call().apply(list));
+		assertEquals(refused.after(), list, "the list afterwards");
 	}
 
 	/**
-	 * Test the method {@link ListExtensions#isBefore(List, Object, Object)} with null for the list,
-	 * the element or the element to check: each throws a {@link NullPointerException}
+	 * Test the method {@link ListExtensions#clone(List)}: a new list with the elements in their
+	 * order, which changes without the given list
+	 *
+	 * @param description
+	 *            the name of the case
+	 * @param elements
+	 *            the elements of the list, separated by a space
 	 */
-	@Test
-	public void testIsBeforeWithNull()
+	@ParameterizedTest(name = "{0}", quoteTextArguments = false)
+	@CsvSource(value = { "Dora, Emil, Franz: a new list of them | Dora Emil Franz",
+			"no elements: a new empty list | ''" }, delimiter = '|')
+	public void testClone(final String description, final String elements)
 	{
-		final List<String> list = ListFactory.newArrayList("Content", "Donate", "Diagnostic");
-		Assertions.assertThrows(NullPointerException.class,
-			() -> ListExtensions.isBefore(null, "Donate", "Content"));
-		Assertions.assertThrows(NullPointerException.class,
-			() -> ListExtensions.isBefore(list, null, "Content"));
-		Assertions.assertThrows(NullPointerException.class,
-			() -> ListExtensions.isBefore(list, "Donate", null));
+		final List<String> list = elements(elements);
+		final List<String> actual = ListExtensions.clone(list);
+		assertEquals(list, actual);
+		assertNotSame(list, actual);
+		actual.add("Gustav");
+		assertEquals(elements(elements), list, "the given list changed with its clone");
 	}
 
 	/**
-	 * Test the method {@link ListExtensions#toArray(List)}
+	 * Test the method {@link ListExtensions#containAtLeastOneObject(List, List)}: true if one
+	 * element of the first list is in the second one, otherwise false
+	 *
+	 * @param description
+	 *            the name of the case
+	 * @param toSearch
+	 *            the elements of the first list, separated by a space
+	 * @param search
+	 *            the elements of the second list, separated by a space
+	 * @param expected
+	 *            the answer
 	 */
-	@Test
-	public void testListToArray()
+	@ParameterizedTest(name = "{0}", quoteTextArguments = false)
+	@CsvSource(value = {
+			"Anton, Berta, Caesar and Dora, Emil, Franz, none in common: false | Anton Berta Caesar | Dora Emil Franz | false",
+			"Anton, Berta, Caesar and Anton, Dora, the first in common: true | Anton Berta Caesar | Anton Dora | true",
+			"Dora, Emil, Franz and Anton, Dora: true | Dora Emil Franz | Anton Dora | true",
+			"Anton, Berta, Caesar and Caesar, the last in common: true | Anton Berta Caesar | Caesar | true",
+			"an empty list and Anton: false | '' | Anton | false",
+			"Anton and an empty list: false | Anton | '' | false" }, delimiter = '|')
+	public void testContainAtLeastOneObject(final String description, final String toSearch,
+		final String search, final boolean expected)
 	{
-		Integer[] actual;
-		Integer[] expected;
-		List<Integer> numbers;
-		// new scenario...
-		numbers = ListFactory.newArrayList(1, 2, 3);
-		actual = ListExtensions.toArray(numbers);
-		expected = ArrayFactory.newArray(1, 2, 3);
-		assertArrayEquals(actual, expected);
+		assertEquals(expected,
+			ListExtensions.containAtLeastOneObject(elements(toSearch), elements(search)));
 	}
 
 	/**
-	 * Test the method {@link ListExtensions#toArray(List)} with null as first element: the
-	 * component type is the class of the non-null elements, the result a {@code String[]} that
-	 * holds null and "a". Before the fix of #64 the method threw a {@link NullPointerException}
+	 * The numbers 1 to the given count and the combinations of the given size of them
+	 *
+	 * @param description
+	 *            the name of the case
+	 * @param count
+	 *            the count of the numbers, 1 to count
+	 * @param size
+	 *            the size of the combinations
+	 * @param expected
+	 *            the combinations, each in the order of the numbers
 	 */
-	@Test
-	public void testListToArrayWithNullFirstElement()
-	{
-		final List<String> list = new ArrayList<>(Arrays.asList(null, "a"));
-
-		final String[] actual = ListExtensions.toArray(list);
-		assertEquals(String[].class, actual.getClass());
-		assertArrayEquals(new String[] { null, "a" }, actual);
+	record CombinationCase(String description, int count, int size, List<List<Integer>> expected) {
+		@Override
+		public String toString()
+		{
+			return description;
+		}
 	}
 
 	/**
-	 * Test the method {@link ListExtensions#toArray(List)} with elements of different classes: the
-	 * component type is their most specific common superclass, a {@code Number[]} for [1, 2.5].
-	 * Before the fix of #64 the component type was the class of the first element, {@code Integer},
-	 * and storing 2.5 threw an {@link ArrayStoreException}
+	 * All combinations of three of the numbers 1 to n
+	 *
+	 * @param n
+	 *            the greatest number
+	 * @return the combinations, each in ascending order
 	 */
-	@Test
-	public void testListToArrayWithElementsOfDifferentClasses()
+	private static List<List<Integer>> combinationsOfThree(final int n)
 	{
-		final List<Number> list = new ArrayList<>(Arrays.asList(1, 2.5));
-
-		final Number[] actual = ListExtensions.toArray(list);
-		assertEquals(Number[].class, actual.getClass());
-		assertArrayEquals(new Number[] { 1, 2.5 }, actual);
+		final List<List<Integer>> combinations = new ArrayList<>();
+		for (int a = 1; a <= n; a++)
+		{
+			for (int b = a + 1; b <= n; b++)
+			{
+				for (int c = b + 1; c <= n; c++)
+				{
+					combinations.add(List.of(a, b, c));
+				}
+			}
+		}
+		return combinations;
 	}
 
 	/**
-	 * Test the method {@link ListExtensions#toIndexMap(List)}
+	 * The cases of both {@link ListExtensions#getAllCombinations(List, int)} and
+	 * {@link ListExtensions#getCombinations(List, int)}
+	 *
+	 * @return the cases
 	 */
-	@Test
-	public void testListToIndexMapWithInteger()
+	static Stream<CombinationCase> combinations()
 	{
-		Map<Integer, Integer> actual;
-		Map<Integer, Integer> expected;
-		List<Integer> numbers;
-		// new scenario...
-		numbers = ListFactory.newArrayList(1, 2, 3);
-		actual = ListExtensions.toIndexMap(numbers);
-		expected = MapFactory.newLinkedHashMap();
-		expected.put(0, 1);
-		expected.put(1, 2);
-		expected.put(2, 3);
-		assertEquals(expected, actual);
+		return Stream.of(
+			new CombinationCase("1 to 4 in combinations of 3: 4 of them", 4, 3,
+				List.of(List.of(1, 2, 3), List.of(1, 2, 4), List.of(1, 3, 4), List.of(2, 3, 4))),
+			new CombinationCase("1 to 5 in combinations of 3: 10 of them", 5, 3,
+				List.of(List.of(1, 2, 3), List.of(1, 2, 4), List.of(1, 2, 5), List.of(1, 3, 4),
+					List.of(1, 3, 5), List.of(1, 4, 5), List.of(2, 3, 4), List.of(2, 3, 5),
+					List.of(2, 4, 5), List.of(3, 4, 5))),
+			new CombinationCase("1 to 7 in combinations of 6: 7 of them", 7, 6,
+				List.of(List.of(1, 2, 3, 4, 5, 6), List.of(1, 2, 3, 4, 5, 7),
+					List.of(1, 2, 3, 4, 6, 7), List.of(1, 2, 3, 5, 6, 7), List.of(1, 2, 4, 5, 6, 7),
+					List.of(1, 3, 4, 5, 6, 7), List.of(2, 3, 4, 5, 6, 7))),
+			new CombinationCase("1 to 11 in combinations of 3: 165 of them", 11, 3,
+				combinationsOfThree(11)),
+			new CombinationCase("1 to 3 in combinations of 0: one, the empty combination", 3, 0,
+				List.of(List.of())),
+			new CombinationCase("1 to 3 in combinations of 4, more than the numbers: none", 3, 4,
+				List.of()),
+			new CombinationCase("no numbers in combinations of 1: none", 0, 1, List.of()));
 	}
 
 	/**
-	 * Test the method {@link ListExtensions#toIndexMap(List)}
+	 * The cases of {@link #combinations()} and the one of all 32 of 32 numbers: the search drops
+	 * every branch that has too few values left to fill the combination, which leaves one path;
+	 * without that it would run through 2^32 branches.
+	 * {@link ListExtensions#getCombinations(List, int)} does not drop them and has no such case
+	 *
+	 * @return the cases
 	 */
-	@Test
-	public void testListToIndexMapWithString()
+	static Stream<CombinationCase> allCombinations()
 	{
-		Map<Integer, String> actual;
-		Map<Integer, String> expected;
-		List<String> strings;
-		// new scenario...
-		strings = ListFactory.newArrayList("1", "2", "3");
-		actual = ListExtensions.toIndexMap(strings);
-		expected = MapFactory.newLinkedHashMap();
-		expected.put(0, "1");
-		expected.put(1, "2");
-		expected.put(2, "3");
-		assertEquals(expected, actual);
+		return Stream.concat(combinations(),
+			Stream.of(new CombinationCase(
+				"1 to 32 in combinations of 32: one, all of them in their order", 32, 32,
+				List.of(IntStream.rangeClosed(1, 32).boxed().toList()))));
 	}
 
 	/**
-	 * Test the method {@link ListExtensions#toArray(List)} that throws an
-	 * <code>IllegalArgumentException</code>
+	 * Test the method {@link ListExtensions#getAllCombinations(List, int)}: each combination once,
+	 * in any order of the combinations; the values of a combination in the order of the given list
+	 *
+	 * @param combination
+	 *            the numbers, the size and the combinations
 	 */
-	@Test
-	public void testListToArrayWithException()
+	@ParameterizedTest(name = "{0}")
+	@MethodSource("allCombinations")
+	public void testGetAllCombinations(final CombinationCase combination)
 	{
-		Assertions.assertThrows(IllegalArgumentException.class, () -> {
-			ListExtensions.toArray(ListFactory.newArrayList());
-		});
+		final List<Integer> values = IntStream.rangeClosed(1, combination.count()).boxed()
+			.collect(Collectors.toCollection(ArrayList::new));
+		final List<List<Integer>> actual = ListExtensions.getAllCombinations(values,
+			combination.size());
+		assertEquals(combination.expected().size(), actual.size());
+		assertEquals(new HashSet<>(combination.expected()), new HashSet<>(actual));
 	}
 
 	/**
-	 * Test method for {@link ListExtensions#rearrange(List, Object, int)}
+	 * Test the method {@link ListExtensions#getCombinations(List, int)}: each combination once, in
+	 * any order of the combinations. Its Javadoc promises no order of the values within a
+	 * combination, so each combination is sorted before the comparison
+	 *
+	 * @param combination
+	 *            the numbers, the size and the combinations
 	 */
-	@Test
-	public void testRearrange()
+	@ParameterizedTest(name = "{0}")
+	@MethodSource("combinations")
+	public void testGetCombinations(final CombinationCase combination)
 	{
-		List<String> search;
-		List<String> rearrangedList;
-		int index;
-
-		search = ListFactory.newArrayList();
-		search.add("Leonidas");
-		search.add("Berta");
-		search.add("Caesar");
-		search.add("Dora");
-		search.add("Emil");
-		search.add("Anton");
-
-		rearrangedList = ListExtensions.rearrange(search, "Anton", 0);
-		index = rearrangedList.indexOf("Anton");
-		assertEquals(index, 0);
-
-		rearrangedList = ListExtensions.rearrange(search, "Anton", 2);
-		index = rearrangedList.indexOf("Anton");
-		assertEquals(index, 2);
-
-		rearrangedList = ListExtensions.rearrange(search, "Anton", 5);
-		index = rearrangedList.indexOf("Anton");
-		assertEquals(index, 5);
-
-		rearrangedList = ListExtensions.rearrange(search, "Anton", 6);
-		index = rearrangedList.indexOf("Anton");
-		assertEquals(index, 5);
+		final List<Integer> values = IntStream.rangeClosed(1, combination.count()).boxed()
+			.collect(Collectors.toCollection(ArrayList::new));
+		final List<List<Integer>> actual = ListExtensions
+			.getCombinations(values, combination.size()).stream()
+			.map(found -> found.stream().sorted().toList()).toList();
+		assertEquals(combination.expected().size(), actual.size());
+		assertEquals(new HashSet<>(combination.expected()), new HashSet<>(actual));
 	}
 
 	/**
-	 * Test the method {@link ListExtensions#rearrange(List, Object, int)} with the first element of
-	 * the list: it is moved to the given index
+	 * Test method for
+	 * {@link ListExtensions#getModifiedCollections(java.util.Collection, java.util.Collection)}:
+	 * the elements of the next collection that the previous one does not hold are added, those of
+	 * the previous one that the next one does not hold are removed, each in the order of its
+	 * collection
+	 *
+	 * @param description
+	 *            the name of the case
+	 * @param previous
+	 *            the elements of the previous collection, separated by a space
+	 * @param next
+	 *            the elements of the next collection, separated by a space
+	 * @param added
+	 *            the added elements, separated by a space
+	 * @param removed
+	 *            the removed elements, separated by a space
 	 */
-	@Test
-	public void testRearrangeFirstElement()
+	@ParameterizedTest(name = "{0}", quoteTextArguments = false)
+	@CsvSource(value = {
+			"1 to 7, then 2, 5, 6, 7, 8, 9: 8, 9 added, 1, 3, 4 removed | 1 2 3 4 5 6 7 | 2 5 6 7 8 9 | 8 9 | 1 3 4",
+			"1, 2, then 1, 2: none added, none removed | 1 2 | 1 2 | '' | ''",
+			"nothing, then 1, 2: both added | '' | 1 2 | 1 2 | ''",
+			"1, 2, then nothing: both removed | 1 2 | '' | '' | 1 2" }, delimiter = '|')
+	public void testGetModifiedCollections(final String description, final String previous,
+		final String next, final String added, final String removed)
 	{
-		final List<String> list = ListFactory.newArrayList("Anton", "Berta", "Caesar", "Dora");
-		final List<String> expected = ListFactory.newArrayList("Berta", "Caesar", "Anton", "Dora");
-		final List<String> actual = ListExtensions.rearrange(list, "Anton", 2);
-		assertEquals(expected, actual);
+		final ModifiedCollections<String> actual = ListExtensions
+			.getModifiedCollections(elements(previous), elements(next));
+		assertEquals(elements(added), actual.getAddedElements());
+		assertEquals(elements(removed), actual.getRemovedElements());
 	}
 
 	/**
-	 * Test method for {@link ListExtensions#relocate(List, Object, int)}
+	 * Test method for {@link ListExtensions#hasNext(List, Object)},
+	 * {@link ListExtensions#hasPrevious(List, Object)},
+	 * {@link ListExtensions#getNextElement(List, Object)} and
+	 * {@link ListExtensions#getPreviousElement(List, Object)}: the neighbours of the given element,
+	 * none for the last and for the first, and none for an element the list does not hold
+	 *
+	 * @param description
+	 *            the name of the case
+	 * @param elements
+	 *            the elements of the list, separated by a space
+	 * @param element
+	 *            the given element, may be null
+	 * @param next
+	 *            the next element, null if there is none
+	 * @param previous
+	 *            the previous element, null if there is none
 	 */
-	@Test
-	public void testRelocate()
+	@ParameterizedTest(name = "{0}", quoteTextArguments = false)
+	@CsvSource(value = {
+			"Caesar, the first: next Dora, no previous | Caesar Dora Emil Anton | Caesar | Dora | none",
+			"Dora: next Emil, previous Caesar | Caesar Dora Emil Anton | Dora | Emil | Caesar",
+			"Emil: next Anton, previous Dora | Caesar Dora Emil Anton | Emil | Anton | Dora",
+			"Anton, the last: no next, previous Emil | Caesar Dora Emil Anton | Anton | none | Emil",
+			"foo, not in the list: none | Caesar Dora Emil Anton | foo | none | none",
+			"null, not in the list: none | Caesar Dora Emil Anton | null | none | none",
+			"a, the only element: none | a | a | none | none",
+			"a in an empty list: none | '' | a | none | none" }, delimiter = '|', nullValues = {
+					"null", "none" })
+	public void testNeighbours(final String description, final String elements,
+		final String element, final String next, final String previous)
 	{
-		List<String> list;
-		int index;
-
-		list = ListFactory.newArrayList();
-		list.add("Leonidas");
-		list.add("Berta");
-		list.add("Caesar");
-		list.add("Dora");
-		list.add("Emil");
-		list.add("Anton");
-
-		ListExtensions.relocate(list, "Anton", 0);
-		index = list.indexOf("Anton");
-		assertEquals(index, 0);
-
-		ListExtensions.relocate(list, "Anton", 2);
-		index = list.indexOf("Anton");
-		assertEquals(index, 2);
-
-		ListExtensions.relocate(list, "Anton", 5);
-		index = list.indexOf("Anton");
-		assertEquals(index, 5);
-
-		ListExtensions.relocate(list, "Anton", 6);
-		index = list.indexOf("Anton");
-		assertEquals(index, 5);
-
-		ListExtensions.relocate(list, "Anton", 8);
-		index = list.indexOf("Anton");
-		assertEquals(index, 5);
-
-		ListExtensions.relocate(list, "foo", 1);
-		index = list.indexOf("foo");
-		assertEquals(index, -1);
+		final List<String> list = elements(elements);
+		assertEquals(next != null, ListExtensions.hasNext(list, element), "hasNext");
+		assertEquals(previous != null, ListExtensions.hasPrevious(list, element), "hasPrevious");
+		assertEquals(Optional.ofNullable(next), ListExtensions.getNextElement(list, element),
+			"getNextElement");
+		assertEquals(Optional.ofNullable(previous),
+			ListExtensions.getPreviousElement(list, element), "getPreviousElement");
 	}
 
 	/**
-	 * Test the method {@link ListExtensions#relocate(List, Object, int)} with an element that
-	 * already has the given index: the list is not modified, so even an unmodifiable list is
-	 * accepted
+	 * Test method for {@link ListExtensions#getSameElementsFromLists(List, List)}: a new list with
+	 * the elements of the first list that the second one holds, in the order of the first; the
+	 * method decorates retainAll, so the first list keeps only them, and the second does not change
+	 *
+	 * @param description
+	 *            the name of the case
+	 * @param toSearch
+	 *            the elements of the first list, separated by a space
+	 * @param search
+	 *            the elements of the second list, separated by a space
+	 * @param expected
+	 *            the elements both hold, separated by a space
 	 */
-	@Test
-	public void testRelocateToCurrentIndex()
+	@ParameterizedTest(name = "{0}", quoteTextArguments = false)
+	@CsvSource(value = {
+			"Dora, Emil, Franz and Anton, Dora, Emil: Dora, Emil | Dora Emil Franz | Anton Dora Emil | Dora Emil",
+			"Anton, Berta, Caesar and Dora, Emil, Franz: none | Anton Berta Caesar | Dora Emil Franz | ''",
+			"Anton, Berta and Berta, Anton: both, in the order of the first | Anton Berta | Berta Anton | Anton Berta" }, delimiter = '|')
+	public void testGetSameElementsFromLists(final String description, final String toSearch,
+		final String search, final String expected)
 	{
-		final List<String> expected = ListFactory.newArrayList("Anton", "Berta", "Caesar");
-		final List<String> list = Collections
-			.unmodifiableList(ListFactory.newArrayList("Anton", "Berta", "Caesar"));
-		ListExtensions.relocate(list, "Berta", 1);
-		assertEquals(expected, list);
+		final List<String> first = elements(toSearch);
+		final List<String> second = elements(search);
+		final List<String> actual = ListExtensions.getSameElementsFromLists(first, second);
+		assertEquals(elements(expected), actual);
+		assertNotSame(first, actual);
+		assertEquals(elements(expected), first, "the first list, after retainAll");
+		assertEquals(elements(search), second, "the second list changed");
 	}
 
 	/**
-	 * Test method for {@link ListExtensions#removeFirstElement(List)}
+	 * Two lists of arrays and whether {@link ListExtensions#isEqualListOfArrays(List, List)} calls
+	 * them equal
+	 *
+	 * @param description
+	 *            the name of the case
+	 * @param one
+	 *            makes the one list, with new arrays on each call, may make null
+	 * @param other
+	 *            makes the other list, with new arrays on each call, may make null
+	 * @param equal
+	 *            the answer
 	 */
-	@Test
-	public final void testRemoveFirstElement()
-	{
-		Optional<String> expected;
-		Optional<String> actual;
-		String removed;
-		List<String> search;
-		expected = Optional.of("Leonidas");
-		removed = "Berta";
-		search = ListFactory.newArrayList();
-		search.add(removed);
-		search.add(expected.get());
-		search.add("Caesar");
-		search.add("Dora");
-		search.add("Emil");
-		search.add("Anton");
-
-		actual = ListExtensions.removeFirstElement(search);
-		assertEquals(removed, actual.get());
-
-		actual = ListExtensions.getFirstElement(search);
-		assertEquals(expected, actual);
-
-		search.clear();
-
-		actual = ListExtensions.removeFirstElement(search);
-		expected = Optional.empty();
-		assertEquals(expected, actual);
+	record ListsOfArraysCase(String description, Supplier<List<String[]>> one,
+		Supplier<List<String[]>> other, boolean equal) {
+		@Override
+		public String toString()
+		{
+			return description;
+		}
 	}
 
 	/**
-	 * Test method for {@link ListExtensions#removeLastElement(List)}
+	 * The cases of {@link ListExtensions#isEqualListOfArrays(List, List)}: equal if both are null,
+	 * or if they hold arrays of the same content at the same indexes; each call of a supplier makes
+	 * new arrays, so the arrays of two lists are equal in content only
+	 *
+	 * @return the cases
 	 */
-	@Test
-	public final void testRemoveLastElement()
+	static Stream<ListsOfArraysCase> listsOfArrays()
 	{
-		Optional<String> expected;
-		Optional<String> actual;
-		String removed;
-		List<String> search;
-		expected = Optional.of("Leonidas");
-		removed = "Berta";
-		search = ListFactory.newArrayList();
-
-		search.add("Anton");
-		search.add("Caesar");
-		search.add("Dora");
-		search.add("Emil");
-		search.add(expected.get());
-		search.add(removed);
-		actual = ListExtensions.removeLastElement(search);
-		assertEquals(removed, actual.get());
-
-		actual = ListExtensions.getLastElement(search);
-		assertEquals(expected, actual);
-
-		search.clear();
-
-		actual = ListExtensions.removeLastElement(search);
-		expected = Optional.empty();
-		assertEquals(expected, actual);
+		final Supplier<List<String[]>> threeLines = () -> new ArrayList<>(
+			List.of(new String[] { "1", "23", "3" }, new String[] { "4", "25", "9" },
+				new String[] { "6", "21", "8" }));
+		return Stream.of(
+			new ListsOfArraysCase("three lines and three other arrays of the same content: equal",
+				threeLines, threeLines, true),
+			new ListsOfArraysCase("null and null: equal", () -> null, () -> null, true),
+			new ListsOfArraysCase("null and three lines: not equal", () -> null, threeLines, false),
+			new ListsOfArraysCase("three lines and null: not equal", threeLines, () -> null, false),
+			new ListsOfArraysCase("two lines and three lines, another size: not equal",
+				() -> new ArrayList<>(
+					List.of(new String[] { "1", "23", "3" }, new String[] { "4", "25", "9" })),
+				threeLines, false),
+			new ListsOfArraysCase("three lines, the last of other content: not equal",
+				() -> new ArrayList<>(List.of(new String[] { "1", "23", "3" },
+					new String[] { "4", "25", "9" }, new String[] { "6", "21", "777" })),
+				threeLines, false),
+			new ListsOfArraysCase("the three lines in another order: not equal, as in a list",
+				() -> new ArrayList<>(List.of(new String[] { "6", "21", "8" },
+					new String[] { "1", "23", "3" }, new String[] { "4", "25", "9" })),
+				threeLines, false),
+			new ListsOfArraysCase("two empty lists: equal", ArrayList::new, ArrayList::new, true));
 	}
 
 	/**
-	 * Test method for {@link ListExtensions#removeFirst(List)}
+	 * Test method for {@link ListExtensions#isEqualListOfArrays(List, List)}: the answer, the same
+	 * in both directions
+	 *
+	 * @param lists
+	 *            the two lists and the answer
 	 */
-	@Test
-	public void testRemoveFirst()
+	@ParameterizedTest(name = "{0}")
+	@MethodSource("listsOfArrays")
+	public void testIsEqualListOfArrays(final ListsOfArraysCase lists)
 	{
-		String expected;
-		String actual;
-		String removed;
-		List<String> search;
-		expected = "Leonidas";
-		removed = "Berta";
-		search = ListFactory.newArrayList();
-		search.add(removed);
-		search.add(expected);
-		search.add("Caesar");
-		search.add("Dora");
-		search.add("Emil");
-		search.add("Anton");
-		actual = ListExtensions.removeFirst(search);
-		assertEquals(removed, actual);
-
-		actual = ListExtensions.getFirst(search);
-		assertEquals(expected, actual);
-
-		search.clear();
-
-		actual = ListExtensions.removeFirst(search);
-		expected = null;
-		assertEquals(expected, actual);
+		assertEquals(lists.equal(),
+			ListExtensions.isEqualListOfArrays(lists.one().get(), lists.other().get()));
+		assertEquals(lists.equal(),
+			ListExtensions.isEqualListOfArrays(lists.other().get(), lists.one().get()),
+			"the other way round");
 	}
 
 	/**
-	 * Test method for {@link ListExtensions#removeLast(List)}
+	 * Test method for {@link ListExtensions#isFirst(List, Object)} and
+	 * {@link ListExtensions#isLast(List, Object)}
+	 *
+	 * @param description
+	 *            the name of the case
+	 * @param elements
+	 *            the elements of the list, separated by a space
+	 * @param element
+	 *            the given element
+	 * @param first
+	 *            the answer of isFirst
+	 * @param last
+	 *            the answer of isLast
 	 */
-	@Test
-	public void testRemoveLast()
+	@ParameterizedTest(name = "{0}", quoteTextArguments = false)
+	@CsvSource(value = {
+			"Leonidas, the first of Leonidas, Berta, Caesar, Dora, Emil, Anton: first | Leonidas Berta Caesar Dora Emil Anton | Leonidas | true | false",
+			"Berta, the second of Leonidas, Berta, Caesar: neither | Leonidas Berta Caesar | Berta | false | false",
+			"Foo, not in Leonidas, Berta, Caesar: neither | Leonidas Berta Caesar | Foo | false | false",
+			"Leonidas, the last of Anton, Berta, Caesar, Dora, Emil, Leonidas: last | Anton Berta Caesar Dora Emil Leonidas | Leonidas | false | true",
+			"Foo, not in Anton, Berta, Caesar, Dora, Emil, Leonidas: neither | Anton Berta Caesar Dora Emil Leonidas | Foo | false | false",
+			"Foo in an empty list: neither | '' | Foo | false | false",
+			"a, the only element: first and last | a | a | true | true",
+			"a in a, b, a: first, and last too | a b a | a | true | true" }, delimiter = '|')
+	public void testIsFirstAndIsLast(final String description, final String elements,
+		final String element, final boolean first, final boolean last)
 	{
-		String expected;
-		String actual;
-		String removed;
-		String compare;
-		List<String> search;
-		expected = "Leonidas";
-		removed = "Berta";
-		search = ListFactory.newArrayList();
-
-		search.add("Anton");
-		search.add("Caesar");
-		search.add("Dora");
-		search.add("Emil");
-		search.add(expected);
-		search.add(removed);
-		compare = ListExtensions.removeLast(search);
-		assertEquals(removed, compare);
-
-		compare = ListExtensions.getLast(search);
-		assertEquals(expected, compare);
-
-		search.clear();
-
-		actual = ListExtensions.removeLast(search);
-		expected = null;
-		assertEquals(expected, actual);
+		final List<String> list = elements(elements);
+		assertEquals(first, ListExtensions.isFirst(list, element), "isFirst");
+		assertEquals(last, ListExtensions.isLast(list, element), "isLast");
 	}
 
 	/**
-	 * Test method for {@link ListExtensions#removeLastValues(List, int)}
+	 * Test method for {@link ListExtensions#isAfter(List, Object, Object)} and
+	 * {@link ListExtensions#isBefore(List, Object, Object)} in Content, Donate, Diagnostic,
+	 * License, Info: whether the element to check stands after or before the element; neither if
+	 * one of them is not in the list, and an element is neither after nor before itself
+	 *
+	 * @param description
+	 *            the name of the case
+	 * @param element
+	 *            the element
+	 * @param elementToCheck
+	 *            the element to check
+	 * @param after
+	 *            the answer of isAfter
+	 * @param before
+	 *            the answer of isBefore
 	 */
-	@Test
-	public void testRemoveLastValues()
+	@ParameterizedTest(name = "{0}", quoteTextArguments = false)
+	@CsvSource(value = {
+			"Diagnostic after Content: after, not before | Content | Diagnostic | true | false",
+			"Content before Diagnostic: before, not after | Diagnostic | Content | false | true",
+			"Info, the last, after Content, the first: after | Content | Info | true | false",
+			"Diagnostic and foo, not in the list: neither | foo | Diagnostic | false | false",
+			"foo, not in the list, and Diagnostic: neither | Diagnostic | foo | false | false",
+			"Donate and Donate, the same element: neither | Donate | Donate | false | false" }, delimiter = '|')
+	public void testIsAfterAndIsBefore(final String description, final String element,
+		final String elementToCheck, final boolean after, final boolean before)
 	{
-		String expected;
-		String removed;
-		List<String> search;
-		List<String> removedLastValues;
-
-		expected = "Leonidas";
-		removed = "Berta";
-		search = ListFactory.newArrayList();
-
-		search.add("Anton");
-		search.add("Caesar");
-		search.add("Dora");
-		search.add("Emil");
-		search.add(expected);
-		search.add(removed);
-		removedLastValues = ListExtensions.removeLastValues(search, 2);
-		assertEquals(4, removedLastValues.size());
+		final List<String> list = elements("Content Donate Diagnostic License Info");
+		assertEquals(after, ListExtensions.isAfter(list, element, elementToCheck), "isAfter");
+		assertEquals(before, ListExtensions.isBefore(list, element, elementToCheck), "isBefore");
 	}
 
 	/**
-	 * Test method for {@link ListExtensions#removeLastValues(List, int)} where the remove value is
-	 * greater than the size of the given list
+	 * Test the methods {@link ListExtensions#isAfter(List, Object, Object)} and
+	 * {@link ListExtensions#isBefore(List, Object, Object)} with null for the list, the element or
+	 * the element to check: each throws a {@link NullPointerException}
+	 *
+	 * @param description
+	 *            the name of the case
+	 * @param elements
+	 *            the elements of the list, separated by a space, or null for no list
+	 * @param element
+	 *            the element, may be null
+	 * @param elementToCheck
+	 *            the element to check, may be null
 	 */
-	@Test
-	public void testRemoveLastValuesException()
+	@ParameterizedTest(name = "{0}", quoteTextArguments = false)
+	@CsvSource(value = { "a null list | null | Donate | Content",
+			"a null element | Content Donate Diagnostic | null | Content",
+			"a null element to check | Content Donate Diagnostic | Donate | null" }, delimiter = '|', nullValues = "null")
+	public void testIsAfterAndIsBeforeWithNull(final String description, final String elements,
+		final String element, final String elementToCheck)
 	{
-		final String expected = "Leonidas";
-		final String removed = "Berta";
-		final List<String> search = ListFactory.newArrayList();
-		search.add("Anton");
-		search.add("Caesar");
-		search.add("Dora");
-		search.add("Emil");
-		search.add(expected);
-		search.add(removed);
-		Assertions.assertThrows(IllegalArgumentException.class, () -> {
-			final List<String> removedLastValues = ListExtensions.removeLastValues(search, 7);
-			assertEquals(4, removedLastValues.size());
-		});
+		final List<String> list = elements == null ? null : elements(elements);
+		assertThrows(NullPointerException.class,
+			() -> ListExtensions.isAfter(list, element, elementToCheck), "isAfter");
+		assertThrows(NullPointerException.class,
+			() -> ListExtensions.isBefore(list, element, elementToCheck), "isBefore");
 	}
 
 	/**
-	 * Test method for {@link ListExtensions#removeLastValues(List, int)}: the values the result
-	 * holds. For [A, B, C, D, E, F] and 2 the method returns [A, B, C, D], the list without its
-	 * last two values (#43)
+	 * A list and the array {@link ListExtensions#toArray(List)} makes of it
+	 *
+	 * @param description
+	 *            the name of the case
+	 * @param list
+	 *            makes the given list
+	 * @param arrayClass
+	 *            the class of the returned array
+	 * @param expected
+	 *            the elements of the returned array
 	 */
-	@Test
-	public void testRemoveLastValuesResult()
-	{
-		final List<String> list = ListFactory.newArrayList("A", "B", "C", "D", "E", "F");
-
-		assertEquals(ListFactory.newArrayList("A", "B", "C", "D"),
-			ListExtensions.removeLastValues(list, 2));
+	record ListToArrayCase(String description, Supplier<List<?>> list, Class<?> arrayClass,
+		Object[] expected) {
+		@Override
+		public String toString()
+		{
+			return description;
+		}
 	}
 
 	/**
-	 * Test method for {@link ListExtensions#removeLastValues(List, int)} with as many values to
-	 * remove as the list holds: the method removes all of them and returns an empty list (#43)
+	 * The cases of {@link ListExtensions#toArray(List)}, the examples of its Javadoc: an array of
+	 * the most specific common superclass of the non-null elements (#64)
+	 *
+	 * @return the cases
 	 */
-	@Test
-	public void testRemoveLastValuesWithSize()
+	static Stream<ListToArrayCase> listsToArrays()
 	{
-		final List<String> list = ListFactory.newArrayList("A", "B", "C", "D", "E", "F");
-
-		assertEquals(Collections.emptyList(), ListExtensions.removeLastValues(list, list.size()));
+		return Stream.of(
+			new ListToArrayCase("1, 2, 3: an Integer[]", () -> new ArrayList<>(List.of(1, 2, 3)),
+				Integer[].class, new Integer[] { 1, 2, 3 }),
+			new ListToArrayCase("null, a: a String[] of null, a (#64)",
+				() -> new ArrayList<>(Arrays.asList(null, "a")), String[].class,
+				new String[] { null, "a" }),
+			new ListToArrayCase("1, 2.5: a Number[] (#64)",
+				() -> new ArrayList<Number>(Arrays.asList(1, 2.5)), Number[].class,
+				new Number[] { 1, 2.5 }),
+			new ListToArrayCase("2.5, 1: a Number[] in their order (#64)",
+				() -> new ArrayList<Number>(Arrays.asList(2.5, 1)), Number[].class,
+				new Number[] { 2.5, 1 }),
+			new ListToArrayCase("a, 1: an Object[] (#64)",
+				() -> new ArrayList<Object>(Arrays.asList("a", 1)), Object[].class,
+				new Object[] { "a", 1 }),
+			new ListToArrayCase("null, null: an Object[] of two nulls (#64)",
+				() -> new ArrayList<String>(Arrays.asList(null, null)), Object[].class,
+				new Object[] { null, null }));
 	}
 
 	/**
-	 * Test the method {@link ListExtensions#revertOrder(List)}
+	 * Test the method {@link ListExtensions#toArray(List)}: the elements in the order of the list,
+	 * in an array of the class its Javadoc names
+	 *
+	 * @param listToArray
+	 *            the given list and the returned array
 	 */
-	@Test
-	public void testRevertOrder()
+	@ParameterizedTest(name = "{0}")
+	@MethodSource("listsToArrays")
+	public void testListToArray(final ListToArrayCase listToArray)
 	{
-		final List<String> search = ListFactory.newArrayList();
-		search.add("Anton");
-		search.add("Caesar");
-		search.add("Dora");
-		search.add("Emil");
-		search.add("Leonidas");
-		search.add("Berta");
-		final List<String> revertOrdered = ListExtensions.revertOrder(search);
-		assertNotNull(revertOrdered);
-
-		assertEquals("Berta", revertOrdered.get(0));
-		assertEquals("Leonidas", revertOrdered.get(1));
-		assertEquals("Emil", revertOrdered.get(2));
-		assertEquals("Dora", revertOrdered.get(3));
-		assertEquals("Caesar", revertOrdered.get(4));
-		assertEquals("Anton", revertOrdered.get(5));
+		final Object[] actual = ListExtensions.toArray(listToArray.list().get());
+		assertEquals(listToArray.arrayClass(), actual.getClass());
+		assertArrayEquals(listToArray.expected(), actual);
 	}
 
 	/**
-	 * Test the method {@link ListExtensions#shuffle(List, List, int[])}
+	 * Test the method {@link ListExtensions#toArray(List)} with null and with an empty list: an
+	 * {@link IllegalArgumentException}, as its Javadoc says
+	 *
+	 * @param list
+	 *            null or an empty list
 	 */
-	@Test
-	public void testShuffle()
+	@ParameterizedTest(name = "{0}: an IllegalArgumentException")
+	@NullAndEmptySource
+	public void testListToArrayWithNullOrAnEmptyList(final List<String> list)
 	{
-		final List<String> source = ListFactory.newArrayList();
-		final List<String> destination = ListFactory.newArrayList();
-		final String berta = "Berta";
-		final String caesar = "Caesar";
-		source.add("Anton");
-		source.add(berta);
-		source.add(caesar);
-		source.add("Dora");
-		source.add("Emil");
-		source.add("Franz");
-		// shuffle two elements to destination list with index 1 and 2.
-		final int[] selectedElements = { 1, 2 };
-		ListExtensions.shuffle(source, destination, selectedElements);
-
-		final boolean actual = destination.size() == 2;
-		assertTrue(actual);
-		assertTrue(destination.contains(berta));
-		assertTrue(destination.contains(caesar));
-		// shuffle the elements back
-		final int[] newSelectedElements = { 0, 1 };
-		ListExtensions.shuffle(source, destination, newSelectedElements);
-
+		assertThrows(IllegalArgumentException.class, () -> ListExtensions.toArray(list));
 	}
 
 	/**
-	 * Test the method {@link ListExtensions#sortByProperty(List, Function, boolean)}
+	 * Test the method {@link ListExtensions#toArray(Object...)}: a new array of the same class with
+	 * the given elements, also when no elements are given, and null for null (#62)
+	 *
+	 * @param description
+	 *            the name of the case
+	 * @param elements
+	 *            the given elements, separated by a space, or null for null
 	 */
-	@Test
-	public void testSortByProperty()
+	@ParameterizedTest(name = "{0}", quoteTextArguments = false)
+	@CsvSource(value = { "1, 2, 3: a new array of them | 1 2 3",
+			"a, b: a new array, not the given one (#62) | a b",
+			"no elements: a new empty array (#62) | ''",
+			"null: null, as before #62 | null" }, delimiter = '|', nullValues = "null")
+	public void testToArray(final String description, final String elements)
 	{
-		final List<Person> persons = ListFactory.newArrayList();
-		final Person obelix = new Person();
-		obelix.setGender(Gender.MALE);
-		obelix.setName("obelix");
-
-		final Person asterix = new Person();
-		asterix.setGender(Gender.MALE);
-		asterix.setName("asterix");
-
-		final Person miraculix = new Person();
-		miraculix.setGender(Gender.MALE);
-		miraculix.setName("miraculix");
-
-		persons.add(obelix);
-		persons.add(asterix);
-		persons.add(miraculix);
-
-		// Unsorted Persons...
-		assertEquals(0, persons.indexOf(obelix),
-			"Index of person 'obelix' should be <0> but was <" + persons.indexOf(obelix) + ">.");
-		assertEquals(1, persons.indexOf(asterix),
-			"Index of person 'asterix' should be <1> but was <" + persons.indexOf(asterix) + ">.");
-		assertEquals(2, persons.indexOf(miraculix),
-			"Index of person 'miraculix' should be <2> but was <" + persons.indexOf(miraculix)
-				+ ">.");
-
-		ListExtensions.sortByProperty(persons, Person::getName, true);
-		// Sorted Persons by name in ascending order...
-		assertEquals(0, persons.indexOf(asterix),
-			"Index of person 'asterix' should be <0> but was <" + persons.indexOf(asterix) + ">.");
-		assertEquals(1, persons.indexOf(miraculix),
-			"Index of person 'miraculix' should be <1> but was <" + persons.indexOf(miraculix)
-				+ ">.");
-		assertEquals(2, persons.indexOf(obelix),
-			"Index of person 'obelix' should be <2> but was <" + persons.indexOf(obelix) + ">.");
-
-		ListExtensions.sortByProperty(persons, Person::getName, false);
-		// Sorted Persons by name in descending order...
-		assertEquals(0, persons.indexOf(obelix),
-			"Index of person 'obelix' should be <0> but was <" + persons.indexOf(obelix) + ">.");
-		assertEquals(1, persons.indexOf(miraculix),
-			"Index of person 'miraculix' should be <1> but was <" + persons.indexOf(miraculix)
-				+ ">.");
-		assertEquals(2, persons.indexOf(asterix),
-			"Index of person 'asterix' should be <2> but was <" + persons.indexOf(asterix) + ">.");
-		// set a null value...
-		asterix.setName(null);
-
-		ListExtensions.sortByProperty(persons, Person::getName, true);
-		// Sorted Persons by name in ascending order with a null value...
-		assertEquals(0, persons.indexOf(asterix),
-			"Index of person 'asterix' should be <0> but was <" + persons.indexOf(asterix) + ">.");
-		assertEquals(1, persons.indexOf(miraculix),
-			"Index of person 'miraculix' should be <1> but was <" + persons.indexOf(miraculix)
-				+ ">.");
-		assertEquals(2, persons.indexOf(obelix),
-			"Index of person 'obelix' should be <2> but was <" + persons.indexOf(obelix) + ">.");
+		final String[] given = elements == null ? null : elements(elements).toArray(new String[0]);
+		final String[] actual = ListExtensions.toArray(given);
+		assertArrayEquals(given, actual);
+		if (given != null)
+		{
+			assertNotSame(given, actual);
+			assertEquals(String[].class, actual.getClass());
+		}
 	}
 
 	/**
-	 * Test the method {@link ListExtensions#sortByProperty(List, Function, boolean)} with ascending
-	 * true: the method sorts the persons by name in ascending order, [asterix, miraculix, obelix]
-	 * (#43)
+	 * Test the method {@link ListExtensions#toIndexMap(List)}: each element under its index, the
+	 * keys in the order of the indexes
+	 *
+	 * @param description
+	 *            the name of the case
+	 * @param elements
+	 *            the elements of the list, separated by a space
+	 * @param numbers
+	 *            true if the elements are numbers, {@link Integer} objects, false if they are
+	 *            strings
 	 */
-	@Test
-	public void testSortByPropertyWithAscendingTrue()
+	@ParameterizedTest(name = "{0}", quoteTextArguments = false)
+	@CsvSource(value = { "the numbers 1, 2, 3: 0=1, 1=2, 2=3 | 1 2 3 | true",
+			"the strings 1, 2, 3: 0=1, 1=2, 2=3 | 1 2 3 | false",
+			"c, a, b: 0=c, 1=a, 2=b, in the order of the list | c a b | false",
+			"a single element a: 0=a | a | false" }, delimiter = '|')
+	public void testToIndexMap(final String description, final String elements,
+		final boolean numbers)
 	{
-		final Person obelix = newPerson("obelix");
-		final Person asterix = newPerson("asterix");
-		final Person miraculix = newPerson("miraculix");
-		final List<Person> persons = ListFactory.newArrayList(obelix, asterix, miraculix);
-
-		ListExtensions.sortByProperty(persons, Person::getName, true);
-		assertEquals(ListFactory.newArrayList(asterix, miraculix, obelix), persons);
+		final List<?> list = numbers ? numbers(elements) : elements(elements);
+		final Map<Integer, ?> actual = ListExtensions.toIndexMap(list);
+		assertEquals(IntStream.range(0, list.size()).boxed().toList(),
+			new ArrayList<>(actual.keySet()));
+		assertEquals(list, new ArrayList<>(actual.values()));
 	}
 
 	/**
-	 * Test the method {@link ListExtensions#sortByProperty(List, Function, boolean)} with ascending
-	 * false: the method sorts the persons by name in descending order, [obelix, miraculix, asterix]
-	 * (#43)
+	 * Test method for {@link ListExtensions#rearrange(List, Object, int)}: the list with the
+	 * element at the given index; unchanged if the element is there already, if the index is the
+	 * size of the list, or if the list does not hold the element. The given list does not change
+	 *
+	 * @param description
+	 *            the name of the case
+	 * @param elements
+	 *            the elements of the list, separated by a space
+	 * @param element
+	 *            the element to rearrange
+	 * @param index
+	 *            the index to rearrange it to
+	 * @param expected
+	 *            the elements of the rearranged list, separated by a space
 	 */
-	@Test
-	public void testSortByPropertyWithAscendingFalse()
+	@ParameterizedTest(name = "{0}", quoteTextArguments = false)
+	@CsvSource(value = {
+			"Anton, the last, to 0: Anton first | Leonidas Berta Caesar Dora Emil Anton | Anton | 0 | Anton Leonidas Berta Caesar Dora Emil",
+			"Anton to 2 | Leonidas Berta Caesar Dora Emil Anton | Anton | 2 | Leonidas Berta Anton Caesar Dora Emil",
+			"Anton to 5, its index: unchanged | Leonidas Berta Caesar Dora Emil Anton | Anton | 5 | Leonidas Berta Caesar Dora Emil Anton",
+			"Anton to 6, the size: unchanged | Leonidas Berta Caesar Dora Emil Anton | Anton | 6 | Leonidas Berta Caesar Dora Emil Anton",
+			"Anton, the first of Anton, Berta, Caesar, Dora, to 2 | Anton Berta Caesar Dora | Anton | 2 | Berta Caesar Anton Dora",
+			"foo, not in the list, to 0: unchanged | Leonidas Berta Caesar Dora Emil Anton | foo | 0 | Leonidas Berta Caesar Dora Emil Anton" }, delimiter = '|')
+	public void testRearrange(final String description, final String elements, final String element,
+		final int index, final String expected)
 	{
-		final Person obelix = newPerson("obelix");
-		final Person asterix = newPerson("asterix");
-		final Person miraculix = newPerson("miraculix");
-		final List<Person> persons = ListFactory.newArrayList(obelix, asterix, miraculix);
+		final List<String> list = elements(elements);
+		assertEquals(elements(expected), ListExtensions.rearrange(list, element, index));
+		assertEquals(elements(elements), list, "the given list changed");
+	}
 
-		ListExtensions.sortByProperty(persons, Person::getName, false);
-		assertEquals(ListFactory.newArrayList(obelix, miraculix, asterix), persons);
+	/**
+	 * Test method for {@link ListExtensions#relocate(List, Object, int)}: the element moves in the
+	 * list to the given index, or to the end of the list if the index is its size or greater; the
+	 * list is not changed if the element is at the index already or if the list does not hold it,
+	 * so that even an unmodifiable list is accepted then
+	 *
+	 * @param description
+	 *            the name of the case
+	 * @param elements
+	 *            the elements of the list, separated by a space
+	 * @param element
+	 *            the element to relocate
+	 * @param index
+	 *            the new index
+	 * @param expected
+	 *            the elements of the list afterwards, separated by a space
+	 * @param unmodifiable
+	 *            true if the list is unmodifiable
+	 */
+	@ParameterizedTest(name = "{0}", quoteTextArguments = false)
+	@CsvSource(value = {
+			"Anton, the last, to 0: Anton first | Leonidas Berta Caesar Dora Emil Anton | Anton | 0 | Anton Leonidas Berta Caesar Dora Emil | false",
+			"Anton to 2 | Leonidas Berta Caesar Dora Emil Anton | Anton | 2 | Leonidas Berta Anton Caesar Dora Emil | false",
+			"Anton, the first, to 2 | Anton Leonidas Berta Caesar Dora Emil | Anton | 2 | Leonidas Berta Anton Caesar Dora Emil | false",
+			"Berta to 5, the last index: Berta last | Leonidas Berta Caesar Dora Emil Anton | Berta | 5 | Leonidas Caesar Dora Emil Anton Berta | false",
+			"Berta to 6, the size: Berta last | Leonidas Berta Caesar Dora Emil Anton | Berta | 6 | Leonidas Caesar Dora Emil Anton Berta | false",
+			"Berta to 8, beyond the size: Berta last | Leonidas Berta Caesar Dora Emil Anton | Berta | 8 | Leonidas Caesar Dora Emil Anton Berta | false",
+			"Anton, the last, to 6, the size: unchanged | Leonidas Berta Caesar Dora Emil Anton | Anton | 6 | Leonidas Berta Caesar Dora Emil Anton | false",
+			"Anton, the last, to 8, beyond the size: unchanged | Leonidas Berta Caesar Dora Emil Anton | Anton | 8 | Leonidas Berta Caesar Dora Emil Anton | false",
+			"Anton to 5, its index, in an unmodifiable list: unchanged | Leonidas Berta Caesar Dora Emil Anton | Anton | 5 | Leonidas Berta Caesar Dora Emil Anton | true",
+			"Berta to 1, its index, in an unmodifiable list: unchanged | Anton Berta Caesar | Berta | 1 | Anton Berta Caesar | true",
+			"foo, not in an unmodifiable list, to 1: unchanged | Leonidas Berta Caesar Dora Emil Anton | foo | 1 | Leonidas Berta Caesar Dora Emil Anton | true" }, delimiter = '|')
+	public void testRelocate(final String description, final String elements, final String element,
+		final int index, final String expected, final boolean unmodifiable)
+	{
+		final List<String> list = unmodifiable
+			? Collections.unmodifiableList(elements(elements))
+			: elements(elements);
+		ListExtensions.relocate(list, element, index);
+		assertEquals(elements(expected), list);
+	}
+
+	/**
+	 * Test method for {@link ListExtensions#removeLastValues(List, int)}: the list without its
+	 * given number of last values (#43); the given list does not change
+	 *
+	 * @param description
+	 *            the name of the case
+	 * @param elements
+	 *            the elements of the list, separated by a space
+	 * @param remove
+	 *            the number of values to remove
+	 * @param expected
+	 *            the values of the result, separated by a space
+	 */
+	@ParameterizedTest(name = "{0}", quoteTextArguments = false)
+	@CsvSource(value = {
+			"Anton, Caesar, Dora, Emil, Leonidas, Berta without the last 2: the first 4 | Anton Caesar Dora Emil Leonidas Berta | 2 | Anton Caesar Dora Emil",
+			"A to F without the last 2: A, B, C, D (#43) | A B C D E F | 2 | A B C D",
+			"A to F without all 6: empty (#43) | A B C D E F | 6 | ''",
+			"A to F without 0: all of them | A B C D E F | 0 | A B C D E F" }, delimiter = '|')
+	public void testRemoveLastValues(final String description, final String elements,
+		final int remove, final String expected)
+	{
+		final List<String> list = elements(elements);
+		assertEquals(elements(expected), ListExtensions.removeLastValues(list, remove));
+		assertEquals(elements(elements), list, "the given list changed");
+	}
+
+	/**
+	 * Test method for {@link ListExtensions#removeLastValues(List, int)} with more values to remove
+	 * than the list holds: an {@link IllegalArgumentException}, as its Javadoc says
+	 *
+	 * @param description
+	 *            the name of the case
+	 * @param elements
+	 *            the elements of the list, separated by a space
+	 * @param remove
+	 *            the number of values to remove
+	 */
+	@ParameterizedTest(name = "{0}", quoteTextArguments = false)
+	@CsvSource(value = {
+			"7 of Anton, Caesar, Dora, Emil, Leonidas, Berta, one more than it holds | Anton Caesar Dora Emil Leonidas Berta | 7",
+			"1 of an empty list | '' | 1" }, delimiter = '|')
+	public void testRemoveLastValuesWithMoreThanTheListHolds(final String description,
+		final String elements, final int remove)
+	{
+		final List<String> list = elements(elements);
+		assertThrows(IllegalArgumentException.class,
+			() -> ListExtensions.removeLastValues(list, remove));
+	}
+
+	/**
+	 * Test the method {@link ListExtensions#revertOrder(List)}: a new list with the elements in
+	 * reverse order; the given list does not change
+	 *
+	 * @param description
+	 *            the name of the case
+	 * @param elements
+	 *            the elements of the list, separated by a space
+	 * @param expected
+	 *            the elements of the result, separated by a space
+	 */
+	@ParameterizedTest(name = "{0}", quoteTextArguments = false)
+	@CsvSource(value = {
+			"Anton, Caesar, Dora, Emil, Leonidas, Berta: in reverse order | Anton Caesar Dora Emil Leonidas Berta | Berta Leonidas Emil Dora Caesar Anton",
+			"a single element a: a | a | a", "no elements: none | '' | ''" }, delimiter = '|')
+	public void testRevertOrder(final String description, final String elements,
+		final String expected)
+	{
+		final List<String> list = elements(elements);
+		final List<String> actual = ListExtensions.revertOrder(list);
+		assertEquals(elements(expected), actual);
+		assertNotSame(list, actual);
+		assertEquals(elements(elements), list, "the given list changed");
+	}
+
+	/**
+	 * Test the method {@link ListExtensions#shuffle(List, List, int[])}: the elements at the given
+	 * indexes move from the source to the destination, the others stay in the source in their
+	 * order, and the given indexes do not change: the elements move in the order of the indexes,
+	 * those the indexes of the source name in any order, and an index given twice moves its element
+	 * once (#126)
+	 *
+	 * @param description
+	 *            the name of the case
+	 * @param source
+	 *            the elements of the source, separated by a space
+	 * @param indexes
+	 *            the indexes of the elements to move, separated by a space
+	 * @param moved
+	 *            the elements of the destination afterwards, in their order, separated by a space
+	 * @param rest
+	 *            the elements of the source afterwards, separated by a space
+	 */
+	@ParameterizedTest(name = "{0}", quoteTextArguments = false)
+	@CsvSource(value = {
+			"indexes 1, 2 of Anton to Franz: Berta and Caesar move (#126) | Anton Berta Caesar Dora Emil Franz | 1 2 | Berta Caesar | Anton Dora Emil Franz",
+			"indexes 0, 1 of Anton, Dora, Emil, Franz: Anton and Dora move (#126) | Anton Dora Emil Franz | 0 1 | Anton Dora | Emil Franz",
+			"index 5, the last of Anton to Franz: Franz moves | Anton Berta Caesar Dora Emil Franz | 5 | Franz | Anton Berta Caesar Dora Emil",
+			"no indexes: nothing moves | Anton Berta Caesar | '' | '' | Anton Berta Caesar",
+			"indexes 2, 1 of Anton to Dora: Caesar and Berta move (#126) | Anton Berta Caesar Dora | 2 1 | Caesar Berta | Anton Dora",
+			"index 1 twice of Anton, Berta, Caesar: Berta moves once (#126) | Anton Berta Caesar | 1 1 | Berta | Anton Caesar" }, delimiter = '|')
+	public void testShuffle(final String description, final String source, final String indexes,
+		final String moved, final String rest)
+	{
+		final List<String> from = elements(source);
+		final List<String> destination = new ArrayList<>();
+		final int[] selected = numbers(indexes).stream().mapToInt(Integer::intValue).toArray();
+		ListExtensions.shuffle(from, destination, selected);
+		assertEquals(elements(rest), from, "the source");
+		assertEquals(elements(moved), destination, "the destination");
+		assertArrayEquals(numbers(indexes).stream().mapToInt(Integer::intValue).toArray(), selected,
+			"the given indexes");
+	}
+
+	/**
+	 * Test the method {@link ListExtensions#shuffle(List, List, int[])} with an index out of the
+	 * range of the source: an {@link IndexOutOfBoundsException} before any element moves, wherever
+	 * the index is in the array (#126)
+	 *
+	 * @param description
+	 *            the name of the case
+	 * @param source
+	 *            the elements of the source, separated by a space
+	 * @param indexes
+	 *            the indexes of the elements to move, separated by a space
+	 * @param moved
+	 *            the elements of the destination afterwards, separated by a space
+	 * @param rest
+	 *            the elements of the source afterwards, separated by a space
+	 */
+	@ParameterizedTest(name = "{0}", quoteTextArguments = false)
+	@CsvSource(value = {
+			"indexes 3, 0 of Anton, Berta, Caesar: nothing moves (#126) | Anton Berta Caesar | 3 0 | '' | Anton Berta Caesar",
+			"indexes 0, 3 of Anton, Berta, Caesar: nothing moves | Anton Berta Caesar | 0 3 | '' | Anton Berta Caesar" }, delimiter = '|')
+	public void testShuffleWithAnIndexOutOfRange(final String description, final String source,
+		final String indexes, final String moved, final String rest)
+	{
+		final List<String> from = elements(source);
+		final List<String> destination = new ArrayList<>();
+		final int[] selected = numbers(indexes).stream().mapToInt(Integer::intValue).toArray();
+		assertThrows(IndexOutOfBoundsException.class,
+			() -> ListExtensions.shuffle(from, destination, selected));
+		assertEquals(elements(rest), from, "the source");
+		assertEquals(elements(moved), destination, "the destination");
+	}
+
+	/**
+	 * Persons with the given names, sorted by
+	 * {@link ListExtensions#sortByProperty(List, java.util.function.Function, boolean)} by name,
+	 * and the names in their order afterwards
+	 *
+	 * @param description
+	 *            the name of the case
+	 * @param names
+	 *            the names of the persons, may hold null
+	 * @param ascending
+	 *            true for ascending order
+	 * @param expected
+	 *            the names in their order after the sort
+	 */
+	record SortCase(String description, List<String> names, boolean ascending,
+		List<String> expected) {
+		@Override
+		public String toString()
+		{
+			return description;
+		}
+	}
+
+	/**
+	 * The cases of
+	 * {@link ListExtensions#sortByProperty(List, java.util.function.Function, boolean)}: a null
+	 * name comes first in ascending order, and so last in descending order
+	 *
+	 * @return the cases
+	 */
+	static Stream<SortCase> sorts()
+	{
+		return Stream.of(
+			new SortCase("obelix, asterix, miraculix ascending: asterix, miraculix, obelix (#43)",
+				List.of("obelix", "asterix", "miraculix"), true,
+				List.of("asterix", "miraculix", "obelix")),
+			new SortCase("obelix, asterix, miraculix descending: obelix, miraculix, asterix (#43)",
+				List.of("obelix", "asterix", "miraculix"), false,
+				List.of("obelix", "miraculix", "asterix")),
+			new SortCase("obelix, null, miraculix ascending: the null name first",
+				Arrays.asList("obelix", null, "miraculix"), true,
+				Arrays.asList(null, "miraculix", "obelix")),
+			new SortCase("obelix, null, miraculix descending: the null name last",
+				Arrays.asList("obelix", null, "miraculix"), false,
+				Arrays.asList("obelix", "miraculix", null)));
+	}
+
+	/**
+	 * Test the method
+	 * {@link ListExtensions#sortByProperty(List, java.util.function.Function, boolean)} with the
+	 * name of persons
+	 *
+	 * @param sort
+	 *            the names, the order and the names afterwards
+	 */
+	@ParameterizedTest(name = "{0}")
+	@MethodSource("sorts")
+	public void testSortByProperty(final SortCase sort)
+	{
+		final List<Person> persons = sort.names().stream().map(ListExtensionsTest::newPerson)
+			.collect(Collectors.toCollection(ArrayList::new));
+		ListExtensions.sortByProperty(persons, Person::getName, sort.ascending());
+		assertEquals(sort.expected(), persons.stream().map(Person::getName).toList());
 	}
 
 	private static Person newPerson(final String name)
@@ -1468,149 +1285,89 @@ public class ListExtensionsTest
 	}
 
 	/**
-	 * Test the method {@link ListExtensions#splitToParts(Collection, int)}
+	 * Test the method {@link ListExtensions#splitToParts(java.util.Collection, int)}: the parts,
+	 * one after the other, give the elements in their order; each part but the last holds the given
+	 * size of them, the last one at least one and at most the given size
+	 *
+	 * @param description
+	 *            the name of the case
+	 * @param count
+	 *            the number of elements, 0 to count - 1
+	 * @param size
+	 *            the size of the parts
+	 * @param parts
+	 *            the number of the parts
 	 */
-	@Test
-	@SuppressWarnings({ "rawtypes" })
-	public void testSplitToPartsInList()
+	@ParameterizedTest(name = "{0}", quoteTextArguments = false)
+	@CsvSource(value = {
+			"999 elements in parts of 50: 19 full parts and the last of 49 | 999 | 50 | 20",
+			"6 elements in parts of 4: one full part and the last of 2 | 6 | 4 | 2",
+			"4 elements in parts of 2, a multiple: two full parts | 4 | 2 | 2",
+			"3 elements in parts of 5, fewer than a part: one part of 3 | 3 | 5 | 1",
+			"no elements in parts of 3: no part | 0 | 3 | 0" }, delimiter = '|')
+	public void testSplitToParts(final String description, final int count, final int size,
+		final int parts)
 	{
-		final List<Integer> list = ListFactory.newArrayList();
-		for (int i = 0; i < 999; i++)
+		final List<Integer> list = IntStream.range(0, count).boxed()
+			.collect(Collectors.toCollection(ArrayList::new));
+		final List<List<Integer>> actual = ListExtensions.splitToParts(list, size);
+		assertEquals(parts, actual.size());
+		assertEquals(list, actual.stream().flatMap(List::stream).toList());
+		for (int i = 0; i < actual.size() - 1; i++)
 		{
-			list.add(i);
+			assertEquals(size, actual.get(i).size(), "part " + i);
 		}
-		final List al = ListExtensions.splitToParts(list, 50);
-		assertEquals(20, al.size());
-		for (int i = 0; i < al.size(); i++)
+		if (!actual.isEmpty())
 		{
-			if (i == al.size() - 1)
-			{
-				final List lastPart = (ArrayList)al.get(i);
-				assertEquals(49, lastPart.size());
-			}
-			else
-			{
-				final List aPart = (ArrayList)al.get(i);
-				assertEquals(50, aPart.size());
-			}
-		}
-	}
-
-	/**
-	 * Test the method {@link ListExtensions#toArray(Object...)}
-	 */
-	@Test
-	public void testToArray()
-	{
-		Integer actual;
-		Integer expected;
-		final Integer[] numbers = { 1, 2, 3 };
-		final Integer[] array = ListExtensions.toArray(1, 2, 3);
-		for (int i = 0; i < numbers.length; i++)
-		{
-			expected = numbers[i];
-			actual = array[i];
-			assertEquals(expected, actual);
+			final int last = actual.get(actual.size() - 1).size();
+			assertTrue(0 < last && last <= size, "the last part holds " + last);
 		}
 	}
 
 	/**
-	 * Test the method {@link ListExtensions#toArray(Object...)} with a given array: the result is a
-	 * new array with the elements of the given array. Before the fix of #62 the method returned the
-	 * given array itself
+	 * Test the methods {@link ListExtensions#toList(java.util.Enumeration)} and
+	 * {@link ListExtensions#toList(Set)}: a list of all elements of an enumeration of the given
+	 * elements in their order, and a list of all elements of a set of them in the iteration order
+	 * of the set
+	 *
+	 * @param description
+	 *            the name of the case
+	 * @param elements
+	 *            the elements, separated by a space
 	 */
-	@Test
-	public void testToArrayWithGivenArray()
+	@ParameterizedTest(name = "{0}", quoteTextArguments = false)
+	@CsvSource(value = { "1, 2, 3: in their order | 1 2 3", "1, 2: in their order | 1 2",
+			"foo, bar, baz: in their order | foo bar baz",
+			"foo, bar, foo: the enumeration gives both foo, the set one | foo bar foo",
+			"no elements: an empty list | ''" }, delimiter = '|')
+	public void testToList(final String description, final String elements)
 	{
-		final String[] given = { "a", "b" };
-		final String[] actual = ListExtensions.toArray(given);
-		assertNotSame(given, actual);
+		final List<String> given = elements(elements);
+		assertEquals(given, ListExtensions.toList(Collections.enumeration(given)),
+			"toList(Enumeration)");
+		final Set<String> set = new LinkedHashSet<>(given);
+		assertEquals(new ArrayList<>(set), ListExtensions.toList(set), "toList(Set)");
+	}
+
+	/**
+	 * Test the method {@link ListExtensions#toObjectArray(Object...)}: a new {@link Object} array
+	 * with the given elements
+	 *
+	 * @param description
+	 *            the name of the case
+	 * @param elements
+	 *            the elements, separated by a space
+	 */
+	@ParameterizedTest(name = "{0}", quoteTextArguments = false)
+	@CsvSource(value = { "2, 5, 6, 7, 8, 9: an Object[] of them | 2 5 6 7 8 9",
+			"no elements: an empty Object[] | ''" }, delimiter = '|')
+	public void testToObjectArray(final String description, final String elements)
+	{
+		final String[] given = elements(elements).toArray(new String[0]);
+		final Object[] actual = ListExtensions.toObjectArray(given);
+		assertEquals(Object[].class, actual.getClass());
 		assertArrayEquals(given, actual);
-	}
-
-	/**
-	 * Test the method {@link ListExtensions#toArray(Object...)} with null: the result is null, as
-	 * before the fix of #62
-	 */
-	@Test
-	public void testToArrayWithNull()
-	{
-		assertNull(ListExtensions.toArray((String[])null));
-	}
-
-	/**
-	 * Test the method {@link ListExtensions#toList(Enumeration)}
-	 */
-	@Test
-	public void testToListEnumerationOfT()
-	{
-		final List<String> arrayList = ListFactory.newArrayList("1", "2");
-		final Enumeration<String> elements = Collections.enumeration(arrayList);
-		final List<String> list = ListExtensions.toList(elements);
-		for (final String item : list)
-		{
-			assertTrue(arrayList.contains(item));
-		}
-	}
-
-	/**
-	 * Test the method {@link ListExtensions#toList(Enumeration)}: the list holds all elements of
-	 * the enumeration in their order
-	 */
-	@Test
-	public void testToListEnumerationKeepsAllElementsInOrder()
-	{
-		final List<String> expected = ListFactory.newArrayList("1", "2", "3");
-		final Enumeration<String> enumeration = Collections.enumeration(expected);
-		final List<String> actual = ListExtensions.toList(enumeration);
-		assertEquals(expected, actual);
-	}
-
-	/**
-	 * Test the method {@link ListExtensions#toList(Set)}
-	 */
-	@Test
-	public void testToListSetOfT()
-	{
-		Set<String> set = SetFactory.newHashSet();
-		assertEquals(0, set.size());
-		set = SetFactory.newHashSet("foo", "bar", "foo");
-		assertEquals(2, set.size());
-		final List<String> list = ListExtensions.toList(set);
-		for (final String item : list)
-		{
-			assertTrue(set.contains(item));
-		}
-	}
-
-	/**
-	 * Test the method {@link ListExtensions#toList(Set)}: the list holds all elements of the set in
-	 * the iteration order of the set
-	 */
-	@Test
-	public void testToListSetKeepsAllElementsInOrder()
-	{
-		final Set<String> set = SetFactory.newLinkedHashSet("foo", "bar", "baz");
-		final List<String> expected = ListFactory.newArrayList("foo", "bar", "baz");
-		final List<String> actual = ListExtensions.toList(set);
-		assertEquals(expected, actual);
-	}
-
-	/**
-	 * Test the method {@link ListExtensions#toObjectArray(Object...)}
-	 */
-	@Test
-	public void testToObjectArray()
-	{
-		final Object[] expected = { "2", "5", "6", "7", "8", "9" };
-		Object[] actual = ListExtensions.toObjectArray("2", "5", "6", "7", "8", "9");
-		assertEquals(actual.length, expected.length);
-		for (int i = 0; i < actual.length; i++)
-		{
-			assertEquals(expected[i], actual[i]);
-		}
-		actual = ListExtensions.toObjectArray();
-		assertEquals(actual.length, 0);
+		assertNotSame(given, actual);
 	}
 
 	/**
@@ -1666,17 +1423,57 @@ public class ListExtensionsTest
 
 	/**
 	 * Test method for {@link ListExtensions#getIndexToInsert(List, Object, java.util.Comparator)}
-	 * with an element that the comparator holds equal to an element of the list, but equals does
-	 * not: the method returns the index of the element that binarySearch finds, whatever contains
-	 * says (#40)
+	 * with {@link String#CASE_INSENSITIVE_ORDER}: the index of an element that the comparator holds
+	 * equal to the given one, whatever equals says (#40), otherwise the index of the first greater
+	 * element, or the size of the list if there is none
+	 *
+	 * @param description
+	 *            the name of the case
+	 * @param elements
+	 *            the elements of the list, in the order of the comparator, separated by a space
+	 * @param element
+	 *            the element to insert
+	 * @param expected
+	 *            the index
+	 */
+	@ParameterizedTest(name = "{0}", quoteTextArguments = false)
+	@CsvSource(value = { "A in a, b, equal to a by the comparator only: 0 (#40) | a b | A | 0",
+			"B in a, b, equal to b by the comparator only: 1 (#40) | a b | B | 1",
+			"b in a, c, between them: 1 | a c | b | 1",
+			"c in a, b, greater than all: 2, the size | a b | c | 2",
+			"0 in a, b, less than all: 0 | a b | 0 | 0",
+			"a in an empty list: 0 | '' | a | 0" }, delimiter = '|')
+	public void testGetIndexToInsertWithComparator(final String description, final String elements,
+		final String element, final int expected)
+	{
+		assertEquals(expected, ListExtensions.getIndexToInsert(elements(elements), element,
+			String.CASE_INSENSITIVE_ORDER));
+	}
+
+	/**
+	 * Test method for the combination methods
 	 */
 	@Test
-	public void testGetIndexToInsertWithComparatorInconsistentWithEquals()
+	@Disabled
+	public void testBenchmarkCombinations()
 	{
-		List<String> list = ListFactory.newArrayList("a", "b");
 
-		assertEquals(0, ListExtensions.getIndexToInsert(list, "A", String.CASE_INSENSITIVE_ORDER));
-		assertEquals(1, ListExtensions.getIndexToInsert(list, "B", String.CASE_INSENSITIVE_ORDER));
+		long start;
+		long end;
+		List<Integer> possibleNumbers;
+		int combinationSize;
+
+		possibleNumbers = ListFactory.newRangeList(1, 49);
+		combinationSize = 6;
+
+		start = System.currentTimeMillis();
+		ListExtensions.getCombinations(possibleNumbers, combinationSize);
+		end = System.currentTimeMillis();
+		System.err.println("getCombinations time:" + (end - start));
+
+		ListExtensions.getAllCombinations(possibleNumbers, combinationSize);
+		end = System.currentTimeMillis();
+		System.err.println("getAllCombinations time:" + (end - start));
 	}
 
 	/**

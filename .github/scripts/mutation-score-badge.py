@@ -5,7 +5,7 @@ Usage: mutation-score-badge.py <mutations.xml> <badge.json>
 The score is the share of the mutants that the tests detected, rounded as PIT rounds the score it
 checks against mutationThreshold, so the badge shows the number the build was held to. The badge
 follows https://shields.io/badges/endpoint-badge; README.md reads it from the gh-pages branch, to
-which .github/workflows/gradle.yml publishes it on a push to develop or master.
+which .github/workflows/mutation-testing.yml publishes it on a push to develop or master.
 """
 
 import json

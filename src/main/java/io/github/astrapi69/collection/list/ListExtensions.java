@@ -67,12 +67,13 @@ public final class ListExtensions
 	 * @param <T>
 	 *            the generic type
 	 * @param list
-	 *            the List.
-	 * @return Returns the first object from the given List or null if the List is empty or null.
+	 *            the List, may be null
+	 * @return Returns the first object from the given List, also when it is null, or null if the
+	 *         List is empty or null.
 	 */
 	public static <T> T getFirst(final List<T> list)
 	{
-		return getFirstElement(list).orElse(null);
+		return CollectionExtensions.isEmpty(list) ? null : list.get(0);
 	}
 
 	/**
@@ -81,12 +82,13 @@ public final class ListExtensions
 	 * @param <T>
 	 *            the generic type
 	 * @param list
-	 *            the List.
-	 * @return Returns the last object from the given List or null if the List is empty or null.
+	 *            the List, may be null
+	 * @return Returns the last object from the given List, also when it is null, or null if the
+	 *         List is empty or null.
 	 */
 	public static <T> T getLast(final List<T> list)
 	{
-		return getLastElement(list).orElse(null);
+		return CollectionExtensions.isEmpty(list) ? null : list.get(list.size() - 1);
 	}
 
 	/**
@@ -223,7 +225,10 @@ public final class ListExtensions
 	}
 
 	/**
-	 * Returns an {@link Optional} with the first object from the given {@link List}
+	 * Returns an {@link Optional} with the first object from the given {@link List}. An
+	 * {@link Optional} cannot hold null, so a null first object throws a
+	 * {@link NullPointerException}, as {@link java.util.stream.Stream#findFirst()} does;
+	 * {@link #getFirst(List)} gives it as null
 	 *
 	 * @param <T>
 	 *            the generic type of the elements
@@ -231,6 +236,10 @@ public final class ListExtensions
 	 *            the {@link List} object
 	 * @return an {@link Optional} with the first object from the given {@link List} or an empty
 	 *         {@link Optional} if the List is empty
+	 * @throws IllegalArgumentException
+	 *             if the given list is null
+	 * @throws NullPointerException
+	 *             if the first object is null
 	 */
 	public static <T> Optional<T> getFirstElement(final List<T> list)
 	{
@@ -243,7 +252,10 @@ public final class ListExtensions
 	}
 
 	/**
-	 * Returns an {@link Optional} with the last object from the given {@link List}
+	 * Returns an {@link Optional} with the last object from the given {@link List}. An
+	 * {@link Optional} cannot hold null, so a null last object throws a
+	 * {@link NullPointerException}, as {@link java.util.stream.Stream#findFirst()} does for the
+	 * first; {@link #getLast(List)} gives it as null
 	 *
 	 * @param <T>
 	 *            the generic type of the elements
@@ -251,6 +263,10 @@ public final class ListExtensions
 	 *            the {@link List} object
 	 * @return an {@link Optional} with the last object from the given {@link List} or an empty
 	 *         {@link Optional} if the List is empty
+	 * @throws IllegalArgumentException
+	 *             if the given list is null
+	 * @throws NullPointerException
+	 *             if the last object is null
 	 */
 	public static <T> Optional<T> getLastElement(final List<T> list)
 	{
@@ -453,20 +469,23 @@ public final class ListExtensions
 	}
 
 	/**
-	 * Checks if the given element is the last in the given list.
+	 * Checks if the given element is the last in the given list. The element is compared with the
+	 * last element of the list with {@link Objects#equals(Object, Object)}, so null is the last of
+	 * a list that ends with null. An empty list and null have no last element
 	 *
 	 * @param <T>
 	 *            the generic type
 	 * @param list
-	 *            the list
+	 *            the list, may be null
 	 * @param element
-	 *            the element
-	 * @return true if the given element is the last otherwise false
+	 *            the element, may be null
+	 * @return true if the given element is the last otherwise false, also if the list is empty or
+	 *         null
 	 */
 	public static <T> boolean isLast(final List<T> list, final T element)
 	{
-		return ListExtensions.getLastElement(list).map(current -> current.equals(element))
-			.orElse(false);
+		return !CollectionExtensions.isEmpty(list)
+			&& Objects.equals(list.get(list.size() - 1), element);
 	}
 
 	/**
@@ -536,18 +555,20 @@ public final class ListExtensions
 	 * @param <T>
 	 *            the generic type
 	 * @param list
-	 *            the List.
-	 * @return Removes and returns the first object from the given List or null if the List is empty
-	 *         or null.
+	 *            the List, may be null
+	 * @return Removes and returns the first object from the given List, also when it is null, or
+	 *         null if the List is empty or null.
 	 */
 	public static <T> T removeFirst(final List<T> list)
 	{
-		return removeFirstElement(list).orElse(null);
+		return CollectionExtensions.isEmpty(list) ? null : list.remove(0);
 	}
 
 	/**
 	 * Returns an {@link Optional} with the first object if it was removed from the given
-	 * {@link List}
+	 * {@link List}. An {@link Optional} cannot hold null, so a null first object throws a
+	 * {@link NullPointerException}, as {@link java.util.stream.Stream#findFirst()} does, before
+	 * anything is removed; {@link #removeFirst(List)} removes it and gives it as null
 	 *
 	 * @param <T>
 	 *            the generic type of the elements
@@ -555,13 +576,20 @@ public final class ListExtensions
 	 *            the {@link List} object
 	 * @return returns an {@link Optional} with the first object if it was removed from the given
 	 *         {@link List} or an empty {@link Optional} if the {@link List} is empty
+	 * @throws IllegalArgumentException
+	 *             if the given list is null
+	 * @throws NullPointerException
+	 *             if the first object is null, and the list stays as it is
 	 */
 	public static <T> Optional<T> removeFirstElement(final List<T> list)
 	{
 		Argument.notNull(list, "list");
 		if (!CollectionExtensions.isEmpty(list))
 		{
-			return Optional.of(list.remove(0));
+			// Optional.of throws for null before the element is removed
+			final Optional<T> first = Optional.of(list.get(0));
+			list.remove(0);
+			return first;
 		}
 		return Optional.empty();
 	}
@@ -572,18 +600,20 @@ public final class ListExtensions
 	 * @param <T>
 	 *            the generic type
 	 * @param list
-	 *            the List.
-	 * @return Removes and returns the last object from the given List or null if the List is empty
-	 *         or null.
+	 *            the List, may be null
+	 * @return Removes and returns the last object from the given List, also when it is null, or
+	 *         null if the List is empty or null.
 	 */
 	public static <T> T removeLast(final List<T> list)
 	{
-		return removeLastElement(list).orElse(null);
+		return CollectionExtensions.isEmpty(list) ? null : list.remove(list.size() - 1);
 	}
 
 	/**
 	 * Returns an {@link Optional} with the last object if it was removed from the given
-	 * {@link List}
+	 * {@link List}. An {@link Optional} cannot hold null, so a null last object throws a
+	 * {@link NullPointerException}, as {@link java.util.stream.Stream#findFirst()} does for the
+	 * first, before anything is removed; {@link #removeLast(List)} removes it and gives it as null
 	 *
 	 * @param <T>
 	 *            the generic type of the elements
@@ -591,13 +621,21 @@ public final class ListExtensions
 	 *            the {@link List} object
 	 * @return returns an {@link Optional} with the last object if it was removed from the given
 	 *         {@link List} or an empty {@link Optional} if the {@link List} is empty
+	 * @throws IllegalArgumentException
+	 *             if the given list is null
+	 * @throws NullPointerException
+	 *             if the last object is null, and the list stays as it is
 	 */
 	public static <T> Optional<T> removeLastElement(final List<T> list)
 	{
 		Argument.notNull(list, "list");
 		if (!CollectionExtensions.isEmpty(list))
 		{
-			return Optional.of(list.remove(list.size() - 1));
+			final int lastIndex = list.size() - 1;
+			// Optional.of throws for null before the element is removed
+			final Optional<T> last = Optional.of(list.get(lastIndex));
+			list.remove(lastIndex);
+			return last;
 		}
 		return Optional.empty();
 	}
@@ -652,6 +690,13 @@ public final class ListExtensions
 	/**
 	 * Shuffle selected elements in the source list to the destination list from the given indexes
 	 * in the array selectedElements.
+	 * <p>
+	 * The elements at the given indexes of the source, each index once, are added to the end of the
+	 * destination in the order of the indexes and removed from the source; the other elements stay
+	 * in the source in their order. The indexes are those of the source before the call, in any
+	 * order. The given array is not changed. An index out of the range of the source throws an
+	 * {@link IndexOutOfBoundsException} before any element moves.
+	 * </p>
 	 *
 	 * @param <T>
 	 *            the generic type
@@ -660,18 +705,24 @@ public final class ListExtensions
 	 * @param destination
 	 *            the destination
 	 * @param selectedElements
-	 *            the selected elements
+	 *            the indexes of the selected elements in the source
+	 * @throws IndexOutOfBoundsException
+	 *             if an index is out of the range of the source
 	 */
 	public static <T> void shuffle(final List<T> source, final List<T> destination,
 		final int[] selectedElements)
 	{
-		final int lastIndex = selectedElements.length - 1;
-		for (int i = lastIndex; -1 < i; i--)
+		final int[] indexes = Arrays.stream(selectedElements).distinct().toArray();
+		// take the elements first, so that no removal moves an element another index names
+		final List<T> selected = Arrays.stream(indexes).mapToObj(source::get).toList();
+		// then remove them from the highest index down, as a removal moves only the elements
+		// behind it
+		final int[] ascending = Arrays.stream(indexes).sorted().toArray();
+		for (int i = ascending.length - 1; 0 <= i; i--)
 		{
-			final int selectedRow = selectedElements[i];
-			final T row = source.remove(selectedRow);
-			destination.add(row);
+			source.remove(ascending[i]);
 		}
+		destination.addAll(selected);
 	}
 
 	/**

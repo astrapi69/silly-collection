@@ -28,8 +28,8 @@ a list that keeps itself sorted by a comparator, a set that keeps the insertion 
 element by its index, `Properties` that list their keys in order, and the small operations on
 lists, maps and arrays that are one line each but easy to get wrong. Every line of it is tested,
 and a mutation score close to 100% says that the tests check what the code does, not only that
-they run it. Its runtime dependencies are Apache Commons Collections and three small libraries of
-this family. If you need immutable or multi-valued collections, primitive collections or caches,
+they run it. Its dependencies are Apache Commons Collections and three small libraries of this
+family. If you need immutable or multi-valued collections, primitive collections or caches,
 [Guava](https://github.com/google/guava), [Apache Commons
 Collections](https://commons.apache.org/proper/commons-collections/) or [Eclipse
 Collections](https://github.com/eclipse/eclipse-collections) are the better choice: they are far
@@ -57,12 +57,15 @@ larger and used almost everywhere.
 
 **JDK 25 or newer**, at build and at runtime: from 29.0 on its jar holds Java 25 bytecode and does
 not load on an older JVM. **28.3 is the last release for Java 17**; a project below Java 25 stays on
-it (see [Upgrading from 28.x](#upgrading-from-28x)). The runtime dependencies are Apache Commons Collections 4.6.0, and jobj-core, silly-bean and
-comparator-extensions of this family, which run on Java 17 and 25 alike.
+it (see [Upgrading from 28.x](#upgrading-from-28x)). The dependencies are Apache Commons Collections 4.6.0, and jobj-core, silly-bean and
+comparator-extensions of this family, which run on Java 17 and 25 alike. silly-bean is an API
+dependency: `MapFactory` takes its `KeyValuePair`, so the module requires it `transitive`, and the
+pom and the Gradle module metadata put it on the compile class path of a project that declares this
+library. The other three are for the runtime only.
 
 ## Installation
 
-Latest release on Maven Central: 29.0, for Java 25 (for Java 17: 28.3)
+Latest release on Maven Central: 29.1, for Java 25 (for Java 17: 28.3)
 
 [![Maven Central](https://img.shields.io/maven-central/v/io.github.astrapi69/silly-collection.svg?label=Maven%20Central)](https://central.sonatype.com/artifact/io.github.astrapi69/silly-collection)
 
@@ -70,7 +73,7 @@ Latest release on Maven Central: 29.0, for Java 25 (for Java 17: 28.3)
 
 ```toml
 [versions]
-silly-collection-version = "29.0"
+silly-collection-version = "29.1"
 
 [libraries]
 silly-collection = { module = "io.github.astrapi69:silly-collection", version.ref = "silly-collection-version" }
@@ -86,7 +89,7 @@ dependencies {
 
 ```groovy
 dependencies {
-    implementation "io.github.astrapi69:silly-collection:29.0"
+    implementation "io.github.astrapi69:silly-collection:29.1"
 }
 ```
 
@@ -96,11 +99,16 @@ dependencies {
 <dependency>
     <groupId>io.github.astrapi69</groupId>
     <artifactId>silly-collection</artifactId>
-    <version>29.0</version>
+    <version>29.1</version>
 </dependency>
 ```
 
 The module name is `io.github.astrapisixtynine.silly.collection`.
+
+29.0 publishes silly-bean for the runtime only (#95): a project on 29.0 that calls `MapFactory`
+declares `io.github.astrapi69:silly-bean:3.0` beside it, and a module that names `KeyValuePair`
+requires `io.github.astrapisixtynine.silly.bean` as well. From 29.1 on the declaration above is
+enough.
 
 ## Upgrading from 28.x
 
@@ -239,17 +247,20 @@ The [Javadoc](https://www.javadoc.io/doc/io.github.astrapi69/silly-collection) h
 
 ## Quality
 
-As of 29.0, measured by its release gate (JDK 25, the tree of `RELEASE-29.0`); each release takes
-the numbers of its own gate:
+As of 29.1, measured by its release gate (Temurin 25.0.5+8, the JDK `.sdkmanrc` names; the tree of
+`RELEASE-29.1`); each release takes the numbers of its own gate:
 
 | | |
 |---|---|
-| tests | 640 in 25 test classes; 3 are skipped: two `BeanTester` tests that wait for a factory method, and a benchmark |
-| line and branch coverage (JaCoCo) | 1502 of 1502 lines, 611 of 622 branches; the build fails below 98% of the lines or 95% of the branches (`jacocoTestCoverageVerification` in `gradle/testing.gradle`) |
-| mutation score (PIT) | 960 of 971 mutants killed, 99%; the build fails below 95% (`mutationThreshold` in `build.gradle`). The 11 survivors are equivalent: ten conditions whose edge case gives the same result either way, such as `0 < elements.length` before adding no elements, and the `return true` of `UniqueList.add`, which returns what `ArrayList.add` returns, always true |
+| tests | 1356 in 27 test classes, from 108 `@Test` and 125 `@ParameterizedTest` methods (#92); 3 are skipped: two `BeanTester` tests that wait for a factory method, and a benchmark |
+| line and branch coverage (JaCoCo) | 1523 of 1523 lines, 637 of 640 branches; the build fails below 98% of the lines or 95% of the branches (`jacocoTestCoverageVerification` in `gradle/testing.gradle`) |
+| mutation score (PIT) | 972 of 983 mutants detected, 99%; the run fails below 95% (`mutationThreshold` in `build.gradle`). The 11 survivors are equivalent: ten conditions whose edge case gives the same result either way, such as `0 < elements.length` before adding no elements, and the `return true` of `UniqueList.add`, which returns what `ArrayList.add` returns, always true |
+| reproducible | two builds of the same commit give the same bytes for all five artifacts (`scripts/check-reproducible.sh`, #99) |
 
-The CI build runs both checks on every pull request, and publishes the mutation score of `develop`
-as the badge above.
+The CI build runs the tests and the coverage check on every pull request, and the workflow
+"Mutation testing" runs PIT on GitHub, on every pull request and every push to `develop` and
+`master`, and publishes the mutation score of `develop` as the badge above. A pull request into
+`develop` is merged only when both are green.
 
 ## Verifying the release signatures
 
@@ -270,7 +281,7 @@ subkey, is on keys.openpgp.org. Fetch it once, then verify the signature next to
 
 ```sh
 gpg --keyserver hkps://keys.openpgp.org --recv-keys 5B2FA6B11E298BC09287F423D8C403518C49CA75
-gpg --verify silly-collection-29.0.jar.asc silly-collection-29.0.jar
+gpg --verify silly-collection-29.1.jar.asc silly-collection-29.1.jar
 ```
 
 gpg answers `Good signature` and prints the `Primary key fingerprint`, and for a release signed by
@@ -287,23 +298,36 @@ What a release consists of, in the order it is run:
    on, assigned to the next major release.
 2. **One pull request** with the CHANGELOG entry and `projectVersion` without `-SNAPSHOT`
    (`docs: changelog for X.Y, and the version that carries it`), the full build green on it.
-3. **The release gate** on that pull request's tree: the tests, `pitest` with its floor and
-   `jacocoTestCoverageVerification` with its floor in one run, `--rerun-tasks --no-build-cache`, on
-   JDK 25, the toolchain of the build; the class files are of Java 25 (major version 69), and the
-   resolved dependencies hold no `-SNAPSHOT`. Its numbers go into the CHANGELOG entry and into the
-   Quality section above, in the same pull request, before it is merged.
-4. **Tag the merge commit** with `./gradlew tagRelease` (`make tag-release`), which names it
-   `RELEASE-X.Y`, once its tree is the tree of the gate, and push the tag. `publish.yml` uploads to
-   the Central Portal, where the maintainer releases it. A pushed tag is never moved or deleted; a
-   failed run is fixed on the branch and run again.
+3. **The release gate** on that pull request's tree: the tests and `jacocoTestCoverageVerification`
+   with its floor in one run, `--rerun-tasks --no-build-cache`, on JDK 25, the toolchain of the
+   build, on the JDK `.sdkmanrc` names, with an empty local Maven repository
+   (`-Dmaven.repo.local=<an empty directory>`; `gradle/repositories.gradle` reads `mavenLocal()` only
+   with `-PuseMavenLocal`); javadoc prints no warning
+   (the build runs it with `-Werror`), the class files are of Java 25 (major version 69), and the
+   resolved dependencies hold no `-SNAPSHOT`; `scripts/check-reproducible.sh` builds the five
+   artifacts twice and finds them identical. PIT does not run on a local machine: its numbers and
+   its floor come from the run of "Mutation testing" on the pull request, and again from its run on
+   the merge commit of the pull request, whose tree is the tag's tree. The numbers of the gate go
+   into the CHANGELOG entry and into the Quality section above, in the same pull request, before it
+   is merged. The GitHub release (step 6) links the run on the merge commit, with the proof that its
+   tree is the tag's tree: `git rev-parse "<the run's commit>^{tree}" "RELEASE-X.Y^{tree}"` prints
+   the same tree twice (`gh run view <run> --json headSha` names the run's commit).
+4. **Tag the merge commit** with `./gradlew tagRelease` (`make tag-release CONFIRM=yes`), which names it
+   `RELEASE-X.Y`, once its tree is the tree of the gate and the "Mutation testing" run on it has
+   the numbers of the gate, and push the tag. `publish.yml` uploads to the Central Portal, where
+   the maintainer releases it. A pushed tag is never moved or deleted; a failed run is fixed on the
+   branch and run again.
 5. **Verify on Central**: the jar, pom, `.module`, `-sources.jar` and `-javadoc.jar`, their sha1, and
-   `gpg --verify` on the `.asc`.
+   `gpg --verify` on the `.asc`; a local build of the tag, on the JDK `.sdkmanrc` names, gives the
+   same bytes as Central for all five. A release is uploaded only by `publish.yml`, from its tag;
+   `make tag-release` creates the tag and nothing else.
 6. **GitHub release** from the CHANGELOG entry.
 7. **`master` follows the release** by a merge of the tag: on `master`,
    `git merge --no-ff "RELEASE-X.Y^{commit}" -m "Merge tag RELEASE-X.Y into master"`. Before
    `master` is pushed, `git diff RELEASE-X.Y master` has to be empty; if it is not, nothing is
    pushed. Never a force push: `master` is always the latest release, nothing else.
-8. **Open the next cycle**: `projectVersion` to the next `-SNAPSHOT`.
+8. **Open the next cycle**: `projectVersion` to the next `-SNAPSHOT`, by a pull request, as
+   `develop` takes no direct push.
 
 ## Contributing
 
@@ -318,8 +342,14 @@ Please add tests for your change; the coverage and mutation floors above hold fo
 ```shell
 make build          # build: tests, coverage check, formatting check
 make spotless-apply # format, and write the license headers
-make pitest         # mutation testing, fails below the floor
+make pitest         # mutation testing on GitHub for the pushed branch, fails below the floor
 ```
+
+PIT does not run on your machine: `make pitest` starts `mutation-testing.yml` on GitHub for the
+current branch, which has to be pushed first, and prints how to follow the run; `make pitest-status`
+shows the summary of the newest run of the branch: how many mutants were killed of how many, the
+score, the floor and every mutant that survived. PIT's report of a run is its artifact
+`pitest-report`: `gh run download <run> -n pitest-report -D <directory>`.
 
 The repository's git hooks live in `.githooks`: `commit-msg` where present, and `pre-commit`, which
 refuses a commit whose files Spotless would format. Activate them once per clone or worktree:
@@ -336,7 +366,7 @@ guidelines, `<major>.<minor>.<patch>`. Questions, bug reports and feature reques
 ## How this project is made
 
 silly-collection was written by its maintainer over many years, since 2015, before there were AI
-tools; releases 28.3 and 29.0 were implemented mostly by AI agents, under the maintainer's review
+tools; releases 28.3, 29.0 and 29.1 were implemented mostly by AI agents, under the maintainer's review
 and with the maintainer's decision on every change of behaviour. How AI is used in the projects of
 this profile: [AI_USAGE.md](https://github.com/astrapi69/astrapi69/blob/main/AI_USAGE.md).
 

@@ -24,16 +24,16 @@
  */
 package io.github.astrapi69.collection.iterator;
 
+import static org.junit.jupiter.api.Assertions.assertArrayEquals;
 import static org.junit.jupiter.api.Assertions.assertEquals;
-import static org.junit.jupiter.api.Assertions.assertNotNull;
+import static org.junit.jupiter.api.Assertions.assertSame;
 
-import java.util.NoSuchElementException;
+import java.util.Arrays;
 
-import org.junit.jupiter.api.AfterEach;
-import org.junit.jupiter.api.Assertions;
-import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.Disabled;
 import org.junit.jupiter.api.Test;
+import org.junit.jupiter.params.ParameterizedTest;
+import org.junit.jupiter.params.provider.CsvSource;
 import org.meanbean.test.BeanTester;
 
 /**
@@ -45,257 +45,52 @@ public class ArrayIteratorTest
 {
 
 	/**
-	 * The instance from ArrayIterator for tests.
+	 * Test for the constructor and the methods {@link ArrayIterator#hasNext()},
+	 * {@link ArrayIterator#next()} and {@link ArrayIterator#remove()}: steps on an iterator of an
+	 * array, what each gives, see {@link IteratorSteps}, and the array afterwards, which remove()
+	 * changes; {@link ArrayIterator#getArray()} gives the given array
+	 *
+	 * @param description
+	 *            the name of the case
+	 * @param array
+	 *            the elements of the array, separated by a space, '' for an empty one, null for a
+	 *            null element
+	 * @param steps
+	 *            the steps
+	 * @param results
+	 *            what each step gives
+	 * @param arrayAfterwards
+	 *            the elements of the array afterwards, null for a null element
 	 */
-	private ArrayIterator<Integer> iterator;
-
-	/**
-	 * The instance from an object array for tests.
-	 */
-	private Integer[] testArray;
-
-	/**
-	 * Sets up method will be invoked before every unit test method
-	 */
-	@BeforeEach
-	protected void setUp()
+	@ParameterizedTest(name = "{0}", quoteTextArguments = false)
+	@CsvSource(value = {
+			"0 to 3: next four times, then no next | 0 1 2 3 | next next next next hasNext | 0 1 2 3 false | 0 1 2 3",
+			"0 to 3: next five times, NoSuchElementException after the last | 0 1 2 3 | next next next next next | 0 1 2 3 NoSuchElementException | 0 1 2 3",
+			"empty: no next | '' | hasNext | false | ''",
+			"empty: next throws NoSuchElementException | '' | next | NoSuchElementException | ''",
+			"foo alone: has next | foo | hasNext | true | foo",
+			"foo alone: next foo, then no next | foo | next hasNext | foo false | foo",
+			"foo, bar: next foo, then bar | foo bar | next next | foo bar | foo bar",
+			"foo alone: next, remove, no next | foo | next remove hasNext | foo removed false | null",
+			"foo, bar: next, remove, bar moves to 0 and is next (#118) | foo bar | next remove hasNext next | foo removed true bar | bar null",
+			"foo, bar, jack: next, remove, has next, remove again throws IllegalStateException, next bar (#118) | foo bar jack | next remove hasNext remove next | foo removed true IllegalStateException bar | bar jack null",
+			"foo, bar, jack: next twice, remove bar, next jack (#118) | foo bar jack | next next remove next hasNext | foo bar removed jack false | foo jack null",
+			"foo, null, bar: next twice, remove null, bar moves to 1 (#118) | foo null bar | next next remove next hasNext | foo null removed bar false | foo bar null",
+			"foo, bar: next twice, remove bar, the last, no next | foo bar | next next remove hasNext | foo bar removed false | foo null",
+			"foo, bar, jack: next and remove twice, next jack, the array ends with two nulls (#118) | foo bar jack | next remove next remove next hasNext | foo removed bar removed jack false | jack null null",
+			"foo alone: next, remove, next throws NoSuchElementException | foo | next remove next | foo removed NoSuchElementException | null",
+			"foo, null, bar: next foo, has next, next null, then bar (#118) | foo null bar | next hasNext next next hasNext | foo true null bar false | foo null bar",
+			"empty: remove throws IllegalStateException | '' | remove | IllegalStateException | ''",
+			"foo, bar: remove before next throws IllegalStateException | foo bar | remove next | IllegalStateException foo | foo bar" }, delimiter = '|')
+	public void testSteps(final String description, final String array, final String steps,
+		final String results, final String arrayAfterwards)
 	{
-		this.testArray = new Integer[4];
-		this.testArray[0] = Integer.valueOf("0");
-		this.testArray[1] = Integer.valueOf("1");
-		this.testArray[2] = Integer.valueOf("2");
-		this.testArray[3] = Integer.valueOf("3");
-		this.iterator = new ArrayIterator<>(this.testArray);
-	}
-
-	/**
-	 * Tear down method will be invoked after every unit test method
-	 */
-	@AfterEach
-	protected void tearDown()
-	{
-	}
-
-	/**
-	 * Test method for iterate through the instance variable iterator and makes an addition of the
-	 * numbers in the array.
-	 */
-	@Test
-	public void testArrayIterator()
-	{
-		int expected;
-		int actual;
-		int iteratorLength = 0;
-		int sum = 0;
-		while (this.iterator.hasNext())
-		{
-			final Integer integer = this.iterator.next();
-			sum += integer;
-			iteratorLength++;
-		}
-		expected = 6;
-		actual = sum;
-		assertEquals(expected, actual, "The sum should be 6.");
-
-		expected = this.testArray.length;
-		actual = iteratorLength;
-		assertEquals(expected, actual, "The length from the array should be equal with "
-			+ "the length from the ArrayIterator.");
-	}
-
-	/**
-	 * Test method for the ArrayIterator(E[]) constructor with an empty array and the method
-	 * {@link ArrayIterator#hasNext()}.
-	 */
-	@Test
-	public void testArrayIteratorConstructor()
-	{
-		boolean expected;
-		boolean actual;
-		Object[] array = new Object[] { };
-		final ArrayIterator<Object> arrayIterator = new ArrayIterator<>(array);
-		assertNotNull(arrayIterator);
-
-		assertEquals(array, arrayIterator.getArray());
-
-		expected = false;
-		actual = arrayIterator.hasNext();
-		assertEquals(expected, actual);
-	}
-
-	/**
-	 * Test method for the ArrayIterator(E[]) constructor with an array with one object and the
-	 * method {@link ArrayIterator#hasNext()}.
-	 */
-	@Test
-	public void testHasNextWithArrayContainingOneObject()
-	{
-		boolean expected;
-		boolean actual;
-		final ArrayIterator<Object> arrayIterator = new ArrayIterator<>(new Object[] { "foo" });
-		assertNotNull(arrayIterator);
-
-		expected = true;
-		actual = arrayIterator.hasNext();
-		assertEquals(expected, actual);
-	}
-
-	/**
-	 * Test method for the ArrayIterator(E[]) constructor with an empty array and the method
-	 * {@link ArrayIterator#hasNext()}.
-	 */
-	@Test
-	public void testHasNextWithEmptyArray()
-	{
-		boolean expected;
-		boolean actual;
-
-		final ArrayIterator<Object> arrayIterator = new ArrayIterator<>(new Object[] { });
-		assertNotNull(arrayIterator);
-
-		expected = false;
-		actual = arrayIterator.hasNext();
-		assertEquals(expected, actual);
-	}
-
-	/**
-	 * Test method for the ArrayIterator(E[]) constructor with an array with one object and the
-	 * method {@link ArrayIterator#next()}.
-	 */
-	@Test
-	public void testNextWithArrayContainingOneObject()
-	{
-		String expected;
-		String actual;
-		expected = "foo";
-		final ArrayIterator<String> fixture = new ArrayIterator<>(new String[] { expected });
-
-		actual = fixture.next();
-
-		assertNotNull(actual);
-		assertEquals(expected, actual);
-	}
-
-	/**
-	 * Test method for the ArrayIterator(E[]) constructor with an array with two objects and the
-	 * method {@link ArrayIterator#next()}.
-	 */
-	@Test
-	public void testNextWithArrayContainingTwoObject()
-	{
-		String expected;
-		String actual;
-		final String foo = "foo";
-		final String bar = "bar";
-		final ArrayIterator<String> fixture = new ArrayIterator<>(new String[] { foo, bar });
-
-		actual = fixture.next();
-		assertNotNull(actual);
-
-		expected = foo;
-		assertEquals(expected, actual);
-
-		actual = fixture.next();
-		assertNotNull(actual);
-
-		expected = bar;
-		assertEquals(expected, actual);
-	}
-
-	/**
-	 * Test method for the ArrayIterator(E[]) constructor with an empty array and the method
-	 * {@link ArrayIterator#next()} with expected {@link NoSuchElementException}.
-	 */
-	@Test
-	public void testNextWithEmptyArray()
-	{
-		final ArrayIterator<Object> fixture = new ArrayIterator<>(new Object[] { });
-
-		Assertions.assertThrows(NoSuchElementException.class, () -> {
-			fixture.next();
-		});
-	}
-
-	/**
-	 * Test method for the ArrayIterator(E[]) constructor with an array with one object and the
-	 * method {@link ArrayIterator#remove()}and the method {@link ArrayIterator#next()}.
-	 */
-	@Test
-	public void testRemoveWithContainingOneObject()
-	{
-		boolean expected;
-		boolean actual;
-		final String foo = "foo";
-
-		final ArrayIterator<String> arrayIterator = new ArrayIterator<>(new String[] { foo });
-		arrayIterator.next();
-		arrayIterator.remove();
-
-		expected = false;
-		actual = arrayIterator.hasNext();
-		assertEquals(expected, actual);
-	}
-
-	/**
-	 * Test method for the ArrayIterator(E[]) constructor with an array with three objects and the
-	 * method {@link ArrayIterator#remove()}.
-	 */
-	@Test
-	public void testRemoveWithContainingThreeObject()
-	{
-		boolean expected;
-		boolean actual;
-		final String foo = "foo";
-		final String bar = "bar";
-		final String jack = "jack";
-		final ArrayIterator<String> arrayIterator = new ArrayIterator<>(
-			new String[] { foo, bar, jack });
-		arrayIterator.next();
-		arrayIterator.remove();
-
-		expected = true;
-		actual = arrayIterator.hasNext();
-		assertEquals(expected, actual);
-
-		arrayIterator.remove();
-
-		expected = false;
-		actual = arrayIterator.hasNext();
-		assertEquals(expected, actual);
-	}
-
-	/**
-	 * Test method for the ArrayIterator(E[]) constructor with an array with two objects and the
-	 * method {@link ArrayIterator#remove()}
-	 */
-	@Test
-	public void testRemoveWithContainingTwoObject()
-	{
-		final boolean expected;
-		final boolean actual;
-		final String foo = "foo";
-		final String bar = "bar";
-		final ArrayIterator<String> arrayIterator = new ArrayIterator<>(new String[] { foo, bar });
-		arrayIterator.next();
-		arrayIterator.remove();
-
-		expected = false;
-		actual = arrayIterator.hasNext();
-		assertEquals(expected, actual);
-	}
-
-	/**
-	 * Test method for the ArrayIterator(E[]) constructor with an empty array and the method
-	 * {@link ArrayIterator#remove()} with expected {@link IllegalStateException}.
-	 */
-	@Test
-	public void testRemoveWithEmptyArray()
-	{
-		final ArrayIterator<Object> arrayIterator = new ArrayIterator<>(new Object[] { });
-
-		Assertions.assertThrows(IllegalStateException.class, () -> {
-			arrayIterator.remove();
-		});
+		final String[] elements = IteratorSteps.elementsWithNull(array).toArray(new String[0]);
+		final ArrayIterator<String> iterator = new ArrayIterator<>(elements);
+		assertSame(elements, iterator.getArray());
+		assertEquals(IteratorSteps.elements(results), IteratorSteps.run(iterator, steps));
+		assertArrayEquals(IteratorSteps.elementsWithNull(arrayAfterwards).toArray(new String[0]),
+			elements, () -> "the array afterwards " + Arrays.toString(elements));
 	}
 
 	/**

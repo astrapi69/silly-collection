@@ -1,5 +1,10 @@
 repositories {
-    mavenLocal()
+    // The local Maven repository only on request, with -PuseMavenLocal: it came before Maven Central, so an
+    // artifact built on this machine replaced the published one of the same version, and a build tested and
+    // packaged against other dependencies than CI and every user get (#99, as astrapi69/silly-strings#14)
+    if (providers.gradleProperty("useMavenLocal").isPresent()) {
+        mavenLocal()
+    }
     mavenCentral()
     /**
      * This repository is intended for snapshot versions that are previously deployed

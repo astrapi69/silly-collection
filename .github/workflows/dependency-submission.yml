@@ -22,11 +22,24 @@ jobs:
     steps:
       - name: Checkout sources
         uses: actions/checkout@3d3c42e5aac5ba805825da76410c181273ba90b1 # v7.0.1
+      # The JDK .sdkmanrc names, as the full semver of Adoptium: with '25' or '25.0.5' setup-java takes whatever
+      # matches first, such as a later patch release from the runner image (#106, as astrapi69/silly-strings#14)
       - name: Setup Java
         uses: actions/setup-java@b6effb05e454b25005698d916606bdc6ffcbf961 # v5.7.0
         with:
-          java-version: '25'
+          java-version: '25.0.5+8.0.LTS'
           distribution: 'temurin'
+      - name: Check the JDK is the one .sdkmanrc names
+        run: |
+          # sdkman names Temurin 25.0.5+8 "25.0.5.0+8-tem", the JDK's release file "Temurin-25.0.5+8". The
+          # build counts too: JAVA_VERSION, which this step read before, says 25.0.5 for every build of it
+          # (#106, as astrapi69/silly-strings#70)
+          candidate=$(sed -n 's/^java=\(.*\)-tem$/\1/p' .sdkmanrc)
+          want="Temurin-${candidate/.0+/+}"
+          have=$(sed -n 's/^IMPLEMENTOR_VERSION="\(.*\)"$/\1/p' "$JAVA_HOME/release")
+          vendor=$(sed -n 's/^IMPLEMENTOR="\(.*\)"$/\1/p' "$JAVA_HOME/release")
+          echo ".sdkmanrc names $candidate-tem, that is $want; set up: $vendor $have"
+          [ -n "$candidate" ] && [ "$have" = "$want" ] && [ "$vendor" = "Eclipse Adoptium" ]
       - name: Submit the dependency graph
         # 6.4.1 fixes GHSA-chpw-2mqm-95cc, which concerns the two-workflow download-and-submit setup
         uses: gradle/actions/dependency-submission@8da46b539cd8fe6ab27ca75128919a18d757604c # v6.4.1

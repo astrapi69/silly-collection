@@ -37,8 +37,14 @@ import java.util.List;
 import java.util.ListIterator;
 import java.util.NoSuchElementException;
 import java.util.Random;
+import java.util.function.Consumer;
+import java.util.function.Function;
+import java.util.function.Supplier;
+import java.util.stream.Stream;
 
 import org.junit.jupiter.api.Test;
+import org.junit.jupiter.params.ParameterizedTest;
+import org.junit.jupiter.params.provider.MethodSource;
 
 /**
  * The unit test class for the class {@link UniqueList}
@@ -47,422 +53,446 @@ public class UniqueListTest
 {
 
 	/**
-	 * Test the method {@link UniqueList#add(Object)}
+	 * The message of the UnsupportedOperationException of the view of subList
 	 */
-	@Test
-	public void testAdd()
-	{
-		List<String> list;
+	private static final String SUB_LIST = "A subList view of a UniqueList reads and removes only;"
+		+ " set and add through the list itself";
 
-		list = new UniqueList<>(6);
-		list.add("Leonidas");
-		list.add("Leonidas");
-		assertEquals(list.size(), 1);
-		list.add("Berta");
-		list.add("Berta");
-		assertEquals(list.size(), 2);
-		list.add("Caesar");
-		list.add("Caesar");
-		assertEquals(list.size(), 3);
-		list.add("Dora");
-		list.add("Dora");
-		assertEquals(list.size(), 4);
-		list.add("Emil");
-		list.add("Emil");
-		assertEquals(list.size(), 5);
-		list.add("Anton");
-		list.add("Anton");
-		assertEquals(list.size(), 6);
+	/**
+	 * A new {@link UniqueList} of the given elements
+	 *
+	 * @param elements
+	 *            the elements
+	 * @return the list
+	 */
+	private static UniqueList<String> unique(final String... elements)
+	{
+		return new UniqueList<>(Arrays.asList(elements));
 	}
 
 	/**
-	 * Test the method {@link UniqueList#add(Object)}
+	 * Adds the given elements one after the other with {@link List#add(Object)}
+	 *
+	 * @param list
+	 *            the list
+	 * @param elements
+	 *            the elements
+	 * @return what each add returned
 	 */
-	@Test
-	public void testAddWithIndex()
+	private static List<Boolean> addEach(final List<String> list, final String... elements)
 	{
-		List<String> list;
-
-		list = new UniqueList<>();
-		list.add(0, "Leonidas");
-		list.add(0, "Leonidas");
-		assertEquals(list.size(), 1);
-		list.add(0, "Berta");
-		list.add(0, "Berta");
-		assertEquals(list.size(), 2);
-		list.add(0, "Caesar");
-		list.add(0, "Caesar");
-		assertEquals(list.size(), 3);
-		list.add(0, "Dora");
-		list.add(0, "Dora");
-		assertEquals(list.size(), 4);
-		list.add(0, "Emil");
-		list.add(0, "Emil");
-		assertEquals(list.size(), 5);
-		list.add(0, "Anton");
-		list.add(0, "Anton");
-		assertEquals(list.size(), 6);
+		final List<Boolean> returned = new ArrayList<>();
+		for (final String element : elements)
+		{
+			returned.add(list.add(element));
+		}
+		return returned;
 	}
 
 	/**
-	 * Test the method {@link UniqueList#add(Object)}
+	 * Calls the given call and returns null, for a void method
+	 *
+	 * @param list
+	 *            the list
+	 * @param call
+	 *            the call
+	 * @return null
 	 */
-	@Test
-	public void testAddAll()
+	private static Object none(final List<String> list, final Consumer<List<String>> call)
 	{
-		List<String> list;
-		List<String> addition;
-
-		addition = ListFactory.newArrayList("", "Emil", "Anton", "Anton", "Anton", "Emil", "");
-		list = new UniqueList<>(ListFactory.newArrayList());
-		list.add("Emil");
-		list.add("Caesar");
-		list.addAll(addition);
-		assertEquals(list.size(), 4);
-
-		addition = ListFactory.newArrayList();
-		list = new UniqueList<>();
-		list.add("Emil");
-		list.add("Caesar");
-		list.addAll(addition);
-		assertEquals(list.size(), 2);
+		call.accept(list);
+		return null;
 	}
 
 	/**
-	 * Test the method {@link UniqueList#add(Object)}
+	 * A call that changes a {@link UniqueList}, what it returns and the list afterwards
+	 *
+	 * @param description
+	 *            the name of the case
+	 * @param list
+	 *            makes the list
+	 * @param call
+	 *            the call, which returns what the method returns, null for a void method
+	 * @param returned
+	 *            what the call returns
+	 * @param expected
+	 *            the elements of the list afterwards, in their order
 	 */
-	@Test
-	public void testAddAllWithIndex()
-	{
-		List<String> list;
-		List<String> addition;
-
-		addition = ListFactory.newArrayList("", "Emil", "Anton", "Anton", "Anton", "Emil", "");
-		list = new UniqueList<>();
-		list.add("Emil");
-		list.add("Caesar");
-		list.addAll(1, addition);
-		assertEquals(list.size(), 4);
-
-		addition = ListFactory.newArrayList();
-		list = new UniqueList<>();
-		list.add("Emil");
-		list.add("Caesar");
-		list.addAll(1, addition);
-		assertEquals(list.size(), 2);
+	record ChangeCase(String description, Supplier<List<String>> list,
+		Function<List<String>, Object> call, Object returned, List<String> expected) {
+		@Override
+		public String toString()
+		{
+			return description;
+		}
 	}
 
 	/**
-	 * Test the method {@link UniqueList#add(Object)} with a new element, which it appends and
-	 * returns true for, and with an element the list already contains, which it leaves out and
-	 * returns false for
+	 * The calls that change a {@link UniqueList}: add and addAll append the new elements and leave
+	 * the held ones where they are; add(int, E) inserts a new element at the index and moves a held
+	 * one so that it ends there (#39); addAll(int, Collection) inserts the new ones at the index;
+	 * set swaps an element held at another index (#67), so that the algorithms of
+	 * {@link Collections}, which swap through set, work as on an ArrayList; replaceAll replaces
+	 * with distinct values; addFirst and addLast put an element first or last and move a held one
+	 * there (#87). "The names" are "", Emil, Anton, Anton, Anton, Emil, ""
+	 *
+	 * @return the cases
 	 */
-	@Test
-	public void testAddNewAndContainedElement()
+	static Stream<ChangeCase> changes()
 	{
-		List<String> list = new UniqueList<>();
-
-		assertTrue(list.add("Leonidas"));
-		assertTrue(list.add("Berta"));
-		assertFalse(list.add("Leonidas"));
-		assertEquals(Arrays.asList("Leonidas", "Berta"), list);
+		final List<String> names = Arrays.asList("", "Emil", "Anton", "Anton", "Anton", "Emil", "");
+		final Supplier<List<String>> aToF = () -> unique("a", "b", "c", "d", "e", "f");
+		return Stream.of(new ChangeCase(
+			"add of Leonidas, Berta, Caesar, Dora, Emil, Anton, each twice, initial capacity 6: each once",
+			() -> new UniqueList<>(6),
+			list -> addEach(list, "Leonidas", "Leonidas", "Berta", "Berta", "Caesar", "Caesar",
+				"Dora", "Dora", "Emil", "Emil", "Anton", "Anton"),
+			List.of(true, false, true, false, true, false, true, false, true, false, true, false),
+			List.of("Leonidas", "Berta", "Caesar", "Dora", "Emil", "Anton")),
+			new ChangeCase(
+				"add(0, e) of Leonidas, Berta, Caesar, Dora, Emil, Anton, each twice: each at the front once",
+				UniqueList::new, list -> none(list, each -> {
+					for (final String name : List.of("Leonidas", "Berta", "Caesar", "Dora", "Emil",
+						"Anton"))
+					{
+						each.add(0, name);
+						each.add(0, name);
+					}
+				}), null, List.of("Anton", "Emil", "Dora", "Caesar", "Berta", "Leonidas")),
+			new ChangeCase("add of Leonidas, Berta, Leonidas: the second Leonidas false",
+				UniqueList::new, list -> addEach(list, "Leonidas", "Berta", "Leonidas"),
+				List.of(true, true, false), List.of("Leonidas", "Berta")),
+			new ChangeCase("addAll of the names to Emil, Caesar: the new ones appended once",
+				() -> unique("Emil", "Caesar"), list -> list.addAll(names), true,
+				List.of("Emil", "Caesar", "", "Anton")),
+			new ChangeCase("addAll of nothing to Emil, Caesar: unchanged, false",
+				() -> unique("Emil", "Caesar"), list -> list.addAll(List.of()), false,
+				List.of("Emil", "Caesar")),
+			new ChangeCase("addAll of Anton, Emil, Berta to Emil: the new ones appended",
+				() -> unique("Emil"), list -> list.addAll(Arrays.asList("Anton", "Emil", "Berta")),
+				true, List.of("Emil", "Anton", "Berta")),
+			new ChangeCase("addAll of nothing to Emil: unchanged, false", () -> unique("Emil"),
+				list -> list.addAll(Collections.emptyList()), false, List.of("Emil")),
+			new ChangeCase("addAll of a to a: held, unchanged, false", () -> unique("a"),
+				list -> list.addAll(Arrays.asList("a")), false, List.of("a")),
+			new ChangeCase("addAll(1, the names) to Emil, Caesar: the new ones at 1, once",
+				() -> unique("Emil", "Caesar"), list -> list.addAll(1, names), true,
+				List.of("Emil", "", "Anton", "Caesar")),
+			new ChangeCase("addAll(1, nothing) to Emil, Caesar: unchanged, false",
+				() -> unique("Emil", "Caesar"), list -> list.addAll(1, List.of()), false,
+				List.of("Emil", "Caesar")),
+			new ChangeCase("addAll(1, Anton, Berta) to Emil, Caesar: inserted at 1 in their order",
+				() -> unique("Emil", "Caesar"),
+				list -> list.addAll(1, Arrays.asList("Anton", "Berta")), true,
+				List.of("Emil", "Anton", "Berta", "Caesar")),
+			new ChangeCase("addAll(0, nothing) to Emil: unchanged, false", () -> unique("Emil"),
+				list -> list.addAll(0, Collections.emptyList()), false, List.of("Emil")),
+			new ChangeCase("addAll(1, a) to a: held, unchanged, false", () -> unique("a"),
+				list -> list.addAll(1, Arrays.asList("a")), false, List.of("a")),
+			new ChangeCase("addAll(0, a, a, b) to x: a once, then b, in front of x",
+				() -> unique("x"), list -> list.addAll(0, Arrays.asList("a", "a", "b")), true,
+				List.of("a", "b", "x")),
+			new ChangeCase("addAll(1, b, a, c) to a, the index size(): b and c appended, a stays",
+				() -> unique("a"), list -> list.addAll(1, Arrays.asList("b", "a", "c")), true,
+				List.of("a", "b", "c")),
+			new ChangeCase("addAll(0, b, c) to a, b: c at 0, the held b stays",
+				() -> unique("a", "b"), list -> list.addAll(0, Arrays.asList("b", "c")), true,
+				List.of("c", "a", "b")),
+			new ChangeCase("add(2, a) of a, b, the index size(): a moves to the end (#39)",
+				() -> unique("a", "b"), list -> none(list, each -> each.add(2, "a")), null,
+				List.of("b", "a")),
+			new ChangeCase("add(0, c) of a, b, c: c moves to the front (#39)",
+				() -> unique("a", "b", "c"), list -> none(list, each -> each.add(0, "c")), null,
+				List.of("c", "a", "b")),
+			new ChangeCase("add(2, c) of c, a, b: c moves back to the end (#39)",
+				() -> unique("c", "a", "b"), list -> none(list, each -> each.add(2, "c")), null,
+				List.of("a", "b", "c")),
+			new ChangeCase("add(1, a) of a, b, c: a moves to 1, in the middle (#39)",
+				() -> unique("a", "b", "c"), list -> none(list, each -> each.add(1, "a")), null,
+				List.of("b", "a", "c")),
+			new ChangeCase("add(1, a) of b, a, c: a at 1 already, unchanged (#39)",
+				() -> unique("b", "a", "c"), list -> none(list, each -> each.add(1, "a")), null,
+				List.of("b", "a", "c")),
+			new ChangeCase("add(1, b) of a, the index size(): b appended (#39)", () -> unique("a"),
+				list -> none(list, each -> each.add(1, "b")), null, List.of("a", "b")),
+			new ChangeCase("add(0, c) of a, b: c at the front (#39)", () -> unique("a", "b"),
+				list -> none(list, each -> each.add(0, "c")), null, List.of("c", "a", "b")),
+			new ChangeCase("add(1, d) of c, a, b: d at 1 (#39)", () -> unique("c", "a", "b"),
+				list -> none(list, each -> each.add(1, "d")), null, List.of("c", "d", "a", "b")),
+			new ChangeCase("set(0, c) of a, b, c: c held at 2 swaps with a, returns a (#67)",
+				() -> unique("a", "b", "c"), list -> list.set(0, "c"), "a", List.of("c", "b", "a")),
+			new ChangeCase("set(2, a) of a, b, c: a held at 0 swaps with c, returns c (#67)",
+				() -> unique("a", "b", "c"), list -> list.set(2, "a"), "c", List.of("c", "b", "a")),
+			new ChangeCase("Collections.swap(0, 3) of a, b, c, d: d, b, c, a (#67)",
+				() -> unique("a", "b", "c", "d"),
+				list -> none(list, each -> Collections.swap(each, 0, 3)), null,
+				List.of("d", "b", "c", "a")),
+			new ChangeCase("Collections.swap(2, 1) of d, b, c, a: d, c, b, a (#67)",
+				() -> unique("d", "b", "c", "a"),
+				list -> none(list, each -> Collections.swap(each, 2, 1)), null,
+				List.of("d", "c", "b", "a")),
+			new ChangeCase("Collections.swap(1, 1) of d, c, b, a, an index with itself: unchanged",
+				() -> unique("d", "c", "b", "a"),
+				list -> none(list, each -> Collections.swap(each, 1, 1)), null,
+				List.of("d", "c", "b", "a")),
+			new ChangeCase("Collections.reverse of a to e, an odd size: e to a (#67)",
+				() -> unique("a", "b", "c", "d", "e"), list -> none(list, Collections::reverse),
+				null, List.of("e", "d", "c", "b", "a")),
+			new ChangeCase("Collections.reverse of a, b, c, d, an even size: d, c, b, a (#67)",
+				() -> unique("a", "b", "c", "d"), list -> none(list, Collections::reverse), null,
+				List.of("d", "c", "b", "a")),
+			new ChangeCase(
+				"Collections.shuffle with the seed 67 of a to h: a, b, d, h, e, g, c, f, as an ArrayList (#67)",
+				() -> unique("a", "b", "c", "d", "e", "f", "g", "h"),
+				list -> none(list, each -> Collections.shuffle(each, new Random(67))), null,
+				List.of("a", "b", "d", "h", "e", "g", "c", "f")),
+			new ChangeCase("Collections.rotate by 1 of a to f, one cycle: f, a, b, c, d, e (#67)",
+				aToF, list -> none(list, each -> Collections.rotate(each, 1)), null,
+				List.of("f", "a", "b", "c", "d", "e")),
+			new ChangeCase("Collections.rotate by -1 of a to f, one cycle: b, c, d, e, f, a (#67)",
+				aToF, list -> none(list, each -> Collections.rotate(each, -1)), null,
+				List.of("b", "c", "d", "e", "f", "a")),
+			new ChangeCase("Collections.rotate by 2 of a to f, two cycles: e, f, a, b, c, d (#67)",
+				aToF, list -> none(list, each -> Collections.rotate(each, 2)), null,
+				List.of("e", "f", "a", "b", "c", "d")),
+			new ChangeCase(
+				"Collections.rotate by 3 of a to f, three cycles: d, e, f, a, b, c (#67)", aToF,
+				list -> none(list, each -> Collections.rotate(each, 3)), null,
+				List.of("d", "e", "f", "a", "b", "c")),
+			new ChangeCase("replaceAll with upper case of a, b, c: A, B, C",
+				() -> unique("a", "b", "c"),
+				list -> none(list, each -> each.replaceAll(String::toUpperCase)), null,
+				List.of("A", "B", "C")),
+			new ChangeCase(
+				"replaceAll giving b, c, a for a, b, c: b, c, a, each a value the list holds",
+				() -> unique("a", "b", "c"),
+				list -> none(list,
+					each -> each.replaceAll(
+						element -> element.equals("a") ? "b" : element.equals("b") ? "c" : "a")),
+				null, List.of("b", "c", "a")),
+			new ChangeCase("addLast(a) of a, b: a moves to the end (#87)", () -> unique("a", "b"),
+				list -> none(list, each -> each.addLast("a")), null, List.of("b", "a")),
+			new ChangeCase("addLast(a) of b, a: a last already, unchanged (#87)",
+				() -> unique("b", "a"), list -> none(list, each -> each.addLast("a")), null,
+				List.of("b", "a")),
+			new ChangeCase("addFirst(z) of a, b: z first (#87)", () -> unique("a", "b"),
+				list -> none(list, each -> each.addFirst("z")), null, List.of("z", "a", "b")),
+			new ChangeCase("addLast(y) of z, a, b: y last (#87)", () -> unique("z", "a", "b"),
+				list -> none(list, each -> each.addLast("y")), null, List.of("z", "a", "b", "y")),
+			new ChangeCase("addFirst(b) of z, a, b, y: b moves to the front (#87)",
+				() -> unique("z", "a", "b", "y"), list -> none(list, each -> each.addFirst("b")),
+				null, List.of("b", "z", "a", "y")));
 	}
 
 	/**
-	 * Test the method {@link UniqueList#addAll(Collection)} with a collection of new elements and
-	 * one the list already contains: the new ones are appended in the order of the collection and
-	 * the method returns true
+	 * Test the calls that change a {@link UniqueList}: what each returns and the list afterwards
+	 *
+	 * @param change
+	 *            the list, the call and its result
 	 */
-	@Test
-	public void testAddAllWithNewElements()
+	@ParameterizedTest(name = "{0}")
+	@MethodSource("changes")
+	public void testChanges(final ChangeCase change)
 	{
-		List<String> list = new UniqueList<>();
-		list.add("Emil");
-
-		assertTrue(list.addAll(Arrays.asList("Anton", "Emil", "Berta")));
-		assertEquals(Arrays.asList("Emil", "Anton", "Berta"), list);
+		final List<String> list = change.list().get();
+		assertEquals(change.returned(), change.call().apply(list));
+		assertEquals(change.expected(), list);
 	}
 
 	/**
-	 * Test the method {@link UniqueList#addAll(Collection)} with an empty collection, which leaves
-	 * the list unchanged and returns false
+	 * A call on a {@link UniqueList} that throws, the exception and the list afterwards
+	 *
+	 * @param description
+	 *            the name of the case
+	 * @param list
+	 *            makes the list
+	 * @param call
+	 *            the call
+	 * @param exception
+	 *            the class of the exception
+	 * @param message
+	 *            the message of the exception, null if a case does not check it
+	 * @param expected
+	 *            the elements of the list afterwards, null if a case does not check them
 	 */
-	@Test
-	public void testAddAllWithEmptyCollection()
-	{
-		List<String> list = new UniqueList<>();
-		list.add("Emil");
-
-		assertFalse(list.addAll(Collections.emptyList()));
-		assertEquals(Arrays.asList("Emil"), list);
+	record RefusalCase(String description, Supplier<List<String>> list, Consumer<List<String>> call,
+		Class<? extends RuntimeException> exception, String message, List<String> expected) {
+		@Override
+		public String toString()
+		{
+			return description;
+		}
 	}
 
 	/**
-	 * Test the method {@link UniqueList#addAll(int, Collection)} with a collection of new elements:
-	 * they are inserted at the given index in the order of the collection, the element that was at
-	 * the index follows them, and the method returns true
+	 * A call that throws an UnsupportedOperationException and leaves the list unchanged
+	 *
+	 * @param description
+	 *            the name of the case
+	 * @param list
+	 *            makes the list
+	 * @param call
+	 *            the call
+	 * @param message
+	 *            the message of the exception, null if the case does not check it
+	 * @param expected
+	 *            the elements of the list, before and after the call
+	 * @return the case
 	 */
-	@Test
-	public void testAddAllWithIndexAndNewElements()
+	private static RefusalCase refused(final String description, final Supplier<List<String>> list,
+		final Consumer<List<String>> call, final String message, final String... expected)
 	{
-		List<String> list = new UniqueList<>();
-		list.add("Emil");
-		list.add("Caesar");
-
-		assertTrue(list.addAll(1, Arrays.asList("Anton", "Berta")));
-		assertEquals(Arrays.asList("Emil", "Anton", "Berta", "Caesar"), list);
+		return new RefusalCase(description, list, call, UnsupportedOperationException.class,
+			message, List.of(expected));
 	}
 
 	/**
-	 * Test the method {@link UniqueList#addAll(int, Collection)} with an empty collection, which
-	 * leaves the list unchanged and returns false
+	 * A call that throws an IndexOutOfBoundsException and leaves the list unchanged
+	 *
+	 * @param description
+	 *            the name of the case
+	 * @param list
+	 *            makes the list
+	 * @param call
+	 *            the call
+	 * @param message
+	 *            the message of the exception, the one of ArrayList
+	 * @param expected
+	 *            the elements of the list, before and after the call
+	 * @return the case
 	 */
-	@Test
-	public void testAddAllWithIndexAndEmptyCollection()
+	private static RefusalCase outOfBounds(final String description,
+		final Supplier<List<String>> list, final Consumer<List<String>> call, final String message,
+		final String... expected)
 	{
-		List<String> list = new UniqueList<>();
-		list.add("Emil");
-
-		assertFalse(list.addAll(0, Collections.emptyList()));
-		assertEquals(Arrays.asList("Emil"), list);
+		return new RefusalCase(description, list, call, IndexOutOfBoundsException.class, message,
+			List.of(expected));
 	}
 
 	/**
-	 * Test the method {@link UniqueList#addAll(Collection)} with an element the list contains
-	 * already: [a].addAll([a]) leaves the list as it is and returns false, as the list did not
-	 * change (#39)
+	 * The calls on a {@link UniqueList} that throw: an index out of range throws the
+	 * IndexOutOfBoundsException of ArrayList, for a new element, for a held one and for an empty
+	 * collection (#39); replaceAll with two equal values, a null operator or an operator that
+	 * changes the list; the writes through the view of subList (#78); none of them changes the list
+	 *
+	 * @return the cases
 	 */
-	@Test
-	public void testAddAllWithContainedElement()
+	static Stream<RefusalCase> refusals()
 	{
-		List<String> list = new UniqueList<>();
-		list.add("a");
-
-		assertFalse(list.addAll(Arrays.asList("a")));
-		assertEquals(Arrays.asList("a"), list);
+		final Supplier<List<String>> abcd = () -> unique("a", "b", "c", "d");
+		return Stream.of(
+			outOfBounds("addAll(5, b) of a, an index over the size (#39)", () -> unique("a"),
+				list -> list.addAll(5, Arrays.asList("b")), "Index: 5, Size: 1", "a"),
+			outOfBounds("addAll(5, nothing) of a, an index over the size (#39)", () -> unique("a"),
+				list -> list.addAll(5, Collections.emptyList()), "Index: 5, Size: 1", "a"),
+			outOfBounds("addAll(-1, b) of a, a negative index (#39)", () -> unique("a"),
+				list -> list.addAll(-1, Arrays.asList("b")), "Index: -1, Size: 1", "a"),
+			outOfBounds("addAll(-1, nothing) of a, a negative index (#39)", () -> unique("a"),
+				list -> list.addAll(-1, Collections.emptyList()), "Index: -1, Size: 1", "a"),
+			outOfBounds("add(3, a) of a, b, a held element over the size (#39)",
+				() -> unique("a", "b"), list -> list.add(3, "a"), "Index: 3, Size: 2", "a", "b"),
+			outOfBounds("add(-1, a) of a, b, a held element at a negative index (#39)",
+				() -> unique("a", "b"), list -> list.add(-1, "a"), "Index: -1, Size: 2", "a", "b"),
+			outOfBounds("add(2, b) of a, a new element over the size (#39)", () -> unique("a"),
+				list -> list.add(2, "b"), "Index: 2, Size: 1", "a"),
+			outOfBounds("add(-1, b) of a, a new element at a negative index (#39)",
+				() -> unique("a"), list -> list.add(-1, "b"), "Index: -1, Size: 1", "a"),
+			outOfBounds("set(2, a) of a, b, an index out of range (#67)", () -> unique("a", "b"),
+				list -> list.set(2, "a"), "Index 2 out of bounds for length 2", "a", "b"),
+			outOfBounds("set(-1, b) of a, b, a negative index (#67)", () -> unique("a", "b"),
+				list -> list.set(-1, "b"), "Index -1 out of bounds for length 2", "a", "b"),
+			new RefusalCase(
+				"replaceAll giving x for each of a, b, c: IllegalArgumentException, x twice (#67)",
+				() -> unique("a", "b", "c"), list -> list.replaceAll(element -> "x"),
+				IllegalArgumentException.class,
+				"The operator gives the value x for two elements of this list",
+				List.of("a", "b", "c")),
+			new RefusalCase(
+				"replaceAll giving A for a and B for the others of a, b, c: IllegalArgumentException (#67)",
+				() -> unique("a", "b", "c"),
+				list -> list.replaceAll(element -> element.equals("a") ? "A" : "B"),
+				IllegalArgumentException.class, null, List.of("a", "b", "c")),
+			new RefusalCase("replaceAll(null) of an empty list: NullPointerException",
+				UniqueList::new, list -> list.replaceAll(null), NullPointerException.class, null,
+				List.of()),
+			new RefusalCase(
+				"replaceAll with an operator that removes b of a, b: ConcurrentModificationException",
+				() -> unique("a", "b"), list -> list.replaceAll(element -> {
+					list.remove("b");
+					return element.toUpperCase();
+				}), ConcurrentModificationException.class, null, null),
+			refused("subList(1, 3).set(0, a) of a, b, c, d, an element the list holds (#78)", abcd,
+				list -> list.subList(1, 3).set(0, "a"), SUB_LIST, "a", "b", "c", "d"),
+			refused("subList(1, 3).set(0, x) of a, b, c, d, a new element (#78)", abcd,
+				list -> list.subList(1, 3).set(0, "x"), null, "a", "b", "c", "d"),
+			refused("subList(1, 3).replaceAll with x of a, b, c, d (#78)", abcd,
+				list -> list.subList(1, 3).replaceAll(element -> "x"), null, "a", "b", "c", "d"),
+			refused("subList(1, 3).subList(0, 1).set(0, a) of a, b, c, d (#78)", abcd,
+				list -> list.subList(1, 3).subList(0, 1).set(0, "a"), null, "a", "b", "c", "d"),
+			refused("subList(1, 3).subList(0, 1).replaceAll with x of a, b, c, d (#78)", abcd,
+				list -> list.subList(1, 3).subList(0, 1).replaceAll(element -> "x"), null, "a", "b",
+				"c", "d"),
+			refused("subList(0, 2).replaceAll with c of a, b, c, the value c held behind (#78)",
+				() -> unique("a", "b", "c"), list -> list.subList(0, 2).replaceAll(element -> "c"),
+				null, "a", "b", "c"),
+			refused("subList(1, 3).add(0, c) of a, b, c, d, an element the view holds (#78)", abcd,
+				list -> list.subList(1, 3).add(0, "c"), null, "a", "b", "c", "d"),
+			refused("subList(1, 3).add(e) of a, b, c, d (#78)", abcd,
+				list -> list.subList(1, 3).add("e"), null, "a", "b", "c", "d"),
+			refused("subList(1, 3).add(1, e) of a, b, c, d (#78)", abcd,
+				list -> list.subList(1, 3).add(1, "e"), null, "a", "b", "c", "d"),
+			refused("subList(1, 3).addAll(e) of a, b, c, d (#78)", abcd,
+				list -> list.subList(1, 3).addAll(Arrays.asList("e")), null, "a", "b", "c", "d"),
+			refused("subList(1, 3).addAll(0, e) of a, b, c, d (#78)", abcd,
+				list -> list.subList(1, 3).addAll(0, Arrays.asList("e")), null, "a", "b", "c", "d"),
+			refused("subList(1, 3).addAll of nothing of a, b, c, d (#78)", abcd,
+				list -> list.subList(1, 3).addAll(Collections.emptyList()), null, "a", "b", "c",
+				"d"),
+			refused("subList(1, 3).addAll(0, nothing) of a, b, c, d (#78)", abcd,
+				list -> list.subList(1, 3).addAll(0, Collections.emptyList()), null, "a", "b", "c",
+				"d"),
+			refused("subList(1, 3).subList(0, 1).add(e) of a, b, c, d (#78)", abcd,
+				list -> list.subList(1, 3).subList(0, 1).add("e"), null, "a", "b", "c", "d"),
+			refused("subList(1, 3).subList(0, 1).addAll(e) of a, b, c, d (#78)", abcd,
+				list -> list.subList(1, 3).subList(0, 1).addAll(Arrays.asList("e")), null, "a", "b",
+				"c", "d"),
+			refused("subList(1, 3).sort(reverse order) of a, b, c, d (#78)", abcd,
+				list -> list.subList(1, 3).sort(Comparator.reverseOrder()), null, "a", "b", "c",
+				"d"),
+			refused("subList(1, 3).sort(null) of a, b, c, d (#78)", abcd,
+				list -> list.subList(1, 3).sort(null), null, "a", "b", "c", "d"),
+			refused("subList(2, 2).sort(null) of a, b, c, d, an empty view (#78)", abcd,
+				list -> list.subList(2, 2).sort(null), null, "a", "b", "c", "d"),
+			refused("subList(1, 3).subList(0, 2).sort(null) of a, b, c, d (#78)", abcd,
+				list -> list.subList(1, 3).subList(0, 2).sort(null), null, "a", "b", "c", "d"),
+			refused("Collections.reverse of subList(1, 3) of a, b, c, d (#78)", abcd,
+				list -> Collections.reverse(list.subList(1, 3)), null, "a", "b", "c", "d"),
+			refused("Collections.swap(0, 1) of subList(1, 3) of a, b, c, d (#78)", abcd,
+				list -> Collections.swap(list.subList(1, 3), 0, 1), null, "a", "b", "c", "d"));
 	}
 
 	/**
-	 * Test the method {@link UniqueList#addAll(int, Collection)} with an element the list contains
-	 * already: [a].addAll(1, [a]) leaves the list as it is and returns false, as the list did not
-	 * change (#39)
+	 * Test the calls on a {@link UniqueList} that throw: the exception, its message where a case
+	 * names it, and the list afterwards, unchanged where the call is refused
+	 *
+	 * @param refusal
+	 *            the list, the call and the exception
 	 */
-	@Test
-	public void testAddAllWithIndexAndContainedElement()
+	@ParameterizedTest(name = "{0}")
+	@MethodSource("refusals")
+	public void testRefusals(final RefusalCase refusal)
 	{
-		List<String> list = new UniqueList<>();
-		list.add("a");
-
-		assertFalse(list.addAll(1, Arrays.asList("a")));
-		assertEquals(Arrays.asList("a"), list);
-	}
-
-	/**
-	 * Test the method {@link UniqueList#addAll(int, Collection)} with an index greater than the
-	 * size: [a].addAll(5, [b]) throws an IndexOutOfBoundsException with the message of ArrayList,
-	 * and the list stays [a] (#39)
-	 */
-	@Test
-	public void testAddAllWithIndexOverSize()
-	{
-		List<String> list = new UniqueList<>();
-		list.add("a");
-
-		IndexOutOfBoundsException exception = assertThrows(IndexOutOfBoundsException.class,
-			() -> list.addAll(5, Arrays.asList("b")));
-		assertEquals("Index: 5, Size: 1", exception.getMessage());
-		assertEquals(Arrays.asList("a"), list);
-	}
-
-	/**
-	 * Test the method {@link UniqueList#addAll(int, Collection)} with an index greater than the
-	 * size and an empty collection: [a].addAll(5, []) throws an IndexOutOfBoundsException, as
-	 * ArrayList does (#39)
-	 */
-	@Test
-	public void testAddAllWithIndexOverSizeAndEmptyCollection()
-	{
-		List<String> list = new UniqueList<>();
-		list.add("a");
-
-		IndexOutOfBoundsException exception = assertThrows(IndexOutOfBoundsException.class,
-			() -> list.addAll(5, Collections.emptyList()));
-		assertEquals("Index: 5, Size: 1", exception.getMessage());
-		assertEquals(Arrays.asList("a"), list);
-	}
-
-	/**
-	 * Test the method {@link UniqueList#add(int, Object)} with the index size() and an element the
-	 * list contains already: [a, b].add(2, a) moves a to the end and gives [b, a] (#39)
-	 */
-	@Test
-	public void testAddWithIndexOfSizeAndContainedElement()
-	{
-		List<String> list = new UniqueList<>();
-		list.add("a");
-		list.add("b");
-
-		list.add(2, "a");
-		assertEquals(Arrays.asList("b", "a"), list);
-	}
-
-	/**
-	 * Test the method {@link UniqueList#addAll(int, Collection)} with an element the collection
-	 * holds twice: [x].addAll(0, [a, a, b]) gives [a, b, x], as [x].addAll(0, [a, b]) gives (#39)
-	 */
-	@Test
-	public void testAddAllWithIndexAndRepeatedElement()
-	{
-		List<String> list = new UniqueList<>();
-		list.add("x");
-
-		assertTrue(list.addAll(0, Arrays.asList("a", "a", "b")));
-		assertEquals(Arrays.asList("a", "b", "x"), list);
-	}
-
-	/**
-	 * Test the method {@link UniqueList#add(int, Object)} with elements the list contains already:
-	 * each moves so that it ends at the given index, to the front, to the back or to where it is,
-	 * and the size stays the same (#39)
-	 */
-	@Test
-	public void testAddWithIndexAndContainedElement()
-	{
-		List<String> list = new UniqueList<>(Arrays.asList("a", "b", "c"));
-
-		list.add(0, "c");
-		assertEquals(Arrays.asList("c", "a", "b"), list);
-		list.add(2, "c");
-		assertEquals(Arrays.asList("a", "b", "c"), list);
-		list.add(1, "a");
-		assertEquals(Arrays.asList("b", "a", "c"), list);
-		list.add(1, "a");
-		assertEquals(Arrays.asList("b", "a", "c"), list);
-	}
-
-	/**
-	 * Test the method {@link UniqueList#add(int, Object)} with new elements: each is inserted at
-	 * the given index, the index size() included, as ArrayList inserts it (#39)
-	 */
-	@Test
-	public void testAddWithIndexAndNewElement()
-	{
-		List<String> list = new UniqueList<>();
-		list.add("a");
-
-		list.add(1, "b");
-		assertEquals(Arrays.asList("a", "b"), list);
-		list.add(0, "c");
-		assertEquals(Arrays.asList("c", "a", "b"), list);
-		list.add(1, "d");
-		assertEquals(Arrays.asList("c", "d", "a", "b"), list);
-	}
-
-	/**
-	 * Test the method {@link UniqueList#add(int, Object)} with an index out of range and an element
-	 * the list contains already: it throws an IndexOutOfBoundsException with the message of
-	 * ArrayList, before it moves the element, and the list does not change (#39)
-	 */
-	@Test
-	public void testAddWithIndexOutOfRangeAndContainedElement()
-	{
-		List<String> list = new UniqueList<>(Arrays.asList("a", "b"));
-
-		IndexOutOfBoundsException exception = assertThrows(IndexOutOfBoundsException.class,
-			() -> list.add(3, "a"));
-		assertEquals("Index: 3, Size: 2", exception.getMessage());
-		assertEquals(Arrays.asList("a", "b"), list);
-
-		exception = assertThrows(IndexOutOfBoundsException.class, () -> list.add(-1, "a"));
-		assertEquals("Index: -1, Size: 2", exception.getMessage());
-		assertEquals(Arrays.asList("a", "b"), list);
-	}
-
-	/**
-	 * Test the method {@link UniqueList#add(int, Object)} with an index out of range and a new
-	 * element: it throws an IndexOutOfBoundsException with the message of ArrayList, and the list
-	 * does not change (#39)
-	 */
-	@Test
-	public void testAddWithIndexOutOfRangeAndNewElement()
-	{
-		List<String> list = new UniqueList<>();
-		list.add("a");
-
-		IndexOutOfBoundsException exception = assertThrows(IndexOutOfBoundsException.class,
-			() -> list.add(2, "b"));
-		assertEquals("Index: 2, Size: 1", exception.getMessage());
-
-		exception = assertThrows(IndexOutOfBoundsException.class, () -> list.add(-1, "b"));
-		assertEquals("Index: -1, Size: 1", exception.getMessage());
-		assertEquals(Arrays.asList("a"), list);
-	}
-
-	/**
-	 * Test the method {@link UniqueList#addAll(int, Collection)} with a negative index: it throws
-	 * an IndexOutOfBoundsException with the message of ArrayList, for an empty collection too, and
-	 * the list does not change (#39)
-	 */
-	@Test
-	public void testAddAllWithNegativeIndex()
-	{
-		List<String> list = new UniqueList<>();
-		list.add("a");
-
-		IndexOutOfBoundsException exception = assertThrows(IndexOutOfBoundsException.class,
-			() -> list.addAll(-1, Arrays.asList("b")));
-		assertEquals("Index: -1, Size: 1", exception.getMessage());
-
-		exception = assertThrows(IndexOutOfBoundsException.class,
-			() -> list.addAll(-1, Collections.emptyList()));
-		assertEquals("Index: -1, Size: 1", exception.getMessage());
-		assertEquals(Arrays.asList("a"), list);
-	}
-
-	/**
-	 * Test the method {@link UniqueList#addAll(int, Collection)} with the index size(): the new
-	 * elements are appended in the order of the collection, the one the list contains already is
-	 * left out, and the method returns true (#39)
-	 */
-	@Test
-	public void testAddAllWithIndexOfSize()
-	{
-		List<String> list = new UniqueList<>();
-		list.add("a");
-
-		assertTrue(list.addAll(1, Arrays.asList("b", "a", "c")));
-		assertEquals(Arrays.asList("a", "b", "c"), list);
-	}
-
-	/**
-	 * Test the method {@link UniqueList#addAll(int, Collection)} with a new element and one the
-	 * list contains already: the new one is inserted at the index, and the contained one keeps its
-	 * position, unlike with {@link UniqueList#add(int, Object)}, which moves it (#39)
-	 */
-	@Test
-	public void testAddAllWithIndexAndNewAndContainedElement()
-	{
-		List<String> list = new UniqueList<>(Arrays.asList("a", "b"));
-
-		assertTrue(list.addAll(0, Arrays.asList("b", "c")));
-		assertEquals(Arrays.asList("c", "a", "b"), list);
-	}
-
-	/**
-	 * Test the method {@link UniqueList#set(int, Object)} with an element the list holds at another
-	 * index, before and behind the given one: the two elements swap, [a, b, c].set(0, c) returns a
-	 * and gives [c, b, a], and [a, b, c].set(2, a) returns c and gives [c, b, a] too (#67)
-	 */
-	@Test
-	public void testSetWithElementHeldAtAnotherIndex()
-	{
-		List<String> list = new UniqueList<>(Arrays.asList("a", "b", "c"));
-		assertEquals("a", list.set(0, "c"));
-		assertEquals(Arrays.asList("c", "b", "a"), list);
-
-		list = new UniqueList<>(Arrays.asList("a", "b", "c"));
-		assertEquals("c", list.set(2, "a"));
-		assertEquals(Arrays.asList("c", "b", "a"), list);
+		final List<String> list = refusal.list().get();
+		final RuntimeException exception = assertThrows(refusal.exception(),
+			() -> refusal.call().accept(list));
+		if (refusal.message() != null)
+		{
+			assertEquals(refusal.message(), exception.getMessage());
+		}
+		if (refusal.expected() != null)
+		{
+			assertEquals(refusal.expected(), list);
+		}
 	}
 
 	/**
@@ -486,24 +516,6 @@ public class UniqueListTest
 	}
 
 	/**
-	 * Test the method {@link UniqueList#set(int, Object)} with an index out of range: it throws an
-	 * IndexOutOfBoundsException with the message of ArrayList, for an element the list holds too,
-	 * and the list does not change (#67)
-	 */
-	@Test
-	public void testSetWithIndexOutOfRange()
-	{
-		List<String> list = new UniqueList<>(Arrays.asList("a", "b"));
-
-		IndexOutOfBoundsException exception = assertThrows(IndexOutOfBoundsException.class,
-			() -> list.set(2, "a"));
-		assertEquals("Index 2 out of bounds for length 2", exception.getMessage());
-		exception = assertThrows(IndexOutOfBoundsException.class, () -> list.set(-1, "b"));
-		assertEquals("Index -1 out of bounds for length 2", exception.getMessage());
-		assertEquals(Arrays.asList("a", "b"), list);
-	}
-
-	/**
 	 * Test the method {@link UniqueList#set(int, Object)} while an iterator runs over the list: set
 	 * is no structural modification, the iterator goes on without a
 	 * ConcurrentModificationException; [a, b, c].set(0, c) after the first next() gives [c, b, a],
@@ -521,87 +533,6 @@ public class UniqueListTest
 		assertEquals("a", iterator.next());
 		assertFalse(iterator.hasNext());
 		assertEquals(Arrays.asList("c", "b", "a"), list);
-	}
-
-	/**
-	 * Test that {@link Collections#swap(List, int, int)}, which calls
-	 * {@code l.set(i, l.set(j, l.get(i)))}, swaps two elements of the list, before and after the
-	 * fix of #67, which makes {@link UniqueList#set(int, Object)} swap an element the list holds
-	 */
-	@Test
-	public void testCollectionsSwap()
-	{
-		List<String> list = new UniqueList<>(Arrays.asList("a", "b", "c", "d"));
-
-		Collections.swap(list, 0, 3);
-		assertEquals(Arrays.asList("d", "b", "c", "a"), list);
-		Collections.swap(list, 2, 1);
-		assertEquals(Arrays.asList("d", "c", "b", "a"), list);
-		Collections.swap(list, 1, 1);
-		assertEquals(Arrays.asList("d", "c", "b", "a"), list);
-	}
-
-	/**
-	 * Test that {@link Collections#reverse(List)}, which swaps through set, reverses the list of an
-	 * odd and of an even size, before and after the fix of #67
-	 */
-	@Test
-	public void testCollectionsReverse()
-	{
-		List<String> list = new UniqueList<>(Arrays.asList("a", "b", "c", "d", "e"));
-		Collections.reverse(list);
-		assertEquals(Arrays.asList("e", "d", "c", "b", "a"), list);
-
-		list = new UniqueList<>(Arrays.asList("a", "b", "c", "d"));
-		Collections.reverse(list);
-		assertEquals(Arrays.asList("d", "c", "b", "a"), list);
-	}
-
-	/**
-	 * Test that {@link Collections#shuffle(List, Random)}, which swaps through set, gives the list
-	 * the order it gives an ArrayList with the same elements and the same seed, each element once,
-	 * before and after the fix of #67
-	 */
-	@Test
-	public void testCollectionsShuffle()
-	{
-		List<String> elements = Arrays.asList("a", "b", "c", "d", "e", "f", "g", "h");
-		List<String> expected = new ArrayList<>(elements);
-		Collections.shuffle(expected, new Random(67));
-		assertNotEquals(elements, expected);
-
-		List<String> list = new UniqueList<>(elements);
-		Collections.shuffle(list, new Random(67));
-		assertEquals(expected, list);
-	}
-
-	/**
-	 * Test that {@link Collections#rotate(List, int)}, which calls
-	 * {@code displaced = list.set(i, displaced)} along each cycle, rotates the list, in one cycle
-	 * (distance 1 and -1) and in several (distance 2 and 3 of six elements), before and after the
-	 * fix of #67
-	 */
-	@Test
-	public void testCollectionsRotate()
-	{
-		List<String> elements = Arrays.asList("a", "b", "c", "d", "e", "f");
-		List<String> list;
-
-		list = new UniqueList<>(elements);
-		Collections.rotate(list, 1);
-		assertEquals(Arrays.asList("f", "a", "b", "c", "d", "e"), list);
-
-		list = new UniqueList<>(elements);
-		Collections.rotate(list, -1);
-		assertEquals(Arrays.asList("b", "c", "d", "e", "f", "a"), list);
-
-		list = new UniqueList<>(elements);
-		Collections.rotate(list, 2);
-		assertEquals(Arrays.asList("e", "f", "a", "b", "c", "d"), list);
-
-		list = new UniqueList<>(elements);
-		Collections.rotate(list, 3);
-		assertEquals(Arrays.asList("d", "e", "f", "a", "b", "c"), list);
 	}
 
 	/**
@@ -846,153 +777,6 @@ public class UniqueListTest
 	}
 
 	/**
-	 * Test the method {@link UniqueList#replaceAll(java.util.function.UnaryOperator)} with
-	 * operators that give two equal values: it throws an IllegalArgumentException and replaces no
-	 * element, the list stays [a, b, c], also where the equal values come last (#67)
-	 */
-	@Test
-	public void testReplaceAllWithEqualValues()
-	{
-		List<String> list = new UniqueList<>(Arrays.asList("a", "b", "c"));
-
-		IllegalArgumentException exception = assertThrows(IllegalArgumentException.class,
-			() -> list.replaceAll(element -> "x"));
-		assertEquals("The operator gives the value x for two elements of this list",
-			exception.getMessage());
-		assertEquals(Arrays.asList("a", "b", "c"), list);
-
-		assertThrows(IllegalArgumentException.class,
-			() -> list.replaceAll(element -> element.equals("a") ? "A" : "B"));
-		assertEquals(Arrays.asList("a", "b", "c"), list);
-	}
-
-	/**
-	 * Test the method {@link UniqueList#replaceAll(java.util.function.UnaryOperator)} with
-	 * operators that give distinct values: each element is replaced by its value, also where the
-	 * value equals another element of the list, as a to b, b to c and c to a
-	 */
-	@Test
-	public void testReplaceAllWithDistinctValues()
-	{
-		List<String> list = new UniqueList<>(Arrays.asList("a", "b", "c"));
-
-		list.replaceAll(String::toUpperCase);
-		assertEquals(Arrays.asList("A", "B", "C"), list);
-
-		list = new UniqueList<>(Arrays.asList("a", "b", "c"));
-		list.replaceAll(element -> element.equals("a") ? "b" : element.equals("b") ? "c" : "a");
-		assertEquals(Arrays.asList("b", "c", "a"), list);
-	}
-
-	/**
-	 * Test the method {@link UniqueList#replaceAll(java.util.function.UnaryOperator)} with a null
-	 * operator: it throws a NullPointerException, on an empty list too, as List.replaceAll says
-	 */
-	@Test
-	public void testReplaceAllWithNullOperator()
-	{
-		List<String> list = new UniqueList<>();
-
-		assertThrows(NullPointerException.class, () -> list.replaceAll(null));
-	}
-
-	/**
-	 * Test the method {@link UniqueList#replaceAll(java.util.function.UnaryOperator)} with an
-	 * operator that removes an element of the list: it throws a ConcurrentModificationException, as
-	 * ArrayList does, also where the removal ends the iteration over the list
-	 */
-	@Test
-	public void testReplaceAllWithOperatorThatChangesTheList()
-	{
-		List<String> list = new UniqueList<>(Arrays.asList("a", "b"));
-
-		assertThrows(ConcurrentModificationException.class, () -> list.replaceAll(element -> {
-			list.remove("b");
-			return element.toUpperCase();
-		}));
-	}
-
-	/**
-	 * Test set and replaceAll of the view of {@link UniqueList#subList(int, int)} and of a view of
-	 * it: each throws an UnsupportedOperationException, for an element the list holds and for a new
-	 * one, and neither the list nor the view changes; the first case of #78, [a, b, c,
-	 * d].subList(1, 3).set(0, a) and [a, b, c].subList(0, 2).replaceAll(e -> c), too
-	 */
-	@Test
-	public void testSubListSetAndReplaceAll()
-	{
-		List<String> list = new UniqueList<>(Arrays.asList("a", "b", "c", "d"));
-		List<String> view = list.subList(1, 3);
-
-		UnsupportedOperationException exception = assertThrows(UnsupportedOperationException.class,
-			() -> view.set(0, "a"));
-		assertEquals("A subList view of a UniqueList reads and removes only; set and add through"
-			+ " the list itself", exception.getMessage());
-		assertThrows(UnsupportedOperationException.class, () -> view.set(0, "x"));
-		assertThrows(UnsupportedOperationException.class, () -> view.replaceAll(element -> "x"));
-		assertThrows(UnsupportedOperationException.class, () -> view.subList(0, 1).set(0, "a"));
-		assertThrows(UnsupportedOperationException.class,
-			() -> view.subList(0, 1).replaceAll(element -> "x"));
-		assertEquals(Arrays.asList("a", "b", "c", "d"), list);
-		assertEquals(Arrays.asList("b", "c"), view);
-
-		List<String> other = new UniqueList<>(Arrays.asList("a", "b", "c"));
-		assertThrows(UnsupportedOperationException.class,
-			() -> other.subList(0, 2).replaceAll(element -> "c"));
-		assertEquals(Arrays.asList("a", "b", "c"), other);
-	}
-
-	/**
-	 * Test the add methods of the view of {@link UniqueList#subList(int, int)} and of a view of it:
-	 * add(E), add(int, E), addAll and addAll(int, Collection) throw an
-	 * UnsupportedOperationException, with an empty collection too, and neither the list nor the
-	 * view changes; the second case of #78, add(0, c) on subList(1, 3) of [a, b, c, d], too
-	 */
-	@Test
-	public void testSubListAdd()
-	{
-		List<String> list = new UniqueList<>(Arrays.asList("a", "b", "c", "d"));
-		List<String> view = list.subList(1, 3);
-
-		assertThrows(UnsupportedOperationException.class, () -> view.add(0, "c"));
-		assertThrows(UnsupportedOperationException.class, () -> view.add("e"));
-		assertThrows(UnsupportedOperationException.class, () -> view.add(1, "e"));
-		assertThrows(UnsupportedOperationException.class, () -> view.addAll(Arrays.asList("e")));
-		assertThrows(UnsupportedOperationException.class, () -> view.addAll(0, Arrays.asList("e")));
-		assertThrows(UnsupportedOperationException.class,
-			() -> view.addAll(Collections.emptyList()));
-		assertThrows(UnsupportedOperationException.class,
-			() -> view.addAll(0, Collections.emptyList()));
-		assertThrows(UnsupportedOperationException.class, () -> view.subList(0, 1).add("e"));
-		assertThrows(UnsupportedOperationException.class,
-			() -> view.subList(0, 1).addAll(Arrays.asList("e")));
-		assertEquals(Arrays.asList("a", "b", "c", "d"), list);
-		assertEquals(Arrays.asList("b", "c"), view);
-	}
-
-	/**
-	 * Test sort of the view of {@link UniqueList#subList(int, int)} and of a view of it, and
-	 * {@link Collections#reverse(List)} and {@link Collections#swap(List, int, int)}, which work
-	 * through its set: each throws an UnsupportedOperationException, sort with null and on an empty
-	 * view too, and the list does not change
-	 */
-	@Test
-	public void testSubListSort()
-	{
-		List<String> list = new UniqueList<>(Arrays.asList("a", "b", "c", "d"));
-		List<String> view = list.subList(1, 3);
-
-		assertThrows(UnsupportedOperationException.class,
-			() -> view.sort(Comparator.reverseOrder()));
-		assertThrows(UnsupportedOperationException.class, () -> view.sort(null));
-		assertThrows(UnsupportedOperationException.class, () -> list.subList(2, 2).sort(null));
-		assertThrows(UnsupportedOperationException.class, () -> view.subList(0, 2).sort(null));
-		assertThrows(UnsupportedOperationException.class, () -> Collections.reverse(view));
-		assertThrows(UnsupportedOperationException.class, () -> Collections.swap(view, 0, 1));
-		assertEquals(Arrays.asList("a", "b", "c", "d"), list);
-	}
-
-	/**
 	 * Test set and add of the list iterators of the view of {@link UniqueList#subList(int, int)},
 	 * of listIterator() and of listIterator(int): they throw an UnsupportedOperationException, and
 	 * neither the list nor the view changes
@@ -1057,44 +841,6 @@ public class UniqueListTest
 	public void testSubListOfSubListRemoves()
 	{
 		SubListViewAssertions.assertSubListOfSubListRemoves(UniqueList::new);
-	}
-
-	/**
-	 * Test the method {@link UniqueList#addLast(Object)} with an element the list holds: it moves
-	 * the element to the end, as LinkedHashSet.addLast does, [a, b] with addLast(a) gives [b, a],
-	 * and getLast() is a; for the element that is last already the list does not change (#87)
-	 */
-	@Test
-	public void testAddLastWithHeldElement()
-	{
-		List<String> list = new UniqueList<>(Arrays.asList("a", "b"));
-
-		list.addLast("a");
-		assertEquals(Arrays.asList("b", "a"), list);
-		assertEquals("a", list.getLast());
-		list.addLast("a");
-		assertEquals(Arrays.asList("b", "a"), list);
-	}
-
-	/**
-	 * Test the methods addFirst and addLast of {@link UniqueList} with a new element and addFirst
-	 * with an element the list holds: each puts the element first or last, and addFirst moves a
-	 * held element to the front, as LinkedHashSet does; [a, b] with addFirst(z), addLast(y) and
-	 * addFirst(b) gives [b, z, a, y]; before and after the fix of #87
-	 */
-	@Test
-	public void testAddFirstAndAddLast()
-	{
-		List<String> list = new UniqueList<>(Arrays.asList("a", "b"));
-
-		list.addFirst("z");
-		assertEquals(Arrays.asList("z", "a", "b"), list);
-		list.addLast("y");
-		assertEquals(Arrays.asList("z", "a", "b", "y"), list);
-		assertEquals("y", list.getLast());
-		list.addFirst("b");
-		assertEquals(Arrays.asList("b", "z", "a", "y"), list);
-		assertEquals("b", list.getFirst());
 	}
 
 	/**

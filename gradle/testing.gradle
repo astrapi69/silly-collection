@@ -1,6 +1,67 @@
+/**
+ * What a consumer that declares this library alone compiles against (#95): this project resolved the way a
+ * consumer's compile class path resolves it, the java-api usage of a library in a jar, that is its apiElements,
+ * from which the published Gradle module metadata takes its apiElements variant. It holds the built jar and the
+ * api dependencies; an implementation dependency stays out of it, as it stays out of a consumer's compiler. The
+ * shape is the one of astrapi69/comparator-extensions#36.
+ */
+def consumerDependencyScope = configurations.dependencyScope('consumerDependencies')
+def consumerClasspath = configurations.resolvable('consumerCompileClasspath') {
+    extendsFrom(consumerDependencyScope.get())
+    attributes {
+        attribute(Usage.USAGE_ATTRIBUTE, objects.named(Usage, Usage.JAVA_API))
+        attribute(Category.CATEGORY_ATTRIBUTE, objects.named(Category, Category.LIBRARY))
+        attribute(LibraryElements.LIBRARY_ELEMENTS_ATTRIBUTE, objects.named(LibraryElements, LibraryElements.JAR))
+        attribute(Bundling.BUNDLING_ATTRIBUTE, objects.named(Bundling, Bundling.EXTERNAL))
+    }
+}
+
+dependencies {
+    consumerDependencies project(path)
+}
+
+/**
+ * Hands that compile class path to ModulePathTest, which compiles consumers against it, modules on the module path
+ * and classes on the class path (#95). It is an input of the test task, so the test task runs after jar and reruns
+ * when it changes; it is read when the test JVM starts, so the configuration cache keeps working.
+ */
+abstract class ModulePathTestArguments implements CommandLineArgumentProvider {
+
+    @Classpath
+    abstract ConfigurableFileCollection getConsumerCompileClasspath()
+
+    @Override
+    Iterable<String> asArguments() {
+        ["-Dmodule.path.test.consumer.compile.classpath=${consumerCompileClasspath.asPath}".toString()]
+    }
+}
+
+/**
+ * Hands the pom that a publication carries to PublishedPomTest, which reads the scope of each dependency from it,
+ * the scope a Maven consumer gets (#95). It is an input of the test task, so the pom is generated first.
+ */
+abstract class PublishedPomTestArguments implements CommandLineArgumentProvider {
+
+    @InputFiles
+    @PathSensitive(PathSensitivity.NONE)
+    abstract ConfigurableFileCollection getPom()
+
+    @Override
+    Iterable<String> asArguments() {
+        ["-Dpublished.pom.test.pom=${pom.singleFile.absolutePath}".toString()]
+    }
+}
+
+def modulePathTestArguments = objects.newInstance(ModulePathTestArguments)
+modulePathTestArguments.consumerCompileClasspath.from(consumerClasspath)
+
+def publishedPomTestArguments = objects.newInstance(PublishedPomTestArguments)
+publishedPomTestArguments.pom.from(tasks.named('generatePomFileForMavenJavaPublication'))
 
 test {
     useJUnitPlatform()
+    jvmArgumentProviders.add(modulePathTestArguments)
+    jvmArgumentProviders.add(publishedPomTestArguments)
 }
 
 jacoco {

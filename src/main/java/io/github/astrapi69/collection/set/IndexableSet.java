@@ -41,6 +41,14 @@ public class IndexableSet<E> extends InsertionOrderSet<E>
 	private static final long serialVersionUID = 1L;
 
 	/**
+	 * Constructs an empty {@link IndexableSet} with the default capacity (16) and load factor
+	 * (0.75) of {@link InsertionOrderSet#InsertionOrderSet()}.
+	 */
+	public IndexableSet()
+	{
+	}
+
+	/**
 	 * Gets the element of the given index <br>
 	 * <br>
 	 * Note: use with caution

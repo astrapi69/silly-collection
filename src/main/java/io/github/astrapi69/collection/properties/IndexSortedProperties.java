@@ -229,13 +229,21 @@ public class IndexSortedProperties extends SortedProperties
 
 	/**
 	 * Gets the index of the given object.
+	 * <p>
+	 * A {@link Properties} holds no null value, so null is never found: it gives -1, also where
+	 * {@link #getProperty(String)} gives null for a key, as for a value that is not a string.
+	 * </p>
 	 *
 	 * @param object
-	 *            the object
+	 *            the object, may be null
 	 * @return the index of the given object or -1 if not found.
 	 */
 	public synchronized int indexOf(final Object object)
 	{
+		if (object == null)
+		{
+			return -1;
+		}
 		final List<Object> sortedKeys = sortedKeys();
 		for (final Object key : sortedKeys)
 		{

@@ -25,21 +25,11 @@
 package io.github.astrapi69.collection.iterator;
 
 import static org.junit.jupiter.api.Assertions.assertEquals;
-import static org.junit.jupiter.api.Assertions.assertNotNull;
-import static org.junit.jupiter.api.Assertions.assertTrue;
 
-import java.util.ArrayList;
 import java.util.Collections;
-import java.util.Enumeration;
-import java.util.List;
-import java.util.NoSuchElementException;
 
-import org.junit.jupiter.api.AfterEach;
-import org.junit.jupiter.api.Assertions;
-import org.junit.jupiter.api.BeforeEach;
-import org.junit.jupiter.api.Test;
-
-import io.github.astrapi69.collection.list.ListFactory;
+import org.junit.jupiter.params.ParameterizedTest;
+import org.junit.jupiter.params.provider.CsvSource;
 
 /**
  * The unit test class for the class {@link EnumerationIterator}.
@@ -49,267 +39,39 @@ import io.github.astrapi69.collection.list.ListFactory;
 public class EnumerationIteratorTest
 {
 
-
-	/** The List for the test. */
-	private final List<String> list = new ArrayList<String>()
-	{
-		/**
-		 * The serialVersionUID
-		 */
-		private static final long serialVersionUID = 1L;
-
-		{
-			add("one");
-			add("two");
-			add("three");
-			add("four");
-		}
-	};
-	/** The EnumerationIterator. */
-	private EnumerationIterator<String> iterator;
-
 	/**
-	 * Sets up method will be invoked before every unit test method in this class.
+	 * Test for the constructor
+	 * {@link EnumerationIterator#EnumerationIterator(java.util.Enumeration)} and the methods
+	 * {@link EnumerationIterator#hasNext()}, {@link EnumerationIterator#next()} and
+	 * {@link EnumerationIterator#remove()}: steps on an iterator of the enumeration of a list, and
+	 * what each gives, see {@link IteratorSteps}; remove() is not supported and leaves the
+	 * iteration as it is
 	 *
-	 * @throws Exception
-	 *             is thrown if an exception occurs
+	 * @param description
+	 *            the name of the case
+	 * @param list
+	 *            the elements of the list, separated by a space, '' for an empty one
+	 * @param steps
+	 *            the steps
+	 * @param results
+	 *            what each step gives
 	 */
-	@BeforeEach
-	protected void setUp() throws Exception
+	@ParameterizedTest(name = "{0}", quoteTextArguments = false)
+	@CsvSource(value = {
+			"one to four: next four times, then no next | one two three four | next next next next hasNext | one two three four false",
+			"one alone: has next | one | hasNext | true", "empty: no next | '' | hasNext | false",
+			"foo alone: next foo, NoSuchElementException after it | foo | next next | foo NoSuchElementException",
+			"foo, bar: next twice | foo bar | next next | foo bar",
+			"foo, bar, chu: next three times | foo bar chu | next next next | foo bar chu",
+			"empty: next throws NoSuchElementException | '' | next | NoSuchElementException",
+			"1, 2: remove throws UnsupportedOperationException | 1 2 | remove | UnsupportedOperationException",
+			"1, 2: next, remove throws UnsupportedOperationException, 2 is next | 1 2 | next remove next | 1 UnsupportedOperationException 2" }, delimiter = '|')
+	public void testSteps(final String description, final String list, final String steps,
+		final String results)
 	{
-		final Enumeration<String> elem = Collections.enumeration(list);
-		this.iterator = new EnumerationIterator<>(elem);
-	}
-
-	/**
-	 * Tear down method will be invoked after every unit test method in this class.
-	 *
-	 * @throws Exception
-	 *             is thrown if an exception occurs
-	 */
-	@AfterEach
-	protected void tearDown() throws Exception
-	{
-	}
-
-	/**
-	 * Test method for {@link EnumerationIterator#EnumerationIterator(java.util.Enumeration)} .
-	 */
-	@Test
-	public void testEnumerationIterator()
-	{
-		int iteratorLength = 0;
-		while (this.iterator.hasNext())
-		{
-			final String stringNumber = this.iterator.next();
-			System.out.println(stringNumber);
-			iteratorLength++;
-		}
-		assertTrue(list.size() == iteratorLength, "The length from the array should be equal with "
-			+ "the length from the enumerationIterator.");
-	}
-
-	/**
-	 * Run the EnumerationIterator(E[]) constructor test.
-	 *
-	 * @throws Exception
-	 *             the exception
-	 */
-	@Test
-	public void testEnumerationIteratorConstructor() throws Exception
-	{
-		final Enumeration<String> elem = Collections.enumeration(list);
-		final EnumerationIterator<String> result = new EnumerationIterator<>(elem);
-
-		assertNotNull(result);
-	}
-
-	/**
-	 * Run the boolean hasNext() method test.
-	 *
-	 * @throws Exception
-	 *             the exception
-	 */
-	@Test
-	public void testHasNextWithContainingOneObject() throws Exception
-	{
-		final Enumeration<String> elemements = Collections.enumeration(new ArrayList<String>()
-		{
-			/**
-			 * The serialVersionUID
-			 */
-			private static final long serialVersionUID = 1L;
-
-			{
-				add("one");
-			}
-		});
-		final EnumerationIterator<String> enumerationIterator = new EnumerationIterator<>(
-			elemements);
-
-		final boolean result = enumerationIterator.hasNext();
-		assertEquals(true, result);
-	}
-
-	/**
-	 * Run the boolean hasNext() method test.
-	 *
-	 * @throws Exception
-	 *             the exception
-	 */
-	@Test
-	public void testHasNextWithEmptyEnumeration() throws Exception
-	{
-		final Enumeration<String> elemements = Collections.enumeration(new ArrayList<String>());
-		final EnumerationIterator<String> enumerationIterator = new EnumerationIterator<>(
-			elemements);
-
-		final boolean result = enumerationIterator.hasNext();
-
-		assertEquals(false, result);
-	}
-
-	/**
-	 * Run the boolean next() method test.
-	 *
-	 * @throws Exception
-	 *             the exception
-	 */
-	@Test
-	public void testNextContainingOneObject() throws Exception
-	{
-		final String expected = "foo";
-		final Enumeration<String> elemements = Collections.enumeration(new ArrayList<String>()
-		{
-			/**
-			 * The serialVersionUID
-			 */
-			private static final long serialVersionUID = 1L;
-
-			{
-				add(expected);
-			}
-		});
-		final EnumerationIterator<String> enumerationIterator = new EnumerationIterator<>(
-			elemements);
-
-		final String actual = enumerationIterator.next();
-
-		assertNotNull(actual);
-		assertEquals(expected, actual);
-	}
-
-	/**
-	 * Run the boolean next() method test.
-	 *
-	 * @throws Exception
-	 *             the exception
-	 */
-	@Test
-	public void testNextContainingThreeObject() throws Exception
-	{
-		final String expected = "foo";
-		final String expected2 = "bar";
-		final String expected3 = "chu";
-		final Enumeration<String> elemements = Collections.enumeration(new ArrayList<String>()
-		{
-			/**
-			 * The serialVersionUID
-			 */
-			private static final long serialVersionUID = 1L;
-
-			{
-				add(expected);
-				add(expected2);
-				add(expected3);
-			}
-		});
-		final EnumerationIterator<String> enumerationIterator = new EnumerationIterator<>(
-			elemements);
-
-		String actual = enumerationIterator.next();
-
-		assertNotNull(actual);
-		assertEquals(expected, actual);
-
-		actual = enumerationIterator.next();
-
-		assertNotNull(actual);
-		assertEquals(expected2, actual);
-
-		actual = enumerationIterator.next();
-
-		assertNotNull(actual);
-		assertEquals(expected3, actual);
-	}
-
-	/**
-	 * Run the boolean next() method test.
-	 *
-	 * @throws Exception
-	 *             the exception
-	 */
-	@Test
-	public void testNextContainingTwoObject() throws Exception
-	{
-		final String expected = "foo";
-		final String expected2 = "bar";
-		final Enumeration<String> elemements = Collections.enumeration(new ArrayList<String>()
-		{
-			/**
-			 * The serialVersionUID
-			 */
-			private static final long serialVersionUID = 1L;
-
-			{
-				add(expected);
-				add(expected2);
-			}
-		});
-		final EnumerationIterator<String> enumerationIterator = new EnumerationIterator<>(
-			elemements);
-
-		String actual = enumerationIterator.next();
-
-		assertNotNull(actual);
-		assertEquals(expected, actual);
-
-		actual = enumerationIterator.next();
-
-		assertNotNull(actual);
-		assertEquals(expected2, actual);
-	}
-
-	/**
-	 * Run the boolean next() method test.
-	 *
-	 * @throws Exception
-	 *             the exception
-	 */
-	@Test
-	public void testNextWithEmptyEnumeration() throws Exception
-	{
-		final Enumeration<String> elemements = Collections.enumeration(new ArrayList<String>());
-		final EnumerationIterator<String> enumerationIterator = new EnumerationIterator<>(
-			elemements);
-		Assertions.assertThrows(NoSuchElementException.class, () -> {
-			enumerationIterator.next();
-		});
-	}
-
-	/**
-	 * Test for method {@link EnumerationIterator#remove()}
-	 */
-	@Test
-	public void testRemove()
-	{
-		final Enumeration<String> elemements = Collections
-			.enumeration(ListFactory.newArrayList("1", "2"));
-		final EnumerationIterator<String> enumerationIterator = new EnumerationIterator<>(
-			elemements);
-		Assertions.assertThrows(UnsupportedOperationException.class, () -> {
-			enumerationIterator.remove();
-		});
+		final EnumerationIterator<String> iterator = new EnumerationIterator<>(
+			Collections.enumeration(IteratorSteps.elements(list)));
+		assertEquals(IteratorSteps.elements(results), IteratorSteps.run(iterator, steps));
 	}
 
 }
