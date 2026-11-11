@@ -127,6 +127,8 @@ public final class MapExtensions
 	 * @param summarizeWithThisValueCounterMap
 	 *            the collection of the keys to count, a key may appear more than once
 	 * @return the new map ready to count elements
+	 * @throws NullPointerException
+	 *             if a value that is merged is null: a null value of the first map
 	 */
 	public static <K> Map<K, Integer> mergeAndSummarize(final Map<K, Integer> valueCounterMap,
 		final Collection<K> summarizeWithThisValueCounterMap)
@@ -151,6 +153,8 @@ public final class MapExtensions
 	 *            if true all keys from the collection and the map will be considered by the merge
 	 *            otherwise only the keys of the first map will be considered
 	 * @return the new map ready to count elements
+	 * @throws NullPointerException
+	 *             if a value that is merged is null: a null value of the first map
 	 */
 	public static <K> Map<K, Integer> mergeAndSummarize(final Map<K, Integer> valueCounterMap,
 		final Collection<K> summarizeWithThisValueCounterMap, boolean fullMerge)
@@ -169,6 +173,10 @@ public final class MapExtensions
 	 * @param summarizeWithThisValueCounterMap
 	 *            the other counter map that will be summarized with the first map
 	 * @return the new map ready to count elements
+	 * @throws NullPointerException
+	 *             if a value that is merged is null: a null value of the first map, or of the
+	 *             second map for a key that is merged, which are all its keys with fullMerge and
+	 *             the keys of the first map without
 	 */
 	public static <K> Map<K, Integer> mergeAndSummarize(final Map<K, Integer> valueCounterMap,
 		final Map<K, Integer> summarizeWithThisValueCounterMap)
@@ -191,6 +199,10 @@ public final class MapExtensions
 	 *            if true all keys from both maps will be considered by the merge otherwise only the
 	 *            keys of the first map will be considered
 	 * @return the new map ready to count elements
+	 * @throws NullPointerException
+	 *             if a value that is merged is null: a null value of the first map, or of the
+	 *             second map for a key that is merged, which are all its keys with fullMerge and
+	 *             the keys of the first map without
 	 */
 	public static <K> Map<K, Integer> mergeAndSummarize(final Map<K, Integer> valueCounterMap,
 		final Map<K, Integer> summarizeWithThisValueCounterMap, boolean fullMerge)
@@ -236,6 +248,11 @@ public final class MapExtensions
 	 * @param map
 	 *            the map to swap
 	 * @return the swapped map
+	 * @throws IllegalStateException
+	 *             if two keys have the same value, as
+	 *             {@link java.util.stream.Collectors#toMap(java.util.function.Function, java.util.function.Function)}
+	 * @throws NullPointerException
+	 *             if the map is null or a key is null
 	 */
 	public static <K, V> Map<V, K> swap(final Map<K, V> map)
 	{
@@ -302,6 +319,8 @@ public final class MapExtensions
 	 * @param comparator
 	 *            the comparator to sort
 	 * @return the maximum key from the given Map
+	 * @throws java.util.NoSuchElementException
+	 *             if the map is empty, as {@link java.util.Collections#max(Collection, Comparator)}
 	 */
 	public static <K, V extends Comparable<? super V>> K getMaxKey(final Map<K, V> map,
 		final Comparator<? super K> comparator)
@@ -355,13 +374,18 @@ public final class MapExtensions
 	}
 
 	/**
-	 * Converts the given two-dimensional array to a {@link Map} object
+	 * Converts the given two-dimensional array to a {@link Map} object. Each row holds the key at 0
+	 * and the value at 1, further elements are ignored.
 	 *
 	 * @param <T>
 	 *            the generic type
 	 * @param twoDimArray
 	 *            The two-dimensional array
 	 * @return The {@link Map} object produced from the given two-dimensional array
+	 * @throws ArrayIndexOutOfBoundsException
+	 *             if a row is shorter than 2
+	 * @throws NullPointerException
+	 *             if a row is null
 	 */
 	public static <T> Map<T, T> toGenericMap(final T[][] twoDimArray)
 	{
@@ -377,11 +401,16 @@ public final class MapExtensions
 	}
 
 	/**
-	 * Converts a two dimensional String Array to a Map.
+	 * Converts a two dimensional String Array to a Map. Each row holds the key at 0 and the value
+	 * at 1, further elements are ignored.
 	 *
 	 * @param twoDimArray
 	 *            The two dimensional String Array.
 	 * @return The map produced from the two dimensional String Array.
+	 * @throws ArrayIndexOutOfBoundsException
+	 *             if a row is shorter than 2
+	 * @throws NullPointerException
+	 *             if a row is null
 	 */
 	public static Map<String, String> toMap(final String[][] twoDimArray)
 	{
@@ -389,11 +418,18 @@ public final class MapExtensions
 	}
 
 	/**
-	 * Converts the given two-dimensional array to a {@link Map} object
+	 * Converts the given two-dimensional array to a {@link Map} object. Each row holds the key at 0
+	 * and the value at 1, further elements are ignored.
 	 *
 	 * @param twoDimArray
 	 *            The two-dimensional array
 	 * @return The {@link Map} object produced from the given two-dimensional array
+	 * @throws ArrayIndexOutOfBoundsException
+	 *             if a row is shorter than 2
+	 * @throws NullPointerException
+	 *             if a row is null
+	 * @throws ClassCastException
+	 *             if a key is not a String
 	 */
 	public static Map<String, Object> toStringObjectMap(final Object[][] twoDimArray)
 	{
@@ -416,8 +452,10 @@ public final class MapExtensions
 	 * @param <V>
 	 *            the generic type of the value
 	 * @param map
-	 *            The map to convert
+	 *            The map to convert, may be null, which gives empty properties
 	 * @return The Properties produced from the Map
+	 * @throws NullPointerException
+	 *             if a key or a value of the map is null, as {@link Properties#put(Object, Object)}
 	 */
 	public static <K, V> Properties toProperties(final Map<K, V> map)
 	{
@@ -445,6 +483,8 @@ public final class MapExtensions
 	 * @param map
 	 *            The map to convert
 	 * @return The List produced from the Map
+	 * @throws NullPointerException
+	 *             if the map is null
 	 */
 	public static <K, V> List<V> valuesAsList(final Map<K, V> map)
 	{

@@ -9,8 +9,10 @@ pitest {
                            "io.github.astrapi69.collection.PublishedPomTest"]
     threads = 4
     // The mutator set, named so a reader of the score knows it: DEFAULTS is what
-    // PIT runs when nothing is said.
-    mutators = ["DEFAULTS"]
+    // PIT runs when nothing is said; STRONGER is PIT's group of further mutators on top of
+    // DEFAULTS (https://pitest.org/quickstart/mutators/), added in #157 to measure the tests against
+    // more changes of the code. The floor stays where it is (build.gradle).
+    mutators = ["DEFAULTS", "STRONGER"]
     // XML is what the summary, mutation-context and badge steps in
     // .github/workflows/mutation-testing.yml read.
     outputFormats = ["HTML", "XML"]

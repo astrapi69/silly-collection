@@ -51,12 +51,25 @@ import java.util.function.BiFunction;
  * the end in turn, and the order stays as it was, also if the function changes only some values.
  * </p>
  * <p>
- * Not writes in this sense: {@link java.util.Map.Entry#setValue(Object)} of an entry of
- * {@link #entrySet()} changes the value without moving the key, as moving during an iteration would
- * break it; <code>putFirst</code> and <code>putLast</code> of <code>SequencedMap</code> position
- * the key explicitly, first and last; the writes through <code>reversed()</code> are the writes of
- * this map, so the key moves to the end of this map, which is the first of the reversed view; the
- * views {@link #keySet()} and {@link #values()} take no writes but removals.
+ * The exception to the rule is {@link java.util.Map.Entry#setValue(Object)}: it changes the value
+ * and does not move the key, through the stream and the iterator of {@link #entrySet()}, and
+ * through the views <code>sequencedEntrySet()</code>, <code>reversed().entrySet()</code> and
+ * <code>reversed().sequencedEntrySet()</code>. The reason is that the iteration stays stable: as in
+ * the access-order mode of <code>LinkedHashMap</code>, where <code>setValue</code> is not among the
+ * methods that generate an entry access ("No other methods generate entry accesses"), moving an
+ * entry during an iteration would break it.
+ * </p>
+ * <p>
+ * <code>putFirst</code> and <code>putLast</code> follow the contract of <code>SequencedMap</code>
+ * (an explicit position): the key comes first or last, and the rule of the end does not apply to
+ * them.
+ * </p>
+ * <p>
+ * A write through the view <code>reversed()</code> behaves like the corresponding method of this
+ * map: the key moves to the end of this map, which is the first of the reversed view; only
+ * <code>putFirst</code> and <code>putLast</code> of the view position the key in the view, so
+ * <code>reversed().putFirst</code> makes it the last of this map. The views {@link #keySet()} and
+ * {@link #values()} take no writes but removals.
  * </p>
  * 
  * @author Asterios Raptis

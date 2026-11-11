@@ -336,8 +336,13 @@ Pull requests are welcome: fork
 [open a pull request](https://github.com/astrapi69/silly-collection/pull/new/develop) against
 `develop`. [CONTRIBUTING.md](.github/CONTRIBUTING.md) has the details.
 
-Please add tests for your change; the coverage and mutation floors above hold for it too. The
-`Makefile` runs the usual tasks:
+Please add tests for your change; the coverage and mutation floors above hold for it too. Coverage
+says that a line ran, and the mutation score says that the tests notice a change of the code that is
+there; neither says that the tests ask for what the method promises (#157). So the rows of a test
+come from the Javadoc and from the contract of the interface the class implements, not from what the
+code does: write one row per promise of each method, and one each for null, the empty input, the
+boundary, a duplicate and the order, wherever they apply. Add them as rows of the parameterized
+tables of the test class. The `Makefile` runs the usual tasks:
 
 ```shell
 make build          # build: tests, coverage check, formatting check
