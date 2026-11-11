@@ -641,12 +641,13 @@ public final class ListExtensions
 	}
 
 	/**
-	 * The Method removeLastValues(ArrayList, int) remove the last Values.
+	 * Returns a view of the given list without its last <code>remove</code> values, as
+	 * {@link List#subList(int, int)}.
 	 *
 	 * @param <T>
 	 *            the generic type
 	 * @param v
-	 *            The Vector with the received Messages.
+	 *            the list
 	 * @param remove
 	 *            How much to remove.
 	 * @return the given list without its last values
@@ -661,7 +662,7 @@ public final class ListExtensions
 		}
 		throw new IllegalArgumentException("You cannot remove "
 			+ "more element than in the ArrayList exists. \nSize from ArrayList:" + v.size() + "\n"
-			+ "Elements to be removed:" + remove + "\n The same ArrayList will be returned.");
+			+ "Elements to be removed:" + remove);
 	}
 
 	/**

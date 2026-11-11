@@ -26,6 +26,7 @@ package io.github.astrapi69.collection.iterator;
 
 import static org.junit.jupiter.api.Assertions.assertArrayEquals;
 import static org.junit.jupiter.api.Assertions.assertEquals;
+import static org.junit.jupiter.api.Assertions.assertNull;
 import static org.junit.jupiter.api.Assertions.assertSame;
 import static org.junit.jupiter.api.Assertions.assertThrows;
 
@@ -97,7 +98,7 @@ public class ArrayIteratorTest
 
 	/**
 	 * Test method for {@link ArrayIterator#next()} of an iterator with no element left: a
-	 * {@link NoSuchElementException} with the message empty (#145)
+	 * {@link NoSuchElementException} without a message, as the iterators of the JDK (#145)
 	 *
 	 * @param description
 	 *            the name of the case
@@ -118,7 +119,7 @@ public class ArrayIteratorTest
 		{
 			iterator.next();
 		}
-		assertEquals("", assertThrows(NoSuchElementException.class, iterator::next).getMessage());
+		assertNull(assertThrows(NoSuchElementException.class, iterator::next).getMessage());
 	}
 
 	/**

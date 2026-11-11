@@ -1138,7 +1138,7 @@ public class ListExtensionsTest
 			() -> ListExtensions.removeLastValues(list, remove)).getMessage();
 		assertTrue(message.contains("Size from ArrayList:" + list.size() + "\n"), message);
 		assertTrue(message.contains("Elements to be removed:" + remove), message);
-		assertTrue(message.endsWith("The same ArrayList will be returned."), message);
+		assertTrue(message.endsWith("Elements to be removed:" + remove), message);
 	}
 
 	/**
