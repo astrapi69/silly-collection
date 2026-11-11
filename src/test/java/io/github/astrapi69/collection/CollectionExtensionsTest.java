@@ -570,6 +570,8 @@ public class CollectionExtensionsTest
 			"lotto numbers and the same numbers in another order: all of them | 3 7 22 23 34 45; 3 7 23 34 22 45 | 3 7 22 23 34 45",
 			"lotto numbers and numbers with 3 and 7 in common: 3, 7 | 3 7 22 23 34 45; 3 7 24 35 25 46 | 3 7",
 			"two collections without a common element: nothing | 1 2; 3 4 | ''",
+			"a twice in the first collection: both stay, as retainAll keeps them (#140) | a a b; a | a a",
+			"a twice in the other collection: once, from the first collection (#140) | a; a a | a",
 			"one collection alone: null | Alex Brad | null",
 			"no collection: null | '' | null" }, delimiter = '|', nullValues = "null")
 	@SuppressWarnings("unchecked")

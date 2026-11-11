@@ -992,7 +992,10 @@ public class ArrayExtensionsTest
 			"in the order of the first array | c b a | a b | b a",
 			"nothing in common: empty | a b | c | ''",
 			"an empty other array: empty | a b | '' | ''",
-			"an empty first array: empty | '' | a b | ''" }, delimiter = '|')
+			"an empty first array: empty | '' | a b | ''",
+			"a twice in the first array: both stay, as retainAll keeps them (#140) | a a b | a | a a",
+			"a twice in the other array: once, from the first array (#140) | a | a a | a",
+			"a twice in both arrays: both stay (#140) | a a | a a | a a" }, delimiter = '|')
 	public void testIntersection(final String description, final String one, final String other,
 		final String expected)
 	{
