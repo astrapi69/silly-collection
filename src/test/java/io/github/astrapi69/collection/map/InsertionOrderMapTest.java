@@ -344,6 +344,7 @@ public class InsertionOrderMapTest
 			"computeIfAbsent(a, 3), a mapped to null: a moves to the end | computeIfAbsent | 3 | b a | 3",
 			"computeIfAbsent(a, null), a mapped to null | computeIfAbsentToNull | | a b | ",
 			"computeIfPresent(a, 3), a mapped to null: nothing stored | computeIfPresentOfA | | a b | ",
+			"putIfAbsent(a, null), a mapped to null: no value, a keeps its place | putIfAbsentNull | | a b | ",
 			"putIfAbsent(b, 3), b has the value 2 | putIfAbsentOfB | 2 | a b | ",
 			"computeIfAbsent(b, 3), b has the value 2 | computeIfAbsentOfB | 2 | a b | " }, delimiter = '|')
 	public void testAbsentWritesOfAKeyMappedToNull(final String description, final String call,
@@ -358,6 +359,7 @@ public class InsertionOrderMapTest
 			case "computeIfAbsent" -> map.computeIfAbsent("a", k -> "3");
 			case "computeIfAbsentToNull" -> map.computeIfAbsent("a", k -> null);
 			case "computeIfPresentOfA" -> map.computeIfPresent("a", (k, v) -> "3");
+			case "putIfAbsentNull" -> map.putIfAbsent("a", null);
 			case "putIfAbsentOfB" -> map.putIfAbsent("b", "3");
 			case "computeIfAbsentOfB" -> map.computeIfAbsent("b", k -> "3");
 			default -> throw new IllegalArgumentException("no call " + call);
