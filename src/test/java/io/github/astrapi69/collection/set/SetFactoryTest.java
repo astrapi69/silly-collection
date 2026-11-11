@@ -328,16 +328,15 @@ public class SetFactoryTest
 		final Collection<Plain> emptyOfPlains = new ArrayList<>();
 		return Stream.of(
 			new NullComparator("newTreeSet(a null comparator; b, a)",
-				() -> SetFactory.newTreeSet(none, "b", "a"), IllegalArgumentException.class),
+				() -> SetFactory.newTreeSet(none, "b", "a"), List.of("a", "b")),
 			new NullComparator("newTreeSet(an empty collection; a null comparator; b, a)",
 				() -> SetFactory.newTreeSet(none(), none, "b", "a"), List.of("a", "b")),
 			new NullComparator("newTreeSetSupplier(a null comparator), collecting b, a",
 				() -> Stream.of("b", "a")
 					.collect(Collectors.toCollection(SetFactory.newTreeSetSupplier(none))),
-				IllegalArgumentException.class),
+				List.of("a", "b")),
 			new NullComparator("newTreeSet(a null comparator; a Plain that is not Comparable)",
-				() -> SetFactory.newTreeSet(noneOfPlains, new Plain()),
-				IllegalArgumentException.class),
+				() -> SetFactory.newTreeSet(noneOfPlains, new Plain()), ClassCastException.class),
 			new NullComparator(
 				"newTreeSet(an empty collection; a null comparator; a Plain that is not Comparable)",
 				() -> SetFactory.newTreeSet(emptyOfPlains, noneOfPlains, new Plain()),
@@ -346,7 +345,7 @@ public class SetFactoryTest
 				"newTreeSetSupplier(a null comparator), collecting a Plain that is not Comparable",
 				() -> Stream.of(new Plain())
 					.collect(Collectors.toCollection(SetFactory.newTreeSetSupplier(noneOfPlains))),
-				IllegalArgumentException.class));
+				ClassCastException.class));
 	}
 
 	/**
