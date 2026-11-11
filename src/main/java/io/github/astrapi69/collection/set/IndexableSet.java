@@ -24,6 +24,7 @@
  */
 package io.github.astrapi69.collection.set;
 
+import java.util.Iterator;
 import java.util.Objects;
 
 /**
@@ -59,23 +60,15 @@ public class IndexableSet<E> extends InsertionOrderSet<E>
 	 * @throws IndexOutOfBoundsException
 	 *             if the index is out of range (<code>index &lt; 0 || index &gt;= size()</code>)
 	 */
-	public E get(int index)
+	public E get(final int index)
 	{
-		int size = this.size();
-		int count = 0;
-		for (E entry : this)
+		Objects.checkIndex(index, size());
+		final Iterator<E> iterator = iterator();
+		for (int i = 0; i < index; i++)
 		{
-			if (index >= size || index < 0)
-			{
-				break;
-			}
-			if (index == count)
-			{
-				return entry;
-			}
-			count++;
+			iterator.next();
 		}
-		throw new IndexOutOfBoundsException("Index: " + index + ", Size: " + size);
+		return iterator.next();
 	}
 
 	/**

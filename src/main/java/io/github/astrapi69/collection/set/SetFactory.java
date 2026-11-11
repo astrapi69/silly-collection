@@ -34,7 +34,6 @@ import java.util.SortedSet;
 import java.util.TreeSet;
 import java.util.function.Supplier;
 
-import io.github.astrapi69.check.Argument;
 import io.github.astrapi69.collection.CollectionExtensions;
 import io.github.astrapi69.collection.list.ListFactory;
 
@@ -217,7 +216,7 @@ public final class SetFactory
 	 * @param collection
 	 *            the optional collection that will be added to the new list
 	 * @param comparator
-	 *            the comparator
+	 *            the comparator, or null for the natural ordering of the elements
 	 * @param elements
 	 *            the elements to add in the new {@link TreeSet}
 	 * @return the new {@link TreeSet}
@@ -269,7 +268,7 @@ public final class SetFactory
 	 * @param <T>
 	 *            the generic type of the elements
 	 * @param comparator
-	 *            the comparator
+	 *            the comparator, or null for the natural ordering of the elements
 	 * @param elements
 	 *            the elements to add in the new {@link TreeSet}
 	 * @return the new {@link SortedSet}
@@ -277,7 +276,6 @@ public final class SetFactory
 	@SafeVarargs
 	public static <T> SortedSet<T> newTreeSet(final Comparator<T> comparator, final T... elements)
 	{
-		Argument.notNull(comparator, "comparator");
 		return newTreeSet(ListFactory.newArrayList(), comparator, elements);
 	}
 
@@ -303,12 +301,11 @@ public final class SetFactory
 	 * @param <T>
 	 *            the generic type of the elements
 	 * @param comparator
-	 *            the comparator
+	 *            the comparator, or null for the natural ordering of the elements
 	 * @return the new {@link Supplier}
 	 */
 	public static <T> Supplier<SortedSet<T>> newTreeSetSupplier(final Comparator<T> comparator)
 	{
-		Argument.notNull(comparator, "comparator");
 		return () -> new TreeSet<>(comparator);
 	}
 
