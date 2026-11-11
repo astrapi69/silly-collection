@@ -679,6 +679,38 @@ public class CollectionExtensionsTest
 	}
 
 	/**
+	 * Test for method {@link CollectionExtensions#partition(Collection, int)}: the first element of
+	 * the part at an index, for collections of 65538 parts and more
+	 *
+	 * @param description
+	 *            the name of the case
+	 * @param count
+	 *            the number of elements, 1 to count
+	 * @param size
+	 *            the size of the parts
+	 * @param index
+	 *            the index of the part
+	 * @param first
+	 *            the first element of the part at the index
+	 */
+	@ParameterizedTest(name = "{0}", quoteTextArguments = false)
+	@CsvSource(value = { "70000 elements in parts of 1, part 65535 | 70000 | 1 | 65535 | 65536",
+			"70000 elements in parts of 1, part 65536 | 70000 | 1 | 65536 | 65537",
+			"70000 elements in parts of 1, part 65537 | 70000 | 1 | 65537 | 65538",
+			"70000 elements in parts of 1, the last part | 70000 | 1 | 69999 | 70000",
+			"140000 elements in parts of 2, part 65536 | 140000 | 2 | 65536 | 131073",
+			"65537 elements in parts of 1, part 65536 | 65537 | 1 | 65536 | 65537" }, delimiter = '|')
+	public void testPartitionOrderOfManyParts(final String description, final int count,
+		final int size, final int index, final int first)
+	{
+		final List<Integer> list = IntStream.rangeClosed(1, count).boxed()
+			.collect(Collectors.toCollection(ArrayList::new));
+		final List<List<Integer>> actual = new ArrayList<>(
+			CollectionExtensions.partition(list, size));
+		assertEquals(first, actual.get(index).get(0));
+	}
+
+	/**
 	 * Test for method {@link CollectionExtensions#partition(Collection, int)}: the outcome for
 	 * sizes below 1 and for no elements, as the parts or as the exception, its class and its
 	 * message
@@ -693,8 +725,8 @@ public class CollectionExtensionsTest
 	 *            the expected outcome
 	 */
 	@ParameterizedTest(name = "{0}", quoteTextArguments = false)
-	@CsvSource(value = { "5 elements in parts of -2 | 5 | -2 | [[3, 4], [1, 2], [5]]",
-			"5 elements in parts of -1 | 5 | -1 | [[2], [1], [3], [4], [5]]",
+	@CsvSource(value = { "5 elements in parts of -2 | 5 | -2 | [[1, 2], [3, 4], [5]]",
+			"5 elements in parts of -1 | 5 | -1 | [[1], [2], [3], [4], [5]]",
 			"3 elements in parts of 0 | 3 | 0 | ArithmeticException: / by zero",
 			"3 elements in parts of 1 | 3 | 1 | [[1], [2], [3]]",
 			"3 elements in parts of 3, the length | 3 | 3 | [[1, 2, 3]]",
