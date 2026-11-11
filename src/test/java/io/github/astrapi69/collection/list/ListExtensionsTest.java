@@ -381,6 +381,11 @@ public class ListExtensionsTest
 				"removeLastElement of a, null: NullPointerException, nothing removed (#126)",
 				ListExtensionsTest::aAndNull, ListExtensions::removeLastElement,
 				NullPointerException.class, Arrays.asList("a", null)),
+			new RefusedEndCall("isFirst of null and x: NullPointerException (#143)", none,
+				list -> ListExtensions.isFirst(list, "x"), NullPointerException.class, null),
+			new RefusedEndCall("isFirst of a (List.of) and null: NullPointerException (#143)",
+				() -> List.of("a"), list -> ListExtensions.isFirst(list, null),
+				NullPointerException.class, List.of("a")),
 			new RefusedEndCall("getFirstElement of null: IllegalArgumentException", none,
 				ListExtensions::getFirstElement, IllegalArgumentException.class, null),
 			new RefusedEndCall("getLastElement of null: IllegalArgumentException", none,
@@ -395,8 +400,9 @@ public class ListExtensionsTest
 	 * Test for the methods {@link ListExtensions#getFirst(List)},
 	 * {@link ListExtensions#getLast(List)}, {@link ListExtensions#removeFirst(List)},
 	 * {@link ListExtensions#removeLast(List)}, their {@link Optional} variants and
-	 * {@link ListExtensions#isLast(List, Object)} with a null list or a list that holds null, where
-	 * they throw: the exception, and the list afterwards
+	 * {@link ListExtensions#isLast(List, Object)} and {@link ListExtensions#isFirst(List, Object)}
+	 * with a null list or a list that holds null, where they throw: the exception, and the list
+	 * afterwards
 	 *
 	 * @param refused
 	 *            the list, the call, the class of the exception and the list afterwards

@@ -707,6 +707,46 @@ public class ArrayExtensionsTest
 	}
 
 	/**
+	 * Test for method {@link ArrayExtensions#isFirst(Object[], Object)} with a null array or null
+	 * as an element: the answer, or the name of the exception it throws (#143)
+	 *
+	 * @param description
+	 *            the name of the case
+	 * @param array
+	 *            the array, its elements separated by a space, 'null' for a null element, '' for an
+	 *            empty array, empty for null
+	 * @param element
+	 *            the element, may be null
+	 * @param expected
+	 *            the answer of isFirst, or the simple name of the exception
+	 */
+	@ParameterizedTest(name = "{0}", quoteTextArguments = false)
+	@CsvSource({ "x in a null array: NullPointerException (#143), , x, NullPointerException",
+			"null in a null array: NullPointerException (#143), , , NullPointerException",
+			"null at the start of null a: first, null a, , true",
+			"null at the end of a null: not first, a null, , false",
+			"a at the start of a null a: first, a null a, a, true",
+			"a also at the end of a b a: first, a b a, a, true" })
+	public void testIsFirstWithNull(final String description, final String array,
+		final String element, final String expected)
+	{
+		final String[] elements = array == null
+			? null
+			: Arrays.stream(elements(array)).map(each -> "null".equals(each) ? null : each)
+				.toArray(String[]::new);
+		if ("NullPointerException".equals(expected))
+		{
+			assertThrows(NullPointerException.class,
+				() -> ArrayExtensions.isFirst(elements, element));
+		}
+		else
+		{
+			assertEquals(Boolean.parseBoolean(expected),
+				ArrayExtensions.isFirst(elements, element));
+		}
+	}
+
+	/**
 	 * Test for method {@link ArrayExtensions#isLast(Object[], Object)}: the element is compared
 	 * with the last element, so an element twice at the end is last, and an empty array and null
 	 * have no last element (#114)
