@@ -94,9 +94,8 @@ public final class PropertiesExtensions
 	}
 
 	/**
-	 * Exports the given {@link InputStream} that represents a properties file to the given
-	 * properties {@link OutputStream} that represents the output file. The flag xmlFile tells if
-	 * the output shell be an xml file or a properties file.
+	 * Stores the given properties into the given output stream as a properties file, with
+	 * {@link Properties#store(OutputStream, String)}.
 	 *
 	 * @param properties
 	 *            the properties to store
@@ -165,9 +164,8 @@ public final class PropertiesExtensions
 	}
 
 	/**
-	 * Exports the given {@link InputStream} that represents a properties file to the given
-	 * properties {@link OutputStream} that represents the output file. The flag xmlFile tells if
-	 * the output shell be an xml file or a properties file.
+	 * Stores the given properties into the given output stream as a properties file, with
+	 * {@link Properties#store(OutputStream, String)}.
 	 *
 	 * @param properties
 	 *            the properties to store
@@ -326,7 +324,9 @@ public final class PropertiesExtensions
 	 *
 	 * @param propertiesFile
 	 *            the properties file
-	 * @return the properties or null if the file is not found.
+	 * @return the properties of the file
+	 * @throws FileNotFoundException
+	 *             if the file does not exist
 	 * @throws IOException
 	 *             Signals that an I/O exception has occurred.
 	 */
@@ -342,7 +342,9 @@ public final class PropertiesExtensions
 	 *            the properties file
 	 * @param loadFromXML
 	 *            the load from XML
-	 * @return the properties or null if the file is not found.
+	 * @return the properties of the file
+	 * @throws FileNotFoundException
+	 *             if the file does not exist
 	 * @throws IOException
 	 *             Signals that an I/O exception has occurred.
 	 */
@@ -354,17 +356,14 @@ public final class PropertiesExtensions
 		{
 			try (InputStream inputStream = propertiesFile.toURI().toURL().openStream())
 			{
-				if (inputStream != null)
+				properties = new Properties();
+				if (loadFromXML)
 				{
-					properties = new Properties();
-					if (loadFromXML)
-					{
-						properties.loadFromXML(inputStream);
-					}
-					else
-					{
-						properties.load(inputStream);
-					}
+					properties.loadFromXML(inputStream);
+				}
+				else
+				{
+					properties.load(inputStream);
 				}
 			}
 		}
@@ -416,9 +415,8 @@ public final class PropertiesExtensions
 	}
 
 	/**
-	 * Exports the given {@link InputStream} that represents a properties file to the given
-	 * properties {@link OutputStream} that represents the output file. The flag xmlFile tells if
-	 * the output shell be an xml file or a properties file.
+	 * Converts the given input stream to the given output stream as a properties file. The flag
+	 * xmlFile tells how the input stream is read.
 	 *
 	 * @param outputStream
 	 *            the stream from the output properties file. If the file does not exists a new file
@@ -428,8 +426,9 @@ public final class PropertiesExtensions
 	 * @param comment
 	 *            the comment
 	 * @param xmlFile
-	 *            the flag that tells if the output shell be an xml file if true otherwise it will
-	 *            be an properties file
+	 *            true if the input stream holds XML, read with
+	 *            {@link Properties#loadFromXML(InputStream)}, false for a properties file; the
+	 *            output is a properties file in either case
 	 * @throws IOException
 	 *             Signals that an I/O exception has occurred.
 	 */
