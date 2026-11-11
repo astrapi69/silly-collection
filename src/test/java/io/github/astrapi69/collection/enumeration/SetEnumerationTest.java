@@ -179,10 +179,10 @@ public class SetEnumerationTest
 	 */
 	@ParameterizedTest(name = "{0}", quoteTextArguments = false)
 	@CsvSource(value = {
-			"Set.of a and the enumeration null, b (#152) | immutable | a | null b | next next next hasNext | a NullPointerException b false",
-			"Set.of a and the enumeration a, null (#152) | immutable | a | a null | next hasNext next hasNext | a NullPointerException NoSuchElementException false",
-			"TreeSet a and the enumeration 7, b (#152) | tree | a | 7 b | next next next hasNext | a ClassCastException b false",
-			"TreeSet a and the enumeration a, 7 (#152) | tree | a | a 7 | next hasNext next hasNext | a ClassCastException NoSuchElementException false" }, delimiter = '|')
+			"Set.of a and the enumeration null, b (#152) | immutable | a | null b | next next next hasNext | a null b false",
+			"Set.of a and the enumeration a, null (#152) | immutable | a | a null | next hasNext next hasNext | a true null false",
+			"TreeSet a and the enumeration 7, b (#152) | tree | a | 7 b | next next next hasNext | a 7 b false",
+			"TreeSet a and the enumeration a, 7 (#152) | tree | a | a 7 | next hasNext next hasNext | a true 7 false" }, delimiter = '|')
 	@SuppressWarnings({ "unchecked", "rawtypes" })
 	public void testSetThatRejectsElements(final String description, final String kind,
 		final String set, final String enumeration, final String steps, final String results)
