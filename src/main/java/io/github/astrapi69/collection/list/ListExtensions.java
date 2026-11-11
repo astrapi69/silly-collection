@@ -925,18 +925,21 @@ public final class ListExtensions
 	}
 
 	/**
-	 * Generates an index map from the given list
+	 * Generates a new map from each index of the given list to its element, in the order of the
+	 * list; empty for an empty list
 	 *
 	 * @param <T>
 	 *            the generic type
 	 * @param list
 	 *            the list
 	 * @return an index map from the given list
+	 * @throws IllegalArgumentException
+	 *             if the given list is null
 	 */
 	@SuppressWarnings("unchecked")
 	public static <T> Map<Integer, T> toIndexMap(final List<T> list)
 	{
-		Check.get().notNull(list, "list").notEmpty(list, "list");
+		Check.get().notNull(list, "list");
 		Map<Integer, T> map = MapFactory.newLinkedHashMap(list.size());
 		for (int i = 0; i < list.size(); i++)
 		{
