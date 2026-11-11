@@ -108,9 +108,9 @@ public class ModifiedCollectionsTest
 	 *            the removed elements after the second call, the same way
 	 */
 	@ParameterizedTest(name = "{0}", quoteTextArguments = false)
-	@CsvSource(value = { "the same call twice: the elements twice | a | b | a | b | b b | a a",
-			"nothing changed in the second call: the result of the first stays | a | b | c | c | b | a",
-			"another second call: both results added | a | b | c | d | b d | a c" }, delimiter = '|')
+	@CsvSource(value = { "the same call twice: the elements once | a | b | a | b | b | a",
+			"nothing changed in the second call: nothing | a | b | c | c | '' | ''",
+			"another second call: the result of the second only | a | b | c | d | d | c" }, delimiter = '|')
 	public void testGetModifiedListsTwice(final String description, final String firstPrevious,
 		final String firstNext, final String secondPrevious, final String secondNext,
 		final String added, final String removed)
