@@ -891,9 +891,9 @@ public class ArrayExtensionsTest
 	 */
 	@ParameterizedTest(name = "{0}", quoteTextArguments = false)
 	@CsvSource({
-			"b in a b c with -1 indexes: NegativeArraySizeException, b, -1, NegativeArraySizeException",
-			"b in a b c with -5 indexes: NegativeArraySizeException, b, -5, NegativeArraySizeException",
-			"x not in a b c with -1 indexes: NegativeArraySizeException, x, -1, NegativeArraySizeException",
+			"b in a b c with -1 indexes: IllegalArgumentException, b, -1, IllegalArgumentException",
+			"b in a b c with -5 indexes: IllegalArgumentException, b, -5, IllegalArgumentException",
+			"x not in a b c with -1 indexes: IllegalArgumentException, x, -1, IllegalArgumentException",
 			"null with -1 indexes: null, , -1, null" })
 	public void testGetNextAndPreviousIndexesWithNegativeCount(final String description,
 		final String element, final int count, final String expected)
