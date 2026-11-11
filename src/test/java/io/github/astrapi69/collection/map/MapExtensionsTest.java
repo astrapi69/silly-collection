@@ -26,9 +26,11 @@ package io.github.astrapi69.collection.map;
 
 import static org.junit.jupiter.api.Assertions.assertArrayEquals;
 import static org.junit.jupiter.api.Assertions.assertEquals;
+import static org.junit.jupiter.api.Assertions.assertThrows;
 
 import java.util.AbstractMap.SimpleEntry;
 import java.util.ArrayList;
+import java.util.Collections;
 import java.util.Comparator;
 import java.util.HashMap;
 import java.util.HashSet;
@@ -37,6 +39,7 @@ import java.util.LinkedHashMap;
 import java.util.List;
 import java.util.Map;
 import java.util.Map.Entry;
+import java.util.NoSuchElementException;
 import java.util.Properties;
 import java.util.Set;
 import java.util.function.Function;
@@ -663,6 +666,142 @@ public class MapExtensionsTest
 				{ "4", Boolean.TRUE }, { "2", Boolean.TRUE } };
 		final Map<String, Object> map = MapExtensions.toStringObjectMap(twoDimArray);
 		assertArrayEquals(twoDimArray, ArrayExtensions.toTwoDimensionalArray(map));
+	}
+
+	/**
+	 * A map of the given key with a null value
+	 *
+	 * @param key
+	 *            the key
+	 * @return the new map
+	 */
+	static Map<String, Integer> withNullValue(final String key)
+	{
+		final Map<String, Integer> map = new HashMap<>();
+		map.put(key, null);
+		return map;
+	}
+
+	/**
+	 * A call of a method of {@link MapExtensions} with an input its Javadoc names (#146), and what
+	 * it gives
+	 *
+	 * @param description
+	 *            the name of the case
+	 * @param call
+	 *            the call
+	 * @param expected
+	 *            the class of the exception it throws, or what it gives
+	 */
+	record Edge(String description, Supplier<Object> call, Object expected) {
+		@Override
+		public String toString()
+		{
+			return description;
+		}
+	}
+
+	/**
+	 * The cases of {@link #testEdges(Edge)}: the input of each line of the table of #146 and of the
+	 * Javadoc of the method
+	 *
+	 * @return the cases
+	 */
+	static Stream<Edge> edges()
+	{
+		final Map<String, String> nullKey = new HashMap<>();
+		nullKey.put(null, "a");
+		final Map<String, Integer> repeated = new LinkedHashMap<>();
+		repeated.put("a", 1);
+		repeated.put("b", 1);
+		final Map<String, Integer> nullKeyOfSwap = new HashMap<>();
+		nullKeyOfSwap.put(null, 1);
+		final Map<String, Integer> nullValueOfSwap = withNullValue("a");
+		return Stream.of(
+			new Edge("toProperties(a map with a null value): NullPointerException",
+				() -> MapExtensions.toProperties(withNullValue("a")), NullPointerException.class),
+			new Edge("toProperties(a map with a null key): NullPointerException",
+				() -> MapExtensions.toProperties(nullKey), NullPointerException.class),
+			new Edge("toProperties(null): empty properties", () -> MapExtensions.toProperties(null),
+				new Properties()),
+			new Edge("valuesAsList(null): NullPointerException",
+				() -> MapExtensions.valuesAsList(null), NullPointerException.class),
+			new Edge("swap(a = 1, b = 1): IllegalStateException",
+				() -> MapExtensions.swap(repeated), IllegalStateException.class),
+			new Edge("swap(a map with a null key): NullPointerException",
+				() -> MapExtensions.swap(nullKeyOfSwap), NullPointerException.class),
+			new Edge("swap(a map with a null value): the null value becomes a key",
+				() -> MapExtensions.swap(nullValueOfSwap), Collections.singletonMap(null, "a")),
+			new Edge("swap(null): NullPointerException", () -> MapExtensions.swap(null),
+				NullPointerException.class),
+			new Edge("getMaxKey(an empty map): NoSuchElementException",
+				() -> MapExtensions.getMaxKey(new HashMap<String, Integer>(),
+					Comparator.naturalOrder()),
+				NoSuchElementException.class),
+			new Edge("toGenericMap(a row shorter than 2): ArrayIndexOutOfBoundsException",
+				() -> MapExtensions.toGenericMap(new String[][] { { "a" } }),
+				ArrayIndexOutOfBoundsException.class),
+			new Edge("toGenericMap(a null row): NullPointerException",
+				() -> MapExtensions.toGenericMap(new String[][] { null }),
+				NullPointerException.class),
+			new Edge(
+				"toGenericMap(a row of three): the key at 0 and the value at 1, the rest dropped",
+				() -> MapExtensions.toGenericMap(new String[][] { { "a", "b", "c" } }),
+				Map.of("a", "b")),
+			new Edge("toMap(a row shorter than 2): ArrayIndexOutOfBoundsException",
+				() -> MapExtensions.toMap(new String[][] { { "a" } }),
+				ArrayIndexOutOfBoundsException.class),
+			new Edge("toStringObjectMap(a row shorter than 2): ArrayIndexOutOfBoundsException",
+				() -> MapExtensions.toStringObjectMap(new Object[][] { { "a" } }),
+				ArrayIndexOutOfBoundsException.class),
+			new Edge("toStringObjectMap(a null row): NullPointerException",
+				() -> MapExtensions.toStringObjectMap(new Object[][] { null }),
+				NullPointerException.class),
+			new Edge("toStringObjectMap(a key that is not a String): ClassCastException",
+				() -> MapExtensions.toStringObjectMap(new Object[][] { { 1, 2 } }),
+				ClassCastException.class),
+			new Edge("mergeAndSummarize(a null value in the first map): NullPointerException",
+				() -> MapExtensions.mergeAndSummarize(withNullValue("a"), Map.of("a", 1)),
+				NullPointerException.class),
+			new Edge(
+				"mergeAndSummarize(fullMerge, the same key with a null value in the second map): NullPointerException",
+				() -> MapExtensions.mergeAndSummarize(new HashMap<>(Map.of("a", 1)),
+					withNullValue("a"), true),
+				NullPointerException.class),
+			new Edge(
+				"mergeAndSummarize(fullMerge, a key with a null value in the second map): NullPointerException",
+				() -> MapExtensions.mergeAndSummarize(new HashMap<>(Map.of("a", 1)),
+					withNullValue("b"), true),
+				NullPointerException.class),
+			new Edge(
+				"mergeAndSummarize(a null value of a key the first map does not hold): filtered out first",
+				() -> MapExtensions.mergeAndSummarize(new HashMap<>(Map.of("a", 1)),
+					withNullValue("b"), false),
+				Map.of("a", 1)));
+	}
+
+	/**
+	 * Test for the methods of {@link MapExtensions} that throw for an input their signature takes
+	 * (#146): {@code toProperties}, {@code swap}, {@code getMaxKey}, {@code toGenericMap},
+	 * {@code toMap}, {@code toStringObjectMap}, {@code valuesAsList} and {@code mergeAndSummarize},
+	 * with the exception the JDK method they call documents, and a null map, which
+	 * {@code toProperties} takes as an empty one
+	 *
+	 * @param edge
+	 *            the call and what it gives
+	 */
+	@ParameterizedTest(name = "{0}")
+	@MethodSource("edges")
+	public void testEdges(final Edge edge)
+	{
+		if (edge.expected()instanceof Class<?> exception)
+		{
+			assertThrows(exception.asSubclass(Throwable.class), () -> edge.call().get());
+		}
+		else
+		{
+			assertEquals(edge.expected(), edge.call().get());
+		}
 	}
 
 	/**
