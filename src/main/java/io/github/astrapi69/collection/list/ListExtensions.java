@@ -452,20 +452,22 @@ public final class ListExtensions
 	}
 
 	/**
-	 * Checks if the given element is the first in the given list.
+	 * Checks if the given element is the first in the given list. The element is compared with the
+	 * first element of the list with {@link Objects#equals(Object, Object)}, so null is the first
+	 * of a list that starts with null. An empty list and null have no first element
 	 *
 	 * @param <T>
 	 *            the generic type
 	 * @param list
-	 *            the list
+	 *            the list, may be null
 	 * @param element
-	 *            the element
-	 * @return true if the given element is the first otherwise false
+	 *            the element, may be null
+	 * @return true if the given element is the first otherwise false, also if the list is empty or
+	 *         null
 	 */
 	public static <T> boolean isFirst(final List<T> list, final T element)
 	{
-		final int indexOfElement = list.indexOf(element);
-		return indexOfElement == 0;
+		return !CollectionExtensions.isEmpty(list) && Objects.equals(list.get(0), element);
 	}
 
 	/**

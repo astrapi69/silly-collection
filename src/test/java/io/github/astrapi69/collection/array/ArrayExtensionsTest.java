@@ -708,7 +708,7 @@ public class ArrayExtensionsTest
 
 	/**
 	 * Test for method {@link ArrayExtensions#isFirst(Object[], Object)} with a null array or null
-	 * as an element: the answer, or the name of the exception it throws (#143)
+	 * as an element: the answer (#143)
 	 *
 	 * @param description
 	 *            the name of the case
@@ -718,32 +718,23 @@ public class ArrayExtensionsTest
 	 * @param element
 	 *            the element, may be null
 	 * @param expected
-	 *            the answer of isFirst, or the simple name of the exception
+	 *            the answer of isFirst
 	 */
 	@ParameterizedTest(name = "{0}", quoteTextArguments = false)
-	@CsvSource({ "x in a null array: NullPointerException (#143), , x, NullPointerException",
-			"null in a null array: NullPointerException (#143), , , NullPointerException",
+	@CsvSource({ "x in a null array: not first (#143), , x, false",
+			"null in a null array: not first (#143), , , false",
 			"null at the start of null a: first, null a, , true",
 			"null at the end of a null: not first, a null, , false",
 			"a at the start of a null a: first, a null a, a, true",
 			"a also at the end of a b a: first, a b a, a, true" })
 	public void testIsFirstWithNull(final String description, final String array,
-		final String element, final String expected)
+		final String element, final boolean expected)
 	{
 		final String[] elements = array == null
 			? null
 			: Arrays.stream(elements(array)).map(each -> "null".equals(each) ? null : each)
 				.toArray(String[]::new);
-		if ("NullPointerException".equals(expected))
-		{
-			assertThrows(NullPointerException.class,
-				() -> ArrayExtensions.isFirst(elements, element));
-		}
-		else
-		{
-			assertEquals(Boolean.parseBoolean(expected),
-				ArrayExtensions.isFirst(elements, element));
-		}
+		assertEquals(expected, ArrayExtensions.isFirst(elements, element));
 	}
 
 	/**
