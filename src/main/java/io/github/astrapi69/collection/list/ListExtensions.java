@@ -452,20 +452,22 @@ public final class ListExtensions
 	}
 
 	/**
-	 * Checks if the given element is the first in the given list.
+	 * Checks if the given element is the first in the given list. The element is compared with the
+	 * first element of the list with {@link Objects#equals(Object, Object)}, so null is the first
+	 * of a list that starts with null. An empty list and null have no first element
 	 *
 	 * @param <T>
 	 *            the generic type
 	 * @param list
-	 *            the list
+	 *            the list, may be null
 	 * @param element
-	 *            the element
-	 * @return true if the given element is the first otherwise false
+	 *            the element, may be null
+	 * @return true if the given element is the first otherwise false, also if the list is empty or
+	 *         null
 	 */
 	public static <T> boolean isFirst(final List<T> list, final T element)
 	{
-		final int indexOfElement = list.indexOf(element);
-		return indexOfElement == 0;
+		return !CollectionExtensions.isEmpty(list) && Objects.equals(list.get(0), element);
 	}
 
 	/**
@@ -489,7 +491,10 @@ public final class ListExtensions
 	}
 
 	/**
-	 * Rearrange the order from the given {@link List} to the given rearranged index
+	 * Rearranges the given element of the given {@link List} to the given index: an index at or
+	 * above the last index moves the element to the end. Returns a new list, or the given list
+	 * itself if nothing moves (the list does not hold the element or the element is at the target
+	 * position already); the given list does not change.
 	 *
 	 * @param <T>
 	 *            the generic type of the elements
@@ -500,25 +505,35 @@ public final class ListExtensions
 	 * @param rearrangeToIndex
 	 *            the index to rearrange
 	 * @return the rearranged {@link List}
+	 * @throws IndexOutOfBoundsException
+	 *             if the list holds the element and the index is negative
 	 */
 	public static <T> List<T> rearrange(List<T> listToResort, T element, int rearrangeToIndex)
 	{
 		Argument.notNull(element, "element");
 		Argument.notNull(listToResort, "listToResort");
 		int index = listToResort.indexOf(element);
-		if (index < 0 || index == rearrangeToIndex || listToResort.size() == rearrangeToIndex)
+		if (index < 0)
+		{
+			return listToResort;
+		}
+		final int targetIndex = targetIndex(listToResort, rearrangeToIndex);
+		if (index == targetIndex)
 		{
 			return listToResort;
 		}
 		List<T> resortedList;
 		resortedList = ListFactory.newArrayList(listToResort);
 		resortedList.remove(index);
-		resortedList.add(rearrangeToIndex, element);
+		resortedList.add(targetIndex, element);
 		return resortedList;
 	}
 
 	/**
-	 * Relocated the given element in the given {@link List} to the given index
+	 * Relocates the given element in the given {@link List} to the given index: an index at or
+	 * above the last index moves the element to the end. The list does not change if it does not
+	 * hold the element, if the element is at the target position already, or if the index is
+	 * negative and the list throws.
 	 *
 	 * @param <T>
 	 *            the generic type of the elements
@@ -528,25 +543,49 @@ public final class ListExtensions
 	 *            the element to relocated
 	 * @param newIndex
 	 *            the new index to relocated
+	 * @throws IndexOutOfBoundsException
+	 *             if the list holds the element and the index is negative; the list is not changed
+	 *             then
 	 */
 	public static <T> void relocate(List<T> list, T element, int newIndex)
 	{
 		Argument.notNull(element, "element");
 		Argument.notNull(list, "list");
 		int index = list.indexOf(element);
-		if (index < 0 || index == newIndex)
+		if (index < 0)
+		{
+			return;
+		}
+		final int targetIndex = targetIndex(list, newIndex);
+		if (index == targetIndex)
 		{
 			return;
 		}
 		list.remove(index);
-		if (list.size() <= newIndex)
+		list.add(targetIndex, element);
+	}
+
+	/**
+	 * Gets the index an element is moved to: the given index, or the last index of the given
+	 * {@link List} if the given index is above it
+	 *
+	 * @param <T>
+	 *            the generic type of the elements
+	 * @param list
+	 *            the list
+	 * @param index
+	 *            the wanted index
+	 * @return the index to move to
+	 * @throws IndexOutOfBoundsException
+	 *             if the given index is negative
+	 */
+	private static <T> int targetIndex(final List<T> list, final int index)
+	{
+		if (index < 0)
 		{
-			list.add(element);
+			throw new IndexOutOfBoundsException("Index: " + index + ", Size: " + list.size());
 		}
-		else
-		{
-			list.add(newIndex, element);
-		}
+		return Math.min(index, list.size() - 1);
 	}
 
 	/**
@@ -641,12 +680,13 @@ public final class ListExtensions
 	}
 
 	/**
-	 * The Method removeLastValues(ArrayList, int) remove the last Values.
+	 * Returns a view of the given list without its last <code>remove</code> values, as
+	 * {@link List#subList(int, int)}.
 	 *
 	 * @param <T>
 	 *            the generic type
 	 * @param v
-	 *            The Vector with the received Messages.
+	 *            the list
 	 * @param remove
 	 *            How much to remove.
 	 * @return the given list without its last values
@@ -661,7 +701,7 @@ public final class ListExtensions
 		}
 		throw new IllegalArgumentException("You cannot remove "
 			+ "more element than in the ArrayList exists. \nSize from ArrayList:" + v.size() + "\n"
-			+ "Elements to be removed:" + remove + "\n The same ArrayList will be returned.");
+			+ "Elements to be removed:" + remove);
 	}
 
 	/**
@@ -788,19 +828,26 @@ public final class ListExtensions
 	}
 
 	/**
-	 * Splits the given {@link Collection} to parts to the specified size and returns a list with
-	 * the parts.
+	 * Splits the given {@link Collection} to consecutive parts of the specified size, in the order
+	 * of the collection, and returns a list with the parts; the last part may be smaller. An empty
+	 * collection gives no part.
 	 *
 	 * @param <T>
 	 *            the generic type
 	 * @param collection
 	 *            The collection to split
 	 * @param size
-	 *            How to split
+	 *            the size of the parts
 	 * @return a List with the split Parts
+	 * @throws IllegalArgumentException
+	 *             if the size is less than 1
 	 */
 	public static <T> List<List<T>> splitToParts(final Collection<T> collection, final int size)
 	{
+		if (size < 1)
+		{
+			throw new IllegalArgumentException("The size must be at least 1, but is " + size);
+		}
 		final List<List<T>> returnList = ListFactory.newArrayList();
 		List<T> tmp = ListFactory.newArrayList();
 		final Iterator<T> it = collection.iterator();
@@ -878,18 +925,21 @@ public final class ListExtensions
 	}
 
 	/**
-	 * Generates an index map from the given list
+	 * Generates a new map from each index of the given list to its element, in the order of the
+	 * list; empty for an empty list
 	 *
 	 * @param <T>
 	 *            the generic type
 	 * @param list
 	 *            the list
 	 * @return an index map from the given list
+	 * @throws IllegalArgumentException
+	 *             if the given list is null
 	 */
 	@SuppressWarnings("unchecked")
 	public static <T> Map<Integer, T> toIndexMap(final List<T> list)
 	{
-		Check.get().notNull(list, "list").notEmpty(list, "list");
+		Check.get().notNull(list, "list");
 		Map<Integer, T> map = MapFactory.newLinkedHashMap(list.size());
 		for (int i = 0; i < list.size(); i++)
 		{

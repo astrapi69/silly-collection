@@ -172,7 +172,7 @@ public final class SetFactory
 	 *            the optional collection that will be added to the new list
 	 * @param elements
 	 *            the elements to add in the new {@link LinkedHashSet}
-	 * @return the new {@link HashSet}
+	 * @return the new {@link LinkedHashSet}
 	 */
 	@SafeVarargs
 	public static <T> Set<T> newLinkedHashSet(final Collection<T> collection, final T... elements)
@@ -199,7 +199,7 @@ public final class SetFactory
 	 * @param <T>
 	 *            the generic type of the elements
 	 * @param elements
-	 *            the elements to add in the new {@link HashSet}
+	 *            the elements to add in the new {@link LinkedHashSet}
 	 * @return the new {@link LinkedHashSet}
 	 */
 	@SafeVarargs
@@ -263,7 +263,7 @@ public final class SetFactory
 	}
 
 	/**
-	 * Factory method for create new {@link TreeSet} and will be returned as {@link Set}.
+	 * Factory method for create new {@link TreeSet} and will be returned as {@link SortedSet}.
 	 *
 	 * @param <T>
 	 *            the generic type of the elements
@@ -280,7 +280,7 @@ public final class SetFactory
 	}
 
 	/**
-	 * Factory method for create new {@link TreeSet} and will be returned as {@link Set}
+	 * Factory method for create new {@link TreeSet} and will be returned as {@link SortedSet}
 	 *
 	 * @param <T>
 	 *            the generic type of the elements
