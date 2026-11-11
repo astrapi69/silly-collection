@@ -1066,6 +1066,83 @@ public class ListExtensionsTest
 	}
 
 	/**
+	 * Test method for {@link ListExtensions#rearrange(List, Object, int)} and
+	 * {@link ListExtensions#relocate(List, Object, int)} with the same indexes on the list a, b, c:
+	 * the outcome of each, as the elements separated by a space or as "throws:" and the elements
+	 * the list holds afterwards, and whether rearrange returns the given list itself
+	 *
+	 * @param description
+	 *            the name of the case
+	 * @param element
+	 *            the element to move
+	 * @param index
+	 *            the index to move it to
+	 * @param rearranged
+	 *            the outcome of rearrange
+	 * @param same
+	 *            true if rearrange returns the given list itself
+	 * @param relocated
+	 *            the outcome of relocate
+	 */
+	@ParameterizedTest(name = "{0}", quoteTextArguments = false)
+	@CsvSource(value = { "a to -1 | a | -1 | throws | false | throws:b c",
+			"a to 0, its index | a | 0 | a b c | true | a b c",
+			"a to 1 | a | 1 | b a c | false | b a c",
+			"a to 2, the last index | a | 2 | b c a | false | b c a",
+			"a to 3, the size | a | 3 | a b c | true | b c a",
+			"a to 4, above the size | a | 4 | throws | false | b c a",
+			"c to -1, the last element | c | -1 | throws | false | throws:a b",
+			"c to 2, its index, the last | c | 2 | a b c | true | a b c",
+			"c to 3, the size, the last element | c | 3 | a b c | true | a b c",
+			"c to 4, above the size, the last element | c | 4 | throws | false | a b c",
+			"x, not in the list, to -1 | x | -1 | a b c | true | a b c",
+			"x, not in the list, to 4 | x | 4 | a b c | true | a b c" }, delimiter = '|')
+	public void testRearrangeAndRelocateAtTheEnds(final String description, final String element,
+		final int index, final String rearranged, final boolean same, final String relocated)
+	{
+		final List<String> list = elements("a b c");
+		if ("throws".equals(rearranged))
+		{
+			assertThrows(IndexOutOfBoundsException.class,
+				() -> ListExtensions.rearrange(list, element, index));
+		}
+		else
+		{
+			final List<String> result = ListExtensions.rearrange(list, element, index);
+			assertEquals(elements(rearranged), result);
+			assertEquals(same, result == list, "rearrange returns the given list itself");
+		}
+		assertEquals(elements("a b c"), list, "rearrange changed the given list");
+		final List<String> relocatedList = elements("a b c");
+		final boolean throwing = relocated.startsWith("throws:");
+		final String relocatedElements = throwing
+			? relocated.substring("throws:".length())
+			: relocated;
+		if (throwing)
+		{
+			assertThrows(IndexOutOfBoundsException.class,
+				() -> ListExtensions.relocate(relocatedList, element, index));
+		}
+		else
+		{
+			ListExtensions.relocate(relocatedList, element, index);
+		}
+		assertEquals(elements(relocatedElements), relocatedList, "the list after relocate");
+	}
+
+	/**
+	 * Test method for {@link ListExtensions#relocate(List, Object, int)}: the last element of an
+	 * unmodifiable list to the size
+	 */
+	@Test
+	public void testRelocateTheLastElementToTheSizeOfAnUnmodifiableList()
+	{
+		final List<String> list = Collections.unmodifiableList(elements("a b c"));
+		assertThrows(UnsupportedOperationException.class,
+			() -> ListExtensions.relocate(list, "c", 3));
+	}
+
+	/**
 	 * Test method for {@link ListExtensions#removeLastValues(List, int)}: the list without its
 	 * given number of last values (#43); the given list does not change
 	 *
