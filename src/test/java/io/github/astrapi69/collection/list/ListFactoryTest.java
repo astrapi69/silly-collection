@@ -26,6 +26,7 @@ package io.github.astrapi69.collection.list;
 
 import static org.junit.jupiter.api.Assertions.assertEquals;
 import static org.junit.jupiter.api.Assertions.assertNotSame;
+import static org.junit.jupiter.api.Assertions.assertThrows;
 
 import java.util.ArrayList;
 import java.util.Arrays;
@@ -431,6 +432,29 @@ public class ListFactoryTest
 	{
 		assertEquals(Arrays.stream(expected.split(" ")).map(Integer::valueOf).toList(),
 			ListFactory.newRangeList(start, end));
+	}
+
+	/**
+	 * Test for method {@link ListFactory#newRangeList(int, int)} with an end below the start: an
+	 * {@link IllegalArgumentException}, as
+	 * {@link io.github.astrapi69.collection.array.ArrayFactory#newRangeArray(int, int)} says (#145)
+	 *
+	 * @param description
+	 *            the name of the case
+	 * @param start
+	 *            the start
+	 * @param end
+	 *            the end
+	 */
+	@ParameterizedTest(name = "{0}", quoteTextArguments = false)
+	@CsvSource(value = { "5 to 4: the end is below the start | 5 | 4",
+			"0 to -1: across zero | 0 | -1" }, delimiter = '|')
+	public void testNewRangeListWithEndBelowStart(final String description, final int start,
+		final int end)
+	{
+		assertEquals("Parameter end must not be less than parameter start.",
+			assertThrows(IllegalArgumentException.class, () -> ListFactory.newRangeList(start, end))
+				.getMessage());
 	}
 
 	/**

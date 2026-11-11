@@ -35,6 +35,7 @@ import java.util.Objects;
 import java.util.function.Function;
 import java.util.function.Supplier;
 import java.util.function.UnaryOperator;
+import java.util.stream.Collectors;
 import java.util.stream.IntStream;
 import java.util.stream.Stream;
 
@@ -164,7 +165,7 @@ public class ArrayFactoryTest
 	 * @param given
 	 *            the given int values, may be null
 	 * @param expected
-	 *            the bytes of the returned array
+	 *            the bytes of the returned array, null for null
 	 */
 	record ByteArrayOfInts(String description, int[] given, byte[] expected) {
 		@Override
@@ -175,8 +176,8 @@ public class ArrayFactoryTest
 	}
 
 	/**
-	 * The cases of {@link ArrayFactory#newByteArray(int...)}: unlike the other factory methods it
-	 * returns an empty array for null
+	 * The cases of {@link ArrayFactory#newByteArray(int...)}: each int is cast to a byte, null
+	 * gives null
 	 *
 	 * @return the cases
 	 */
@@ -186,8 +187,14 @@ public class ArrayFactoryTest
 			new ByteArrayOfInts("values: the same values as bytes",
 				new int[] { -84, -19, 0, 5, 116, 0, 7, 70, 111, 111, 32, 98, 97, 114 },
 				new byte[] { -84, -19, 0, 5, 116, 0, 7, 70, 111, 111, 32, 98, 97, 114 }),
+			new ByteArrayOfInts("the edges of a byte: kept", new int[] { 127, -128 },
+				new byte[] { 127, -128 }),
+			new ByteArrayOfInts("128 and 255: only the low eight bits, -128 and -1 (#136)",
+				new int[] { 128, 255 }, new byte[] { -128, -1 }),
+			new ByteArrayOfInts("256: 0, and -129: 127 (#136)", new int[] { 256, -129 },
+				new byte[] { 0, 127 }),
 			new ByteArrayOfInts("no values: an empty array", new int[0], new byte[0]),
-			new ByteArrayOfInts("null: an empty array, not null", null, new byte[0]));
+			new ByteArrayOfInts("null: null, as the other factory methods (#136)", null, null));
 	}
 
 	/**
@@ -471,6 +478,63 @@ public class ArrayFactoryTest
 				: Arrays.stream(expected.split(" ")).map(Integer::valueOf).toArray(Integer[]::new),
 			actual);
 		assertNotSame(source, actual);
+	}
+
+	/**
+	 * Test for the methods {@link ArrayFactory#newSubArray(Object[], int, int)} and
+	 * {@link ArrayExtensions#subArray(Object[], int, int)} on a, b and c with the same range: what
+	 * each of them returns, or the simple name of the exception it throws (#137)
+	 *
+	 * @param description
+	 *            the name of the case
+	 * @param startIndex
+	 *            the start index, inclusive
+	 * @param endIndex
+	 *            the end index, exclusive
+	 * @param newSubArray
+	 *            the elements of the result of newSubArray separated by a space, '' for none, or
+	 *            the name of the exception, after a '!'
+	 * @param subArray
+	 *            the same for subArray
+	 */
+	@ParameterizedTest(name = "{0}", quoteTextArguments = false)
+	@CsvSource(value = { "1 to 3: inside | 1 | 3 | b c | b c",
+			"0 to 3: all | 0 | 3 | a b c | a b c", "2 to 2: empty | 2 | 2 | '' | ''",
+			"3 to 3: empty at the end | 3 | 3 | '' | ''",
+			"1 to 4: the end past the array | 1 | 4 | !IndexOutOfBoundsException | b c null",
+			"4 to 4: the start past the array | 4 | 4 | !IndexOutOfBoundsException | !ArrayIndexOutOfBoundsException",
+			"-1 to 2: the start below 0 | -1 | 2 | !IndexOutOfBoundsException | !ArrayIndexOutOfBoundsException",
+			"2 to 1: the start after the end | 2 | 1 | !IndexOutOfBoundsException | !IllegalArgumentException" }, delimiter = '|')
+	public void testNewSubArrayAndSubArrayOfARange(final String description, final int startIndex,
+		final int endIndex, final String newSubArray, final String subArray)
+	{
+		final String[] abc = { "a", "b", "c" };
+		assertEquals(newSubArray,
+			outcomeOfARange(() -> ArrayFactory.newSubArray(abc, startIndex, endIndex)),
+			"newSubArray");
+		assertEquals(subArray,
+			outcomeOfARange(() -> ArrayExtensions.subArray(abc, startIndex, endIndex)), "subArray");
+	}
+
+	/**
+	 * The outcome of a call that cuts a range out of an array, as the rows of
+	 * {@link #testNewSubArrayAndSubArrayOfARange} write it
+	 *
+	 * @param call
+	 *            the call
+	 * @return the elements separated by a space with 'null' for a null element, '' for none, or the
+	 *         simple name of the exception after a '!'
+	 */
+	private static String outcomeOfARange(final Supplier<String[]> call)
+	{
+		try
+		{
+			return Arrays.stream(call.get()).map(String::valueOf).collect(Collectors.joining(" "));
+		}
+		catch (final RuntimeException e)
+		{
+			return "!" + e.getClass().getSimpleName();
+		}
 	}
 
 	/**
