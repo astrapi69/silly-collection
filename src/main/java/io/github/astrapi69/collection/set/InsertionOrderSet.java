@@ -30,9 +30,8 @@ import java.util.Set;
 
 /**
  * The class {@link InsertionOrderSet} overwrites the add-method from the
- * <code>LinkedHashSet</code>. That inserts the value to the right order it was inserted in the Map.
- * Note that the difference in the LinkedHashMap is the order does not change if we put the same key
- * with a new value. In this class the order changes when we put a new value with the same key.
+ * <code>LinkedHashSet</code>. Unlike <code>LinkedHashSet</code>, an element that is re-inserted
+ * with <code>add</code> moves to the end of the encounter order.
  *
  * @author Asterios Raptis
  * @version 1.0
@@ -86,7 +85,7 @@ public class InsertionOrderSet<E> extends LinkedHashSet<E>
 	}
 
 	/**
-	 * Constructs an empty insertion-ordered <code>InsertionOrderMap</code> instance with the
+	 * Constructs an empty insertion-ordered <code>InsertionOrderSet</code> instance with the
 	 * specified initial capacity and load factor.
 	 *
 	 * @param initialCapacity
