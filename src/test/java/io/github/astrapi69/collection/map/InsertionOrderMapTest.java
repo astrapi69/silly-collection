@@ -219,4 +219,83 @@ public class InsertionOrderMapTest
 		given.forEach((key, value) -> assertEquals(value, map.get(key), "the value of " + key));
 	}
 
+	/**
+	 * Test for the methods of {@link InsertionOrderMap} that give a key a new value besides put, on
+	 * a map of 1 = value1, 2 = value2, 3 = value3, 4 = value4, called with the key 2, which is
+	 * there, or 9, which is not (#147): {@code merge}, {@code compute}, {@code computeIfPresent}
+	 * and {@code replace} move a key that takes a new value to the end, as put does; a function
+	 * that gives null removes the key; a replace that does not replace, {@code replaceAll},
+	 * {@link Map.Entry#setValue(Object)}, {@code putIfAbsent} and {@code computeIfAbsent} of a key
+	 * that is there leave the order
+	 *
+	 * @param description
+	 *            the name of the case
+	 * @param call
+	 *            the call: the name of the method, ToNull for a function that gives null
+	 * @param key
+	 *            the key
+	 * @param result
+	 *            what the call gives, nothing for null
+	 * @param keys
+	 *            the order of the keys afterwards, separated by a space
+	 * @param value
+	 *            the value of the key afterwards, nothing for null
+	 */
+	@ParameterizedTest(name = "{0}", quoteTextArguments = false)
+	@CsvSource(value = {
+			"merge, key there: value2+x, 2 keeps its place | merge | 2 | value2+x | 1 2 3 4 | value2+x",
+			"merge to null, key there: null, 2 removed | mergeToNull | 2 | | 1 3 4 | ",
+			"merge, key not there: x, 9 last | merge | 9 | x | 1 2 3 4 9 | x",
+			"compute, key there: value2!, 2 keeps its place | compute | 2 | value2! | 1 2 3 4 | value2!",
+			"compute to null, key there: null, 2 removed | computeToNull | 2 | | 1 3 4 | ",
+			"compute, key not there: fresh, 9 last | compute | 9 | fresh | 1 2 3 4 9 | fresh",
+			"computeIfPresent, key there: value2!, 2 keeps its place | computeIfPresent | 2 | value2! | 1 2 3 4 | value2!",
+			"computeIfPresent to null, key there: null, 2 removed | computeIfPresentToNull | 2 | | 1 3 4 | ",
+			"computeIfPresent, key not there: null, nothing | computeIfPresent | 9 | | 1 2 3 4 | ",
+			"replace(key, value), key there: value2, 2 keeps its place | replace | 2 | value2 | 1 2 3 4 | x",
+			"replace(key, value), key not there: null, nothing | replace | 9 | | 1 2 3 4 | ",
+			"replace(key, old, new), old is the value: true, 2 keeps its place | replaceMatching | 2 | true | 1 2 3 4 | x",
+			"replace(key, old, new), old is not the value: false, 2 stays | replaceOther | 2 | false | 1 2 3 4 | value2",
+			"replace(key, old, new), key not there: false, nothing | replaceMatching | 9 | false | 1 2 3 4 | ",
+			"replaceAll: every value, 2 keeps its place | replaceAll | 2 | | 1 2 3 4 | value2!",
+			"setValue of the entry of 2: 2 keeps its place | setValue | 2 | | 1 2 3 4 | x",
+			"putIfAbsent, key there: value2, 2 stays | putIfAbsent | 2 | value2 | 1 2 3 4 | value2",
+			"putIfAbsent, key not there: null, 9 last | putIfAbsent | 9 | | 1 2 3 4 9 | x",
+			"computeIfAbsent, key there: value2, 2 stays | computeIfAbsent | 2 | value2 | 1 2 3 4 | value2",
+			"computeIfAbsent, key not there: x, 9 last | computeIfAbsent | 9 | x | 1 2 3 4 9 | x" }, delimiter = '|')
+	public void testWrites(final String description, final String call, final String key,
+		final String result, final String keys, final String value)
+	{
+		final Map<String, String> map = oneToFour(new InsertionOrderMap<>());
+		final Object actual = switch (call)
+		{
+			case "merge" -> map.merge(key, "x", (old, given) -> old + "+" + given);
+			case "mergeToNull" -> map.merge(key, "x", (old, given) -> null);
+			case "compute" -> map.compute(key, (k, v) -> v == null ? "fresh" : v + "!");
+			case "computeToNull" -> map.compute(key, (k, v) -> null);
+			case "computeIfPresent" -> map.computeIfPresent(key, (k, v) -> v + "!");
+			case "computeIfPresentToNull" -> map.computeIfPresent(key, (k, v) -> null);
+			case "replace" -> map.replace(key, "x");
+			case "replaceMatching" -> map.replace(key, "value" + key, "x");
+			case "replaceOther" -> map.replace(key, "other", "x");
+			case "replaceAll" ->
+			{
+				map.replaceAll((k, v) -> v + "!");
+				yield null;
+			}
+			case "setValue" ->
+			{
+				map.entrySet().stream().filter(entry -> entry.getKey().equals(key)).findFirst()
+					.orElseThrow().setValue("x");
+				yield null;
+			}
+			case "putIfAbsent" -> map.putIfAbsent(key, "x");
+			case "computeIfAbsent" -> map.computeIfAbsent(key, k -> "x");
+			default -> throw new IllegalArgumentException("no call " + call);
+		};
+		assertEquals(result, actual == null ? null : actual.toString());
+		assertEquals(Arrays.asList(keys.split(" ")), new ArrayList<>(map.keySet()));
+		assertEquals(value, map.get(key));
+	}
+
 }
