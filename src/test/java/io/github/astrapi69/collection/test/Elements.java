@@ -30,6 +30,12 @@ import java.util.stream.Collectors;
  * by a space, into a list or an array. For every method: an empty column and a blank column (one
  * space or more) give no elements, the word {@code null} is the string "null" unless the method
  * says otherwise, and a {@code null} column throws a {@link NullPointerException}
+ * <p>
+ * A stand-in for the converter of <a href=
+ * "https://github.com/astrapi69/junit-jupiter-extensions/issues/13">astrapi69/junit-jupiter-extensions#13</a>:
+ * once a release of junit-jupiter-extensions has that converter, the parameters that are lists or
+ * arrays take it with {@code @ConvertWith} and this class is removed (#156)
+ * </p>
  */
 public final class Elements
 {
