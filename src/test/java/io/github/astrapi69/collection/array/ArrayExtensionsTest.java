@@ -27,6 +27,7 @@ package io.github.astrapi69.collection.array;
 import static org.junit.jupiter.api.Assertions.assertArrayEquals;
 import static org.junit.jupiter.api.Assertions.assertEquals;
 import static org.junit.jupiter.api.Assertions.assertNotSame;
+import static org.junit.jupiter.api.Assertions.assertNull;
 import static org.junit.jupiter.api.Assertions.assertSame;
 import static org.junit.jupiter.api.Assertions.assertThrows;
 
@@ -829,7 +830,11 @@ public class ArrayExtensionsTest
 			new Neighbours("Anton in an empty array: none, -1", new String[0], "Anton", -1, -1,
 				null, null),
 			new Neighbours("null in an empty array: none, -1", new String[0], null, -1, -1, null,
-				null));
+				null),
+			new Neighbours("2 twice in 1 2 2 3: counted from the first 2, next 2, previous 1",
+				new String[] { "1", "2", "2", "3" }, "2", 2, 0, "2", "1"),
+			new Neighbours("3 in 1 2 2 3, the last: no next, next index wraps to 0, previous 2",
+				new String[] { "1", "2", "2", "3" }, "3", 0, 2, null, "2"));
 	}
 
 	/**
@@ -902,6 +907,51 @@ public class ArrayExtensionsTest
 			"getNextIndexes");
 		assertArrayEquals(indexes(previous),
 			ArrayExtensions.getPreviousIndexes(elements, element, count), "getPreviousIndexes");
+	}
+
+	/**
+	 * Test for the methods {@link ArrayExtensions#getNextIndexes(Object[], Object, int)} and
+	 * {@link ArrayExtensions#getPreviousIndexes(Object[], Object, int)} on a, b and c with a
+	 * negative count: what they return, or the simple name of the exception they throw (#139)
+	 *
+	 * @param description
+	 *            the name of the case
+	 * @param element
+	 *            the element, may be null
+	 * @param count
+	 *            the count of indexes
+	 * @param expected
+	 *            'null', or the simple name of the exception
+	 */
+	@ParameterizedTest(name = "{0}", quoteTextArguments = false)
+	@CsvSource({
+			"b in a b c with -1 indexes: IllegalArgumentException, b, -1, IllegalArgumentException",
+			"b in a b c with -5 indexes: IllegalArgumentException, b, -5, IllegalArgumentException",
+			"x not in a b c with -1 indexes: IllegalArgumentException, x, -1, IllegalArgumentException",
+			"null with -1 indexes: null, , -1, null" })
+	public void testGetNextAndPreviousIndexesWithNegativeCount(final String description,
+		final String element, final int count, final String expected)
+	{
+		final String[] abc = { "a", "b", "c" };
+		if ("null".equals(expected))
+		{
+			assertNull(ArrayExtensions.getNextIndexes(abc, element, count), "getNextIndexes");
+			assertNull(ArrayExtensions.getPreviousIndexes(abc, element, count),
+				"getPreviousIndexes");
+		}
+		else
+		{
+			assertEquals(expected,
+				assertThrows(RuntimeException.class,
+					() -> ArrayExtensions.getNextIndexes(abc, element, count)).getClass()
+						.getSimpleName(),
+				"getNextIndexes");
+			assertEquals(expected,
+				assertThrows(RuntimeException.class,
+					() -> ArrayExtensions.getPreviousIndexes(abc, element, count)).getClass()
+						.getSimpleName(),
+				"getPreviousIndexes");
+		}
 	}
 
 	/**

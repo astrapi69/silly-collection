@@ -446,7 +446,10 @@ public final class ArrayExtensions
 	}
 
 	/**
-	 * Gets the next index of the given array
+	 * Gets the index after the first occurrence of the given element, wrapping round to 0 after the
+	 * last index. The lookup takes the first occurrence, so for {1, 2, 2, 3} the next index of 2 is
+	 * 2. Unlike this method, {@link #hasNext(Object[], Object)} and
+	 * {@link #getNextElement(Object[], Object)} do not wrap round
 	 *
 	 * @param <T>
 	 *            the generic type
@@ -454,7 +457,8 @@ public final class ArrayExtensions
 	 *            the array
 	 * @param element
 	 *            the element
-	 * @return the next index
+	 * @return the next index, wrapping round to 0 after the last index, or -1 if the array does not
+	 *         hold the element
 	 */
 	public static <T> int getNextIndex(final T[] array, final T element)
 	{
@@ -472,9 +476,10 @@ public final class ArrayExtensions
 	}
 
 	/**
-	 * Gets the next indexes from the given count of the given array: the indexes that follow the
-	 * first occurrence of the given element, one after the other, wrapping round to 0 after the
-	 * last index, so a repeated element does not send the walk back to its first index
+	 * Gets the next indexes from the given count of the given array: the next {@code count} indexes
+	 * after the first occurrence of the given element, wrapping round as
+	 * {@link #getNextIndex(Object[], Object)} does. The indexes are counted from that index, so a
+	 * repeated element does not send the walk back to its first index
 	 *
 	 * @param <T>
 	 *            the generic type
@@ -483,13 +488,16 @@ public final class ArrayExtensions
 	 * @param element
 	 *            the element
 	 * @param count
-	 *            the count
-	 * @return the next indexes or null if there is no next indexes
+	 *            the count, 0 gives an empty array, and it may be longer than the array
+	 * @return the next indexes, or null if the element is null or not in the array
+	 * @throws IllegalArgumentException
+	 *             if {@code count < 0} and the element is not null
 	 */
 	public static <T> int[] getNextIndexes(final T[] array, final T element, final int count)
 	{
 		if (element != null)
 		{
+			checkCount(count);
 			final int[] nextIndexes = new int[count];
 			final int indexOfElement = ArrayExtensions.indexOf(array, element);
 			if (indexOfElement == -1)
@@ -506,7 +514,10 @@ public final class ArrayExtensions
 	}
 
 	/**
-	 * Gets the previous index of the given array
+	 * Gets the index before the first occurrence of the given element, wrapping round to the last
+	 * index before 0. The lookup takes the first occurrence, so for {1, 2, 2, 3} the previous index
+	 * of 2 is 0. Unlike this method, {@link #hasPrevious(Object[], Object)} and
+	 * {@link #getPreviousElement(Object[], Object)} do not wrap round
 	 *
 	 * @param <T>
 	 *            the generic type
@@ -514,7 +525,8 @@ public final class ArrayExtensions
 	 *            the array
 	 * @param element
 	 *            the element
-	 * @return the previous index
+	 * @return the previous index, wrapping round to the last index before 0, or -1 if the array
+	 *         does not hold the element
 	 */
 	public static <T> int getPreviousIndex(final T[] array, final T element)
 	{
@@ -532,9 +544,10 @@ public final class ArrayExtensions
 	}
 
 	/**
-	 * Gets the previous indexes from the given count of the given array: the indexes that precede
-	 * the first occurrence of the given element, one after the other, wrapping round to the last
-	 * index before 0, so a repeated element does not send the walk back to its first index
+	 * Gets the previous indexes from the given count of the given array: the previous {@code count}
+	 * indexes before the first occurrence of the given element, wrapping round as
+	 * {@link #getPreviousIndex(Object[], Object)} does. The indexes are counted from that index, so
+	 * a repeated element does not send the walk back to its first index
 	 *
 	 * @param <T>
 	 *            the generic type
@@ -543,13 +556,16 @@ public final class ArrayExtensions
 	 * @param element
 	 *            the element
 	 * @param count
-	 *            the count
-	 * @return the previous indexes or null if there is no previous indexes
+	 *            the count, 0 gives an empty array, and it may be longer than the array
+	 * @return the previous indexes, or null if the element is null or not in the array
+	 * @throws IllegalArgumentException
+	 *             if {@code count < 0} and the element is not null
 	 */
 	public static <T> int[] getPreviousIndexes(final T[] array, final T element, final int count)
 	{
 		if (element != null)
 		{
+			checkCount(count);
 			final int[] previousIndexes = new int[count];
 			final int indexOfElement = ArrayExtensions.indexOf(array, element);
 			if (indexOfElement == -1)
@@ -566,7 +582,26 @@ public final class ArrayExtensions
 	}
 
 	/**
-	 * Checks if the given array has a next element from the given element
+	 * Checks the count of indexes
+	 *
+	 * @param count
+	 *            the count
+	 * @throws IllegalArgumentException
+	 *             if the count is negative
+	 */
+	private static void checkCount(final int count)
+	{
+		if (count < 0)
+		{
+			throw new IllegalArgumentException(
+				"Given argument 'count' may not be negative but is " + count + ".");
+		}
+	}
+
+	/**
+	 * Checks if the given array has an element after the first occurrence of the given element:
+	 * false at the last element, this method does not wrap round, unlike
+	 * {@link #getNextIndex(Object[], Object)}
 	 *
 	 * @param <T>
 	 *            the generic type
@@ -588,7 +623,9 @@ public final class ArrayExtensions
 	}
 
 	/**
-	 * Checks if the given array has a previous element from the given element
+	 * Checks if the given array has an element before the first occurrence of the given element:
+	 * false at the first element, this method does not wrap round, unlike
+	 * {@link #getPreviousIndex(Object[], Object)}
 	 *
 	 * @param <T>
 	 *            the generic type
@@ -606,7 +643,9 @@ public final class ArrayExtensions
 	}
 
 	/**
-	 * Gets the previous element from the given array. As start point is the given element
+	 * Gets the element before the first occurrence of the given element from the given array. It is
+	 * empty at the first element: this method does not wrap round, unlike
+	 * {@link #getPreviousIndex(Object[], Object)}
 	 *
 	 * @param <T>
 	 *            the generic type of elements
@@ -630,7 +669,9 @@ public final class ArrayExtensions
 	}
 
 	/**
-	 * Gets the next element from the given array. As start point is the given element
+	 * Gets the element after the first occurrence of the given element from the given array. It is
+	 * empty at the last element: this method does not wrap round, unlike
+	 * {@link #getNextIndex(Object[], Object)}
 	 *
 	 * @param <T>
 	 *            the generic type of elements
