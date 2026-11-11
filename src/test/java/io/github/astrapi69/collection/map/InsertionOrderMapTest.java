@@ -243,18 +243,18 @@ public class InsertionOrderMapTest
 	 */
 	@ParameterizedTest(name = "{0}", quoteTextArguments = false)
 	@CsvSource(value = {
-			"merge, key there: value2+x, 2 keeps its place | merge | 2 | value2+x | 1 2 3 4 | value2+x",
+			"merge, key there: value2+x, 2 moves to the end | merge | 2 | value2+x | 1 3 4 2 | value2+x",
 			"merge to null, key there: null, 2 removed | mergeToNull | 2 | | 1 3 4 | ",
 			"merge, key not there: x, 9 last | merge | 9 | x | 1 2 3 4 9 | x",
-			"compute, key there: value2!, 2 keeps its place | compute | 2 | value2! | 1 2 3 4 | value2!",
+			"compute, key there: value2!, 2 moves to the end | compute | 2 | value2! | 1 3 4 2 | value2!",
 			"compute to null, key there: null, 2 removed | computeToNull | 2 | | 1 3 4 | ",
 			"compute, key not there: fresh, 9 last | compute | 9 | fresh | 1 2 3 4 9 | fresh",
-			"computeIfPresent, key there: value2!, 2 keeps its place | computeIfPresent | 2 | value2! | 1 2 3 4 | value2!",
+			"computeIfPresent, key there: value2!, 2 moves to the end | computeIfPresent | 2 | value2! | 1 3 4 2 | value2!",
 			"computeIfPresent to null, key there: null, 2 removed | computeIfPresentToNull | 2 | | 1 3 4 | ",
 			"computeIfPresent, key not there: null, nothing | computeIfPresent | 9 | | 1 2 3 4 | ",
-			"replace(key, value), key there: value2, 2 keeps its place | replace | 2 | value2 | 1 2 3 4 | x",
+			"replace(key, value), key there: value2, 2 moves to the end | replace | 2 | value2 | 1 3 4 2 | x",
 			"replace(key, value), key not there: null, nothing | replace | 9 | | 1 2 3 4 | ",
-			"replace(key, old, new), old is the value: true, 2 keeps its place | replaceMatching | 2 | true | 1 2 3 4 | x",
+			"replace(key, old, new), old is the value: true, 2 moves to the end | replaceMatching | 2 | true | 1 3 4 2 | x",
 			"replace(key, old, new), old is not the value: false, 2 stays | replaceOther | 2 | false | 1 2 3 4 | value2",
 			"replace(key, old, new), key not there: false, nothing | replaceMatching | 9 | false | 1 2 3 4 | ",
 			"replaceAll: every value, 2 keeps its place | replaceAll | 2 | | 1 2 3 4 | value2!",

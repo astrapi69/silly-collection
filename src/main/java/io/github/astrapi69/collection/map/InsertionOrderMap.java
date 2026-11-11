@@ -26,13 +26,22 @@ package io.github.astrapi69.collection.map;
 
 import java.util.LinkedHashMap;
 import java.util.Map;
+import java.util.function.BiFunction;
 
 /**
  * The class {@link InsertionOrderMap} overwrites the put-method from the
  * <code>LinkedHashMap</code>. That inserts the value to the right order it was inserted in the Map.
  * Note that the difference in the LinkedHashMap is the order does not change if we put the same key
  * with a new value. In this class the order changes when we put a new value with the same key, with
- * {@link #put(Object, Object)} and with {@link #putAll(Map)}, which calls put for each mapping.
+ * {@link #put(Object, Object)} and with {@link #putAll(Map)}, which calls put for each mapping. The
+ * methods {@link #merge(Object, Object, BiFunction)}, {@link #compute(Object, BiFunction)},
+ * {@link #computeIfPresent(Object, BiFunction)}, {@link #replace(Object, Object)} and
+ * {@link #replace(Object, Object, Object)} do the same for a key that is there and takes a new
+ * value, as the default implementations of {@link Map} specify them in terms of put. A key that
+ * keeps its place: the one of {@link #replaceAll(BiFunction)}, of
+ * {@link java.util.Map.Entry#setValue(Object)}, and the ones of
+ * {@link #putIfAbsent(Object, Object)} and
+ * {@link #computeIfAbsent(Object, java.util.function.Function)}, which write only a new key.
  * 
  * @author Asterios Raptis
  * @version 1.0
@@ -174,6 +183,146 @@ public class InsertionOrderMap<K, V> extends LinkedHashMap<K, V>
 		{
 			put(entry.getKey(), entry.getValue());
 		}
+	}
+
+	/**
+	 * Moves the given key to the end, with the given value, as {@link #put(Object, Object)} does
+	 * for a key that is there
+	 *
+	 * @param key
+	 *            the key, which is there
+	 * @param value
+	 *            the value of the key
+	 */
+	private void moveToEnd(final K key, final V value)
+	{
+		super.remove(key);
+		super.put(key, value);
+	}
+
+	/**
+	 * If the specified key is there, the new value is the result of the given function of the old
+	 * value and the given value, and the key moves to the end, as {@link #put(Object, Object)}
+	 * does; if the function gives null the mapping is removed. A key that is not there comes last.
+	 * Otherwise as {@link LinkedHashMap#merge(Object, Object, BiFunction)}.
+	 *
+	 * @param key
+	 *            key with which the resulting value is to be associated
+	 * @param value
+	 *            the non-null value to be merged with the existing value
+	 * @param remappingFunction
+	 *            the function to recompute a value if present
+	 * @return the new value associated with the specified key, or null if no value is associated
+	 *         with the key
+	 * @throws NullPointerException
+	 *             if the value or the remapping function is null
+	 */
+	@Override
+	public V merge(final K key, final V value,
+		final BiFunction<? super V, ? super V, ? extends V> remappingFunction)
+	{
+		final boolean contained = super.containsKey(key);
+		final V result = super.merge(key, value, remappingFunction);
+		if (contained && result != null)
+		{
+			moveToEnd(key, result);
+		}
+		return result;
+	}
+
+	/**
+	 * Attempts to compute a mapping for the specified key and its current value. If the key is
+	 * there and the mapping is not removed, the key moves to the end, as
+	 * {@link #put(Object, Object)} does; a key that is not there comes last. Otherwise as
+	 * {@link LinkedHashMap#compute(Object, BiFunction)}.
+	 *
+	 * @param key
+	 *            key with which the specified value is to be associated
+	 * @param remappingFunction
+	 *            the function to compute a value
+	 * @return the new value associated with the specified key, or null if none
+	 */
+	@Override
+	public V compute(final K key,
+		final BiFunction<? super K, ? super V, ? extends V> remappingFunction)
+	{
+		final boolean contained = super.containsKey(key);
+		final V result = super.compute(key, remappingFunction);
+		if (contained && result != null)
+		{
+			moveToEnd(key, result);
+		}
+		return result;
+	}
+
+	/**
+	 * If the value for the specified key is there and non-null, computes a new mapping and moves
+	 * the key to the end, as {@link #put(Object, Object)} does; if the function gives null the
+	 * mapping is removed. Otherwise as {@link LinkedHashMap#computeIfPresent(Object, BiFunction)}.
+	 *
+	 * @param key
+	 *            key with which a value may be associated
+	 * @param remappingFunction
+	 *            the function to compute a value
+	 * @return the new value associated with the specified key, or null if none
+	 */
+	@Override
+	public V computeIfPresent(final K key,
+		final BiFunction<? super K, ? super V, ? extends V> remappingFunction)
+	{
+		final V result = super.computeIfPresent(key, remappingFunction);
+		if (result != null)
+		{
+			moveToEnd(key, result);
+		}
+		return result;
+	}
+
+	/**
+	 * Replaces the entry for the specified key only if it is currently mapped to some value, and
+	 * moves the key to the end, as {@link #put(Object, Object)} does.
+	 *
+	 * @param key
+	 *            key with which the specified value is associated
+	 * @param value
+	 *            value to be associated with the specified key
+	 * @return the previous value associated with the specified key, or null if there was no mapping
+	 *         for the key
+	 */
+	@Override
+	public V replace(final K key, final V value)
+	{
+		final boolean contained = super.containsKey(key);
+		final V previous = super.replace(key, value);
+		if (contained)
+		{
+			moveToEnd(key, value);
+		}
+		return previous;
+	}
+
+	/**
+	 * Replaces the entry for the specified key only if currently mapped to the specified value, and
+	 * then moves the key to the end, as {@link #put(Object, Object)} does; if the value is not
+	 * replaced the order does not change.
+	 *
+	 * @param key
+	 *            key with which the specified value is associated
+	 * @param oldValue
+	 *            value expected to be associated with the specified key
+	 * @param newValue
+	 *            value to be associated with the specified key
+	 * @return true if the value was replaced
+	 */
+	@Override
+	public boolean replace(final K key, final V oldValue, final V newValue)
+	{
+		final boolean replaced = super.replace(key, oldValue, newValue);
+		if (replaced)
+		{
+			moveToEnd(key, newValue);
+		}
+		return replaced;
 	}
 
 }
