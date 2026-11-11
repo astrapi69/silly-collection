@@ -6,5 +6,9 @@ dependencies {
     api libs.silly.bean
     implementation libs.bundles.core.dependencies
     testImplementation libs.bundles.unit.testing
+    // The contract suites of Commons Collections (AbstractListTest, AbstractSetTest, ...), published as the tests
+    // jar of the runtime dependency, same version (#157). A classifier cannot be named in a catalog entry or a
+    // bundle, so the variant is declared here. The suites use commons-lang3 (in the unit-testing bundle).
+    testImplementation variantOf(libs.commons.collections4) { classifier('tests') }
     testRuntimeOnly libs.bundles.test.runtime.only
 }
