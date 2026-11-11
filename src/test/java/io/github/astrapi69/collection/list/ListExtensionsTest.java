@@ -277,6 +277,12 @@ public class ListExtensionsTest
 				null),
 			new EndCall("removeLast of null: null (#126)", none, ListExtensions::removeLast, null,
 				null),
+			new EndCall("isFirst of null and x: false (#143)", none,
+				list -> ListExtensions.isFirst(list, "x"), false, null),
+			new EndCall("isFirst of a (List.of) and null: false (#143)", () -> List.of("a"),
+				list -> ListExtensions.isFirst(list, null), false, List.of("a")),
+			new EndCall("isFirst of null, a and null: true", ListExtensionsTest::nullAndA,
+				list -> ListExtensions.isFirst(list, null), true, Arrays.asList(null, "a")),
 			new EndCall("isLast of null and x: false (#126)", none,
 				list -> ListExtensions.isLast(list, "x"), false, null),
 			new EndCall("getFirst of null, a: null (#126)", ListExtensionsTest::nullAndA,
@@ -316,8 +322,8 @@ public class ListExtensionsTest
 	 * Test for the methods {@link ListExtensions#getFirst(List)},
 	 * {@link ListExtensions#getLast(List)}, {@link ListExtensions#removeFirst(List)},
 	 * {@link ListExtensions#removeLast(List)}, their {@link Optional} variants and
-	 * {@link ListExtensions#isLast(List, Object)} with a null list or a list that holds null: what
-	 * they return, and the list afterwards
+	 * {@link ListExtensions#isFirst(List, Object)} and {@link ListExtensions#isLast(List, Object)}
+	 * with a null list or a list that holds null: what they return, and the list afterwards
 	 *
 	 * @param endCall
 	 *            the list, the call, what it returns and the list afterwards
@@ -1113,6 +1119,32 @@ public class ListExtensionsTest
 		final List<String> list = elements(elements);
 		assertThrows(IllegalArgumentException.class,
 			() -> ListExtensions.removeLastValues(list, remove));
+	}
+
+	/**
+	 * Test method for {@link ListExtensions#removeLastValues(List, int)} with more values to remove
+	 * than the list holds: the message names the size and the number to remove, and does not say
+	 * that a list is returned, as the method throws (#145)
+	 *
+	 * @param description
+	 *            the name of the case
+	 * @param elements
+	 *            the elements of the list, separated by a space
+	 * @param remove
+	 *            the number of values to remove
+	 */
+	@ParameterizedTest(name = "{0}", quoteTextArguments = false)
+	@CsvSource(value = { "7 of six elements | Anton Caesar Dora Emil Leonidas Berta | 7",
+			"1 of an empty list | '' | 1" }, delimiter = '|')
+	public void testRemoveLastValuesMessage(final String description, final String elements,
+		final int remove)
+	{
+		final List<String> list = elements(elements);
+		final String message = assertThrows(IllegalArgumentException.class,
+			() -> ListExtensions.removeLastValues(list, remove)).getMessage();
+		assertTrue(message.contains("Size from ArrayList:" + list.size() + "\n"), message);
+		assertTrue(message.contains("Elements to be removed:" + remove), message);
+		assertTrue(message.endsWith("Elements to be removed:" + remove), message);
 	}
 
 	/**
