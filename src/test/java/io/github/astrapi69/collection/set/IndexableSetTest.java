@@ -34,6 +34,7 @@ import java.util.function.Supplier;
 import java.util.stream.Stream;
 
 import org.junit.jupiter.params.ParameterizedTest;
+import org.junit.jupiter.params.provider.CsvSource;
 import org.junit.jupiter.params.provider.MethodSource;
 
 /**
@@ -87,6 +88,35 @@ public class IndexableSetTest
 			assertThrows(IndexOutOfBoundsException.class, () -> set.get(index),
 				"get(" + index + ")");
 		}
+	}
+
+	/**
+	 * Test for the method {@link IndexableSet#get(int)} with an index out of range, -1, the size
+	 * and beyond it (#151): an {@link IndexOutOfBoundsException} with the message of the index and
+	 * the size
+	 *
+	 * @param description
+	 *            the name of the case
+	 * @param elements
+	 *            the elements of the set, separated by a space, '' for an empty one
+	 * @param index
+	 *            the index
+	 * @param message
+	 *            the message of the exception
+	 */
+	@ParameterizedTest(name = "{0}", quoteTextArguments = false)
+	@CsvSource(value = { "a, b: -1 | a b | -1 | Index: -1, Size: 2",
+			"a, b: 2, the size | a b | 2 | Index: 2, Size: 2",
+			"a, b: 3, beyond the size | a b | 3 | Index: 3, Size: 2",
+			"an empty set: 0 | '' | 0 | Index: 0, Size: 0",
+			"an empty set: -1 | '' | -1 | Index: -1, Size: 0" }, delimiter = '|')
+	public void testGetOutOfRangeMessage(final String description, final String elements,
+		final int index, final String message)
+	{
+		final IndexableSet<String> set = setOf(
+			elements.isEmpty() ? new String[0] : elements.split(" "));
+		assertEquals(message,
+			assertThrows(IndexOutOfBoundsException.class, () -> set.get(index)).getMessage());
 	}
 
 	/**
