@@ -446,7 +446,10 @@ public final class ArrayExtensions
 	}
 
 	/**
-	 * Gets the next index of the given array
+	 * Gets the index after the first occurrence of the given element, wrapping round to 0 after the
+	 * last index. The lookup takes the first occurrence, so for {1, 2, 2, 3} the next index of 2 is
+	 * 2. Unlike this method, {@link #hasNext(Object[], Object)} and
+	 * {@link #getNextElement(Object[], Object)} do not wrap round
 	 *
 	 * @param <T>
 	 *            the generic type
@@ -454,7 +457,8 @@ public final class ArrayExtensions
 	 *            the array
 	 * @param element
 	 *            the element
-	 * @return the next index
+	 * @return the next index, wrapping round to 0 after the last index, or -1 if the array does not
+	 *         hold the element
 	 */
 	public static <T> int getNextIndex(final T[] array, final T element)
 	{
@@ -472,7 +476,10 @@ public final class ArrayExtensions
 	}
 
 	/**
-	 * Gets the next indexes from the given count of the given array
+	 * Gets the next indexes from the given count of the given array: the next {@code count} indexes
+	 * after the first occurrence of the given element, wrapping round as
+	 * {@link #getNextIndex(Object[], Object)} does. The indexes are counted from that index, so a
+	 * repeated element does not send the walk back to its first index
 	 *
 	 * @param <T>
 	 *            the generic type
@@ -481,24 +488,25 @@ public final class ArrayExtensions
 	 * @param element
 	 *            the element
 	 * @param count
-	 *            the count
-	 * @return the next indexes or null if there is no next indexes
+	 *            the count, 0 gives an empty array, and it may be longer than the array
+	 * @return the next indexes, or null if the element is null or not in the array
+	 * @throws IllegalArgumentException
+	 *             if {@code count < 0} and the element is not null
 	 */
 	public static <T> int[] getNextIndexes(final T[] array, final T element, final int count)
 	{
 		if (element != null)
 		{
+			checkCount(count);
 			final int[] nextIndexes = new int[count];
-			T currentElement = element;
+			final int indexOfElement = ArrayExtensions.indexOf(array, element);
+			if (indexOfElement == -1)
+			{
+				return null;
+			}
 			for (int i = 0; i < count; i++)
 			{
-				final int nextIndex = getNextIndex(array, currentElement);
-				if (nextIndex == -1)
-				{
-					return null;
-				}
-				nextIndexes[i] = nextIndex;
-				currentElement = array[nextIndex];
+				nextIndexes[i] = (indexOfElement + 1 + i) % array.length;
 			}
 			return nextIndexes;
 		}
@@ -506,7 +514,10 @@ public final class ArrayExtensions
 	}
 
 	/**
-	 * Gets the previous index of the given array
+	 * Gets the index before the first occurrence of the given element, wrapping round to the last
+	 * index before 0. The lookup takes the first occurrence, so for {1, 2, 2, 3} the previous index
+	 * of 2 is 0. Unlike this method, {@link #hasPrevious(Object[], Object)} and
+	 * {@link #getPreviousElement(Object[], Object)} do not wrap round
 	 *
 	 * @param <T>
 	 *            the generic type
@@ -514,7 +525,8 @@ public final class ArrayExtensions
 	 *            the array
 	 * @param element
 	 *            the element
-	 * @return the previous index
+	 * @return the previous index, wrapping round to the last index before 0, or -1 if the array
+	 *         does not hold the element
 	 */
 	public static <T> int getPreviousIndex(final T[] array, final T element)
 	{
@@ -532,7 +544,10 @@ public final class ArrayExtensions
 	}
 
 	/**
-	 * Gets the previous indexes from the given count of the given array
+	 * Gets the previous indexes from the given count of the given array: the previous {@code count}
+	 * indexes before the first occurrence of the given element, wrapping round as
+	 * {@link #getPreviousIndex(Object[], Object)} does. The indexes are counted from that index, so
+	 * a repeated element does not send the walk back to its first index
 	 *
 	 * @param <T>
 	 *            the generic type
@@ -541,24 +556,25 @@ public final class ArrayExtensions
 	 * @param element
 	 *            the element
 	 * @param count
-	 *            the count
-	 * @return the previous indexes or null if there is no previous indexes
+	 *            the count, 0 gives an empty array, and it may be longer than the array
+	 * @return the previous indexes, or null if the element is null or not in the array
+	 * @throws IllegalArgumentException
+	 *             if {@code count < 0} and the element is not null
 	 */
 	public static <T> int[] getPreviousIndexes(final T[] array, final T element, final int count)
 	{
 		if (element != null)
 		{
+			checkCount(count);
 			final int[] previousIndexes = new int[count];
-			T currentElement = element;
+			final int indexOfElement = ArrayExtensions.indexOf(array, element);
+			if (indexOfElement == -1)
+			{
+				return null;
+			}
 			for (int i = 0; i < count; i++)
 			{
-				final int previousIndex = getPreviousIndex(array, currentElement);
-				if (previousIndex == -1)
-				{
-					return null;
-				}
-				previousIndexes[i] = previousIndex;
-				currentElement = array[previousIndex];
+				previousIndexes[i] = Math.floorMod(indexOfElement - 1 - i, array.length);
 			}
 			return previousIndexes;
 		}
@@ -566,7 +582,26 @@ public final class ArrayExtensions
 	}
 
 	/**
-	 * Checks if the given array has a next element from the given element
+	 * Checks the count of indexes
+	 *
+	 * @param count
+	 *            the count
+	 * @throws IllegalArgumentException
+	 *             if the count is negative
+	 */
+	private static void checkCount(final int count)
+	{
+		if (count < 0)
+		{
+			throw new IllegalArgumentException(
+				"Given argument 'count' may not be negative but is " + count + ".");
+		}
+	}
+
+	/**
+	 * Checks if the given array has an element after the first occurrence of the given element:
+	 * false at the last element, this method does not wrap round, unlike
+	 * {@link #getNextIndex(Object[], Object)}
 	 *
 	 * @param <T>
 	 *            the generic type
@@ -588,7 +623,9 @@ public final class ArrayExtensions
 	}
 
 	/**
-	 * Checks if the given array has a previous element from the given element
+	 * Checks if the given array has an element before the first occurrence of the given element:
+	 * false at the first element, this method does not wrap round, unlike
+	 * {@link #getPreviousIndex(Object[], Object)}
 	 *
 	 * @param <T>
 	 *            the generic type
@@ -606,7 +643,9 @@ public final class ArrayExtensions
 	}
 
 	/**
-	 * Gets the previous element from the given array. As start point is the given element
+	 * Gets the element before the first occurrence of the given element from the given array. It is
+	 * empty at the first element: this method does not wrap round, unlike
+	 * {@link #getPreviousIndex(Object[], Object)}
 	 *
 	 * @param <T>
 	 *            the generic type of elements
@@ -630,7 +669,9 @@ public final class ArrayExtensions
 	}
 
 	/**
-	 * Gets the next element from the given array. As start point is the given element
+	 * Gets the element after the first occurrence of the given element from the given array. It is
+	 * empty at the last element: this method does not wrap round, unlike
+	 * {@link #getNextIndex(Object[], Object)}
 	 *
 	 * @param <T>
 	 *            the generic type of elements
@@ -669,7 +710,11 @@ public final class ArrayExtensions
 	}
 
 	/**
-	 * Intersection of the given two arrays
+	 * Intersection of the given two arrays: the elements of the first array that the other array
+	 * holds, in the order of the first array and with its duplicates, as
+	 * {@link java.util.Collection#retainAll(java.util.Collection)} keeps them, so {a, a, b} and {a}
+	 * give {a, a} and {a} and {a, a} give {a}. It is not the intersection of Commons Collections'
+	 * {@code CollectionUtils#intersection}, which gives the minimum cardinality of each element
 	 *
 	 * @param <T>
 	 *            the generic type
@@ -677,7 +722,10 @@ public final class ArrayExtensions
 	 *            the first array
 	 * @param other
 	 *            the other array
-	 * @return the result of the intersection
+	 * @return a new array of the component type of the first array with the elements of the first
+	 *         array that the other array holds
+	 * @throws IllegalArgumentException
+	 *             if one of the arrays is null
 	 */
 	public static <T> T[] intersection(final T[] one, final T[] other)
 	{
@@ -696,20 +744,23 @@ public final class ArrayExtensions
 	}
 
 	/**
-	 * Checks if the given element is the first in the given array
+	 * Checks if the given element is the first in the given array. The element is compared with the
+	 * first element of the array with {@link Objects#equals(Object, Object)}, so an element that is
+	 * also at an index after the first is the first too, and null is the first of an array that
+	 * starts with null. An empty array and null have no first element
 	 *
 	 * @param <T>
 	 *            the generic type
 	 * @param array
-	 *            the array
+	 *            the array, may be null
 	 * @param element
-	 *            the element
-	 * @return true if the given element is the first otherwise false
+	 *            the element, may be null
+	 * @return true if the given element is the first otherwise false, also if the array is empty or
+	 *         null
 	 */
 	public static <T> boolean isFirst(final T[] array, final T element)
 	{
-		final int indexOfElement = Arrays.asList(array).indexOf(element);
-		return indexOfElement == 0;
+		return array != null && array.length != 0 && Objects.equals(array[0], element);
 	}
 
 	/**
@@ -954,16 +1005,28 @@ public final class ArrayExtensions
 	}
 
 	/**
-	 * Split the given byte array in to new arrays with the chunk size
+	 * Splits the given byte array in to consecutive chunks of the given size, in the order of the
+	 * bytes; the last chunk may be smaller. An empty array gives no chunk.
 	 *
 	 * @param bytes
 	 *            the bytes
 	 * @param chunkSize
 	 *            the chunk size
-	 * @return the byte[][]
+	 * @return the chunks
+	 * @throws IllegalArgumentException
+	 *             if the chunk size is less than 1
 	 */
 	public static byte[][] splitInChunks(final byte[] bytes, final int chunkSize)
 	{
+		if (chunkSize < 1)
+		{
+			throw new IllegalArgumentException(
+				"The chunk size must be at least 1, but is " + chunkSize);
+		}
+		if (bytes.length == 0)
+		{
+			return new byte[0][];
+		}
 		final int size = ((bytes.length - 1) / chunkSize) + 1;
 		final byte[][] dataChunks = new byte[size][];
 		int to = bytes.length;
@@ -980,8 +1043,10 @@ public final class ArrayExtensions
 	}
 
 	/**
-	 * Decorates the <code>Arrays#copyOfRange</code> method.
-	 * 
+	 * Decorates the <code>Arrays#copyOfRange</code> method: an end index past the array fills the
+	 * rest of the result with null, unlike {@link ArrayFactory#newSubArray(Object[], int, int)},
+	 * which refuses a range that does not lie inside the array.
+	 *
 	 * @see Arrays#copyOfRange(Object[], int, int)
 	 * @param <T>
 	 *            the type of elements in the array
@@ -992,6 +1057,12 @@ public final class ArrayExtensions
 	 * @param end
 	 *            the end index
 	 * @return a new array from the specified start and end point
+	 * @throws ArrayIndexOutOfBoundsException
+	 *             if {@code start < 0} or {@code start > original.length}
+	 * @throws IllegalArgumentException
+	 *             if {@code start > end}
+	 * @throws NullPointerException
+	 *             if the original array is null
 	 */
 	public static <T> T[] subArray(T[] original, int start, int end)
 	{
