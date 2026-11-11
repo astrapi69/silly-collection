@@ -746,6 +746,96 @@ public class ArrayExtensionsTest
 	}
 
 	/**
+	 * A call of a method of {@link ArrayExtensions} with a null array and what comes of it
+	 *
+	 * @param description
+	 *            the name of the method
+	 * @param call
+	 *            the call with the null array
+	 * @param outcome
+	 *            the simple name of the exception it throws, or what it returns as text
+	 */
+	record NullArrayCall(String description, Supplier<Object> call, String outcome) {
+		@Override
+		public String toString()
+		{
+			return description;
+		}
+	}
+
+	/**
+	 * The cases of {@link #testNullArray(NullArrayCall)}: what a null array gives, for each method
+	 * of {@link ArrayExtensions} that takes one (#144); isFirst is left to #143
+	 *
+	 * @return the cases
+	 */
+	static Stream<NullArrayCall> nullArrayCalls()
+	{
+		final String[] none = null;
+		final String npe = "NullPointerException";
+		final String iae = "IllegalArgumentException";
+		return Stream.of(
+			new NullArrayCall("indexOf", () -> ArrayExtensions.indexOf(none, "a"), npe),
+			new NullArrayCall("getIndex", () -> ArrayExtensions.getIndex(none, "a"), npe),
+			new NullArrayCall("contains", () -> ArrayExtensions.contains(none, "a"), npe),
+			new NullArrayCall("containsAtLeastOne",
+				() -> ArrayExtensions.containsAtLeastOne(none, "a"), npe),
+			new NullArrayCall("containsAtLeastOne, null elements",
+				() -> ArrayExtensions.containsAtLeastOne(new String[] { "a" }, (String[])null),
+				npe),
+			new NullArrayCall("getNextIndex", () -> ArrayExtensions.getNextIndex(none, "a"), npe),
+			new NullArrayCall("getPreviousIndex", () -> ArrayExtensions.getPreviousIndex(none, "a"),
+				npe),
+			new NullArrayCall("getNextIndexes", () -> ArrayExtensions.getNextIndexes(none, "a", 1),
+				npe),
+			new NullArrayCall("getPreviousIndexes",
+				() -> ArrayExtensions.getPreviousIndexes(none, "a", 1), npe),
+			new NullArrayCall("hasNext", () -> ArrayExtensions.hasNext(none, "a"), iae),
+			new NullArrayCall("hasPrevious", () -> ArrayExtensions.hasPrevious(none, "a"), iae),
+			new NullArrayCall("getNextElement", () -> ArrayExtensions.getNextElement(none, "a"),
+				iae),
+			new NullArrayCall("getPreviousElement",
+				() -> ArrayExtensions.getPreviousElement(none, "a"), iae),
+			new NullArrayCall("intersection, the first array",
+				() -> ArrayExtensions.intersection(none, new String[0]), iae),
+			new NullArrayCall("intersection, the other array",
+				() -> ArrayExtensions.intersection(new String[0], none), iae),
+			new NullArrayCall("getLastIndex", () -> ArrayExtensions.getLastIndex(none), "-1"),
+			new NullArrayCall("isLast", () -> ArrayExtensions.isLast(none, "a"), "false"),
+			new NullArrayCall("getFirst", () -> ArrayExtensions.getFirst(none), "null"),
+			new NullArrayCall("getLast", () -> ArrayExtensions.getLast(none), "null"),
+			new NullArrayCall("getFirstElement", () -> ArrayExtensions.getFirstElement(none),
+				"Optional.empty"),
+			new NullArrayCall("getLastElement", () -> ArrayExtensions.getLastElement(none),
+				"Optional.empty"),
+			new NullArrayCall("arraycopyWithSystem",
+				() -> ArrayExtensions.arraycopyWithSystem(none, new String[1]), "null"));
+	}
+
+	/**
+	 * Test for the methods of {@link ArrayExtensions} with a null array: the exception, or what
+	 * they return (#144)
+	 *
+	 * @param nullArrayCall
+	 *            the call and its outcome
+	 */
+	@ParameterizedTest(name = "{0}")
+	@MethodSource("nullArrayCalls")
+	public void testNullArray(final NullArrayCall nullArrayCall)
+	{
+		String actual;
+		try
+		{
+			actual = String.valueOf(nullArrayCall.call().get());
+		}
+		catch (final RuntimeException e)
+		{
+			actual = e.getClass().getSimpleName();
+		}
+		assertEquals(nullArrayCall.outcome(), actual);
+	}
+
+	/**
 	 * An element of an array and its neighbours, as the methods that look for the next and the
 	 * previous element find them: {@link ArrayExtensions#getNextIndex(Object[], Object)} and
 	 * {@link ArrayExtensions#getPreviousIndex(Object[], Object)} wrap around at the ends, the other

@@ -349,6 +349,45 @@ public class CollectionExtensionsTest
 	}
 
 	/**
+	 * Test for method {@link CollectionExtensions#containsAtLeastOne(Collection, Object[])} with a
+	 * null collection or null objects: the exception it throws, or the answer (#144)
+	 *
+	 * @param description
+	 *            the name of the case
+	 * @param collection
+	 *            the numbers of the collection, separated by a space, 'null' for a null collection
+	 * @param objects
+	 *            the numbers to look for, separated by a space, 'null' for null objects
+	 * @param expected
+	 *            the simple name of the exception, or the answer
+	 */
+	@ParameterizedTest(name = "{0}", quoteTextArguments = false)
+	@CsvSource(value = {
+			"null objects in 1 2: NullPointerException | 1 2 | null | NullPointerException",
+			"null objects in an empty collection: NullPointerException | '' | null | NullPointerException",
+			"null objects in a null collection: NullPointerException | null | null | NullPointerException",
+			"3 in a null collection: NullPointerException | null | 3 | NullPointerException",
+			"no objects in a null collection: false | null | '' | false" }, delimiter = '|')
+	public void testContainsAtLeastOneWithNull(final String description, final String collection,
+		final String objects, final String expected)
+	{
+		final Collection<Integer> numbers = "null".equals(collection) ? null : numbers(collection);
+		final Integer[] toLookFor = "null".equals(objects)
+			? null
+			: numbers(objects).toArray(new Integer[0]);
+		String actual;
+		try
+		{
+			actual = String.valueOf(CollectionExtensions.containsAtLeastOne(numbers, toLookFor));
+		}
+		catch (final RuntimeException e)
+		{
+			actual = e.getClass().getSimpleName();
+		}
+		assertEquals(expected, actual);
+	}
+
+	/**
 	 * Test for method {@link CollectionExtensions#difference(Collection, Collection)}: the first
 	 * collection loses every element the second one holds, each occurrence of it, and keeps the
 	 * others in their order; the second collection does not change
