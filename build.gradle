@@ -58,4 +58,15 @@ tasks.withType(JavaCompile).configureEach { javaCompiler ->
     // options.compilerArgs << "-Xlint:unchecked"
 }
 
+// The module lints of javac on the main sources, as errors: exports reports a public signature whose type
+// belongs to a module that module-info.java requires without transitive, which is how MapFactory lost
+// silly-bean's KeyValuePair for a consumer's compiler up to 29.0 (#95); module, opens, requires-automatic and
+// requires-transitive-automatic are clean today. They look at this module's own declarations only, so a
+// dependency update does not raise them. Not -Xlint:all: it reports 90 warnings (varargs, dangling-doc-comments,
+// serial), each category its own question (#134). The tests are not compiled with it, they are no module.
+tasks.named("compileJava") {
+    options.compilerArgs += ["-Xlint:exports,module,opens,requires-automatic,requires-transitive-automatic",
+                             "-Werror"]
+}
+
 apply from: "gradle/test-results-complete.gradle"

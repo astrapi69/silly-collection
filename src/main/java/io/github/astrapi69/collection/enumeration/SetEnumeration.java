@@ -32,7 +32,8 @@ import java.util.Set;
 /**
  * The class {@link SetEnumeration} associates the elements of the given {@link Set} and the given
  * {@link Enumeration}: it gives the elements of the set first, then those of the enumeration that
- * the set does not contain, null elements too.
+ * the set does not contain, null elements too. An element of the enumeration that the set cannot
+ * hold, such as null for a set that does not permit null, is not contained in it and is given.
  *
  * @param <T>
  *            the generic type
@@ -89,11 +90,32 @@ public class SetEnumeration<T> implements Enumeration<T>
 				while (!hasNext && enumeration.hasMoreElements())
 				{
 					next = enumeration.nextElement();
-					hasNext = !set.contains(next);
+					hasNext = !contains(next);
 				}
 			}
 		}
 		return hasNext;
+	}
+
+	/**
+	 * Checks if the set contains the given element, as {@link java.util.AbstractSet#equals} treats
+	 * a query: an element the set rejects, with a {@link NullPointerException} or a
+	 * {@link ClassCastException}, is not in it
+	 *
+	 * @param element
+	 *            the element
+	 * @return true if the set contains the element, false if not or if the set cannot hold it
+	 */
+	private boolean contains(final T element)
+	{
+		try
+		{
+			return set.contains(element);
+		}
+		catch (final NullPointerException | ClassCastException e)
+		{
+			return false;
+		}
 	}
 
 	/**

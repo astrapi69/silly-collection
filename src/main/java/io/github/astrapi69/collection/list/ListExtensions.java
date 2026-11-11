@@ -452,20 +452,22 @@ public final class ListExtensions
 	}
 
 	/**
-	 * Checks if the given element is the first in the given list.
+	 * Checks if the given element is the first in the given list. The element is compared with the
+	 * first element of the list with {@link Objects#equals(Object, Object)}, so null is the first
+	 * of a list that starts with null. An empty list and null have no first element
 	 *
 	 * @param <T>
 	 *            the generic type
 	 * @param list
-	 *            the list
+	 *            the list, may be null
 	 * @param element
-	 *            the element
-	 * @return true if the given element is the first otherwise false
+	 *            the element, may be null
+	 * @return true if the given element is the first otherwise false, also if the list is empty or
+	 *         null
 	 */
 	public static <T> boolean isFirst(final List<T> list, final T element)
 	{
-		final int indexOfElement = list.indexOf(element);
-		return indexOfElement == 0;
+		return !CollectionExtensions.isEmpty(list) && Objects.equals(list.get(0), element);
 	}
 
 	/**
@@ -678,12 +680,13 @@ public final class ListExtensions
 	}
 
 	/**
-	 * The Method removeLastValues(ArrayList, int) remove the last Values.
+	 * Returns a view of the given list without its last <code>remove</code> values, as
+	 * {@link List#subList(int, int)}.
 	 *
 	 * @param <T>
 	 *            the generic type
 	 * @param v
-	 *            The Vector with the received Messages.
+	 *            the list
 	 * @param remove
 	 *            How much to remove.
 	 * @return the given list without its last values
@@ -698,7 +701,7 @@ public final class ListExtensions
 		}
 		throw new IllegalArgumentException("You cannot remove "
 			+ "more element than in the ArrayList exists. \nSize from ArrayList:" + v.size() + "\n"
-			+ "Elements to be removed:" + remove + "\n The same ArrayList will be returned.");
+			+ "Elements to be removed:" + remove);
 	}
 
 	/**
@@ -825,19 +828,26 @@ public final class ListExtensions
 	}
 
 	/**
-	 * Splits the given {@link Collection} to parts to the specified size and returns a list with
-	 * the parts.
+	 * Splits the given {@link Collection} to consecutive parts of the specified size, in the order
+	 * of the collection, and returns a list with the parts; the last part may be smaller. An empty
+	 * collection gives no part.
 	 *
 	 * @param <T>
 	 *            the generic type
 	 * @param collection
 	 *            The collection to split
 	 * @param size
-	 *            How to split
+	 *            the size of the parts
 	 * @return a List with the split Parts
+	 * @throws IllegalArgumentException
+	 *             if the size is less than 1
 	 */
 	public static <T> List<List<T>> splitToParts(final Collection<T> collection, final int size)
 	{
+		if (size < 1)
+		{
+			throw new IllegalArgumentException("The size must be at least 1, but is " + size);
+		}
 		final List<List<T>> returnList = ListFactory.newArrayList();
 		List<T> tmp = ListFactory.newArrayList();
 		final Iterator<T> it = collection.iterator();

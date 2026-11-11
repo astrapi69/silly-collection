@@ -87,4 +87,42 @@ public class ModifiedCollectionsTest
 		assertEquals(elements(removed), result.getRemovedElements());
 	}
 
+	/**
+	 * Test for method
+	 * {@link ModifiedCollections#getModifiedLists(java.util.Collection, java.util.Collection)}: two
+	 * calls on one object
+	 *
+	 * @param description
+	 *            the name of the case
+	 * @param firstPrevious
+	 *            the previous collection of the first call, the elements separated by a space
+	 * @param firstNext
+	 *            the next collection of the first call, the same way
+	 * @param secondPrevious
+	 *            the previous collection of the second call, the same way
+	 * @param secondNext
+	 *            the next collection of the second call, the same way
+	 * @param added
+	 *            the added elements after the second call, the same way
+	 * @param removed
+	 *            the removed elements after the second call, the same way
+	 */
+	@ParameterizedTest(name = "{0}", quoteTextArguments = false)
+	@CsvSource(value = { "the same call twice: the elements once | a | b | a | b | b | a",
+			"nothing changed in the second call: nothing | a | b | c | c | '' | ''",
+			"another second call: the result of the second only | a | b | c | d | d | c" }, delimiter = '|')
+	public void testGetModifiedListsTwice(final String description, final String firstPrevious,
+		final String firstNext, final String secondPrevious, final String secondNext,
+		final String added, final String removed)
+	{
+		final ModifiedCollections<String> modifiedCollections = new ModifiedCollections<>();
+		modifiedCollections.getModifiedLists(new ArrayList<>(elements(firstPrevious)),
+			new ArrayList<>(elements(firstNext)));
+		final ModifiedCollections<String> result = modifiedCollections.getModifiedLists(
+			new ArrayList<>(elements(secondPrevious)), new ArrayList<>(elements(secondNext)));
+		assertSame(modifiedCollections, result);
+		assertEquals(elements(added), result.getAddedElements());
+		assertEquals(elements(removed), result.getRemovedElements());
+	}
+
 }
