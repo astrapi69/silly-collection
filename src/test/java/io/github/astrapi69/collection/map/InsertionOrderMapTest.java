@@ -239,7 +239,8 @@ public class InsertionOrderMapTest
 	 * @param description
 	 *            the name of the case
 	 * @param map
-	 *            the map: 1 to 4, or a=null b=2
+	 *            the map: 1 to 4, or a=null b=2; with ", accessOrder" made by the constructor with
+	 *            accessOrder true
 	 * @param call
 	 *            the call: the name of the method, ToNull for a function that gives null, Same for
 	 *            the value the key has, reversed. in front for a call on the reversed view
@@ -255,6 +256,10 @@ public class InsertionOrderMapTest
 	@ParameterizedTest(name = "{0}", quoteTextArguments = false)
 	@CsvSource(value = {
 			"merge, key there: value2+x, 2 moves to the end | 1 to 4 | merge | 2 | value2+x | 1 3 4 2 | value2+x",
+			"get(2), a read: 2 keeps its place | 1 to 4 | get | 2 | value2 | 1 2 3 4 | value2",
+			"getOrDefault(2), a read: 2 keeps its place | 1 to 4 | getOrDefault | 2 | value2 | 1 2 3 4 | value2",
+			"get(2) on a map made with accessOrder true: 2 moves to the end, as in the access order of LinkedHashMap | 1 to 4, accessOrder | get | 2 | value2 | 1 3 4 2 | value2",
+			"getOrDefault(2) on a map made with accessOrder true: 2 moves to the end | 1 to 4, accessOrder | getOrDefault | 2 | value2 | 1 3 4 2 | value2",
 			"merge to null, key there: null, 2 removed | 1 to 4 | mergeToNull | 2 |  | 1 3 4 | ",
 			"merge, key not there: x, 9 last | 1 to 4 | merge | 9 | x | 1 2 3 4 9 | x",
 			"compute, key there: value2!, 2 moves to the end | 1 to 4 | compute | 2 | value2! | 1 3 4 2 | value2!",
@@ -324,7 +329,9 @@ public class InsertionOrderMapTest
 	public void testWrites(final String description, final String map, final String call,
 		final String key, final String result, final String keys, final String value)
 	{
-		final InsertionOrderMap<String, String> insertionOrderMap = new InsertionOrderMap<>();
+		final InsertionOrderMap<String, String> insertionOrderMap = map.endsWith(", accessOrder")
+			? new InsertionOrderMap<>(16, 0.75f, true)
+			: new InsertionOrderMap<>();
 		if ("a=null b=2".equals(map))
 		{
 			insertionOrderMap.put("a", null);
@@ -360,6 +367,8 @@ public class InsertionOrderMapTest
 			case "putIfAbsentNull" -> target.putIfAbsent(key, null);
 			case "computeIfAbsent" -> target.computeIfAbsent(key, k -> "x");
 			case "computeIfAbsentToNull" -> target.computeIfAbsent(key, k -> null);
+			case "get" -> target.get(key);
+			case "getOrDefault" -> target.getOrDefault(key, "none");
 			case "putFirst" -> target.putFirst(key, "x");
 			case "putLast" -> target.putLast(key, "x");
 			case "replaceAll" ->
