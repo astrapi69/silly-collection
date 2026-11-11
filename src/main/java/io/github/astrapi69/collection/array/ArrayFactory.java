@@ -25,6 +25,7 @@
 package io.github.astrapi69.collection.array;
 
 import java.lang.reflect.Array;
+import java.util.Objects;
 
 import io.github.astrapi69.check.Argument;
 
@@ -377,7 +378,11 @@ public final class ArrayFactory
 
 	/**
 	 * Creates a new partial array from the given source array starting from the given start index
-	 * that is inclusive and the end index that is exclusive
+	 * that is inclusive and the end index that is exclusive. The range must lie inside the source
+	 * array, as the range of {@link java.util.List#subList(int, int)} must: unlike
+	 * {@link ArrayExtensions#subArray(Object[], int, int)}, which decorates
+	 * {@link java.util.Arrays#copyOfRange(Object[], int, int)} and fills an end past the array with
+	 * null, this method does not pad
 	 *
 	 * @param <T>
 	 *            the generic type
@@ -388,10 +393,16 @@ public final class ArrayFactory
 	 * @param endIndex
 	 *            the end index that is exclusive
 	 * @return the new partial array
+	 * @throws IllegalArgumentException
+	 *             if the source array is null
+	 * @throws IndexOutOfBoundsException
+	 *             if {@code startIndex < 0}, {@code endIndex > source.length} or
+	 *             {@code startIndex > endIndex}
 	 */
 	public static <T> T[] newSubArray(final T[] source, int startIndex, int endIndex)
 	{
 		Argument.notNull(source, "source");
+		Objects.checkFromToIndex(startIndex, endIndex, source.length);
 		int newSize = endIndex - startIndex;
 		T[] subArray = newEmptyArray(source, newSize);
 		for (int i = 0; i < newSize; i++)

@@ -980,8 +980,10 @@ public final class ArrayExtensions
 	}
 
 	/**
-	 * Decorates the <code>Arrays#copyOfRange</code> method.
-	 * 
+	 * Decorates the <code>Arrays#copyOfRange</code> method: an end index past the array fills the
+	 * rest of the result with null, unlike {@link ArrayFactory#newSubArray(Object[], int, int)},
+	 * which refuses a range that does not lie inside the array.
+	 *
 	 * @see Arrays#copyOfRange(Object[], int, int)
 	 * @param <T>
 	 *            the type of elements in the array
@@ -992,6 +994,12 @@ public final class ArrayExtensions
 	 * @param end
 	 *            the end index
 	 * @return a new array from the specified start and end point
+	 * @throws ArrayIndexOutOfBoundsException
+	 *             if {@code start < 0} or {@code start > original.length}
+	 * @throws IllegalArgumentException
+	 *             if {@code start > end}
+	 * @throws NullPointerException
+	 *             if the original array is null
 	 */
 	public static <T> T[] subArray(T[] original, int start, int end)
 	{

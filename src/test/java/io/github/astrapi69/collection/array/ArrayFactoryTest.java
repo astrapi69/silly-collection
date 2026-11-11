@@ -495,10 +495,10 @@ public class ArrayFactoryTest
 	@CsvSource(value = { "1 to 3: inside | 1 | 3 | b c | b c",
 			"0 to 3: all | 0 | 3 | a b c | a b c", "2 to 2: empty | 2 | 2 | '' | ''",
 			"3 to 3: empty at the end | 3 | 3 | '' | ''",
-			"1 to 4: the end past the array | 1 | 4 | !ArrayIndexOutOfBoundsException | b c null",
-			"4 to 4: the start past the array | 4 | 4 | '' | !ArrayIndexOutOfBoundsException",
-			"-1 to 2: the start below 0 | -1 | 2 | !ArrayIndexOutOfBoundsException | !ArrayIndexOutOfBoundsException",
-			"2 to 1: the start after the end | 2 | 1 | !NegativeArraySizeException | !IllegalArgumentException" }, delimiter = '|')
+			"1 to 4: the end past the array | 1 | 4 | !IndexOutOfBoundsException | b c null",
+			"4 to 4: the start past the array | 4 | 4 | !IndexOutOfBoundsException | !ArrayIndexOutOfBoundsException",
+			"-1 to 2: the start below 0 | -1 | 2 | !IndexOutOfBoundsException | !ArrayIndexOutOfBoundsException",
+			"2 to 1: the start after the end | 2 | 1 | !IndexOutOfBoundsException | !IllegalArgumentException" }, delimiter = '|')
 	public void testNewSubArrayAndSubArrayOfARange(final String description, final int startIndex,
 		final int endIndex, final String newSubArray, final String subArray)
 	{
