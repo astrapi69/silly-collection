@@ -1492,4 +1492,26 @@ public class ArrayExtensionsTest
 		beanTester.testBean(ArrayExtensions.class);
 	}
 
+	/**
+	 * Test for the methods {@link ArrayExtensions#getNextIndexes(Object[], Object, int)} and
+	 * {@link ArrayExtensions#getPreviousIndexes(Object[], Object, int)} with a null element, in an
+	 * array that holds null: a null element has no next and no previous indexes, so both give null,
+	 * though the array holds it (#157, the survivors of PIT's STRONGER mutators)
+	 *
+	 * @param description
+	 *            the name of the case
+	 * @param count
+	 *            the number of indexes asked for
+	 */
+	@ParameterizedTest(name = "{0}", quoteTextArguments = false)
+	@CsvSource(value = { "0 indexes: null | 0", "1 index: null | 1",
+			"2 indexes: null | 2" }, delimiter = '|')
+	public void testNextAndPreviousIndexesOfNullInArrayWithNull(final String description,
+		final int count)
+	{
+		final String[] array = { "a", null, "b" };
+		assertNull(ArrayExtensions.getNextIndexes(array, null, count), "getNextIndexes");
+		assertNull(ArrayExtensions.getPreviousIndexes(array, null, count), "getPreviousIndexes");
+	}
+
 }
