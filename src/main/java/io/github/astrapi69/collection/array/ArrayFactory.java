@@ -153,25 +153,31 @@ public final class ArrayFactory
 	}
 
 	/**
-	 * Factory method for create new array of primitive byte values from the given optional
-	 * elements.
+	 * Factory method for create new array of primitive byte values from the given optional int
+	 * values.
+	 * <p>
+	 * Each value is converted to a byte as by a cast, in the manner of {@link Number#byteValue()}:
+	 * only its low eight bits are kept, so 128 gives -128 and 256 gives 0. The method exists so
+	 * that byte literals can be written without a cast, as 0xFF for -1. Null gives null.
+	 * </p>
 	 *
 	 * @param elements
-	 *            the optional primitive byte values that will be in the returned array of primitive
-	 *            byte values array.
-	 * @return the new array of primitive byte values
+	 *            the int values that will be converted to the bytes of the returned array, may be
+	 *            null
+	 * @return a new array with the given values converted to bytes, or null if the given elements
+	 *         are null
 	 */
 	@SafeVarargs
 	public static byte[] newByteArray(final int... elements)
 	{
-		byte[] array = new byte[0];
-		if (elements != null && 0 < elements.length)
+		if (elements == null)
 		{
-			array = new byte[elements.length];
-			for (int i = 0; i < elements.length; ++i)
-			{
-				array[i] = (byte)elements[i];
-			}
+			return null;
+		}
+		final byte[] array = new byte[elements.length];
+		for (int i = 0; i < elements.length; ++i)
+		{
+			array[i] = (byte)elements[i];
 		}
 		return array;
 	}

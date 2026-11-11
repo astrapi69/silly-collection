@@ -164,7 +164,7 @@ public class ArrayFactoryTest
 	 * @param given
 	 *            the given int values, may be null
 	 * @param expected
-	 *            the bytes of the returned array
+	 *            the bytes of the returned array, null for null
 	 */
 	record ByteArrayOfInts(String description, int[] given, byte[] expected) {
 		@Override
@@ -175,8 +175,8 @@ public class ArrayFactoryTest
 	}
 
 	/**
-	 * The cases of {@link ArrayFactory#newByteArray(int...)}: unlike the other factory methods it
-	 * returns an empty array for null
+	 * The cases of {@link ArrayFactory#newByteArray(int...)}: each int is cast to a byte, null
+	 * gives null
 	 *
 	 * @return the cases
 	 */
@@ -193,7 +193,7 @@ public class ArrayFactoryTest
 			new ByteArrayOfInts("256: 0, and -129: 127 (#136)", new int[] { 256, -129 },
 				new byte[] { 0, 127 }),
 			new ByteArrayOfInts("no values: an empty array", new int[0], new byte[0]),
-			new ByteArrayOfInts("null: an empty array, not null", null, new byte[0]));
+			new ByteArrayOfInts("null: null, as the other factory methods (#136)", null, null));
 	}
 
 	/**
