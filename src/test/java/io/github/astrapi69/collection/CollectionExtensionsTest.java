@@ -350,6 +350,45 @@ public class CollectionExtensionsTest
 	}
 
 	/**
+	 * Test for method {@link CollectionExtensions#containsAtLeastOne(Collection, Object[])} with a
+	 * null collection or null objects: the exception it throws, or the answer (#144)
+	 *
+	 * @param description
+	 *            the name of the case
+	 * @param collection
+	 *            the numbers of the collection, separated by a space, 'null' for a null collection
+	 * @param objects
+	 *            the numbers to look for, separated by a space, 'null' for null objects
+	 * @param expected
+	 *            the simple name of the exception, or the answer
+	 */
+	@ParameterizedTest(name = "{0}", quoteTextArguments = false)
+	@CsvSource(value = {
+			"null objects in 1 2: NullPointerException | 1 2 | null | NullPointerException",
+			"null objects in an empty collection: NullPointerException | '' | null | NullPointerException",
+			"null objects in a null collection: NullPointerException | null | null | NullPointerException",
+			"3 in a null collection: NullPointerException | null | 3 | NullPointerException",
+			"no objects in a null collection: false | null | '' | false" }, delimiter = '|')
+	public void testContainsAtLeastOneWithNull(final String description, final String collection,
+		final String objects, final String expected)
+	{
+		final Collection<Integer> numbers = "null".equals(collection) ? null : numbers(collection);
+		final Integer[] toLookFor = "null".equals(objects)
+			? null
+			: numbers(objects).toArray(new Integer[0]);
+		String actual;
+		try
+		{
+			actual = String.valueOf(CollectionExtensions.containsAtLeastOne(numbers, toLookFor));
+		}
+		catch (final RuntimeException e)
+		{
+			actual = e.getClass().getSimpleName();
+		}
+		assertEquals(expected, actual);
+	}
+
+	/**
 	 * Test for method {@link CollectionExtensions#difference(Collection, Collection)}: the first
 	 * collection loses every element the second one holds, each occurrence of it, and keeps the
 	 * others in their order; the second collection does not change
@@ -570,6 +609,8 @@ public class CollectionExtensionsTest
 			"lotto numbers and the same numbers in another order: all of them | 3 7 22 23 34 45; 3 7 23 34 22 45 | 3 7 22 23 34 45",
 			"lotto numbers and numbers with 3 and 7 in common: 3, 7 | 3 7 22 23 34 45; 3 7 24 35 25 46 | 3 7",
 			"two collections without a common element: nothing | 1 2; 3 4 | ''",
+			"a twice in the first collection: both stay, as retainAll keeps them (#140) | a a b; a | a a",
+			"a twice in the other collection: once, from the first collection (#140) | a; a a | a",
 			"one collection alone: null | Alex Brad | null",
 			"no collection: null | '' | null" }, delimiter = '|', nullValues = "null")
 	@SuppressWarnings("unchecked")
@@ -724,6 +765,48 @@ public class CollectionExtensionsTest
 		final List<List<Integer>> actual = new ArrayList<>(
 			CollectionExtensions.partition(list, size));
 		assertEquals(first, actual.get(index).get(0));
+	}
+
+	/**
+	 * Test for method {@link CollectionExtensions#partition(Collection, int)}: the outcome for
+	 * sizes below 1 and for no elements, as the parts or as the exception, its class and its
+	 * message
+	 *
+	 * @param description
+	 *            the name of the case
+	 * @param count
+	 *            the number of elements, 1 to count
+	 * @param size
+	 *            the size of the parts
+	 * @param outcome
+	 *            the expected outcome
+	 */
+	@ParameterizedTest(name = "{0}", quoteTextArguments = false)
+	@CsvSource(value = {
+			"5 elements in parts of -2 | 5 | -2 | IllegalArgumentException: The size must be at least 1, but is -2",
+			"5 elements in parts of -1 | 5 | -1 | IllegalArgumentException: The size must be at least 1, but is -1",
+			"3 elements in parts of 0 | 3 | 0 | IllegalArgumentException: The size must be at least 1, but is 0",
+			"3 elements in parts of 1 | 3 | 1 | [[1], [2], [3]]",
+			"3 elements in parts of 3, the length | 3 | 3 | [[1, 2, 3]]",
+			"3 elements in parts of 4, above the length | 3 | 4 | [[1, 2, 3]]",
+			"no elements in parts of -1 | 0 | -1 | IllegalArgumentException: The size must be at least 1, but is -1",
+			"no elements in parts of 0 | 0 | 0 | IllegalArgumentException: The size must be at least 1, but is 0",
+			"no elements in parts of 2 | 0 | 2 | []" }, delimiter = '|')
+	public void testPartitionOfSizeBelowOneAndOfNoElements(final String description,
+		final int count, final int size, final String outcome)
+	{
+		final List<Integer> list = IntStream.rangeClosed(1, count).boxed()
+			.collect(Collectors.toCollection(ArrayList::new));
+		String actual;
+		try
+		{
+			actual = new ArrayList<>(CollectionExtensions.partition(list, size)).toString();
+		}
+		catch (final RuntimeException e)
+		{
+			actual = e.getClass().getSimpleName() + ": " + e.getMessage();
+		}
+		assertEquals(outcome, actual);
 	}
 
 	/**

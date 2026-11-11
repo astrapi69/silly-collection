@@ -201,11 +201,13 @@ public class IndexSortedProperties extends SortedProperties
 	}
 
 	/**
-	 * Gets the entry from the given index.
+	 * Gets the entry from the given index, as {@link #getProperty(int)}.
 	 *
 	 * @param index
 	 *            the index
-	 * @return the object that was found over the index or null if the index was out of range.
+	 * @return the object that was found over the index or null if the index was out of range, if
+	 *         the key at the index is not a {@link String}, or if its value is not a
+	 *         {@link String}, as {@link Properties#getProperty(String)} gives null for it
 	 */
 	public synchronized Object get(final int index)
 	{
@@ -217,13 +219,18 @@ public class IndexSortedProperties extends SortedProperties
 	 *
 	 * @param index
 	 *            the index
-	 * @return the property that was found over the index or null if the index was out of range.
+	 * @return the property that was found over the index or null if the index was out of range, if
+	 *         the key at the index is not a {@link String}, or if its value is not a
+	 *         {@link String}, as {@link Properties#getProperty(String)} gives null for it
 	 */
 	public synchronized String getProperty(final int index)
 	{
 		final List<Object> sortedKeys = sortedKeys();
 		if (0 <= index && index < sortedKeys.size())
-			return getProperty((String)sortedKeys.get(index));
+		{
+			final Object key = sortedKeys.get(index);
+			return key instanceof String ? getProperty((String)key) : null;
+		}
 		return null;
 	}
 
@@ -231,7 +238,9 @@ public class IndexSortedProperties extends SortedProperties
 	 * Gets the index of the given object.
 	 * <p>
 	 * A {@link Properties} holds no null value, so null is never found: it gives -1, also where
-	 * {@link #getProperty(String)} gives null for a key, as for a value that is not a string.
+	 * {@link #getProperty(String)} gives null for a key, as for a value that is not a string. A key
+	 * that is not a string has no property, so it is skipped, as
+	 * {@link Properties#stringPropertyNames()} does.
 	 * </p>
 	 *
 	 * @param object
@@ -247,6 +256,10 @@ public class IndexSortedProperties extends SortedProperties
 		final List<Object> sortedKeys = sortedKeys();
 		for (final Object key : sortedKeys)
 		{
+			if (!(key instanceof String))
+			{
+				continue;
+			}
 			final Object value = getProperty((String)key);
 			if (object.equals(value))
 			{
