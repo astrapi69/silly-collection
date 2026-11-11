@@ -27,7 +27,9 @@ package io.github.astrapi69.collection.set;
 import static org.junit.jupiter.api.Assertions.assertEquals;
 import static org.junit.jupiter.api.Assertions.assertInstanceOf;
 import static org.junit.jupiter.api.Assertions.assertNotSame;
+import static org.junit.jupiter.api.Assertions.assertNull;
 import static org.junit.jupiter.api.Assertions.assertSame;
+import static org.junit.jupiter.api.Assertions.assertThrows;
 
 import java.util.ArrayList;
 import java.util.Collection;
@@ -290,6 +292,86 @@ public class SetFactoryTest
 		assertNotSame(first, second);
 		assertEquals(Set.of(), second);
 		assertSame(comparator, second.comparator());
+	}
+
+	/** An element that is not {@link Comparable} */
+	record Plain() {
+	}
+
+	/**
+	 * A call of a factory method of a {@link TreeSet} with a null comparator
+	 *
+	 * @param description
+	 *            the name of the case
+	 * @param call
+	 *            the call, which makes the set
+	 * @param expected
+	 *            the elements of the set in its order, or the class of the exception of the call
+	 */
+	record NullComparator(String description, Supplier<SortedSet<?>> call, Object expected) {
+		@Override
+		public String toString()
+		{
+			return description;
+		}
+	}
+
+	/**
+	 * The cases of {@link #testNullComparator(NullComparator)}
+	 *
+	 * @return the cases
+	 */
+	static Stream<NullComparator> nullComparators()
+	{
+		final Comparator<String> none = null;
+		final Comparator<Plain> noneOfPlains = null;
+		final Collection<Plain> emptyOfPlains = new ArrayList<>();
+		return Stream.of(
+			new NullComparator("newTreeSet(a null comparator; b, a)",
+				() -> SetFactory.newTreeSet(none, "b", "a"), List.of("a", "b")),
+			new NullComparator("newTreeSet(an empty collection; a null comparator; b, a)",
+				() -> SetFactory.newTreeSet(none(), none, "b", "a"), List.of("a", "b")),
+			new NullComparator("newTreeSetSupplier(a null comparator), collecting b, a",
+				() -> Stream.of("b", "a")
+					.collect(Collectors.toCollection(SetFactory.newTreeSetSupplier(none))),
+				List.of("a", "b")),
+			new NullComparator("newTreeSet(a null comparator; a Plain that is not Comparable)",
+				() -> SetFactory.newTreeSet(noneOfPlains, new Plain()), ClassCastException.class),
+			new NullComparator(
+				"newTreeSet(an empty collection; a null comparator; a Plain that is not Comparable)",
+				() -> SetFactory.newTreeSet(emptyOfPlains, noneOfPlains, new Plain()),
+				ClassCastException.class),
+			new NullComparator(
+				"newTreeSetSupplier(a null comparator), collecting a Plain that is not Comparable",
+				() -> Stream.of(new Plain())
+					.collect(Collectors.toCollection(SetFactory.newTreeSetSupplier(noneOfPlains))),
+				ClassCastException.class));
+	}
+
+	/**
+	 * Test for the three factory methods of a {@link TreeSet} that take a comparator, with a null
+	 * comparator (#149): as {@link TreeSet#TreeSet(Comparator)} says, null means the natural
+	 * ordering of the elements, so the set has no comparator, holds the elements in their natural
+	 * order, and takes an element that is not {@link Comparable} no further than {@link TreeSet}
+	 * does, with a {@link ClassCastException}
+	 *
+	 * @param nullComparator
+	 *            the call and what it gives
+	 */
+	@ParameterizedTest(name = "{0}")
+	@MethodSource("nullComparators")
+	public void testNullComparator(final NullComparator nullComparator)
+	{
+		if (nullComparator.expected()instanceof Class<?> exception)
+		{
+			assertThrows(exception.asSubclass(Throwable.class), () -> nullComparator.call().get());
+		}
+		else
+		{
+			final SortedSet<?> set = nullComparator.call().get();
+			assertNull(set.comparator());
+			assertEquals(nullComparator.expected(), new ArrayList<>(set));
+		}
 	}
 
 	/**

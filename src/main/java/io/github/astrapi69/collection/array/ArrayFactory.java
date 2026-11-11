@@ -25,6 +25,7 @@
 package io.github.astrapi69.collection.array;
 
 import java.lang.reflect.Array;
+import java.util.Objects;
 
 import io.github.astrapi69.check.Argument;
 
@@ -153,25 +154,31 @@ public final class ArrayFactory
 	}
 
 	/**
-	 * Factory method for create new array of primitive byte values from the given optional
-	 * elements.
+	 * Factory method for create new array of primitive byte values from the given optional int
+	 * values.
+	 * <p>
+	 * Each value is converted to a byte as by a cast, in the manner of {@link Number#byteValue()}:
+	 * only its low eight bits are kept, so 128 gives -128 and 256 gives 0. The method exists so
+	 * that byte literals can be written without a cast, as 0xFF for -1. Null gives null.
+	 * </p>
 	 *
 	 * @param elements
-	 *            the optional primitive byte values that will be in the returned array of primitive
-	 *            byte values array.
-	 * @return the new array of primitive byte values
+	 *            the int values that will be converted to the bytes of the returned array, may be
+	 *            null
+	 * @return a new array with the given values converted to bytes, or null if the given elements
+	 *         are null
 	 */
 	@SafeVarargs
 	public static byte[] newByteArray(final int... elements)
 	{
-		byte[] array = new byte[0];
-		if (elements != null && 0 < elements.length)
+		if (elements == null)
 		{
-			array = new byte[elements.length];
-			for (int i = 0; i < elements.length; ++i)
-			{
-				array[i] = (byte)elements[i];
-			}
+			return null;
+		}
+		final byte[] array = new byte[elements.length];
+		for (int i = 0; i < elements.length; ++i)
+		{
+			array[i] = (byte)elements[i];
 		}
 		return array;
 	}
@@ -377,7 +384,11 @@ public final class ArrayFactory
 
 	/**
 	 * Creates a new partial array from the given source array starting from the given start index
-	 * that is inclusive and the end index that is exclusive
+	 * that is inclusive and the end index that is exclusive. The range must lie inside the source
+	 * array, as the range of {@link java.util.List#subList(int, int)} must: unlike
+	 * {@link ArrayExtensions#subArray(Object[], int, int)}, which decorates
+	 * {@link java.util.Arrays#copyOfRange(Object[], int, int)} and fills an end past the array with
+	 * null, this method does not pad
 	 *
 	 * @param <T>
 	 *            the generic type
@@ -388,10 +399,16 @@ public final class ArrayFactory
 	 * @param endIndex
 	 *            the end index that is exclusive
 	 * @return the new partial array
+	 * @throws IllegalArgumentException
+	 *             if the source array is null
+	 * @throws IndexOutOfBoundsException
+	 *             if {@code startIndex < 0}, {@code endIndex > source.length} or
+	 *             {@code startIndex > endIndex}
 	 */
 	public static <T> T[] newSubArray(final T[] source, int startIndex, int endIndex)
 	{
 		Argument.notNull(source, "source");
+		Objects.checkFromToIndex(startIndex, endIndex, source.length);
 		int newSize = endIndex - startIndex;
 		T[] subArray = newEmptyArray(source, newSize);
 		for (int i = 0; i < newSize; i++)
