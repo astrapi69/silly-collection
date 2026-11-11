@@ -774,6 +774,11 @@ public class MapExtensionsTest
 					withNullValue("b"), true),
 				NullPointerException.class),
 			new Edge(
+				"mergeAndSummarize(a key of both maps with a null value in the second map): NullPointerException",
+				() -> MapExtensions.mergeAndSummarize(new HashMap<>(Map.of("a", 1)),
+					withNullValue("a"), false),
+				NullPointerException.class),
+			new Edge(
 				"mergeAndSummarize(a null value of a key the first map does not hold): filtered out first",
 				() -> MapExtensions.mergeAndSummarize(new HashMap<>(Map.of("a", 1)),
 					withNullValue("b"), false),
