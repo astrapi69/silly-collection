@@ -86,30 +86,4 @@ public final class IteratorSteps
 		return results;
 	}
 
-	/**
-	 * The elements of a row of a {@link org.junit.jupiter.params.provider.CsvSource}
-	 *
-	 * @param elements
-	 *            the elements, separated by a space, may be empty
-	 * @return the elements
-	 */
-	public static List<String> elements(final String elements)
-	{
-		return elements.isEmpty() ? List.of() : List.of(elements.split(" "));
-	}
-
-	/**
-	 * The elements of a row of a {@link org.junit.jupiter.params.provider.CsvSource}, the word null
-	 * for a null element
-	 *
-	 * @param elements
-	 *            the elements, separated by a space, may be empty
-	 * @return the elements, with null for each word null
-	 */
-	public static List<String> elementsWithNull(final String elements)
-	{
-		return elements(elements).stream().map(element -> "null".equals(element) ? null : element)
-			.toList();
-	}
-
 }

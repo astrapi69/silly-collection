@@ -36,6 +36,7 @@ import static org.junit.jupiter.api.Assertions.assertTrue;
 import java.util.ArrayList;
 import java.util.Arrays;
 import java.util.Collection;
+import java.util.Collections;
 import java.util.List;
 import java.util.function.Supplier;
 import java.util.stream.Collectors;
@@ -52,26 +53,13 @@ import org.meanbean.test.BeanTester;
 import io.github.astrapi69.collection.array.ArrayFactory;
 import io.github.astrapi69.collection.list.ListFactory;
 import io.github.astrapi69.collection.set.SetFactory;
+import io.github.astrapi69.collection.test.Elements;
 
 /**
  * The unit test class for the class {@link CollectionExtensions}.
  */
 public class CollectionExtensionsTest
 {
-
-	/**
-	 * The elements of a column of a table, separated by a space
-	 *
-	 * @param column
-	 *            the column, empty for no elements
-	 * @return the elements in a new {@link ArrayList}, which the test may change
-	 */
-	private static List<String> elements(final String column)
-	{
-		return column.isEmpty()
-			? new ArrayList<>()
-			: Arrays.stream(column.split(" ")).collect(Collectors.toCollection(ArrayList::new));
-	}
 
 	/**
 	 * The numbers of a column of a table, separated by a space
@@ -82,7 +70,7 @@ public class CollectionExtensionsTest
 	 */
 	private static List<Integer> numbers(final String column)
 	{
-		return elements(column).stream().map(Integer::valueOf)
+		return Elements.modifiableList(column).stream().map(Integer::valueOf)
 			.collect(Collectors.toCollection(ArrayList::new));
 	}
 
@@ -349,6 +337,45 @@ public class CollectionExtensionsTest
 	}
 
 	/**
+	 * Test for method {@link CollectionExtensions#containsAtLeastOne(Collection, Object[])} with a
+	 * null collection or null objects: the exception it throws, or the answer (#144)
+	 *
+	 * @param description
+	 *            the name of the case
+	 * @param collection
+	 *            the numbers of the collection, separated by a space, 'null' for a null collection
+	 * @param objects
+	 *            the numbers to look for, separated by a space, 'null' for null objects
+	 * @param expected
+	 *            the simple name of the exception, or the answer
+	 */
+	@ParameterizedTest(name = "{0}", quoteTextArguments = false)
+	@CsvSource(value = {
+			"null objects in 1 2: NullPointerException | 1 2 | null | NullPointerException",
+			"null objects in an empty collection: NullPointerException | '' | null | NullPointerException",
+			"null objects in a null collection: NullPointerException | null | null | NullPointerException",
+			"3 in a null collection: NullPointerException | null | 3 | NullPointerException",
+			"no objects in a null collection: false | null | '' | false" }, delimiter = '|')
+	public void testContainsAtLeastOneWithNull(final String description, final String collection,
+		final String objects, final String expected)
+	{
+		final Collection<Integer> numbers = "null".equals(collection) ? null : numbers(collection);
+		final Integer[] toLookFor = "null".equals(objects)
+			? null
+			: numbers(objects).toArray(new Integer[0]);
+		String actual;
+		try
+		{
+			actual = String.valueOf(CollectionExtensions.containsAtLeastOne(numbers, toLookFor));
+		}
+		catch (final RuntimeException e)
+		{
+			actual = e.getClass().getSimpleName();
+		}
+		assertEquals(expected, actual);
+	}
+
+	/**
 	 * Test for method {@link CollectionExtensions#difference(Collection, Collection)}: the first
 	 * collection loses every element the second one holds, each occurrence of it, and keeps the
 	 * others in their order; the second collection does not change
@@ -491,7 +518,7 @@ public class CollectionExtensionsTest
 	 * @param expected
 	 *            the hash code
 	 */
-	record HashCodeCase(String description, Supplier<Collection<String[]>> lines, int expected) {
+	record HashCodeCase(String description, Supplier<Collection<Object[]>> lines, int expected) {
 		@Override
 		public String toString()
 		{
@@ -508,17 +535,32 @@ public class CollectionExtensionsTest
 	static Stream<HashCodeCase> hashCodes()
 	{
 		return Stream.of(
-			new HashCodeCase("three lines of numbers: -1269378556",
+			new HashCodeCase("three lines of numbers: 125802086",
 				() -> ListFactory.newArrayList(ArrayFactory.newArray("1", "23", "3"),
 					ArrayFactory.newArray("4", "25", "9"), ArrayFactory.newArray("6", "21", "8")),
-				-1269378556),
-			new HashCodeCase("three lines of names, ages and genders: -1124541430",
+				125802086),
+			new HashCodeCase("three lines of names, ages and genders: 970861061",
 				() -> ListFactory.newArrayList(ArrayFactory.newArray("John", "23", "male"),
 					ArrayFactory.newArray("Jim", "25", "male"),
 					ArrayFactory.newArray("Mary", "21", "female")),
-				-1124541430),
+				970861061),
 			new HashCodeCase("no lines: 1, as the hash code of an empty List",
-				() -> ListFactory.newArrayList(), 1));
+				() -> ListFactory.newArrayList(), 1),
+			new HashCodeCase("the lines a and b: 5058",
+				() -> ListFactory.newArrayList(ArrayFactory.newArray("a"),
+					ArrayFactory.newArray("b")),
+				5058),
+			new HashCodeCase("the lines b and a, another hash code than a and b: 5088",
+				() -> ListFactory.newArrayList(ArrayFactory.newArray("b"),
+					ArrayFactory.newArray("a")),
+				5088),
+			new HashCodeCase("a null line after two others: 113181",
+				() -> Arrays.asList(ArrayFactory.newArray("5"), ArrayFactory.newArray("7"), null),
+				113181),
+			new HashCodeCase("a null line only: 31",
+				() -> Collections.<Object[]> singletonList(null), 31),
+			new HashCodeCase("a line whose Arrays.hashCode is 0: 31",
+				() -> Collections.<Object[]> singletonList(new Integer[] { -31 }), 31));
 	}
 
 	/**
@@ -554,6 +596,8 @@ public class CollectionExtensionsTest
 			"lotto numbers and the same numbers in another order: all of them | 3 7 22 23 34 45; 3 7 23 34 22 45 | 3 7 22 23 34 45",
 			"lotto numbers and numbers with 3 and 7 in common: 3, 7 | 3 7 22 23 34 45; 3 7 24 35 25 46 | 3 7",
 			"two collections without a common element: nothing | 1 2; 3 4 | ''",
+			"a twice in the first collection: both stay, as retainAll keeps them (#140) | a a b; a | a a",
+			"a twice in the other collection: once, from the first collection (#140) | a; a a | a",
 			"one collection alone: null | Alex Brad | null",
 			"no collection: null | '' | null" }, delimiter = '|', nullValues = "null")
 	@SuppressWarnings("unchecked")
@@ -563,8 +607,7 @@ public class CollectionExtensionsTest
 		final List<String> columns = collections.isEmpty()
 			? List.of()
 			: Arrays.asList(collections.split("; "));
-		final List<List<String>> given = columns.stream().map(CollectionExtensionsTest::elements)
-			.toList();
+		final List<List<String>> given = columns.stream().map(Elements::modifiableList).toList();
 		final Collection<String> actual = CollectionExtensions
 			.intersection(given.toArray(new Collection[0]));
 		if (expected == null)
@@ -574,11 +617,12 @@ public class CollectionExtensionsTest
 		else
 		{
 			assertSame(given.get(0), actual);
-			assertEquals(elements(expected), actual);
+			assertEquals(Elements.modifiableList(expected), actual);
 		}
 		for (int i = actual == null ? 0 : 1; i < given.size(); i++)
 		{
-			assertEquals(elements(columns.get(i)), given.get(i), "collection " + i + " changed");
+			assertEquals(Elements.modifiableList(columns.get(i)), given.get(i),
+				"collection " + i + " changed");
 		}
 	}
 
@@ -676,6 +720,80 @@ public class CollectionExtensionsTest
 			final int last = actual.get(actual.size() - 1).size();
 			assertTrue(0 < last && last <= size, "the last part holds " + last);
 		}
+	}
+
+	/**
+	 * Test for method {@link CollectionExtensions#partition(Collection, int)}: the first element of
+	 * the part at an index, for collections of 65538 parts and more
+	 *
+	 * @param description
+	 *            the name of the case
+	 * @param count
+	 *            the number of elements, 1 to count
+	 * @param size
+	 *            the size of the parts
+	 * @param index
+	 *            the index of the part
+	 * @param first
+	 *            the first element of the part at the index
+	 */
+	@ParameterizedTest(name = "{0}", quoteTextArguments = false)
+	@CsvSource(value = { "70000 elements in parts of 1, part 65535 | 70000 | 1 | 65535 | 65536",
+			"70000 elements in parts of 1, part 65536 | 70000 | 1 | 65536 | 65537",
+			"70000 elements in parts of 1, part 65537 | 70000 | 1 | 65537 | 65538",
+			"70000 elements in parts of 1, the last part | 70000 | 1 | 69999 | 70000",
+			"140000 elements in parts of 2, part 65536 | 140000 | 2 | 65536 | 131073",
+			"65537 elements in parts of 1, part 65536 | 65537 | 1 | 65536 | 65537" }, delimiter = '|')
+	public void testPartitionOrderOfManyParts(final String description, final int count,
+		final int size, final int index, final int first)
+	{
+		final List<Integer> list = IntStream.rangeClosed(1, count).boxed()
+			.collect(Collectors.toCollection(ArrayList::new));
+		final List<List<Integer>> actual = new ArrayList<>(
+			CollectionExtensions.partition(list, size));
+		assertEquals(first, actual.get(index).get(0));
+	}
+
+	/**
+	 * Test for method {@link CollectionExtensions#partition(Collection, int)}: the outcome for
+	 * sizes below 1 and for no elements, as the parts or as the exception, its class and its
+	 * message
+	 *
+	 * @param description
+	 *            the name of the case
+	 * @param count
+	 *            the number of elements, 1 to count
+	 * @param size
+	 *            the size of the parts
+	 * @param outcome
+	 *            the expected outcome
+	 */
+	@ParameterizedTest(name = "{0}", quoteTextArguments = false)
+	@CsvSource(value = {
+			"5 elements in parts of -2 | 5 | -2 | IllegalArgumentException: The size must be at least 1, but is -2",
+			"5 elements in parts of -1 | 5 | -1 | IllegalArgumentException: The size must be at least 1, but is -1",
+			"3 elements in parts of 0 | 3 | 0 | IllegalArgumentException: The size must be at least 1, but is 0",
+			"3 elements in parts of 1 | 3 | 1 | [[1], [2], [3]]",
+			"3 elements in parts of 3, the length | 3 | 3 | [[1, 2, 3]]",
+			"3 elements in parts of 4, above the length | 3 | 4 | [[1, 2, 3]]",
+			"no elements in parts of -1 | 0 | -1 | IllegalArgumentException: The size must be at least 1, but is -1",
+			"no elements in parts of 0 | 0 | 0 | IllegalArgumentException: The size must be at least 1, but is 0",
+			"no elements in parts of 2 | 0 | 2 | []" }, delimiter = '|')
+	public void testPartitionOfSizeBelowOneAndOfNoElements(final String description,
+		final int count, final int size, final String outcome)
+	{
+		final List<Integer> list = IntStream.rangeClosed(1, count).boxed()
+			.collect(Collectors.toCollection(ArrayList::new));
+		String actual;
+		try
+		{
+			actual = new ArrayList<>(CollectionExtensions.partition(list, size)).toString();
+		}
+		catch (final RuntimeException e)
+		{
+			actual = e.getClass().getSimpleName() + ": " + e.getMessage();
+		}
+		assertEquals(outcome, actual);
 	}
 
 	/**

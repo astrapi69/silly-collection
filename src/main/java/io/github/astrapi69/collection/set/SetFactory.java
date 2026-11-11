@@ -34,7 +34,6 @@ import java.util.SortedSet;
 import java.util.TreeSet;
 import java.util.function.Supplier;
 
-import io.github.astrapi69.check.Argument;
 import io.github.astrapi69.collection.CollectionExtensions;
 import io.github.astrapi69.collection.list.ListFactory;
 
@@ -173,7 +172,7 @@ public final class SetFactory
 	 *            the optional collection that will be added to the new list
 	 * @param elements
 	 *            the elements to add in the new {@link LinkedHashSet}
-	 * @return the new {@link HashSet}
+	 * @return the new {@link LinkedHashSet}
 	 */
 	@SafeVarargs
 	public static <T> Set<T> newLinkedHashSet(final Collection<T> collection, final T... elements)
@@ -200,7 +199,7 @@ public final class SetFactory
 	 * @param <T>
 	 *            the generic type of the elements
 	 * @param elements
-	 *            the elements to add in the new {@link HashSet}
+	 *            the elements to add in the new {@link LinkedHashSet}
 	 * @return the new {@link LinkedHashSet}
 	 */
 	@SafeVarargs
@@ -217,7 +216,7 @@ public final class SetFactory
 	 * @param collection
 	 *            the optional collection that will be added to the new list
 	 * @param comparator
-	 *            the comparator
+	 *            the comparator, or null for the natural ordering of the elements
 	 * @param elements
 	 *            the elements to add in the new {@link TreeSet}
 	 * @return the new {@link TreeSet}
@@ -264,12 +263,12 @@ public final class SetFactory
 	}
 
 	/**
-	 * Factory method for create new {@link TreeSet} and will be returned as {@link Set}.
+	 * Factory method for create new {@link TreeSet} and will be returned as {@link SortedSet}.
 	 *
 	 * @param <T>
 	 *            the generic type of the elements
 	 * @param comparator
-	 *            the comparator
+	 *            the comparator, or null for the natural ordering of the elements
 	 * @param elements
 	 *            the elements to add in the new {@link TreeSet}
 	 * @return the new {@link SortedSet}
@@ -277,12 +276,11 @@ public final class SetFactory
 	@SafeVarargs
 	public static <T> SortedSet<T> newTreeSet(final Comparator<T> comparator, final T... elements)
 	{
-		Argument.notNull(comparator, "comparator");
 		return newTreeSet(ListFactory.newArrayList(), comparator, elements);
 	}
 
 	/**
-	 * Factory method for create new {@link TreeSet} and will be returned as {@link Set}
+	 * Factory method for create new {@link TreeSet} and will be returned as {@link SortedSet}
 	 *
 	 * @param <T>
 	 *            the generic type of the elements
@@ -303,12 +301,11 @@ public final class SetFactory
 	 * @param <T>
 	 *            the generic type of the elements
 	 * @param comparator
-	 *            the comparator
+	 *            the comparator, or null for the natural ordering of the elements
 	 * @return the new {@link Supplier}
 	 */
 	public static <T> Supplier<SortedSet<T>> newTreeSetSupplier(final Comparator<T> comparator)
 	{
-		Argument.notNull(comparator, "comparator");
 		return () -> new TreeSet<>(comparator);
 	}
 

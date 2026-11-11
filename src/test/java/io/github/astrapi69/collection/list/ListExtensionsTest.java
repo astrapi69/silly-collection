@@ -54,6 +54,7 @@ import org.junit.jupiter.params.provider.NullAndEmptySource;
 import org.meanbean.test.BeanTester;
 
 import io.github.astrapi69.collection.modification.ModifiedCollections;
+import io.github.astrapi69.collection.test.Elements;
 import io.github.astrapi69.comparator.factory.ComparatorFactory;
 import io.github.astrapi69.test.object.Person;
 import io.github.astrapi69.test.object.enumeration.Gender;
@@ -67,20 +68,6 @@ public class ListExtensionsTest
 {
 
 	/**
-	 * The elements of a column of a table, separated by a space
-	 *
-	 * @param column
-	 *            the column, empty for no elements
-	 * @return the elements in a new {@link ArrayList}, which the test may change
-	 */
-	private static List<String> elements(final String column)
-	{
-		return column.isEmpty()
-			? new ArrayList<>()
-			: Arrays.stream(column.split(" ")).collect(Collectors.toCollection(ArrayList::new));
-	}
-
-	/**
 	 * The numbers of a column of a table, separated by a space
 	 *
 	 * @param column
@@ -89,7 +76,7 @@ public class ListExtensionsTest
 	 */
 	private static List<Integer> numbers(final String column)
 	{
-		return elements(column).stream().map(Integer::valueOf)
+		return Elements.modifiableList(column).stream().map(Integer::valueOf)
 			.collect(Collectors.toCollection(ArrayList::new));
 	}
 
@@ -160,14 +147,14 @@ public class ListExtensionsTest
 	public void testGetFirstAndGetLast(final String description, final String elements,
 		final String first, final String last)
 	{
-		final List<String> list = elements(elements);
+		final List<String> list = Elements.modifiableList(elements);
 		assertEquals(first, ListExtensions.getFirst(list), "getFirst");
 		assertEquals(last, ListExtensions.getLast(list), "getLast");
 		assertEquals(Optional.ofNullable(first), ListExtensions.getFirstElement(list),
 			"getFirstElement");
 		assertEquals(Optional.ofNullable(last), ListExtensions.getLastElement(list),
 			"getLastElement");
-		assertEquals(elements(elements), list, "the list changed");
+		assertEquals(Elements.modifiableList(elements), list, "the list changed");
 	}
 
 	/**
@@ -194,24 +181,24 @@ public class ListExtensionsTest
 	public void testRemoveFirstAndRemoveLast(final String description, final String elements,
 		final String first, final String last)
 	{
-		final List<String> given = elements(elements);
+		final List<String> given = Elements.modifiableList(elements);
 		final List<String> withoutFirst = given.isEmpty()
 			? List.of()
 			: given.subList(1, given.size());
 		final List<String> withoutLast = given.isEmpty()
 			? List.of()
 			: given.subList(0, given.size() - 1);
-		List<String> list = elements(elements);
+		List<String> list = Elements.modifiableList(elements);
 		assertEquals(first, ListExtensions.removeFirst(list), "removeFirst");
 		assertEquals(withoutFirst, list, "the list after removeFirst");
-		list = elements(elements);
+		list = Elements.modifiableList(elements);
 		assertEquals(Optional.ofNullable(first), ListExtensions.removeFirstElement(list),
 			"removeFirstElement");
 		assertEquals(withoutFirst, list, "the list after removeFirstElement");
-		list = elements(elements);
+		list = Elements.modifiableList(elements);
 		assertEquals(last, ListExtensions.removeLast(list), "removeLast");
 		assertEquals(withoutLast, list, "the list after removeLast");
-		list = elements(elements);
+		list = Elements.modifiableList(elements);
 		assertEquals(Optional.ofNullable(last), ListExtensions.removeLastElement(list),
 			"removeLastElement");
 		assertEquals(withoutLast, list, "the list after removeLastElement");
@@ -277,6 +264,12 @@ public class ListExtensionsTest
 				null),
 			new EndCall("removeLast of null: null (#126)", none, ListExtensions::removeLast, null,
 				null),
+			new EndCall("isFirst of null and x: false (#143)", none,
+				list -> ListExtensions.isFirst(list, "x"), false, null),
+			new EndCall("isFirst of a (List.of) and null: false (#143)", () -> List.of("a"),
+				list -> ListExtensions.isFirst(list, null), false, List.of("a")),
+			new EndCall("isFirst of null, a and null: true", ListExtensionsTest::nullAndA,
+				list -> ListExtensions.isFirst(list, null), true, Arrays.asList(null, "a")),
 			new EndCall("isLast of null and x: false (#126)", none,
 				list -> ListExtensions.isLast(list, "x"), false, null),
 			new EndCall("getFirst of null, a: null (#126)", ListExtensionsTest::nullAndA,
@@ -316,8 +309,8 @@ public class ListExtensionsTest
 	 * Test for the methods {@link ListExtensions#getFirst(List)},
 	 * {@link ListExtensions#getLast(List)}, {@link ListExtensions#removeFirst(List)},
 	 * {@link ListExtensions#removeLast(List)}, their {@link Optional} variants and
-	 * {@link ListExtensions#isLast(List, Object)} with a null list or a list that holds null: what
-	 * they return, and the list afterwards
+	 * {@link ListExtensions#isFirst(List, Object)} and {@link ListExtensions#isLast(List, Object)}
+	 * with a null list or a list that holds null: what they return, and the list afterwards
 	 *
 	 * @param endCall
 	 *            the list, the call, what it returns and the list afterwards
@@ -424,12 +417,13 @@ public class ListExtensionsTest
 			"no elements: a new empty list | ''" }, delimiter = '|')
 	public void testClone(final String description, final String elements)
 	{
-		final List<String> list = elements(elements);
+		final List<String> list = Elements.modifiableList(elements);
 		final List<String> actual = ListExtensions.clone(list);
 		assertEquals(list, actual);
 		assertNotSame(list, actual);
 		actual.add("Gustav");
-		assertEquals(elements(elements), list, "the given list changed with its clone");
+		assertEquals(Elements.modifiableList(elements), list,
+			"the given list changed with its clone");
 	}
 
 	/**
@@ -456,8 +450,8 @@ public class ListExtensionsTest
 	public void testContainAtLeastOneObject(final String description, final String toSearch,
 		final String search, final boolean expected)
 	{
-		assertEquals(expected,
-			ListExtensions.containAtLeastOneObject(elements(toSearch), elements(search)));
+		assertEquals(expected, ListExtensions.containAtLeastOneObject(
+			Elements.modifiableList(toSearch), Elements.modifiableList(search)));
 	}
 
 	/**
@@ -614,10 +608,10 @@ public class ListExtensionsTest
 	public void testGetModifiedCollections(final String description, final String previous,
 		final String next, final String added, final String removed)
 	{
-		final ModifiedCollections<String> actual = ListExtensions
-			.getModifiedCollections(elements(previous), elements(next));
-		assertEquals(elements(added), actual.getAddedElements());
-		assertEquals(elements(removed), actual.getRemovedElements());
+		final ModifiedCollections<String> actual = ListExtensions.getModifiedCollections(
+			Elements.modifiableList(previous), Elements.modifiableList(next));
+		assertEquals(Elements.modifiableList(added), actual.getAddedElements());
+		assertEquals(Elements.modifiableList(removed), actual.getRemovedElements());
 	}
 
 	/**
@@ -652,7 +646,7 @@ public class ListExtensionsTest
 	public void testNeighbours(final String description, final String elements,
 		final String element, final String next, final String previous)
 	{
-		final List<String> list = elements(elements);
+		final List<String> list = Elements.modifiableList(elements);
 		assertEquals(next != null, ListExtensions.hasNext(list, element), "hasNext");
 		assertEquals(previous != null, ListExtensions.hasPrevious(list, element), "hasPrevious");
 		assertEquals(Optional.ofNullable(next), ListExtensions.getNextElement(list, element),
@@ -683,13 +677,13 @@ public class ListExtensionsTest
 	public void testGetSameElementsFromLists(final String description, final String toSearch,
 		final String search, final String expected)
 	{
-		final List<String> first = elements(toSearch);
-		final List<String> second = elements(search);
+		final List<String> first = Elements.modifiableList(toSearch);
+		final List<String> second = Elements.modifiableList(search);
 		final List<String> actual = ListExtensions.getSameElementsFromLists(first, second);
-		assertEquals(elements(expected), actual);
+		assertEquals(Elements.modifiableList(expected), actual);
 		assertNotSame(first, actual);
-		assertEquals(elements(expected), first, "the first list, after retainAll");
-		assertEquals(elements(search), second, "the second list changed");
+		assertEquals(Elements.modifiableList(expected), first, "the first list, after retainAll");
+		assertEquals(Elements.modifiableList(search), second, "the second list changed");
 	}
 
 	/**
@@ -793,7 +787,7 @@ public class ListExtensionsTest
 	public void testIsFirstAndIsLast(final String description, final String elements,
 		final String element, final boolean first, final boolean last)
 	{
-		final List<String> list = elements(elements);
+		final List<String> list = Elements.modifiableList(elements);
 		assertEquals(first, ListExtensions.isFirst(list, element), "isFirst");
 		assertEquals(last, ListExtensions.isLast(list, element), "isLast");
 	}
@@ -826,7 +820,7 @@ public class ListExtensionsTest
 	public void testIsAfterAndIsBefore(final String description, final String element,
 		final String elementToCheck, final boolean after, final boolean before)
 	{
-		final List<String> list = elements("Content Donate Diagnostic License Info");
+		final List<String> list = Elements.modifiableList("Content Donate Diagnostic License Info");
 		assertEquals(after, ListExtensions.isAfter(list, element, elementToCheck), "isAfter");
 		assertEquals(before, ListExtensions.isBefore(list, element, elementToCheck), "isBefore");
 	}
@@ -852,7 +846,7 @@ public class ListExtensionsTest
 	public void testIsAfterAndIsBeforeWithNull(final String description, final String elements,
 		final String element, final String elementToCheck)
 	{
-		final List<String> list = elements == null ? null : elements(elements);
+		final List<String> list = elements == null ? null : Elements.modifiableList(elements);
 		assertThrows(NullPointerException.class,
 			() -> ListExtensions.isAfter(list, element, elementToCheck), "isAfter");
 		assertThrows(NullPointerException.class,
@@ -954,7 +948,9 @@ public class ListExtensionsTest
 			"null: null, as before #62 | null" }, delimiter = '|', nullValues = "null")
 	public void testToArray(final String description, final String elements)
 	{
-		final String[] given = elements == null ? null : elements(elements).toArray(new String[0]);
+		final String[] given = elements == null
+			? null
+			: Elements.modifiableList(elements).toArray(new String[0]);
 		final String[] actual = ListExtensions.toArray(given);
 		assertArrayEquals(given, actual);
 		if (given != null)
@@ -984,7 +980,7 @@ public class ListExtensionsTest
 	public void testToIndexMap(final String description, final String elements,
 		final boolean numbers)
 	{
-		final List<?> list = numbers ? numbers(elements) : elements(elements);
+		final List<?> list = numbers ? numbers(elements) : Elements.modifiableList(elements);
 		final Map<Integer, ?> actual = ListExtensions.toIndexMap(list);
 		assertEquals(IntStream.range(0, list.size()).boxed().toList(),
 			new ArrayList<>(actual.keySet()));
@@ -992,9 +988,47 @@ public class ListExtensionsTest
 	}
 
 	/**
+	 * Test the method {@link ListExtensions#toIndexMap(List)}: the outcome for no list, an empty
+	 * list and a list with a null element, as the map or as the exception, its class and its
+	 * message
+	 *
+	 * @param description
+	 *            the name of the case
+	 * @param elements
+	 *            the elements of the list, separated by a space, "none" for no list at all, a
+	 *            "null" element is null
+	 * @param outcome
+	 *            the expected outcome
+	 */
+	@ParameterizedTest(name = "{0}", quoteTextArguments = false)
+	@CsvSource(value = {
+			"no list: refused | none | IllegalArgumentException: Given argument 'list' may not be null.",
+			"an empty list: the empty map | '' | {}", "one element a | a | {0=a}",
+			"a and a null element | a null | {0=a, 1=null}" }, delimiter = '|')
+	public void testToIndexMapOfNoListAndOfAnEmptyList(final String description,
+		final String elements, final String outcome)
+	{
+		final List<String> list = "none".equals(elements)
+			? null
+			: Elements.modifiableList(elements).stream()
+				.map(element -> "null".equals(element) ? null : element)
+				.collect(Collectors.toCollection(ArrayList::new));
+		String actual;
+		try
+		{
+			actual = ListExtensions.toIndexMap(list).toString();
+		}
+		catch (final RuntimeException e)
+		{
+			actual = e.getClass().getSimpleName() + ": " + e.getMessage();
+		}
+		assertEquals(outcome, actual);
+	}
+
+	/**
 	 * Test method for {@link ListExtensions#rearrange(List, Object, int)}: the list with the
-	 * element at the given index; unchanged if the element is there already, if the index is the
-	 * size of the list, or if the list does not hold the element. The given list does not change
+	 * element at the given index, or at the end if the index is above the last one; unchanged if
+	 * the element is there already or if the list does not hold it. The given list does not change
 	 *
 	 * @param description
 	 *            the name of the case
@@ -1018,9 +1052,10 @@ public class ListExtensionsTest
 	public void testRearrange(final String description, final String elements, final String element,
 		final int index, final String expected)
 	{
-		final List<String> list = elements(elements);
-		assertEquals(elements(expected), ListExtensions.rearrange(list, element, index));
-		assertEquals(elements(elements), list, "the given list changed");
+		final List<String> list = Elements.modifiableList(elements);
+		assertEquals(Elements.modifiableList(expected),
+			ListExtensions.rearrange(list, element, index));
+		assertEquals(Elements.modifiableList(elements), list, "the given list changed");
 	}
 
 	/**
@@ -1059,10 +1094,88 @@ public class ListExtensionsTest
 		final int index, final String expected, final boolean unmodifiable)
 	{
 		final List<String> list = unmodifiable
-			? Collections.unmodifiableList(elements(elements))
-			: elements(elements);
+			? Collections.unmodifiableList(Elements.modifiableList(elements))
+			: Elements.modifiableList(elements);
 		ListExtensions.relocate(list, element, index);
-		assertEquals(elements(expected), list);
+		assertEquals(Elements.modifiableList(expected), list);
+	}
+
+	/**
+	 * Test method for {@link ListExtensions#rearrange(List, Object, int)} and
+	 * {@link ListExtensions#relocate(List, Object, int)} with the same indexes on the list a, b, c:
+	 * the outcome of each, as the elements separated by a space or as "throws:" and the elements
+	 * the list holds afterwards, and whether rearrange returns the given list itself
+	 *
+	 * @param description
+	 *            the name of the case
+	 * @param element
+	 *            the element to move
+	 * @param index
+	 *            the index to move it to
+	 * @param rearranged
+	 *            the outcome of rearrange
+	 * @param same
+	 *            true if rearrange returns the given list itself
+	 * @param relocated
+	 *            the outcome of relocate
+	 */
+	@ParameterizedTest(name = "{0}", quoteTextArguments = false)
+	@CsvSource(value = { "a to -1 | a | -1 | throws | false | throws:a b c",
+			"a to 0, its index | a | 0 | a b c | true | a b c",
+			"a to 1 | a | 1 | b a c | false | b a c",
+			"a to 2, the last index | a | 2 | b c a | false | b c a",
+			"a to 3, the size | a | 3 | b c a | false | b c a",
+			"a to 4, above the size | a | 4 | b c a | false | b c a",
+			"c to -1, the last element | c | -1 | throws | false | throws:a b c",
+			"c to 2, its index, the last | c | 2 | a b c | true | a b c",
+			"c to 3, the size, the last element | c | 3 | a b c | true | a b c",
+			"c to 4, above the size, the last element | c | 4 | a b c | true | a b c",
+			"x, not in the list, to -1 | x | -1 | a b c | true | a b c",
+			"x, not in the list, to 4 | x | 4 | a b c | true | a b c" }, delimiter = '|')
+	public void testRearrangeAndRelocateAtTheEnds(final String description, final String element,
+		final int index, final String rearranged, final boolean same, final String relocated)
+	{
+		final List<String> list = Elements.modifiableList("a b c");
+		if ("throws".equals(rearranged))
+		{
+			assertThrows(IndexOutOfBoundsException.class,
+				() -> ListExtensions.rearrange(list, element, index));
+		}
+		else
+		{
+			final List<String> result = ListExtensions.rearrange(list, element, index);
+			assertEquals(Elements.modifiableList(rearranged), result);
+			assertEquals(same, result == list, "rearrange returns the given list itself");
+		}
+		assertEquals(Elements.modifiableList("a b c"), list, "rearrange changed the given list");
+		final List<String> relocatedList = Elements.modifiableList("a b c");
+		final boolean throwing = relocated.startsWith("throws:");
+		final String relocatedElements = throwing
+			? relocated.substring("throws:".length())
+			: relocated;
+		if (throwing)
+		{
+			assertThrows(IndexOutOfBoundsException.class,
+				() -> ListExtensions.relocate(relocatedList, element, index));
+		}
+		else
+		{
+			ListExtensions.relocate(relocatedList, element, index);
+		}
+		assertEquals(Elements.modifiableList(relocatedElements), relocatedList,
+			"the list after relocate");
+	}
+
+	/**
+	 * Test method for {@link ListExtensions#relocate(List, Object, int)}: the last element of an
+	 * unmodifiable list to the size, where nothing moves
+	 */
+	@Test
+	public void testRelocateTheLastElementToTheSizeOfAnUnmodifiableList()
+	{
+		final List<String> list = Collections.unmodifiableList(Elements.modifiableList("a b c"));
+		ListExtensions.relocate(list, "c", 3);
+		assertEquals(Elements.modifiableList("a b c"), list);
 	}
 
 	/**
@@ -1087,9 +1200,10 @@ public class ListExtensionsTest
 	public void testRemoveLastValues(final String description, final String elements,
 		final int remove, final String expected)
 	{
-		final List<String> list = elements(elements);
-		assertEquals(elements(expected), ListExtensions.removeLastValues(list, remove));
-		assertEquals(elements(elements), list, "the given list changed");
+		final List<String> list = Elements.modifiableList(elements);
+		assertEquals(Elements.modifiableList(expected),
+			ListExtensions.removeLastValues(list, remove));
+		assertEquals(Elements.modifiableList(elements), list, "the given list changed");
 	}
 
 	/**
@@ -1110,9 +1224,35 @@ public class ListExtensionsTest
 	public void testRemoveLastValuesWithMoreThanTheListHolds(final String description,
 		final String elements, final int remove)
 	{
-		final List<String> list = elements(elements);
+		final List<String> list = Elements.modifiableList(elements);
 		assertThrows(IllegalArgumentException.class,
 			() -> ListExtensions.removeLastValues(list, remove));
+	}
+
+	/**
+	 * Test method for {@link ListExtensions#removeLastValues(List, int)} with more values to remove
+	 * than the list holds: the message names the size and the number to remove, and does not say
+	 * that a list is returned, as the method throws (#145)
+	 *
+	 * @param description
+	 *            the name of the case
+	 * @param elements
+	 *            the elements of the list, separated by a space
+	 * @param remove
+	 *            the number of values to remove
+	 */
+	@ParameterizedTest(name = "{0}", quoteTextArguments = false)
+	@CsvSource(value = { "7 of six elements | Anton Caesar Dora Emil Leonidas Berta | 7",
+			"1 of an empty list | '' | 1" }, delimiter = '|')
+	public void testRemoveLastValuesMessage(final String description, final String elements,
+		final int remove)
+	{
+		final List<String> list = Elements.modifiableList(elements);
+		final String message = assertThrows(IllegalArgumentException.class,
+			() -> ListExtensions.removeLastValues(list, remove)).getMessage();
+		assertTrue(message.contains("Size from ArrayList:" + list.size() + "\n"), message);
+		assertTrue(message.contains("Elements to be removed:" + remove), message);
+		assertTrue(message.endsWith("Elements to be removed:" + remove), message);
 	}
 
 	/**
@@ -1133,11 +1273,11 @@ public class ListExtensionsTest
 	public void testRevertOrder(final String description, final String elements,
 		final String expected)
 	{
-		final List<String> list = elements(elements);
+		final List<String> list = Elements.modifiableList(elements);
 		final List<String> actual = ListExtensions.revertOrder(list);
-		assertEquals(elements(expected), actual);
+		assertEquals(Elements.modifiableList(expected), actual);
 		assertNotSame(list, actual);
-		assertEquals(elements(elements), list, "the given list changed");
+		assertEquals(Elements.modifiableList(elements), list, "the given list changed");
 	}
 
 	/**
@@ -1169,12 +1309,12 @@ public class ListExtensionsTest
 	public void testShuffle(final String description, final String source, final String indexes,
 		final String moved, final String rest)
 	{
-		final List<String> from = elements(source);
+		final List<String> from = Elements.modifiableList(source);
 		final List<String> destination = new ArrayList<>();
 		final int[] selected = numbers(indexes).stream().mapToInt(Integer::intValue).toArray();
 		ListExtensions.shuffle(from, destination, selected);
-		assertEquals(elements(rest), from, "the source");
-		assertEquals(elements(moved), destination, "the destination");
+		assertEquals(Elements.modifiableList(rest), from, "the source");
+		assertEquals(Elements.modifiableList(moved), destination, "the destination");
 		assertArrayEquals(numbers(indexes).stream().mapToInt(Integer::intValue).toArray(), selected,
 			"the given indexes");
 	}
@@ -1202,13 +1342,13 @@ public class ListExtensionsTest
 	public void testShuffleWithAnIndexOutOfRange(final String description, final String source,
 		final String indexes, final String moved, final String rest)
 	{
-		final List<String> from = elements(source);
+		final List<String> from = Elements.modifiableList(source);
 		final List<String> destination = new ArrayList<>();
 		final int[] selected = numbers(indexes).stream().mapToInt(Integer::intValue).toArray();
 		assertThrows(IndexOutOfBoundsException.class,
 			() -> ListExtensions.shuffle(from, destination, selected));
-		assertEquals(elements(rest), from, "the source");
-		assertEquals(elements(moved), destination, "the destination");
+		assertEquals(Elements.modifiableList(rest), from, "the source");
+		assertEquals(Elements.modifiableList(moved), destination, "the destination");
 	}
 
 	/**
@@ -1325,6 +1465,48 @@ public class ListExtensionsTest
 	}
 
 	/**
+	 * Test the method {@link ListExtensions#splitToParts(java.util.Collection, int)}: the outcome
+	 * for sizes below 1 and for no elements, as the parts or as the exception, its class and its
+	 * message
+	 *
+	 * @param description
+	 *            the name of the case
+	 * @param count
+	 *            the number of elements, 1 to count
+	 * @param size
+	 *            the size of the parts
+	 * @param outcome
+	 *            the expected outcome
+	 */
+	@ParameterizedTest(name = "{0}", quoteTextArguments = false)
+	@CsvSource(value = {
+			"5 elements in parts of -2 | 5 | -2 | IllegalArgumentException: The size must be at least 1, but is -2",
+			"3 elements in parts of -1 | 3 | -1 | IllegalArgumentException: The size must be at least 1, but is -1",
+			"3 elements in parts of 0 | 3 | 0 | IllegalArgumentException: The size must be at least 1, but is 0",
+			"3 elements in parts of 1 | 3 | 1 | [[1], [2], [3]]",
+			"3 elements in parts of 3, the length | 3 | 3 | [[1, 2, 3]]",
+			"3 elements in parts of 4, above the length | 3 | 4 | [[1, 2, 3]]",
+			"no elements in parts of -1 | 0 | -1 | IllegalArgumentException: The size must be at least 1, but is -1",
+			"no elements in parts of 0 | 0 | 0 | IllegalArgumentException: The size must be at least 1, but is 0",
+			"no elements in parts of 2 | 0 | 2 | []" }, delimiter = '|')
+	public void testSplitToPartsOfSizeBelowOneAndOfNoElements(final String description,
+		final int count, final int size, final String outcome)
+	{
+		final List<Integer> list = IntStream.rangeClosed(1, count).boxed()
+			.collect(Collectors.toCollection(ArrayList::new));
+		String actual;
+		try
+		{
+			actual = ListExtensions.splitToParts(list, size).toString();
+		}
+		catch (final RuntimeException e)
+		{
+			actual = e.getClass().getSimpleName() + ": " + e.getMessage();
+		}
+		assertEquals(outcome, actual);
+	}
+
+	/**
 	 * Test the methods {@link ListExtensions#toList(java.util.Enumeration)} and
 	 * {@link ListExtensions#toList(Set)}: a list of all elements of an enumeration of the given
 	 * elements in their order, and a list of all elements of a set of them in the iteration order
@@ -1342,7 +1524,7 @@ public class ListExtensionsTest
 			"no elements: an empty list | ''" }, delimiter = '|')
 	public void testToList(final String description, final String elements)
 	{
-		final List<String> given = elements(elements);
+		final List<String> given = Elements.modifiableList(elements);
 		assertEquals(given, ListExtensions.toList(Collections.enumeration(given)),
 			"toList(Enumeration)");
 		final Set<String> set = new LinkedHashSet<>(given);
@@ -1363,7 +1545,7 @@ public class ListExtensionsTest
 			"no elements: an empty Object[] | ''" }, delimiter = '|')
 	public void testToObjectArray(final String description, final String elements)
 	{
-		final String[] given = elements(elements).toArray(new String[0]);
+		final String[] given = Elements.modifiableList(elements).toArray(new String[0]);
 		final Object[] actual = ListExtensions.toObjectArray(given);
 		assertEquals(Object[].class, actual.getClass());
 		assertArrayEquals(given, actual);
@@ -1446,8 +1628,8 @@ public class ListExtensionsTest
 	public void testGetIndexToInsertWithComparator(final String description, final String elements,
 		final String element, final int expected)
 	{
-		assertEquals(expected, ListExtensions.getIndexToInsert(elements(elements), element,
-			String.CASE_INSENSITIVE_ORDER));
+		assertEquals(expected, ListExtensions.getIndexToInsert(Elements.modifiableList(elements),
+			element, String.CASE_INSENSITIVE_ORDER));
 	}
 
 	/**

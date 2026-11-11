@@ -28,9 +28,11 @@ import static org.junit.jupiter.api.Assertions.assertEquals;
 
 import java.util.ArrayList;
 import java.util.Arrays;
+import java.util.Iterator;
 import java.util.LinkedHashMap;
 import java.util.List;
 import java.util.Map;
+import java.util.SequencedMap;
 import java.util.function.Supplier;
 import java.util.stream.Stream;
 
@@ -217,6 +219,211 @@ public class InsertionOrderMapTest
 		map.putAll(given);
 		assertEquals(Arrays.asList(keys.split(" ")), new ArrayList<>(map.keySet()));
 		given.forEach((key, value) -> assertEquals(value, map.get(key), "the value of " + key));
+	}
+
+	/**
+	 * Test for the writes into an {@link InsertionOrderMap} (#147), on a map of 1 = value1, 2 =
+	 * value2, 3 = value3, 4 = value4 (or of a = null, b = 2), called with the key 2 (or a), or with
+	 * a key that is not there: every write moves the key to the end, as put does, also the value
+	 * the key already has: {@code put}, {@code putIfAbsent} and {@code computeIfAbsent} of a key
+	 * that is not there or is mapped to null, {@code compute}, {@code computeIfPresent},
+	 * {@code merge}, both {@code replace}; a call that stores nothing moves nothing; a function
+	 * that gives null removes the key or stores nothing; {@code replaceAll} writes every entry, so
+	 * the order stays. {@link Map.Entry#setValue(Object)} does not move the key, through the stream
+	 * or the iterator of {@code entrySet()}, {@code sequencedEntrySet()} and the views of
+	 * {@code reversed()}. {@code putFirst} and {@code putLast} follow the contract of
+	 * {@link java.util.SequencedMap}: an explicit position. A call with the prefix reversed is made
+	 * on the view {@code reversed()}, which writes like the map itself, and its keys are those of
+	 * the map
+	 *
+	 * @param description
+	 *            the name of the case
+	 * @param map
+	 *            the map: 1 to 4, or a=null b=2; with ", accessOrder" made by the constructor with
+	 *            accessOrder true
+	 * @param call
+	 *            the call: the name of the method, ToNull for a function that gives null, Same for
+	 *            the value the key has, reversed. in front for a call on the reversed view
+	 * @param key
+	 *            the key
+	 * @param result
+	 *            what the call gives, nothing for null
+	 * @param keys
+	 *            the order of the keys of the map afterwards, separated by a space
+	 * @param value
+	 *            the value of the key afterwards, nothing for null
+	 */
+	@ParameterizedTest(name = "{0}", quoteTextArguments = false)
+	@CsvSource(value = {
+			"merge, key there: value2+x, 2 moves to the end | 1 to 4 | merge | 2 | value2+x | 1 3 4 2 | value2+x",
+			"get(2), a read: 2 keeps its place | 1 to 4 | get | 2 | value2 | 1 2 3 4 | value2",
+			"getOrDefault(2), a read: 2 keeps its place | 1 to 4 | getOrDefault | 2 | value2 | 1 2 3 4 | value2",
+			"get(2) on a map made with accessOrder true: 2 moves to the end, as in the access order of LinkedHashMap | 1 to 4, accessOrder | get | 2 | value2 | 1 3 4 2 | value2",
+			"getOrDefault(2) on a map made with accessOrder true: 2 moves to the end | 1 to 4, accessOrder | getOrDefault | 2 | value2 | 1 3 4 2 | value2",
+			"merge to null, key there: null, 2 removed | 1 to 4 | mergeToNull | 2 |  | 1 3 4 | ",
+			"merge, key not there: x, 9 last | 1 to 4 | merge | 9 | x | 1 2 3 4 9 | x",
+			"compute, key there: value2!, 2 moves to the end | 1 to 4 | compute | 2 | value2! | 1 3 4 2 | value2!",
+			"compute to null, key there: null, 2 removed | 1 to 4 | computeToNull | 2 |  | 1 3 4 | ",
+			"compute, key not there: fresh, 9 last | 1 to 4 | compute | 9 | fresh | 1 2 3 4 9 | fresh",
+			"computeIfPresent, key there: value2!, 2 moves to the end | 1 to 4 | computeIfPresent | 2 | value2! | 1 3 4 2 | value2!",
+			"computeIfPresent to null, key there: null, 2 removed | 1 to 4 | computeIfPresentToNull | 2 |  | 1 3 4 | ",
+			"computeIfPresent, key not there: null, nothing | 1 to 4 | computeIfPresent | 9 |  | 1 2 3 4 | ",
+			"replace(key, value), key there: value2, 2 moves to the end | 1 to 4 | replace | 2 | value2 | 1 3 4 2 | x",
+			"replace(key, value), key not there: null, nothing | 1 to 4 | replace | 9 |  | 1 2 3 4 | ",
+			"replace(key, old, new), old is the value: true, 2 moves to the end | 1 to 4 | replaceMatching | 2 | true | 1 3 4 2 | x",
+			"replace(key, old, new), old is not the value: false, 2 stays | 1 to 4 | replaceOther | 2 | false | 1 2 3 4 | value2",
+			"replace(key, old, new), key not there: false, nothing | 1 to 4 | replaceMatching | 9 | false | 1 2 3 4 | ",
+			"put, key there, a new value: value2, 2 moves to the end | 1 to 4 | put | 2 | value2 | 1 3 4 2 | x",
+			"put, key there, the same value: value2, 2 moves to the end | 1 to 4 | putSame | 2 | value2 | 1 3 4 2 | value2",
+			"put, key not there: null, 9 last | 1 to 4 | put | 9 |  | 1 2 3 4 9 | x",
+			"compute, key there, the same value: value2, 2 moves to the end | 1 to 4 | computeSame | 2 | value2 | 1 3 4 2 | value2",
+			"computeIfPresent, key there, the same value: value2, 2 moves to the end | 1 to 4 | computeIfPresentSame | 2 | value2 | 1 3 4 2 | value2",
+			"merge, key there, the same value: value2, 2 moves to the end | 1 to 4 | mergeSame | 2 | value2 | 1 3 4 2 | value2",
+			"replace(key, value), key there, the same value: value2, 2 moves to the end | 1 to 4 | replaceSame | 2 | value2 | 1 3 4 2 | value2",
+			"replace(key, old, new), key there, the same value: true, 2 moves to the end | 1 to 4 | replaceMatchingSame | 2 | true | 1 3 4 2 | value2",
+			"computeIfAbsent to null, key not there: null, nothing stored | 1 to 4 | computeIfAbsentToNull | 9 |  | 1 2 3 4 | ",
+			"replaceAll of the value of 2 only: every key written in turn, so the order stays | 1 to 4 | replaceAllOf2 | 2 |  | 1 2 3 4 | value2!",
+			"replaceAll: every value, every key written in turn, so the order stays | 1 to 4 | replaceAll | 2 |  | 1 2 3 4 | value2!",
+			"setValue of the entry of 2 through the stream of entrySet(): 2 keeps its place | 1 to 4 | setValue | 2 |  | 1 2 3 4 | x",
+			"putIfAbsent, key there: value2, 2 stays | 1 to 4 | putIfAbsent | 2 | value2 | 1 2 3 4 | value2",
+			"putIfAbsent, key not there: null, 9 last | 1 to 4 | putIfAbsent | 9 |  | 1 2 3 4 9 | x",
+			"computeIfAbsent, key there: value2, 2 stays | 1 to 4 | computeIfAbsent | 2 | value2 | 1 2 3 4 | value2",
+			"computeIfAbsent, key not there: x, 9 last | 1 to 4 | computeIfAbsent | 9 | x | 1 2 3 4 9 | x",
+			"putIfAbsent(a, x), a mapped to null: a moves to the end | a=null b=2 | putIfAbsent | a |  | b a | x",
+			"computeIfAbsent(a, x), a mapped to null: a moves to the end | a=null b=2 | computeIfAbsent | a | x | b a | x",
+			"computeIfAbsent(a, null), a mapped to null: nothing stored | a=null b=2 | computeIfAbsentToNull | a |  | a b | ",
+			"computeIfPresent(a), a mapped to null: nothing stored | a=null b=2 | computeIfPresent | a |  | a b | ",
+			"putIfAbsent(a, null), a mapped to null: no value, a keeps its place | a=null b=2 | putIfAbsentNull | a |  | a b | ",
+			"putIfAbsent(b, x), b has the value 2: 2, b stays | a=null b=2 | putIfAbsent | b | 2 | a b | 2",
+			"computeIfAbsent(b, x), b has the value 2: 2, b stays | a=null b=2 | computeIfAbsent | b | 2 | a b | 2",
+			"putFirst(2): explicit position, 2 first | 1 to 4 | putFirst | 2 | value2 | 2 1 3 4 | x",
+			"putFirst(9), a new key: explicit position, 9 first | 1 to 4 | putFirst | 9 |  | 9 1 2 3 4 | x",
+			"putLast(2): explicit position, 2 last | 1 to 4 | putLast | 2 | value2 | 1 3 4 2 | x",
+			"putLast(9), a new key: explicit position, 9 last | 1 to 4 | putLast | 9 |  | 1 2 3 4 9 | x",
+			"setValue of the entry of 2 through the iterator of entrySet(): 2 keeps its place | 1 to 4 | setValueIterator | 2 |  | 1 2 3 4 | x",
+			"setValue of the entry of 2 through sequencedEntrySet(): 2 keeps its place | 1 to 4 | setValueSequenced | 2 |  | 1 2 3 4 | x",
+			"keySet().remove(2), then put(2): 2 last | 1 to 4 | keySetRemove | 2 |  | 1 3 4 2 | x",
+			"reversed().put(2): as put, 2 at the end of the map | 1 to 4 | reversed.put | 2 | value2 | 1 3 4 2 | x",
+			"reversed().put(2), the same value: as put, 2 at the end of the map | 1 to 4 | reversed.putSame | 2 | value2 | 1 3 4 2 | value2",
+			"reversed().putIfAbsent(2), a key with a value: nothing stored | 1 to 4 | reversed.putIfAbsent | 2 | value2 | 1 2 3 4 | value2",
+			"reversed().putIfAbsent(9), a new key: 9 last | 1 to 4 | reversed.putIfAbsent | 9 |  | 1 2 3 4 9 | x",
+			"reversed().putIfAbsent(a), a mapped to null: a moves to the end | a=null b=2 | reversed.putIfAbsent | a |  | b a | x",
+			"reversed().compute(2): as compute, 2 at the end of the map | 1 to 4 | reversed.compute | 2 | value2! | 1 3 4 2 | value2!",
+			"reversed().compute to null, 2: removed | 1 to 4 | reversed.computeToNull | 2 |  | 1 3 4 | ",
+			"reversed().computeIfAbsent(2), a key with a value: nothing stored | 1 to 4 | reversed.computeIfAbsent | 2 | value2 | 1 2 3 4 | value2",
+			"reversed().computeIfAbsent(a), a mapped to null: a moves to the end | a=null b=2 | reversed.computeIfAbsent | a | x | b a | x",
+			"reversed().computeIfPresent(2): as computeIfPresent, 2 at the end of the map | 1 to 4 | reversed.computeIfPresent | 2 | value2! | 1 3 4 2 | value2!",
+			"reversed().computeIfPresent(9), a key that is not there: nothing | 1 to 4 | reversed.computeIfPresent | 9 |  | 1 2 3 4 | ",
+			"reversed().merge(2): as merge, 2 at the end of the map | 1 to 4 | reversed.merge | 2 | value2+x | 1 3 4 2 | value2+x",
+			"reversed().merge to null, 2: removed | 1 to 4 | reversed.mergeToNull | 2 |  | 1 3 4 | ",
+			"reversed().replace(2, value): as replace, 2 at the end of the map | 1 to 4 | reversed.replace | 2 | value2 | 1 3 4 2 | x",
+			"reversed().replace(2, old, new), old is the value: 2 at the end of the map | 1 to 4 | reversed.replaceMatching | 2 | true | 1 3 4 2 | x",
+			"reversed().replace(2, old, new), old is not the value: nothing stored | 1 to 4 | reversed.replaceOther | 2 | false | 1 2 3 4 | value2",
+			"reversed().replaceAll: every key written in turn, so the order stays | 1 to 4 | reversed.replaceAll | 2 |  | 1 2 3 4 | value2!",
+			"reversed().replaceAll of the value of 2 only: the order stays | 1 to 4 | reversed.replaceAllOf2 | 2 |  | 1 2 3 4 | value2!",
+			"reversed().putFirst(2): explicit position in the view, 2 last of the map | 1 to 4 | reversed.putFirst | 2 | value2 | 1 3 4 2 | x",
+			"reversed().putLast(2): explicit position in the view, 2 first of the map | 1 to 4 | reversed.putLast | 2 | value2 | 2 1 3 4 | x",
+			"reversed().entrySet(), setValue of the entry of 2 through the stream: 2 keeps its place | 1 to 4 | reversed.setValue | 2 |  | 1 2 3 4 | x",
+			"reversed().entrySet(), setValue of the entry of 2 through the iterator: 2 keeps its place | 1 to 4 | reversed.setValueIterator | 2 |  | 1 2 3 4 | x",
+			"reversed().sequencedEntrySet(), setValue of the entry of 2: 2 keeps its place | 1 to 4 | reversed.setValueSequenced | 2 |  | 1 2 3 4 | x" }, delimiter = '|')
+	public void testWrites(final String description, final String map, final String call,
+		final String key, final String result, final String keys, final String value)
+	{
+		final InsertionOrderMap<String, String> insertionOrderMap = map.endsWith(", accessOrder")
+			? new InsertionOrderMap<>(16, 0.75f, true)
+			: new InsertionOrderMap<>();
+		if ("a=null b=2".equals(map))
+		{
+			insertionOrderMap.put("a", null);
+			insertionOrderMap.put("b", "2");
+		}
+		else
+		{
+			oneToFour(insertionOrderMap);
+		}
+		final boolean reversed = call.startsWith("reversed.");
+		final SequencedMap<String, String> target = reversed
+			? insertionOrderMap.reversed()
+			: insertionOrderMap;
+		final Object actual = switch (reversed ? call.substring("reversed.".length()) : call)
+		{
+			case "merge" -> target.merge(key, "x", (old, given) -> old + "+" + given);
+			case "mergeToNull" -> target.merge(key, "x", (old, given) -> null);
+			case "mergeSame" -> target.merge(key, "x", (old, given) -> old);
+			case "compute" -> target.compute(key, (k, v) -> v == null ? "fresh" : v + "!");
+			case "computeToNull" -> target.compute(key, (k, v) -> null);
+			case "computeSame" -> target.compute(key, (k, v) -> v);
+			case "computeIfPresent" -> target.computeIfPresent(key, (k, v) -> v + "!");
+			case "computeIfPresentToNull" -> target.computeIfPresent(key, (k, v) -> null);
+			case "computeIfPresentSame" -> target.computeIfPresent(key, (k, v) -> v);
+			case "replace" -> target.replace(key, "x");
+			case "replaceSame" -> target.replace(key, "value" + key);
+			case "replaceMatching" -> target.replace(key, "value" + key, "x");
+			case "replaceMatchingSame" -> target.replace(key, "value" + key, "value" + key);
+			case "replaceOther" -> target.replace(key, "other", "x");
+			case "put" -> target.put(key, "x");
+			case "putSame" -> target.put(key, "value" + key);
+			case "putIfAbsent" -> target.putIfAbsent(key, "x");
+			case "putIfAbsentNull" -> target.putIfAbsent(key, null);
+			case "computeIfAbsent" -> target.computeIfAbsent(key, k -> "x");
+			case "computeIfAbsentToNull" -> target.computeIfAbsent(key, k -> null);
+			case "get" -> target.get(key);
+			case "getOrDefault" -> target.getOrDefault(key, "none");
+			case "putFirst" -> target.putFirst(key, "x");
+			case "putLast" -> target.putLast(key, "x");
+			case "replaceAll" ->
+			{
+				target.replaceAll((k, v) -> v + "!");
+				yield null;
+			}
+			case "replaceAllOf2" ->
+			{
+				target.replaceAll((k, v) -> "2".equals(k) ? v + "!" : v);
+				yield null;
+			}
+			case "setValue" ->
+			{
+				target.entrySet().stream().filter(entry -> entry.getKey().equals(key)).findFirst()
+					.orElseThrow().setValue("x");
+				yield null;
+			}
+			case "setValueIterator" ->
+			{
+				for (final Iterator<Map.Entry<String, String>> iterator = target.entrySet()
+					.iterator(); iterator.hasNext();)
+				{
+					final Map.Entry<String, String> entry = iterator.next();
+					if (entry.getKey().equals(key))
+					{
+						entry.setValue("x");
+					}
+				}
+				yield null;
+			}
+			case "setValueSequenced" ->
+			{
+				for (final Iterator<Map.Entry<String, String>> iterator = target.sequencedEntrySet()
+					.iterator(); iterator.hasNext();)
+				{
+					final Map.Entry<String, String> entry = iterator.next();
+					if (entry.getKey().equals(key))
+					{
+						entry.setValue("x");
+					}
+				}
+				yield null;
+			}
+			case "keySetRemove" ->
+			{
+				target.keySet().remove(key);
+				target.put(key, "x");
+				yield null;
+			}
+			default -> throw new IllegalArgumentException("no call " + call);
+		};
+		assertEquals(result, actual == null ? null : actual.toString());
+		assertEquals(Arrays.asList(keys.split(" ")), new ArrayList<>(insertionOrderMap.keySet()));
+		assertEquals(value, insertionOrderMap.get(key));
 	}
 
 }

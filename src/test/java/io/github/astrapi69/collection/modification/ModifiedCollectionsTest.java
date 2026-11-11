@@ -28,28 +28,17 @@ import static org.junit.jupiter.api.Assertions.assertEquals;
 import static org.junit.jupiter.api.Assertions.assertSame;
 
 import java.util.ArrayList;
-import java.util.List;
 
 import org.junit.jupiter.params.ParameterizedTest;
 import org.junit.jupiter.params.provider.CsvSource;
+
+import io.github.astrapi69.collection.test.Elements;
 
 /**
  * The unit test class for the class {@link ModifiedCollections}
  */
 public class ModifiedCollectionsTest
 {
-
-	/**
-	 * The elements of a row of a {@link CsvSource}
-	 *
-	 * @param elements
-	 *            the elements, separated by a space, may be empty
-	 * @return the elements
-	 */
-	static List<String> elements(final String elements)
-	{
-		return elements.isEmpty() ? List.of() : List.of(elements.split(" "));
-	}
 
 	/**
 	 * Test for method
@@ -80,11 +69,50 @@ public class ModifiedCollectionsTest
 		final String next, final String added, final String removed)
 	{
 		final ModifiedCollections<String> modifiedCollections = new ModifiedCollections<>();
-		final ModifiedCollections<String> result = modifiedCollections
-			.getModifiedLists(new ArrayList<>(elements(previous)), new ArrayList<>(elements(next)));
+		final ModifiedCollections<String> result = modifiedCollections.getModifiedLists(
+			new ArrayList<>(Elements.list(previous)), new ArrayList<>(Elements.list(next)));
 		assertSame(modifiedCollections, result);
-		assertEquals(elements(added), result.getAddedElements());
-		assertEquals(elements(removed), result.getRemovedElements());
+		assertEquals(Elements.list(added), result.getAddedElements());
+		assertEquals(Elements.list(removed), result.getRemovedElements());
+	}
+
+	/**
+	 * Test for method
+	 * {@link ModifiedCollections#getModifiedLists(java.util.Collection, java.util.Collection)}: two
+	 * calls on one object
+	 *
+	 * @param description
+	 *            the name of the case
+	 * @param firstPrevious
+	 *            the previous collection of the first call, the elements separated by a space
+	 * @param firstNext
+	 *            the next collection of the first call, the same way
+	 * @param secondPrevious
+	 *            the previous collection of the second call, the same way
+	 * @param secondNext
+	 *            the next collection of the second call, the same way
+	 * @param added
+	 *            the added elements after the second call, the same way
+	 * @param removed
+	 *            the removed elements after the second call, the same way
+	 */
+	@ParameterizedTest(name = "{0}", quoteTextArguments = false)
+	@CsvSource(value = { "the same call twice: the elements once | a | b | a | b | b | a",
+			"nothing changed in the second call: nothing | a | b | c | c | '' | ''",
+			"another second call: the result of the second only | a | b | c | d | d | c" }, delimiter = '|')
+	public void testGetModifiedListsTwice(final String description, final String firstPrevious,
+		final String firstNext, final String secondPrevious, final String secondNext,
+		final String added, final String removed)
+	{
+		final ModifiedCollections<String> modifiedCollections = new ModifiedCollections<>();
+		modifiedCollections.getModifiedLists(new ArrayList<>(Elements.list(firstPrevious)),
+			new ArrayList<>(Elements.list(firstNext)));
+		final ModifiedCollections<String> result = modifiedCollections.getModifiedLists(
+			new ArrayList<>(Elements.list(secondPrevious)),
+			new ArrayList<>(Elements.list(secondNext)));
+		assertSame(modifiedCollections, result);
+		assertEquals(Elements.list(added), result.getAddedElements());
+		assertEquals(Elements.list(removed), result.getRemovedElements());
 	}
 
 }

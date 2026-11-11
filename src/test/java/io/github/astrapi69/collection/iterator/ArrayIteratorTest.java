@@ -26,15 +26,20 @@ package io.github.astrapi69.collection.iterator;
 
 import static org.junit.jupiter.api.Assertions.assertArrayEquals;
 import static org.junit.jupiter.api.Assertions.assertEquals;
+import static org.junit.jupiter.api.Assertions.assertNull;
 import static org.junit.jupiter.api.Assertions.assertSame;
+import static org.junit.jupiter.api.Assertions.assertThrows;
 
 import java.util.Arrays;
+import java.util.NoSuchElementException;
 
 import org.junit.jupiter.api.Disabled;
 import org.junit.jupiter.api.Test;
 import org.junit.jupiter.params.ParameterizedTest;
 import org.junit.jupiter.params.provider.CsvSource;
 import org.meanbean.test.BeanTester;
+
+import io.github.astrapi69.collection.test.Elements;
 
 /**
  * The unit test class for the class {@link ArrayIterator}.
@@ -85,12 +90,38 @@ public class ArrayIteratorTest
 	public void testSteps(final String description, final String array, final String steps,
 		final String results, final String arrayAfterwards)
 	{
-		final String[] elements = IteratorSteps.elementsWithNull(array).toArray(new String[0]);
+		final String[] elements = Elements.listWithNull(array).toArray(new String[0]);
 		final ArrayIterator<String> iterator = new ArrayIterator<>(elements);
 		assertSame(elements, iterator.getArray());
-		assertEquals(IteratorSteps.elements(results), IteratorSteps.run(iterator, steps));
-		assertArrayEquals(IteratorSteps.elementsWithNull(arrayAfterwards).toArray(new String[0]),
-			elements, () -> "the array afterwards " + Arrays.toString(elements));
+		assertEquals(Elements.list(results), IteratorSteps.run(iterator, steps));
+		assertArrayEquals(Elements.listWithNull(arrayAfterwards).toArray(new String[0]), elements,
+			() -> "the array afterwards " + Arrays.toString(elements));
+	}
+
+	/**
+	 * Test method for {@link ArrayIterator#next()} of an iterator with no element left: a
+	 * {@link NoSuchElementException} without a message, as the iterators of the JDK (#145)
+	 *
+	 * @param description
+	 *            the name of the case
+	 * @param array
+	 *            the elements of the array, separated by a space, '' for an empty one
+	 * @param nextCalls
+	 *            how often next is called before the one that throws
+	 */
+	@ParameterizedTest(name = "{0}", quoteTextArguments = false)
+	@CsvSource(value = { "an empty array | '' | 0",
+			"foo alone, after its next | foo | 1" }, delimiter = '|')
+	public void testNextWithNoElementLeft(final String description, final String array,
+		final int nextCalls)
+	{
+		final ArrayIterator<String> iterator = new ArrayIterator<>(
+			Elements.list(array).toArray(new String[0]));
+		for (int i = 0; i < nextCalls; i++)
+		{
+			iterator.next();
+		}
+		assertNull(assertThrows(NoSuchElementException.class, iterator::next).getMessage());
 	}
 
 	/**

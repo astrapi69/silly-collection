@@ -28,6 +28,7 @@ import java.lang.reflect.Array;
 import java.util.ArrayList;
 import java.util.Arrays;
 import java.util.Collection;
+import java.util.LinkedHashMap;
 import java.util.List;
 import java.util.Optional;
 import java.util.concurrent.atomic.AtomicInteger;
@@ -62,6 +63,9 @@ public final class CollectionExtensions
 	 *            the objects for check if there are containing in the given collection
 	 * @return <code>true</code> if the given {@link Collection} contains at least one object of the
 	 *         given objects otherwise it returns <code>false</code>.
+	 * @throws NullPointerException
+	 *             if the objects are null, or if the collection is null and at least one object is
+	 *             given
 	 */
 	@SafeVarargs
 	public static <T> boolean containsAtLeastOne(Collection<T> collection, T... objects)
@@ -96,7 +100,9 @@ public final class CollectionExtensions
 	}
 
 	/**
-	 * Returns a hash code based on the contents of the collection that contains array objects.
+	 * Returns a hash code based on the contents of the collection that contains array objects: the
+	 * hash code of {@link java.util.List#hashCode()}, with {@link Arrays#hashCode(Object[])} for
+	 * each array, in the iteration order of the collection.
 	 *
 	 * @param <T>
 	 *            the generic type of the array objects
@@ -110,7 +116,7 @@ public final class CollectionExtensions
 		int hashCode = 1;
 		for (T[] arrayObject : arrayObjects)
 		{
-			hashCode = 31 * hashCode * Arrays.hashCode(arrayObject);
+			hashCode = 31 * hashCode + Arrays.hashCode(arrayObject);
 		}
 		return hashCode;
 	}
@@ -122,9 +128,10 @@ public final class CollectionExtensions
 	 * @param <T>
 	 *            the generic type
 	 * @param toIntersect
-	 *            the to intersect
-	 * @return the result of the intersection. This will be the first collection that contains the
-	 *         result.
+	 *            the collections to intersect
+	 * @return the first collection, after {@link Collection#retainAll(Collection)} with each of the
+	 *         others, so it keeps its duplicates and the caller's first collection is changed, or
+	 *         null if fewer than two collections are given
 	 */
 	@SafeVarargs
 	public static <T> Collection<T> intersection(final Collection<T>... toIntersect)
@@ -194,7 +201,8 @@ public final class CollectionExtensions
 	}
 
 	/**
-	 * Groups the given {@link Collection} to parts from the specified size.
+	 * Groups the given {@link Collection} to consecutive parts of the specified size, in the order
+	 * of the collection; the last part may be smaller.
 	 *
 	 * @param <T>
 	 *            the generic type
@@ -202,14 +210,22 @@ public final class CollectionExtensions
 	 *            the collection
 	 * @param size
 	 *            the size
-	 * @return the collection
+	 * @return the parts, in the order of the collection
+	 * @throws IllegalArgumentException
+	 *             if the size is less than 1
 	 */
 	public static <T> Collection<List<T>> partition(Collection<T> collection, int size)
 	{
+		if (size < 1)
+		{
+			throw new IllegalArgumentException("The size must be at least 1, but is " + size);
+		}
 		final AtomicInteger counter = new AtomicInteger(0);
 
 		return collection.stream()
-			.collect(Collectors.groupingBy(it -> counter.getAndIncrement() / size)).values();
+			.collect(Collectors.groupingBy(it -> counter.getAndIncrement() / size,
+				LinkedHashMap::new, Collectors.toList()))
+			.values();
 	}
 
 	/**

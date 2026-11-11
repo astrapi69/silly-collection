@@ -27,7 +27,6 @@ package io.github.astrapi69.collection.modification;
 import static org.junit.jupiter.api.Assertions.assertEquals;
 import static org.junit.jupiter.api.Assertions.assertThrows;
 
-import java.util.ArrayList;
 import java.util.List;
 
 import org.junit.jupiter.api.Test;
@@ -36,26 +35,13 @@ import org.junit.jupiter.params.provider.CsvSource;
 import org.meanbean.test.BeanTester;
 
 import io.github.astrapi69.collection.list.ListFactory;
+import io.github.astrapi69.collection.test.Elements;
 
 /**
  * The unit test class for the class {@link ModifiedState}.
  */
 public class ModifiedStateTest
 {
-
-	/**
-	 * The elements of a row of a {@link CsvSource}
-	 *
-	 * @param elements
-	 *            the elements, separated by a space, may be empty
-	 * @return the elements
-	 */
-	static List<String> elements(final String elements)
-	{
-		return elements.isEmpty()
-			? new ArrayList<>()
-			: ListFactory.newArrayList(elements.split(" "));
-	}
 
 	/**
 	 * Test for method {@link ModifiedState#isModified(java.util.Collection, java.util.Collection)}:
@@ -83,7 +69,8 @@ public class ModifiedStateTest
 	public void testIsModified(final String description, final String previous, final String next,
 		final ModifiedState expected)
 	{
-		assertEquals(expected, ModifiedState.isModified(elements(previous), elements(next)));
+		assertEquals(expected, ModifiedState.isModified(Elements.modifiableList(previous),
+			Elements.modifiableList(next)));
 	}
 
 	/**

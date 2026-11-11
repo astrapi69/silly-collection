@@ -31,6 +31,8 @@ import java.util.Collections;
 import org.junit.jupiter.params.ParameterizedTest;
 import org.junit.jupiter.params.provider.CsvSource;
 
+import io.github.astrapi69.collection.test.Elements;
+
 /**
  * The unit test class for the class {@link EnumerationIterator}.
  *
@@ -70,8 +72,8 @@ public class EnumerationIteratorTest
 		final String results)
 	{
 		final EnumerationIterator<String> iterator = new EnumerationIterator<>(
-			Collections.enumeration(IteratorSteps.elements(list)));
-		assertEquals(IteratorSteps.elements(results), IteratorSteps.run(iterator, steps));
+			Collections.enumeration(Elements.list(list)));
+		assertEquals(Elements.list(results), IteratorSteps.run(iterator, steps));
 	}
 
 }

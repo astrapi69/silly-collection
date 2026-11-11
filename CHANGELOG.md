@@ -1,6 +1,108 @@
 ## Change log
 ----------------------
 
+Version 29.2
+-------------
+
+29.2 fixes what a review of 29.1 found where the code did not do what its name, its Javadoc or the contract of the
+interface it implements promise, without a change or removal of a public signature (`InsertionOrderMap` declares seven
+methods it inherited from `LinkedHashMap`); each change that a caller can notice carries a **Note**. The tests now check the contracts of `List`, `Set`, `Map` and `Iterator` with the suites of Apache Commons
+Collections (#157), PIT runs its STRONGER mutators next to its defaults (#157), and a lost `requires transitive` fails
+the build (#134). Measured by the release gate (Temurin 25.0.5+8, the JDK `.sdkmanrc` names; the tree of
+`RELEASE-29.2`): 2029 tests in 38 test classes, 3 skipped; 1575 of 1575 lines and 680 of 682 branches covered (JaCoCo,
+floors 98% and 95%); 1315 of 1347 mutants detected, 98% (PIT 1.30.1, DEFAULTS and STRONGER, floor 95%, in the
+workflow "Mutation testing" on GitHub).
+
+CHANGED:
+
+- `InsertionOrderMap` moves a key to the end on every write, as `put` does: `merge`, `compute`, `computeIfPresent`,
+  `replace` (when it replaces), and `putIfAbsent` and `computeIfAbsent` for a key mapped to null kept its place
+  before. A call that stores nothing moves nothing, `replaceAll` writes every entry and so keeps the order, and
+  `Map.Entry.setValue` keeps the place, so that an iteration stays stable; `putFirst` and `putLast` position the key
+  as `SequencedMap` says, and a write through `reversed()` is the write of the map. The class Javadoc names every
+  write and how the class differs from `LinkedHashMap`, which does not move on a write in insertion order and moves on
+  a read in access order; a map made with `accessOrder` true by `InsertionOrderMap(int, float, boolean)` is in that
+  access order, so a read moves its key as well (#147). **Note:** callers of these methods on an `InsertionOrderMap`
+  see the new order
+- `ArrayFactory.newByteArray(int...)` returns null for null, as the other factories do, instead of an empty array; its
+  Javadoc says that each value is converted as by a cast to `byte` (#136). **Note:** a caller that relied on the empty
+  array for null gets null
+- `ArrayFactory.newSubArray` checks its range first and throws `IndexOutOfBoundsException` for a start below 0, an end
+  past the array or a start after the end, where it threw `NegativeArraySizeException` or
+  `ArrayIndexOutOfBoundsException`, and for a start past the array with an empty range, where it returned an empty
+  array; the Javadoc of `newSubArray` and `subArray` names the difference between the two (#137). **Note:** callers
+  that caught one of the old exceptions, or passed a start past the array with an empty range, notice
+- `ArrayExtensions.getNextIndexes` and `getPreviousIndexes` throw `IllegalArgumentException` for a negative count,
+  where they threw `NegativeArraySizeException`; the Javadoc of the next and previous methods says which of them wrap
+  round and that they start from the first occurrence of the element (#139). **Note:** callers that caught
+  `NegativeArraySizeException` notice
+- `ArrayExtensions.splitInChunks`, `CollectionExtensions.partition` and `ListExtensions.splitToParts` throw
+  `IllegalArgumentException` for a size below 1, where they threw `ArithmeticException`, `NegativeArraySizeException`
+  or `ArrayIndexOutOfBoundsException`, or gave parts in another order, an empty first part, all elements in one part or
+  nothing (#142). **Note:** a size below 1 throws also where 29.1 gave parts or an empty result, as for an empty input;
+  `splitInChunks` of an empty array with a chunk size above 1 gives no chunk instead of one empty chunk
+- `ListExtensions.rearrange` moves an element to the end for an index at or above the last index, where it returned the
+  list unchanged for `size()` and threw above it; `relocate` leaves the list unchanged when it throws for a negative
+  index, and moves nothing when the element is already at the target (#154). **Note:** `rearrange` to `size()` or
+  above returns a new list with the element at the end, where it returned the given list or threw
+  `IndexOutOfBoundsException`; a `relocate` that throws for a negative index no longer removes the element; relocating
+  the last element to `size()` or above no longer touches the list, so an unmodifiable list is accepted there
+- `ListExtensions.toIndexMap` of an empty list returns an empty map instead of throwing `IllegalArgumentException`
+  (#155). **Note:** only callers that caught the exception notice
+- `IndexSortedProperties.get(int)` and `getProperty(int)` give null for an index whose key is not a `String`,
+  `indexOf` skips such keys, and `PropertiesExtensions.findRedundantValues` skips entries whose key or value is not a
+  `String`, where they threw `ClassCastException` (#148). **Note:** only callers that caught the exception notice
+- `SetFactory.newTreeSet(Comparator, T...)` and `newTreeSetSupplier(Comparator)` take a null comparator as the natural
+  ordering, as `TreeSet` does, where they threw `IllegalArgumentException` (#149). **Note:** only callers that caught
+  the exception notice
+- the `IndexOutOfBoundsException` of `IndexableSet.get` comes from `Objects.checkIndex` and has its message ("Index -1
+  out of bounds for length 2"); `get` checks the index before it steps through the set (#151). **Note:** only a caller
+  that compares the message notices
+- Javadoc and messages say what the code does, in twelve places (#145); the `NoSuchElementException` of
+  `ArrayIterator.next()` has no message (`null`) instead of the empty string, and the message of
+  `ListExtensions.removeLastValues` no longer says that the same list is returned. **Note:** only callers that compare
+  one of these messages notice. The Javadoc also names what a null array gives in `ArrayExtensions` (#144), what the
+  two `intersection` methods keep (#140) and the exceptions of `MapExtensions` (#146)
+- the build compiles the main sources with javac's module lints (`exports`, `module`, `opens`, `requires-automatic`,
+  `requires-transitive-automatic`) and `-Werror`, so a lost `requires transitive` like #95 fails the build, where it
+  compiled without a warning (`-Xlint:exports` reports it as ten warnings) (#134)
+- the build no longer uses the Groovy space assignment for the buildscript repository `url`, nor the deprecated plugin
+  ID `com.github.ben-manes.versions` (now `io.github.ben-manes.versions`, same 0.67.0); the third deprecation,
+  `Configuration.setVisible` in gradle-pitest-plugin 1.19.0, stays until its next release (#135)
+- the tests check the contracts of the interfaces with the suites of the `tests` jar of commons-collections4 4.6.0
+  (`AbstractListTest`, `AbstractSetTest`, `AbstractMapTest`, `AbstractIteratorTest`, for `UniqueList`, `SortedList`,
+  `SortedUniqueList`, `InsertionOrderSet`, `IndexableSet`, `InsertionOrderMap` and `ArrayIterator`), with
+  commons-lang3 3.21.0, both for the tests only; PIT runs the mutators of its STRONGER group next to DEFAULTS, the
+  floor stays 95%; the README's Contributing section says where the rows of a parameterized test come from (#157);
+  the test classes share one helper for their columns of words (#156)
+
+REMOVED:
+
+- the Makefile targets `publish`, `central-list`, `central-upload`, `central-upload-repository` and `central-drop`,
+  which signed or called the OSSRH Staging API from the machine; a release leaves only from CI (`publish.yml`) (#133).
+  **Note:** `make publish` and `make central-*` now fail with "No rule to make target"
+
+FIXED:
+
+- `CollectionExtensions.partition` keeps the order of its parts for any number of parts; from 65538 parts on it did
+  not (#141). **Note:** only callers with 65538 parts or more notice
+- `ArrayExtensions.getNextIndexes` and `getPreviousIndexes` count from the index of the element, so a repeated element
+  no longer sends the walk back to its first index (#138). **Note:** callers with a repeated element get the right
+  indexes; with a count of 0 they give null for an element that is not in the array and throw
+  `NullPointerException` for a null array, where 29.1 gave an empty array, as their Javadoc now says (#139)
+- `ArrayExtensions.isFirst` and `ListExtensions.isFirst` return false for a null array or list, and for a null element
+  in a list that does not permit null, instead of throwing `NullPointerException`, as `isLast` does since #114 and
+  #126 (#143). **Note:** only callers that caught the `NullPointerException` notice
+- a second call of `ModifiedCollections.getModifiedLists` on the same object replaces the result of the first instead
+  of adding to it (#150). **Note:** a caller that called it twice on one object to get the sum gets the second result
+  only
+- `CollectionExtensions.hashCode` adds the hash of each array, as `List.hashCode` does, where it multiplied: the order
+  of the arrays counts now, and a null array no longer makes the hash 0 (#153). **Note:** it gives other values than
+  29.1
+- `SetEnumeration` over a set that does not permit null, or rejects an element's type, gives that element instead of
+  throwing `NullPointerException` or `ClassCastException` from the set's `contains` (#152). **Note:** only callers
+  that caught the exception notice
+
 Version 29.1
 -------------
 

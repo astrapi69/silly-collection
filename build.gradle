@@ -1,7 +1,7 @@
 buildscript {
     repositories {
         maven {
-            url projectRepositoriesMavenUrl
+            url = projectRepositoriesMavenUrl
         }
     }
 }
@@ -31,8 +31,13 @@ apply from: "gradle/apply-gradle-files.gradle"
 // 97.5 % (703 of 721 mutants killed) on 2026-11-04 (#36). The floor is that score minus about two
 // points, rounded down: a few mutants more that survive, such as those of a new method whose tests
 // are not complete yet, do not fail the run at once, a drop of more than about two points does.
-// With the 721 mutants of today it fails from 40 survivors on; 18 survive, 14 of them equivalent,
-// the other 4 point at bugs and at Javadoc that contradicts the code (#41, #43, #47).
+// With the 721 mutants of then it failed from 40 survivors on; 18 survived, 14 of them equivalent,
+// the other 4 pointed at bugs and at Javadoc that contradicted the code (#41, #43, #47).
+// Measured again with PIT's STRONGER group next to DEFAULTS (#157, gradle/mutation-testing.gradle)
+// on 2026-11-11: 1315 of 1347 mutants killed, 97.62 %. Minus two points, rounded down, the floor
+// stays 95 (the maintainer, 2026-11-11). It fails below a rounded 95, so at 100 * killed / 1347
+// below 94.5, that is from 1272 killed or fewer, 75 survivors or more; 32 survive, all argued
+// equivalent in #186.
 // Kept here, not in gradle/mutation-testing.gradle, so that the floor sits in the file a reader
 // (and awesome-well-tested's check) looks at.
 pitest {
@@ -56,6 +61,17 @@ tasks.withType(JavaCompile).configureEach { javaCompiler ->
     // options.compilerArgs << "-Xlint:deprecation"
     // uncomment the next line for build with compiler argument -Xlint:unchecked
     // options.compilerArgs << "-Xlint:unchecked"
+}
+
+// The module lints of javac on the main sources, as errors: exports reports a public signature whose type
+// belongs to a module that module-info.java requires without transitive, which is how MapFactory lost
+// silly-bean's KeyValuePair for a consumer's compiler up to 29.0 (#95); module, opens, requires-automatic and
+// requires-transitive-automatic are clean today. They look at this module's own declarations only, so a
+// dependency update does not raise them. Not -Xlint:all: it reports 90 warnings (varargs, dangling-doc-comments,
+// serial), each category its own question (#134). The tests are not compiled with it, they are no module.
+tasks.named("compileJava") {
+    options.compilerArgs += ["-Xlint:exports,module,opens,requires-automatic,requires-transitive-automatic",
+                             "-Werror"]
 }
 
 apply from: "gradle/test-results-complete.gradle"

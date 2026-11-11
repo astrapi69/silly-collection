@@ -65,7 +65,7 @@ library. The other three are for the runtime only.
 
 ## Installation
 
-Latest release on Maven Central: 29.1, for Java 25 (for Java 17: 28.3)
+Latest release on Maven Central: 29.2, for Java 25 (for Java 17: 28.3)
 
 [![Maven Central](https://img.shields.io/maven-central/v/io.github.astrapi69/silly-collection.svg?label=Maven%20Central)](https://central.sonatype.com/artifact/io.github.astrapi69/silly-collection)
 
@@ -73,7 +73,7 @@ Latest release on Maven Central: 29.1, for Java 25 (for Java 17: 28.3)
 
 ```toml
 [versions]
-silly-collection-version = "29.1"
+silly-collection-version = "29.2"
 
 [libraries]
 silly-collection = { module = "io.github.astrapi69:silly-collection", version.ref = "silly-collection-version" }
@@ -89,7 +89,7 @@ dependencies {
 
 ```groovy
 dependencies {
-    implementation "io.github.astrapi69:silly-collection:29.1"
+    implementation "io.github.astrapi69:silly-collection:29.2"
 }
 ```
 
@@ -99,7 +99,7 @@ dependencies {
 <dependency>
     <groupId>io.github.astrapi69</groupId>
     <artifactId>silly-collection</artifactId>
-    <version>29.1</version>
+    <version>29.2</version>
 </dependency>
 ```
 
@@ -247,14 +247,14 @@ The [Javadoc](https://www.javadoc.io/doc/io.github.astrapi69/silly-collection) h
 
 ## Quality
 
-As of 29.1, measured by its release gate (Temurin 25.0.5+8, the JDK `.sdkmanrc` names; the tree of
-`RELEASE-29.1`); each release takes the numbers of its own gate:
+As of 29.2, measured by its release gate (Temurin 25.0.5+8, the JDK `.sdkmanrc` names; the tree of
+`RELEASE-29.2`); each release takes the numbers of its own gate:
 
 | | |
 |---|---|
-| tests | 1356 in 27 test classes, from 108 `@Test` and 125 `@ParameterizedTest` methods (#92); 3 are skipped: two `BeanTester` tests that wait for a factory method, and a benchmark |
-| line and branch coverage (JaCoCo) | 1523 of 1523 lines, 637 of 640 branches; the build fails below 98% of the lines or 95% of the branches (`jacocoTestCoverageVerification` in `gradle/testing.gradle`) |
-| mutation score (PIT) | 972 of 983 mutants detected, 99%; the run fails below 95% (`mutationThreshold` in `build.gradle`). The 11 survivors are equivalent: ten conditions whose edge case gives the same result either way, such as `0 < elements.length` before adding no elements, and the `return true` of `UniqueList.add`, which returns what `ArrayList.add` returns, always true |
+| tests | 2029 in 38 test classes, from 117 `@Test` and 154 `@ParameterizedTest` methods (#92), the contract suites of Apache Commons Collections for `List`, `Set`, `Map` and `Iterator` among them (#157); 3 are skipped: two `BeanTester` tests that wait for a factory method, and a benchmark |
+| line and branch coverage (JaCoCo) | 1575 of 1575 lines, 680 of 682 branches; the build fails below 98% of the lines or 95% of the branches (`jacocoTestCoverageVerification` in `gradle/testing.gradle`) |
+| mutation score (PIT) | 1315 of 1347 mutants detected, 98%, with PIT's STRONGER mutators next to its defaults (#157); the run fails below 95% (`mutationThreshold` in `build.gradle`). The 32 survivors are equivalent, each argued in #186: conditions whose edge case gives the same result either way, such as `0 < elements.length` before adding no elements or `comparator != null` before a constructor that takes null as the natural ordering, a cache that is rebuilt more often, and the `return true` of `UniqueList.add`, which returns what `ArrayList.add` returns, always true |
 | reproducible | two builds of the same commit give the same bytes for all five artifacts (`scripts/check-reproducible.sh`, #99) |
 
 The CI build runs the tests and the coverage check on every pull request, and the workflow
@@ -281,7 +281,7 @@ subkey, is on keys.openpgp.org. Fetch it once, then verify the signature next to
 
 ```sh
 gpg --keyserver hkps://keys.openpgp.org --recv-keys 5B2FA6B11E298BC09287F423D8C403518C49CA75
-gpg --verify silly-collection-29.1.jar.asc silly-collection-29.1.jar
+gpg --verify silly-collection-29.2.jar.asc silly-collection-29.2.jar
 ```
 
 gpg answers `Good signature` and prints the `Primary key fingerprint`, and for a release signed by
@@ -336,8 +336,13 @@ Pull requests are welcome: fork
 [open a pull request](https://github.com/astrapi69/silly-collection/pull/new/develop) against
 `develop`. [CONTRIBUTING.md](.github/CONTRIBUTING.md) has the details.
 
-Please add tests for your change; the coverage and mutation floors above hold for it too. The
-`Makefile` runs the usual tasks:
+Please add tests for your change; the coverage and mutation floors above hold for it too. Coverage
+says that a line ran, and the mutation score says that the tests notice a change of the code that is
+there; neither says that the tests ask for what the method promises (#157). So the rows of a test
+come from the Javadoc and from the contract of the interface the class implements, not from what the
+code does: write one row per promise of each method, and one each for null, the empty input, the
+boundary, a duplicate and the order, wherever they apply. Add them as rows of the parameterized
+tables of the test class. The `Makefile` runs the usual tasks:
 
 ```shell
 make build          # build: tests, coverage check, formatting check
@@ -366,7 +371,7 @@ guidelines, `<major>.<minor>.<patch>`. Questions, bug reports and feature reques
 ## How this project is made
 
 silly-collection was written by its maintainer over many years, since 2015, before there were AI
-tools; releases 28.3, 29.0 and 29.1 were implemented mostly by AI agents, under the maintainer's review
+tools; releases 28.3, 29.0, 29.1 and 29.2 were implemented mostly by AI agents, under the maintainer's review
 and with the maintainer's decision on every change of behaviour. How AI is used in the projects of
 this profile: [AI_USAGE.md](https://github.com/astrapi69/astrapi69/blob/main/AI_USAGE.md).
 
