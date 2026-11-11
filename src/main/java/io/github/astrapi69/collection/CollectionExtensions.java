@@ -207,9 +207,15 @@ public final class CollectionExtensions
 	 * @param size
 	 *            the size
 	 * @return the parts, in the order of the collection
+	 * @throws IllegalArgumentException
+	 *             if the size is less than 1
 	 */
 	public static <T> Collection<List<T>> partition(Collection<T> collection, int size)
 	{
+		if (size < 1)
+		{
+			throw new IllegalArgumentException("The size must be at least 1, but is " + size);
+		}
 		final AtomicInteger counter = new AtomicInteger(0);
 
 		return collection.stream()

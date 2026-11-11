@@ -791,19 +791,26 @@ public final class ListExtensions
 	}
 
 	/**
-	 * Splits the given {@link Collection} to parts to the specified size and returns a list with
-	 * the parts.
+	 * Splits the given {@link Collection} to consecutive parts of the specified size, in the order
+	 * of the collection, and returns a list with the parts; the last part may be smaller. An empty
+	 * collection gives no part.
 	 *
 	 * @param <T>
 	 *            the generic type
 	 * @param collection
 	 *            The collection to split
 	 * @param size
-	 *            How to split
+	 *            the size of the parts
 	 * @return a List with the split Parts
+	 * @throws IllegalArgumentException
+	 *             if the size is less than 1
 	 */
 	public static <T> List<List<T>> splitToParts(final Collection<T> collection, final int size)
 	{
+		if (size < 1)
+		{
+			throw new IllegalArgumentException("The size must be at least 1, but is " + size);
+		}
 		final List<List<T>> returnList = ListFactory.newArrayList();
 		List<T> tmp = ListFactory.newArrayList();
 		final Iterator<T> it = collection.iterator();

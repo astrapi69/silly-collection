@@ -727,6 +727,48 @@ public class CollectionExtensionsTest
 	}
 
 	/**
+	 * Test for method {@link CollectionExtensions#partition(Collection, int)}: the outcome for
+	 * sizes below 1 and for no elements, as the parts or as the exception, its class and its
+	 * message
+	 *
+	 * @param description
+	 *            the name of the case
+	 * @param count
+	 *            the number of elements, 1 to count
+	 * @param size
+	 *            the size of the parts
+	 * @param outcome
+	 *            the expected outcome
+	 */
+	@ParameterizedTest(name = "{0}", quoteTextArguments = false)
+	@CsvSource(value = {
+			"5 elements in parts of -2 | 5 | -2 | IllegalArgumentException: The size must be at least 1, but is -2",
+			"5 elements in parts of -1 | 5 | -1 | IllegalArgumentException: The size must be at least 1, but is -1",
+			"3 elements in parts of 0 | 3 | 0 | IllegalArgumentException: The size must be at least 1, but is 0",
+			"3 elements in parts of 1 | 3 | 1 | [[1], [2], [3]]",
+			"3 elements in parts of 3, the length | 3 | 3 | [[1, 2, 3]]",
+			"3 elements in parts of 4, above the length | 3 | 4 | [[1, 2, 3]]",
+			"no elements in parts of -1 | 0 | -1 | IllegalArgumentException: The size must be at least 1, but is -1",
+			"no elements in parts of 0 | 0 | 0 | IllegalArgumentException: The size must be at least 1, but is 0",
+			"no elements in parts of 2 | 0 | 2 | []" }, delimiter = '|')
+	public void testPartitionOfSizeBelowOneAndOfNoElements(final String description,
+		final int count, final int size, final String outcome)
+	{
+		final List<Integer> list = IntStream.rangeClosed(1, count).boxed()
+			.collect(Collectors.toCollection(ArrayList::new));
+		String actual;
+		try
+		{
+			actual = new ArrayList<>(CollectionExtensions.partition(list, size)).toString();
+		}
+		catch (final RuntimeException e)
+		{
+			actual = e.getClass().getSimpleName() + ": " + e.getMessage();
+		}
+		assertEquals(outcome, actual);
+	}
+
+	/**
 	 * Test method for {@link CollectionExtensions} with {@link BeanTester}
 	 */
 	@Test
