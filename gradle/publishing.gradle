@@ -109,8 +109,9 @@ signing {
 
 // The tasks that upload. This build publishes through the nmcp SETTINGS plugin, which gives the
 // Central Portal credentials to the aggregation alone, so a release goes up through
-// nmcpPublishAggregationToCentralPortal (publishAggregationToCentralPortal in gradle.yml and
-// publish.yml). The per-project nmcpPublishAllPublicationsToCentralPortal, which the single-project
+// nmcpPublishAggregationToCentralPortal (publish.yml, through $PUBLISH_TASK, which takes
+// nmcpPublishAggregationToCentralPortalSnapshots for a snapshot run; gradle.yml uploads nothing).
+// The per-project nmcpPublishAllPublicationsToCentralPortal, which the single-project
 // builds of the family guard, is matched as well; the prefixes take in the ...Snapshots tasks, which
 // a snapshot version never trips.
 def centralPortalUploadTasks = ["nmcpPublishAggregationToCentralPortal",
