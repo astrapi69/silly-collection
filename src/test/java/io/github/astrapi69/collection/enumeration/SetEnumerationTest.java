@@ -36,6 +36,7 @@ import java.util.LinkedHashSet;
 import java.util.List;
 import java.util.NoSuchElementException;
 import java.util.Set;
+import java.util.TreeSet;
 import java.util.Vector;
 
 import org.junit.jupiter.api.Disabled;
@@ -151,6 +152,53 @@ public class SetEnumerationTest
 			enumeration == null
 				? null
 				: new Vector<>(IteratorSteps.elementsWithNull(enumeration)).elements());
+		assertEquals(IteratorSteps.elements(results),
+			IteratorSteps.run(setEnumeration.asIterator(), steps));
+	}
+
+	/**
+	 * Test for the methods {@link SetEnumeration#hasMoreElements()} and
+	 * {@link SetEnumeration#nextElement()} over a set that rejects elements it cannot hold (#152):
+	 * Set.of does not permit null and a TreeSet of strings does not take an Integer; what such a
+	 * set cannot hold is not contained in it, so the enumeration gives it
+	 *
+	 * @param description
+	 *            the name of the case
+	 * @param kind
+	 *            the kind of set: immutable for {@link Set#of(Object[])}, tree for a
+	 *            {@link TreeSet} of strings
+	 * @param set
+	 *            the elements of the set, separated by a space
+	 * @param enumeration
+	 *            the elements of the enumeration, the word null for a null element, a number for an
+	 *            {@link Integer}
+	 * @param steps
+	 *            the steps
+	 * @param results
+	 *            what each step gives
+	 */
+	@ParameterizedTest(name = "{0}", quoteTextArguments = false)
+	@CsvSource(value = {
+			"Set.of a and the enumeration null, b (#152) | immutable | a | null b | next next next hasNext | a NullPointerException b false",
+			"Set.of a and the enumeration a, null (#152) | immutable | a | a null | next hasNext next hasNext | a NullPointerException NoSuchElementException false",
+			"TreeSet a and the enumeration 7, b (#152) | tree | a | 7 b | next next next hasNext | a ClassCastException b false",
+			"TreeSet a and the enumeration a, 7 (#152) | tree | a | a 7 | next hasNext next hasNext | a ClassCastException NoSuchElementException false" }, delimiter = '|')
+	@SuppressWarnings({ "unchecked", "rawtypes" })
+	public void testSetThatRejectsElements(final String description, final String kind,
+		final String set, final String enumeration, final String steps, final String results)
+	{
+		final Set setElements = "tree".equals(kind)
+			? new TreeSet<>(IteratorSteps.elementsWithNull(set))
+			: Set.copyOf(IteratorSteps.elementsWithNull(set));
+		final List<Object> enumerationElements = new ArrayList<>();
+		for (final String element : IteratorSteps.elements(enumeration))
+		{
+			enumerationElements.add("null".equals(element)
+				? null
+				: element.matches("\\d+") ? (Object)Integer.valueOf(element) : element);
+		}
+		final SetEnumeration setEnumeration = new SetEnumeration(setElements,
+			new Vector<>(enumerationElements).elements());
 		assertEquals(IteratorSteps.elements(results),
 			IteratorSteps.run(setEnumeration.asIterator(), steps));
 	}
