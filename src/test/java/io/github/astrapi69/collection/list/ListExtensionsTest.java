@@ -998,9 +998,46 @@ public class ListExtensionsTest
 	}
 
 	/**
+	 * Test the method {@link ListExtensions#toIndexMap(List)}: the outcome for no list, an empty
+	 * list and a list with a null element, as the map or as the exception, its class and its
+	 * message
+	 *
+	 * @param description
+	 *            the name of the case
+	 * @param elements
+	 *            the elements of the list, separated by a space, "none" for no list at all, a
+	 *            "null" element is null
+	 * @param outcome
+	 *            the expected outcome
+	 */
+	@ParameterizedTest(name = "{0}", quoteTextArguments = false)
+	@CsvSource(value = {
+			"no list: refused | none | IllegalArgumentException: Given argument 'list' may not be null.",
+			"an empty list: the empty map | '' | {}", "one element a | a | {0=a}",
+			"a and a null element | a null | {0=a, 1=null}" }, delimiter = '|')
+	public void testToIndexMapOfNoListAndOfAnEmptyList(final String description,
+		final String elements, final String outcome)
+	{
+		final List<String> list = "none".equals(elements)
+			? null
+			: elements(elements).stream().map(element -> "null".equals(element) ? null : element)
+				.collect(Collectors.toCollection(ArrayList::new));
+		String actual;
+		try
+		{
+			actual = ListExtensions.toIndexMap(list).toString();
+		}
+		catch (final RuntimeException e)
+		{
+			actual = e.getClass().getSimpleName() + ": " + e.getMessage();
+		}
+		assertEquals(outcome, actual);
+	}
+
+	/**
 	 * Test method for {@link ListExtensions#rearrange(List, Object, int)}: the list with the
-	 * element at the given index; unchanged if the element is there already, if the index is the
-	 * size of the list, or if the list does not hold the element. The given list does not change
+	 * element at the given index, or at the end if the index is above the last one; unchanged if
+	 * the element is there already or if the list does not hold it. The given list does not change
 	 *
 	 * @param description
 	 *            the name of the case
@@ -1072,6 +1109,83 @@ public class ListExtensionsTest
 	}
 
 	/**
+	 * Test method for {@link ListExtensions#rearrange(List, Object, int)} and
+	 * {@link ListExtensions#relocate(List, Object, int)} with the same indexes on the list a, b, c:
+	 * the outcome of each, as the elements separated by a space or as "throws:" and the elements
+	 * the list holds afterwards, and whether rearrange returns the given list itself
+	 *
+	 * @param description
+	 *            the name of the case
+	 * @param element
+	 *            the element to move
+	 * @param index
+	 *            the index to move it to
+	 * @param rearranged
+	 *            the outcome of rearrange
+	 * @param same
+	 *            true if rearrange returns the given list itself
+	 * @param relocated
+	 *            the outcome of relocate
+	 */
+	@ParameterizedTest(name = "{0}", quoteTextArguments = false)
+	@CsvSource(value = { "a to -1 | a | -1 | throws | false | throws:a b c",
+			"a to 0, its index | a | 0 | a b c | true | a b c",
+			"a to 1 | a | 1 | b a c | false | b a c",
+			"a to 2, the last index | a | 2 | b c a | false | b c a",
+			"a to 3, the size | a | 3 | b c a | false | b c a",
+			"a to 4, above the size | a | 4 | b c a | false | b c a",
+			"c to -1, the last element | c | -1 | throws | false | throws:a b c",
+			"c to 2, its index, the last | c | 2 | a b c | true | a b c",
+			"c to 3, the size, the last element | c | 3 | a b c | true | a b c",
+			"c to 4, above the size, the last element | c | 4 | a b c | true | a b c",
+			"x, not in the list, to -1 | x | -1 | a b c | true | a b c",
+			"x, not in the list, to 4 | x | 4 | a b c | true | a b c" }, delimiter = '|')
+	public void testRearrangeAndRelocateAtTheEnds(final String description, final String element,
+		final int index, final String rearranged, final boolean same, final String relocated)
+	{
+		final List<String> list = elements("a b c");
+		if ("throws".equals(rearranged))
+		{
+			assertThrows(IndexOutOfBoundsException.class,
+				() -> ListExtensions.rearrange(list, element, index));
+		}
+		else
+		{
+			final List<String> result = ListExtensions.rearrange(list, element, index);
+			assertEquals(elements(rearranged), result);
+			assertEquals(same, result == list, "rearrange returns the given list itself");
+		}
+		assertEquals(elements("a b c"), list, "rearrange changed the given list");
+		final List<String> relocatedList = elements("a b c");
+		final boolean throwing = relocated.startsWith("throws:");
+		final String relocatedElements = throwing
+			? relocated.substring("throws:".length())
+			: relocated;
+		if (throwing)
+		{
+			assertThrows(IndexOutOfBoundsException.class,
+				() -> ListExtensions.relocate(relocatedList, element, index));
+		}
+		else
+		{
+			ListExtensions.relocate(relocatedList, element, index);
+		}
+		assertEquals(elements(relocatedElements), relocatedList, "the list after relocate");
+	}
+
+	/**
+	 * Test method for {@link ListExtensions#relocate(List, Object, int)}: the last element of an
+	 * unmodifiable list to the size, where nothing moves
+	 */
+	@Test
+	public void testRelocateTheLastElementToTheSizeOfAnUnmodifiableList()
+	{
+		final List<String> list = Collections.unmodifiableList(elements("a b c"));
+		ListExtensions.relocate(list, "c", 3);
+		assertEquals(elements("a b c"), list);
+	}
+
+	/**
 	 * Test method for {@link ListExtensions#removeLastValues(List, int)}: the list without its
 	 * given number of last values (#43); the given list does not change
 	 *
@@ -1119,6 +1233,32 @@ public class ListExtensionsTest
 		final List<String> list = elements(elements);
 		assertThrows(IllegalArgumentException.class,
 			() -> ListExtensions.removeLastValues(list, remove));
+	}
+
+	/**
+	 * Test method for {@link ListExtensions#removeLastValues(List, int)} with more values to remove
+	 * than the list holds: the message names the size and the number to remove, and does not say
+	 * that a list is returned, as the method throws (#145)
+	 *
+	 * @param description
+	 *            the name of the case
+	 * @param elements
+	 *            the elements of the list, separated by a space
+	 * @param remove
+	 *            the number of values to remove
+	 */
+	@ParameterizedTest(name = "{0}", quoteTextArguments = false)
+	@CsvSource(value = { "7 of six elements | Anton Caesar Dora Emil Leonidas Berta | 7",
+			"1 of an empty list | '' | 1" }, delimiter = '|')
+	public void testRemoveLastValuesMessage(final String description, final String elements,
+		final int remove)
+	{
+		final List<String> list = elements(elements);
+		final String message = assertThrows(IllegalArgumentException.class,
+			() -> ListExtensions.removeLastValues(list, remove)).getMessage();
+		assertTrue(message.contains("Size from ArrayList:" + list.size() + "\n"), message);
+		assertTrue(message.contains("Elements to be removed:" + remove), message);
+		assertTrue(message.endsWith("Elements to be removed:" + remove), message);
 	}
 
 	/**
@@ -1328,6 +1468,48 @@ public class ListExtensionsTest
 			final int last = actual.get(actual.size() - 1).size();
 			assertTrue(0 < last && last <= size, "the last part holds " + last);
 		}
+	}
+
+	/**
+	 * Test the method {@link ListExtensions#splitToParts(java.util.Collection, int)}: the outcome
+	 * for sizes below 1 and for no elements, as the parts or as the exception, its class and its
+	 * message
+	 *
+	 * @param description
+	 *            the name of the case
+	 * @param count
+	 *            the number of elements, 1 to count
+	 * @param size
+	 *            the size of the parts
+	 * @param outcome
+	 *            the expected outcome
+	 */
+	@ParameterizedTest(name = "{0}", quoteTextArguments = false)
+	@CsvSource(value = {
+			"5 elements in parts of -2 | 5 | -2 | IllegalArgumentException: The size must be at least 1, but is -2",
+			"3 elements in parts of -1 | 3 | -1 | IllegalArgumentException: The size must be at least 1, but is -1",
+			"3 elements in parts of 0 | 3 | 0 | IllegalArgumentException: The size must be at least 1, but is 0",
+			"3 elements in parts of 1 | 3 | 1 | [[1], [2], [3]]",
+			"3 elements in parts of 3, the length | 3 | 3 | [[1, 2, 3]]",
+			"3 elements in parts of 4, above the length | 3 | 4 | [[1, 2, 3]]",
+			"no elements in parts of -1 | 0 | -1 | IllegalArgumentException: The size must be at least 1, but is -1",
+			"no elements in parts of 0 | 0 | 0 | IllegalArgumentException: The size must be at least 1, but is 0",
+			"no elements in parts of 2 | 0 | 2 | []" }, delimiter = '|')
+	public void testSplitToPartsOfSizeBelowOneAndOfNoElements(final String description,
+		final int count, final int size, final String outcome)
+	{
+		final List<Integer> list = IntStream.rangeClosed(1, count).boxed()
+			.collect(Collectors.toCollection(ArrayList::new));
+		String actual;
+		try
+		{
+			actual = ListExtensions.splitToParts(list, size).toString();
+		}
+		catch (final RuntimeException e)
+		{
+			actual = e.getClass().getSimpleName() + ": " + e.getMessage();
+		}
+		assertEquals(outcome, actual);
 	}
 
 	/**

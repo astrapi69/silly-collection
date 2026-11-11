@@ -170,7 +170,7 @@ public final class MapFactory
 	}
 
 	/**
-	 * Factory method for create a map for and count elements of the given collection
+	 * Counts the given elements into the given map and returns it
 	 *
 	 * @param <K>
 	 *            the generic type of the elements
@@ -178,7 +178,7 @@ public final class MapFactory
 	 *            the counter Map
 	 * @param elements
 	 *            the elements
-	 * @return the new map ready to count elements
+	 * @return the given counter map, with the counts of the elements
 	 */
 	public static <K> Map<K, Integer> newCounterMap(Map<K, Integer> counterMap,
 		Collection<K> elements)
@@ -187,7 +187,7 @@ public final class MapFactory
 	}
 
 	/**
-	 * Factory method for create a map for and count elements of the given collection
+	 * Counts the given elements into the given map and returns it
 	 *
 	 * @param <K>
 	 *            the generic type of the elements
@@ -197,7 +197,7 @@ public final class MapFactory
 	 *            the elements
 	 * @param startByZero
 	 *            if this flag is true the first element will start with 0 count
-	 * @return the new map ready to count elements
+	 * @return the given counter map, with the counts of the elements
 	 */
 	public static <K> Map<K, Integer> newCounterMap(Map<K, Integer> counterMap,
 		Collection<K> elements, boolean startByZero)
