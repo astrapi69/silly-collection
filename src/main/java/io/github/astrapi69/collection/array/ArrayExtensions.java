@@ -472,7 +472,9 @@ public final class ArrayExtensions
 	}
 
 	/**
-	 * Gets the next indexes from the given count of the given array
+	 * Gets the next indexes from the given count of the given array: the indexes that follow the
+	 * first occurrence of the given element, one after the other, wrapping round to 0 after the
+	 * last index, so a repeated element does not send the walk back to its first index
 	 *
 	 * @param <T>
 	 *            the generic type
@@ -489,16 +491,14 @@ public final class ArrayExtensions
 		if (element != null)
 		{
 			final int[] nextIndexes = new int[count];
-			T currentElement = element;
+			final int indexOfElement = ArrayExtensions.indexOf(array, element);
+			if (indexOfElement == -1)
+			{
+				return null;
+			}
 			for (int i = 0; i < count; i++)
 			{
-				final int nextIndex = getNextIndex(array, currentElement);
-				if (nextIndex == -1)
-				{
-					return null;
-				}
-				nextIndexes[i] = nextIndex;
-				currentElement = array[nextIndex];
+				nextIndexes[i] = (indexOfElement + 1 + i) % array.length;
 			}
 			return nextIndexes;
 		}
@@ -532,7 +532,9 @@ public final class ArrayExtensions
 	}
 
 	/**
-	 * Gets the previous indexes from the given count of the given array
+	 * Gets the previous indexes from the given count of the given array: the indexes that precede
+	 * the first occurrence of the given element, one after the other, wrapping round to the last
+	 * index before 0, so a repeated element does not send the walk back to its first index
 	 *
 	 * @param <T>
 	 *            the generic type
@@ -549,16 +551,14 @@ public final class ArrayExtensions
 		if (element != null)
 		{
 			final int[] previousIndexes = new int[count];
-			T currentElement = element;
+			final int indexOfElement = ArrayExtensions.indexOf(array, element);
+			if (indexOfElement == -1)
+			{
+				return null;
+			}
 			for (int i = 0; i < count; i++)
 			{
-				final int previousIndex = getPreviousIndex(array, currentElement);
-				if (previousIndex == -1)
-				{
-					return null;
-				}
-				previousIndexes[i] = previousIndex;
-				currentElement = array[previousIndex];
+				previousIndexes[i] = Math.floorMod(indexOfElement - 1 - i, array.length);
 			}
 			return previousIndexes;
 		}
