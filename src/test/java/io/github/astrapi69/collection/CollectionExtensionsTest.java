@@ -695,10 +695,10 @@ public class CollectionExtensionsTest
 	 */
 	@ParameterizedTest(name = "{0}", quoteTextArguments = false)
 	@CsvSource(value = { "70000 elements in parts of 1, part 65535 | 70000 | 1 | 65535 | 65536",
-			"70000 elements in parts of 1, part 65536 | 70000 | 1 | 65536 | 65538",
-			"70000 elements in parts of 1, part 65537 | 70000 | 1 | 65537 | 65537",
-			"70000 elements in parts of 1, the last part | 70000 | 1 | 69999 | 69999",
-			"140000 elements in parts of 2, part 65536 | 140000 | 2 | 65536 | 131075",
+			"70000 elements in parts of 1, part 65536 | 70000 | 1 | 65536 | 65537",
+			"70000 elements in parts of 1, part 65537 | 70000 | 1 | 65537 | 65538",
+			"70000 elements in parts of 1, the last part | 70000 | 1 | 69999 | 70000",
+			"140000 elements in parts of 2, part 65536 | 140000 | 2 | 65536 | 131073",
 			"65537 elements in parts of 1, part 65536 | 65537 | 1 | 65536 | 65537" }, delimiter = '|')
 	public void testPartitionOrderOfManyParts(final String description, final int count,
 		final int size, final int index, final int first)
