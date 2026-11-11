@@ -186,7 +186,9 @@ public final class PropertiesExtensions
 	}
 
 	/**
-	 * Finds redundant values from the given Properties object and saves it to a Map.
+	 * Finds redundant values from the given Properties object and saves it to a Map. An entry whose
+	 * key or value is not a {@link String} is left out, as {@link Properties#stringPropertyNames()}
+	 * does.
 	 *
 	 * @param properties
 	 *            The Properties to check.
@@ -198,8 +200,10 @@ public final class PropertiesExtensions
 		final Map<String, List<String>> reverseEntries = new LinkedHashMap<>();
 		for (final Map.Entry<Object, Object> entry : properties.entrySet())
 		{
-			final String key = (String)entry.getKey();
-			final String value = (String)entry.getValue();
+			if (!(entry.getKey()instanceof String key && entry.getValue()instanceof String value))
+			{
+				continue;
+			}
 			if (!reverseEntries.containsKey(value))
 			{
 				final List<String> keys = ListFactory.newArrayList();

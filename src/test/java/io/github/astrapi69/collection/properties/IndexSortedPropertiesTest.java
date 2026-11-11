@@ -694,14 +694,14 @@ public class IndexSortedPropertiesTest
 	 *            what the call gives, nothing for null, or the simple name of its exception
 	 */
 	@ParameterizedTest(name = "{0}", quoteTextArguments = false)
-	@CsvSource(value = { "get(0), the key 1 is an Integer | get | 0 | ClassCastException",
+	@CsvSource(value = { "get(0), the key 1 is an Integer: null | get | 0 | ",
 			"get(1), the key a: x | get | 1 | x", "get(2), the value 2 is an Integer | get | 2 | ",
-			"getProperty(0), the key 1 is an Integer | getProperty | 0 | ClassCastException",
+			"getProperty(0), the key 1 is an Integer: null | getProperty | 0 | ",
 			"getProperty(1), the key a: x | getProperty | 1 | x",
 			"getProperty(2), the value 2 is an Integer | getProperty | 2 | ",
-			"indexOf(x), which key a holds, after the key 1 | indexOf | x | ClassCastException",
-			"indexOf(y), which the key 1 holds | indexOf | y | ClassCastException",
-			"indexOf(2), the value of the key b is an Integer | indexOf | 2 | ClassCastException" }, delimiter = '|')
+			"indexOf(x), which key a holds, after the key 1: its index 1 | indexOf | x | 1",
+			"indexOf(y), which the key 1 holds: skipped, -1 | indexOf | y | -1",
+			"indexOf(2), the value of the key b is an Integer: -1 | indexOf | 2 | -1" }, delimiter = '|')
 	public void testNonStringEntries(final String description, final String call,
 		final String argument, final String expected)
 	{

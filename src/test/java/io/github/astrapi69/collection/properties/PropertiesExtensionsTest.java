@@ -514,26 +514,18 @@ public class PropertiesExtensionsTest
 	 * @param properties
 	 *            the properties
 	 * @param expected
-	 *            the redundant values and their keys, or the class of the exception
+	 *            the redundant values and their keys
 	 */
 	@ParameterizedTest(name = "{0}", quoteTextArguments = false)
 	@MethodSource("redundantValuesOfNonStrings")
 	public void testFindRedundantValuesWithNonStringEntries(final String description,
-		final Properties properties, final Object expected)
+		final Properties properties, final Map<String, List<String>> expected)
 	{
-		if (expected instanceof Class<?> exception)
-		{
-			assertThrows(exception.asSubclass(Throwable.class),
-				() -> PropertiesExtensions.findRedundantValues(properties));
-		}
-		else
-		{
-			assertEquals(expected, sorted(PropertiesExtensions.findRedundantValues(properties)));
-		}
+		assertEquals(expected, sorted(PropertiesExtensions.findRedundantValues(properties)));
 	}
 
 	/**
-	 * The cases of {@link #testFindRedundantValuesWithNonStringEntries(String, Properties, Object)}
+	 * The cases of {@link #testFindRedundantValuesWithNonStringEntries(String, Properties, Map)}
 	 *
 	 * @return the name of the case, the properties and the redundant values
 	 */
@@ -547,11 +539,12 @@ public class PropertiesExtensionsTest
 		final Properties both = propertiesOf("a", "x", "b", "x");
 		both.put(1, 2);
 		return Stream.of(
-			Arguments.of("the key 1 is an Integer", integerKey, ClassCastException.class),
-			Arguments.of("the values of a and b are Integers", integerValue,
-				ClassCastException.class),
-			Arguments.of("the key and the value of 1 are Integers", both,
-				ClassCastException.class));
+			Arguments.of("the key 1 is an Integer: left out", integerKey,
+				Map.of("x", List.of("a", "b"))),
+			Arguments.of("the values of a and b are Integers: left out", integerValue,
+				Map.of("x", List.of("c", "d"))),
+			Arguments.of("the key and the value of 1 are Integers: left out", both,
+				Map.of("x", List.of("a", "b"))));
 	}
 
 	/**
