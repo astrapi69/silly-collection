@@ -1116,6 +1116,32 @@ public class ListExtensionsTest
 	}
 
 	/**
+	 * Test method for {@link ListExtensions#removeLastValues(List, int)} with more values to remove
+	 * than the list holds: the message names the size and the number to remove, and does not say
+	 * that a list is returned, as the method throws (#145)
+	 *
+	 * @param description
+	 *            the name of the case
+	 * @param elements
+	 *            the elements of the list, separated by a space
+	 * @param remove
+	 *            the number of values to remove
+	 */
+	@ParameterizedTest(name = "{0}", quoteTextArguments = false)
+	@CsvSource(value = { "7 of six elements | Anton Caesar Dora Emil Leonidas Berta | 7",
+			"1 of an empty list | '' | 1" }, delimiter = '|')
+	public void testRemoveLastValuesMessage(final String description, final String elements,
+		final int remove)
+	{
+		final List<String> list = elements(elements);
+		final String message = assertThrows(IllegalArgumentException.class,
+			() -> ListExtensions.removeLastValues(list, remove)).getMessage();
+		assertTrue(message.contains("Size from ArrayList:" + list.size() + "\n"), message);
+		assertTrue(message.contains("Elements to be removed:" + remove), message);
+		assertTrue(message.endsWith("The same ArrayList will be returned."), message);
+	}
+
+	/**
 	 * Test the method {@link ListExtensions#revertOrder(List)}: a new list with the elements in
 	 * reverse order; the given list does not change
 	 *
