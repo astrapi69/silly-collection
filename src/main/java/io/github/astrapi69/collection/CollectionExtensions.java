@@ -97,7 +97,9 @@ public final class CollectionExtensions
 	}
 
 	/**
-	 * Returns a hash code based on the contents of the collection that contains array objects.
+	 * Returns a hash code based on the contents of the collection that contains array objects: the
+	 * hash code of {@link java.util.List#hashCode()}, with {@link Arrays#hashCode(Object[])} for
+	 * each array, in the iteration order of the collection.
 	 *
 	 * @param <T>
 	 *            the generic type of the array objects
@@ -111,7 +113,7 @@ public final class CollectionExtensions
 		int hashCode = 1;
 		for (T[] arrayObject : arrayObjects)
 		{
-			hashCode = 31 * hashCode * Arrays.hashCode(arrayObject);
+			hashCode = 31 * hashCode + Arrays.hashCode(arrayObject);
 		}
 		return hashCode;
 	}
