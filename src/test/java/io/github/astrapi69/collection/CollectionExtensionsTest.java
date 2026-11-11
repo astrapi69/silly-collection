@@ -36,6 +36,7 @@ import static org.junit.jupiter.api.Assertions.assertTrue;
 import java.util.ArrayList;
 import java.util.Arrays;
 import java.util.Collection;
+import java.util.Collections;
 import java.util.List;
 import java.util.function.Supplier;
 import java.util.stream.Collectors;
@@ -491,7 +492,7 @@ public class CollectionExtensionsTest
 	 * @param expected
 	 *            the hash code
 	 */
-	record HashCodeCase(String description, Supplier<Collection<String[]>> lines, int expected) {
+	record HashCodeCase(String description, Supplier<Collection<Object[]>> lines, int expected) {
 		@Override
 		public String toString()
 		{
@@ -518,7 +519,22 @@ public class CollectionExtensionsTest
 					ArrayFactory.newArray("Mary", "21", "female")),
 				-1124541430),
 			new HashCodeCase("no lines: 1, as the hash code of an empty List",
-				() -> ListFactory.newArrayList(), 1));
+				() -> ListFactory.newArrayList(), 1),
+			new HashCodeCase("the lines a and b: 15868032",
+				() -> ListFactory.newArrayList(ArrayFactory.newArray("a"),
+					ArrayFactory.newArray("b")),
+				15868032),
+			new HashCodeCase("the lines b and a, the same hash code as a and b: 15868032",
+				() -> ListFactory.newArrayList(ArrayFactory.newArray("b"),
+					ArrayFactory.newArray("a")),
+				15868032),
+			new HashCodeCase("a null line after two others: 0",
+				() -> Arrays.asList(ArrayFactory.newArray("5"), ArrayFactory.newArray("7"), null),
+				0),
+			new HashCodeCase("a null line only: 0",
+				() -> Collections.<Object[]> singletonList(null), 0),
+			new HashCodeCase("a line whose Arrays.hashCode is 0: 0",
+				() -> Collections.<Object[]> singletonList(new Integer[] { -31 }), 0));
 	}
 
 	/**
