@@ -992,6 +992,44 @@ public class ListExtensionsTest
 	}
 
 	/**
+	 * Test the method {@link ListExtensions#toIndexMap(List)}: the outcome for no list, an empty
+	 * list and a list with a null element, as the map or as the exception, its class and its
+	 * message
+	 *
+	 * @param description
+	 *            the name of the case
+	 * @param elements
+	 *            the elements of the list, separated by a space, "none" for no list at all, a
+	 *            "null" element is null
+	 * @param outcome
+	 *            the expected outcome
+	 */
+	@ParameterizedTest(name = "{0}", quoteTextArguments = false)
+	@CsvSource(value = {
+			"no list: refused | none | IllegalArgumentException: Given argument 'list' may not be null.",
+			"an empty list: refused | '' | IllegalArgumentException: Given collection 'list' may not be empty.",
+			"one element a | a | {0=a}",
+			"a and a null element | a null | {0=a, 1=null}" }, delimiter = '|')
+	public void testToIndexMapOfNoListAndOfAnEmptyList(final String description,
+		final String elements, final String outcome)
+	{
+		final List<String> list = "none".equals(elements)
+			? null
+			: elements(elements).stream().map(element -> "null".equals(element) ? null : element)
+				.collect(Collectors.toCollection(ArrayList::new));
+		String actual;
+		try
+		{
+			actual = ListExtensions.toIndexMap(list).toString();
+		}
+		catch (final RuntimeException e)
+		{
+			actual = e.getClass().getSimpleName() + ": " + e.getMessage();
+		}
+		assertEquals(outcome, actual);
+	}
+
+	/**
 	 * Test method for {@link ListExtensions#rearrange(List, Object, int)}: the list with the
 	 * element at the given index; unchanged if the element is there already, if the index is the
 	 * size of the list, or if the list does not hold the element. The given list does not change
