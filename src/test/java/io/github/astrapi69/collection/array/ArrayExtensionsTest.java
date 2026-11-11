@@ -859,7 +859,10 @@ public class ArrayExtensionsTest
 			"from 8, not in the array: null | 1 2 3 4 5 6 7 | 8 | 2 | | ",
 			"from null: null | 1 2 3 4 5 6 7 | | 2 | | ",
 			"from 7 in an empty array: null | '' | 7 | 2 | | ",
-			"from null in an empty array: null | '' | | 2 | | " }, delimiter = '|')
+			"from null in an empty array: null | '' | | 2 | | ",
+			"from the repeated 2 of 1 2 2 3, 3 indexes: back to the first index of the 2 | 1 2 2 3 | 2 | 3 | 2 2 2 | 0 3 2",
+			"from 3 of 1 2 2 3, 6 indexes: stuck on the repeated 2 | 1 2 2 3 | 3 | 6 | 0 1 2 2 2 2 | 2 0 3 2 0 3",
+			"from 1 of 1 2 2 3, 4 indexes: stuck on the repeated 2 | 1 2 2 3 | 1 | 4 | 1 2 2 2 | 3 2 0 3" }, delimiter = '|')
 	public void testGetNextAndPreviousIndexes(final String description, final String array,
 		final String element, final int count, final String next, final String previous)
 	{
