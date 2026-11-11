@@ -53,6 +53,8 @@ import org.junit.jupiter.params.provider.CsvSource;
 import org.junit.jupiter.params.provider.MethodSource;
 import org.meanbean.test.BeanTester;
 
+import io.github.astrapi69.collection.test.Elements;
+
 /**
  * The unit test class for the class {@link ArrayExtensions}.
  *
@@ -704,7 +706,7 @@ public class ArrayExtensionsTest
 	public void testIsFirst(final String description, final String array, final String element,
 		final boolean expected)
 	{
-		assertEquals(expected, ArrayExtensions.isFirst(elements(array), element));
+		assertEquals(expected, ArrayExtensions.isFirst(Elements.array(array), element));
 	}
 
 	/**
@@ -733,7 +735,7 @@ public class ArrayExtensionsTest
 	{
 		final String[] elements = array == null
 			? null
-			: Arrays.stream(elements(array)).map(each -> "null".equals(each) ? null : each)
+			: Arrays.stream(Elements.array(array)).map(each -> "null".equals(each) ? null : each)
 				.toArray(String[]::new);
 		assertEquals(expected, ArrayExtensions.isFirst(elements, element));
 	}
@@ -772,7 +774,7 @@ public class ArrayExtensionsTest
 	{
 		final String[] elements = array == null
 			? null
-			: Arrays.stream(elements(array)).map(each -> "null".equals(each) ? null : each)
+			: Arrays.stream(Elements.array(array)).map(each -> "null".equals(each) ? null : each)
 				.toArray(String[]::new);
 		assertEquals(expected, ArrayExtensions.isLast(elements, element));
 	}
@@ -992,7 +994,7 @@ public class ArrayExtensionsTest
 	public void testGetNextAndPreviousIndexes(final String description, final String array,
 		final String element, final int count, final String next, final String previous)
 	{
-		final String[] elements = elements(array);
+		final String[] elements = Elements.array(array);
 		assertArrayEquals(indexes(next), ArrayExtensions.getNextIndexes(elements, element, count),
 			"getNextIndexes");
 		assertArrayEquals(indexes(previous),
@@ -1089,21 +1091,10 @@ public class ArrayExtensionsTest
 	public void testIntersection(final String description, final String one, final String other,
 		final String expected)
 	{
-		final String[] actual = ArrayExtensions.intersection(elements(one), elements(other));
+		final String[] actual = ArrayExtensions.intersection(Elements.array(one),
+			Elements.array(other));
 		assertEquals(String[].class, actual.getClass());
-		assertArrayEquals(elements(expected), actual);
-	}
-
-	/**
-	 * The elements of an array in a row of a {@link CsvSource}
-	 *
-	 * @param elements
-	 *            the elements, separated by a space, may be empty
-	 * @return the array of the elements
-	 */
-	private static String[] elements(final String elements)
-	{
-		return elements.isEmpty() ? new String[0] : elements.split(" ");
+		assertArrayEquals(Elements.array(expected), actual);
 	}
 
 	/**

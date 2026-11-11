@@ -46,6 +46,7 @@ import org.junit.jupiter.params.provider.CsvSource;
 import org.meanbean.test.BeanTester;
 
 import io.github.astrapi69.collection.iterator.IteratorSteps;
+import io.github.astrapi69.collection.test.Elements;
 
 /**
  * The unit test class for the class {@link SetEnumeration}.
@@ -54,18 +55,6 @@ import io.github.astrapi69.collection.iterator.IteratorSteps;
  */
 public class SetEnumerationTest
 {
-
-	/**
-	 * The elements of a row of a {@link CsvSource}
-	 *
-	 * @param elements
-	 *            the elements, separated by a space, may be empty
-	 * @return the elements
-	 */
-	static List<String> elements(final String elements)
-	{
-		return elements.isEmpty() ? List.of() : List.of(elements.split(" "));
-	}
 
 	/**
 	 * Test for the constructor and the methods {@link SetEnumeration#hasMoreElements()} and
@@ -94,14 +83,14 @@ public class SetEnumerationTest
 	public void testEnumeration(final String description, final String set,
 		final String enumeration, final String expected)
 	{
-		final Set<String> setElements = new HashSet<>(elements(set));
+		final Set<String> setElements = new HashSet<>(Elements.list(set));
 		final Enumeration<String> enumerationElements = enumeration == null
 			? null
-			: new Vector<>(elements(enumeration)).elements();
+			: new Vector<>(Elements.list(enumeration)).elements();
 		final SetEnumeration<String> setEnumeration = new SetEnumeration<>(setElements,
 			enumerationElements);
 		final List<String> actual = new ArrayList<>();
-		final List<String> expectedElements = elements(expected);
+		final List<String> expectedElements = Elements.list(expected);
 		if (!expectedElements.isEmpty())
 		{
 			actual.add(setEnumeration.nextElement());
@@ -148,12 +137,11 @@ public class SetEnumerationTest
 		final String steps, final String results)
 	{
 		final SetEnumeration<String> setEnumeration = new SetEnumeration<>(
-			new LinkedHashSet<>(IteratorSteps.elementsWithNull(set)),
+			new LinkedHashSet<>(Elements.listWithNull(set)),
 			enumeration == null
 				? null
-				: new Vector<>(IteratorSteps.elementsWithNull(enumeration)).elements());
-		assertEquals(IteratorSteps.elements(results),
-			IteratorSteps.run(setEnumeration.asIterator(), steps));
+				: new Vector<>(Elements.listWithNull(enumeration)).elements());
+		assertEquals(Elements.list(results), IteratorSteps.run(setEnumeration.asIterator(), steps));
 	}
 
 	/**
@@ -188,10 +176,10 @@ public class SetEnumerationTest
 		final String set, final String enumeration, final String steps, final String results)
 	{
 		final Set setElements = "tree".equals(kind)
-			? new TreeSet<>(IteratorSteps.elementsWithNull(set))
-			: Set.copyOf(IteratorSteps.elementsWithNull(set));
+			? new TreeSet<>(Elements.listWithNull(set))
+			: Set.copyOf(Elements.listWithNull(set));
 		final List<Object> enumerationElements = new ArrayList<>();
-		for (final String element : IteratorSteps.elements(enumeration))
+		for (final String element : Elements.list(enumeration))
 		{
 			enumerationElements.add("null".equals(element)
 				? null
@@ -199,8 +187,7 @@ public class SetEnumerationTest
 		}
 		final SetEnumeration setEnumeration = new SetEnumeration(setElements,
 			new Vector<>(enumerationElements).elements());
-		assertEquals(IteratorSteps.elements(results),
-			IteratorSteps.run(setEnumeration.asIterator(), steps));
+		assertEquals(Elements.list(results), IteratorSteps.run(setEnumeration.asIterator(), steps));
 	}
 
 	/**

@@ -53,26 +53,13 @@ import org.meanbean.test.BeanTester;
 import io.github.astrapi69.collection.array.ArrayFactory;
 import io.github.astrapi69.collection.list.ListFactory;
 import io.github.astrapi69.collection.set.SetFactory;
+import io.github.astrapi69.collection.test.Elements;
 
 /**
  * The unit test class for the class {@link CollectionExtensions}.
  */
 public class CollectionExtensionsTest
 {
-
-	/**
-	 * The elements of a column of a table, separated by a space
-	 *
-	 * @param column
-	 *            the column, empty for no elements
-	 * @return the elements in a new {@link ArrayList}, which the test may change
-	 */
-	private static List<String> elements(final String column)
-	{
-		return column.isEmpty()
-			? new ArrayList<>()
-			: Arrays.stream(column.split(" ")).collect(Collectors.toCollection(ArrayList::new));
-	}
 
 	/**
 	 * The numbers of a column of a table, separated by a space
@@ -83,7 +70,7 @@ public class CollectionExtensionsTest
 	 */
 	private static List<Integer> numbers(final String column)
 	{
-		return elements(column).stream().map(Integer::valueOf)
+		return Elements.modifiableList(column).stream().map(Integer::valueOf)
 			.collect(Collectors.toCollection(ArrayList::new));
 	}
 
@@ -620,8 +607,7 @@ public class CollectionExtensionsTest
 		final List<String> columns = collections.isEmpty()
 			? List.of()
 			: Arrays.asList(collections.split("; "));
-		final List<List<String>> given = columns.stream().map(CollectionExtensionsTest::elements)
-			.toList();
+		final List<List<String>> given = columns.stream().map(Elements::modifiableList).toList();
 		final Collection<String> actual = CollectionExtensions
 			.intersection(given.toArray(new Collection[0]));
 		if (expected == null)
@@ -631,11 +617,12 @@ public class CollectionExtensionsTest
 		else
 		{
 			assertSame(given.get(0), actual);
-			assertEquals(elements(expected), actual);
+			assertEquals(Elements.modifiableList(expected), actual);
 		}
 		for (int i = actual == null ? 0 : 1; i < given.size(); i++)
 		{
-			assertEquals(elements(columns.get(i)), given.get(i), "collection " + i + " changed");
+			assertEquals(Elements.modifiableList(columns.get(i)), given.get(i),
+				"collection " + i + " changed");
 		}
 	}
 
