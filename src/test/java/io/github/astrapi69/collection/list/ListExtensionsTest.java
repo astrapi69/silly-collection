@@ -277,6 +277,12 @@ public class ListExtensionsTest
 				null),
 			new EndCall("removeLast of null: null (#126)", none, ListExtensions::removeLast, null,
 				null),
+			new EndCall("isFirst of null and x: false (#143)", none,
+				list -> ListExtensions.isFirst(list, "x"), false, null),
+			new EndCall("isFirst of a (List.of) and null: false (#143)", () -> List.of("a"),
+				list -> ListExtensions.isFirst(list, null), false, List.of("a")),
+			new EndCall("isFirst of null, a and null: true", ListExtensionsTest::nullAndA,
+				list -> ListExtensions.isFirst(list, null), true, Arrays.asList(null, "a")),
 			new EndCall("isLast of null and x: false (#126)", none,
 				list -> ListExtensions.isLast(list, "x"), false, null),
 			new EndCall("getFirst of null, a: null (#126)", ListExtensionsTest::nullAndA,
@@ -316,8 +322,8 @@ public class ListExtensionsTest
 	 * Test for the methods {@link ListExtensions#getFirst(List)},
 	 * {@link ListExtensions#getLast(List)}, {@link ListExtensions#removeFirst(List)},
 	 * {@link ListExtensions#removeLast(List)}, their {@link Optional} variants and
-	 * {@link ListExtensions#isLast(List, Object)} with a null list or a list that holds null: what
-	 * they return, and the list afterwards
+	 * {@link ListExtensions#isFirst(List, Object)} and {@link ListExtensions#isLast(List, Object)}
+	 * with a null list or a list that holds null: what they return, and the list afterwards
 	 *
 	 * @param endCall
 	 *            the list, the call, what it returns and the list afterwards
