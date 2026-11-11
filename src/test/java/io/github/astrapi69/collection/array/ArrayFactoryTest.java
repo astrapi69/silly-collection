@@ -35,6 +35,7 @@ import java.util.Objects;
 import java.util.function.Function;
 import java.util.function.Supplier;
 import java.util.function.UnaryOperator;
+import java.util.stream.Collectors;
 import java.util.stream.IntStream;
 import java.util.stream.Stream;
 
@@ -477,6 +478,63 @@ public class ArrayFactoryTest
 				: Arrays.stream(expected.split(" ")).map(Integer::valueOf).toArray(Integer[]::new),
 			actual);
 		assertNotSame(source, actual);
+	}
+
+	/**
+	 * Test for the methods {@link ArrayFactory#newSubArray(Object[], int, int)} and
+	 * {@link ArrayExtensions#subArray(Object[], int, int)} on a, b and c with the same range: what
+	 * each of them returns, or the simple name of the exception it throws (#137)
+	 *
+	 * @param description
+	 *            the name of the case
+	 * @param startIndex
+	 *            the start index, inclusive
+	 * @param endIndex
+	 *            the end index, exclusive
+	 * @param newSubArray
+	 *            the elements of the result of newSubArray separated by a space, '' for none, or
+	 *            the name of the exception, after a '!'
+	 * @param subArray
+	 *            the same for subArray
+	 */
+	@ParameterizedTest(name = "{0}", quoteTextArguments = false)
+	@CsvSource(value = { "1 to 3: inside | 1 | 3 | b c | b c",
+			"0 to 3: all | 0 | 3 | a b c | a b c", "2 to 2: empty | 2 | 2 | '' | ''",
+			"3 to 3: empty at the end | 3 | 3 | '' | ''",
+			"1 to 4: the end past the array | 1 | 4 | !IndexOutOfBoundsException | b c null",
+			"4 to 4: the start past the array | 4 | 4 | !IndexOutOfBoundsException | !ArrayIndexOutOfBoundsException",
+			"-1 to 2: the start below 0 | -1 | 2 | !IndexOutOfBoundsException | !ArrayIndexOutOfBoundsException",
+			"2 to 1: the start after the end | 2 | 1 | !IndexOutOfBoundsException | !IllegalArgumentException" }, delimiter = '|')
+	public void testNewSubArrayAndSubArrayOfARange(final String description, final int startIndex,
+		final int endIndex, final String newSubArray, final String subArray)
+	{
+		final String[] abc = { "a", "b", "c" };
+		assertEquals(newSubArray,
+			outcomeOfARange(() -> ArrayFactory.newSubArray(abc, startIndex, endIndex)),
+			"newSubArray");
+		assertEquals(subArray,
+			outcomeOfARange(() -> ArrayExtensions.subArray(abc, startIndex, endIndex)), "subArray");
+	}
+
+	/**
+	 * The outcome of a call that cuts a range out of an array, as the rows of
+	 * {@link #testNewSubArrayAndSubArrayOfARange} write it
+	 *
+	 * @param call
+	 *            the call
+	 * @return the elements separated by a space with 'null' for a null element, '' for none, or the
+	 *         simple name of the exception after a '!'
+	 */
+	private static String outcomeOfARange(final Supplier<String[]> call)
+	{
+		try
+		{
+			return Arrays.stream(call.get()).map(String::valueOf).collect(Collectors.joining(" "));
+		}
+		catch (final RuntimeException e)
+		{
+			return "!" + e.getClass().getSimpleName();
+		}
 	}
 
 	/**
