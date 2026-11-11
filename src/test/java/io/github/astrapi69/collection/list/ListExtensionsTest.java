@@ -1325,6 +1325,46 @@ public class ListExtensionsTest
 	}
 
 	/**
+	 * Test the method {@link ListExtensions#splitToParts(java.util.Collection, int)}: the outcome
+	 * for sizes below 1 and for no elements, as the parts or as the exception, its class and its
+	 * message
+	 *
+	 * @param description
+	 *            the name of the case
+	 * @param count
+	 *            the number of elements, 1 to count
+	 * @param size
+	 *            the size of the parts
+	 * @param outcome
+	 *            the expected outcome
+	 */
+	@ParameterizedTest(name = "{0}", quoteTextArguments = false)
+	@CsvSource(value = { "5 elements in parts of -2 | 5 | -2 | [[1, 2, 3, 4, 5]]",
+			"3 elements in parts of -1 | 3 | -1 | [[1, 2, 3]]",
+			"3 elements in parts of 0: an empty first part | 3 | 0 | [[], [1, 2, 3]]",
+			"3 elements in parts of 1 | 3 | 1 | [[1], [2], [3]]",
+			"3 elements in parts of 3, the length | 3 | 3 | [[1, 2, 3]]",
+			"3 elements in parts of 4, above the length | 3 | 4 | [[1, 2, 3]]",
+			"no elements in parts of -1 | 0 | -1 | []", "no elements in parts of 0 | 0 | 0 | []",
+			"no elements in parts of 2 | 0 | 2 | []" }, delimiter = '|')
+	public void testSplitToPartsOfSizeBelowOneAndOfNoElements(final String description,
+		final int count, final int size, final String outcome)
+	{
+		final List<Integer> list = IntStream.rangeClosed(1, count).boxed()
+			.collect(Collectors.toCollection(ArrayList::new));
+		String actual;
+		try
+		{
+			actual = ListExtensions.splitToParts(list, size).toString();
+		}
+		catch (final RuntimeException e)
+		{
+			actual = e.getClass().getSimpleName() + ": " + e.getMessage();
+		}
+		assertEquals(outcome, actual);
+	}
+
+	/**
 	 * Test the methods {@link ListExtensions#toList(java.util.Enumeration)} and
 	 * {@link ListExtensions#toList(Set)}: a list of all elements of an enumeration of the given
 	 * elements in their order, and a list of all elements of a set of them in the iteration order

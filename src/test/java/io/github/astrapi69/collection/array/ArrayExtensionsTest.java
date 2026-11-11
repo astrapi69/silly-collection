@@ -1261,6 +1261,50 @@ public class ArrayExtensionsTest
 	}
 
 	/**
+	 * Test for method {@link ArrayExtensions#splitInChunks(byte[], int)}: the outcome for chunk
+	 * sizes below 1 and for an empty array, as the number of chunks, a colon and the chunks
+	 * separated by a '|', or as the exception, its class and its message
+	 *
+	 * @param description
+	 *            the name of the case
+	 * @param text
+	 *            the text whose bytes are split
+	 * @param chunkSize
+	 *            the chunk size
+	 * @param outcome
+	 *            the expected outcome
+	 */
+	@ParameterizedTest(name = "{0}", quoteTextArguments = false)
+	@CsvSource(value = { "3 bytes in chunks of -2: no chunk, the bytes are lost; abc; -2; 0:",
+			"3 bytes in chunks of -1; abc; -1; NegativeArraySizeException: -1",
+			"3 bytes in chunks of 0; abc; 0; ArithmeticException: / by zero",
+			"3 bytes in chunks of 1; abc; 1; 3:a|b|c",
+			"3 bytes in chunks of 3, the length; abc; 3; 1:abc",
+			"3 bytes in chunks of 4, above the length; abc; 4; 1:abc",
+			"no bytes in chunks of -1; ''; -1; ArrayIndexOutOfBoundsException: arraycopy: source index -1 out of bounds for byte[0]",
+			"no bytes in chunks of 0; ''; 0; ArithmeticException: / by zero",
+			"no bytes in chunks of 1: no chunk; ''; 1; 0:",
+			"no bytes in chunks of 3: one empty chunk; ''; 3; 1:" }, delimiter = ';')
+	public void testSplitInChunksOfSizeBelowOneAndOfNoBytes(final String description,
+		final String text, final int chunkSize, final String outcome)
+	{
+		String actual;
+		try
+		{
+			final byte[][] chunks = ArrayExtensions
+				.splitInChunks(text.getBytes(StandardCharsets.US_ASCII), chunkSize);
+			actual = chunks.length + ":"
+				+ Arrays.stream(chunks).map(chunk -> new String(chunk, StandardCharsets.US_ASCII))
+					.collect(Collectors.joining("|"));
+		}
+		catch (final RuntimeException e)
+		{
+			actual = e.getClass().getSimpleName() + ": " + e.getMessage();
+		}
+		assertEquals(outcome, actual);
+	}
+
+	/**
 	 * Test method for {@link ArrayExtensions} with {@link BeanTester}
 	 */
 	@Test
