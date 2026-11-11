@@ -105,11 +105,11 @@ public class IndexableSetTest
 	 *            the message of the exception
 	 */
 	@ParameterizedTest(name = "{0}", quoteTextArguments = false)
-	@CsvSource(value = { "a, b: -1 | a b | -1 | Index: -1, Size: 2",
-			"a, b: 2, the size | a b | 2 | Index: 2, Size: 2",
-			"a, b: 3, beyond the size | a b | 3 | Index: 3, Size: 2",
-			"an empty set: 0 | '' | 0 | Index: 0, Size: 0",
-			"an empty set: -1 | '' | -1 | Index: -1, Size: 0" }, delimiter = '|')
+	@CsvSource(value = { "a, b: -1 | a b | -1 | Index -1 out of bounds for length 2",
+			"a, b: 2, the size | a b | 2 | Index 2 out of bounds for length 2",
+			"a, b: 3, beyond the size | a b | 3 | Index 3 out of bounds for length 2",
+			"an empty set: 0 | '' | 0 | Index 0 out of bounds for length 0",
+			"an empty set: -1 | '' | -1 | Index -1 out of bounds for length 0" }, delimiter = '|')
 	public void testGetOutOfRangeMessage(final String description, final String elements,
 		final int index, final String message)
 	{
