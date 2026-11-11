@@ -37,11 +37,12 @@ import java.util.function.BiFunction;
  * methods {@link #merge(Object, Object, BiFunction)}, {@link #compute(Object, BiFunction)},
  * {@link #computeIfPresent(Object, BiFunction)}, {@link #replace(Object, Object)} and
  * {@link #replace(Object, Object, Object)} do the same for a key that is there and takes a new
- * value, as the default implementations of {@link Map} specify them in terms of put. A key that
- * keeps its place: the one of {@link #replaceAll(BiFunction)}, of
- * {@link java.util.Map.Entry#setValue(Object)}, and the ones of
+ * value, as the default implementations of {@link Map} specify them in terms of put. So do
  * {@link #putIfAbsent(Object, Object)} and
- * {@link #computeIfAbsent(Object, java.util.function.Function)}, which write only a new key.
+ * {@link #computeIfAbsent(Object, java.util.function.Function)}, which write a new key, or a key
+ * that is mapped to null: that key comes last, as with put; a function that gives null changes
+ * nothing. A key that keeps its place: the one of {@link #replaceAll(BiFunction)} and of
+ * {@link java.util.Map.Entry#setValue(Object)}.
  * 
  * @author Asterios Raptis
  * @version 1.0
@@ -224,6 +225,56 @@ public class InsertionOrderMap<K, V> extends LinkedHashMap<K, V>
 		final boolean contained = super.containsKey(key);
 		final V result = super.merge(key, value, remappingFunction);
 		if (contained && result != null)
+		{
+			moveToEnd(key, result);
+		}
+		return result;
+	}
+
+	/**
+	 * If the specified key is not there or is mapped to null, associates it with the given value,
+	 * and a key that was mapped to null moves to the end, as {@link #put(Object, Object)} does.
+	 * Otherwise as {@link LinkedHashMap#putIfAbsent(Object, Object)}.
+	 *
+	 * @param key
+	 *            key with which the specified value is to be associated
+	 * @param value
+	 *            value to be associated with the specified key
+	 * @return the previous value associated with the specified key, or null if there was no mapping
+	 *         for the key or it was mapped to null
+	 */
+	@Override
+	public V putIfAbsent(final K key, final V value)
+	{
+		final boolean mappedToNull = super.containsKey(key) && super.get(key) == null;
+		final V previous = super.putIfAbsent(key, value);
+		if (mappedToNull && value != null)
+		{
+			moveToEnd(key, value);
+		}
+		return previous;
+	}
+
+	/**
+	 * If the specified key is not there or is mapped to null, attempts to compute its value, and a
+	 * key that was mapped to null and takes a value moves to the end, as
+	 * {@link #put(Object, Object)} does; a function that gives null changes nothing. Otherwise as
+	 * {@link LinkedHashMap#computeIfAbsent(Object, java.util.function.Function)}.
+	 *
+	 * @param key
+	 *            key with which the specified value is to be associated
+	 * @param mappingFunction
+	 *            the function to compute a value
+	 * @return the current (existing or computed) value associated with the specified key, or null
+	 *         if the computed value is null
+	 */
+	@Override
+	public V computeIfAbsent(final K key,
+		final java.util.function.Function<? super K, ? extends V> mappingFunction)
+	{
+		final boolean mappedToNull = super.containsKey(key) && super.get(key) == null;
+		final V result = super.computeIfAbsent(key, mappingFunction);
+		if (mappedToNull && result != null)
 		{
 			moveToEnd(key, result);
 		}

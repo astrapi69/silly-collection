@@ -316,8 +316,9 @@ public class InsertionOrderMapTest
 	 *            the value of the key a afterwards, nothing for null
 	 */
 	@ParameterizedTest(name = "{0}", quoteTextArguments = false)
-	@CsvSource(value = { "putIfAbsent(a, 3), a mapped to null | putIfAbsent | | a b | 3",
-			"computeIfAbsent(a, 3), a mapped to null | computeIfAbsent | 3 | a b | 3",
+	@CsvSource(value = {
+			"putIfAbsent(a, 3), a mapped to null: a moves to the end | putIfAbsent | | b a | 3",
+			"computeIfAbsent(a, 3), a mapped to null: a moves to the end | computeIfAbsent | 3 | b a | 3",
 			"computeIfAbsent(a, null), a mapped to null | computeIfAbsentToNull | | a b | ",
 			"putIfAbsent(b, 3), b has the value 2 | putIfAbsentOfB | 2 | a b | ",
 			"computeIfAbsent(b, 3), b has the value 2 | computeIfAbsentOfB | 2 | a b | " }, delimiter = '|')
