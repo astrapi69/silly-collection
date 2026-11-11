@@ -993,8 +993,8 @@ public class ListExtensionsTest
 
 	/**
 	 * Test method for {@link ListExtensions#rearrange(List, Object, int)}: the list with the
-	 * element at the given index; unchanged if the element is there already, if the index is the
-	 * size of the list, or if the list does not hold the element. The given list does not change
+	 * element at the given index, or at the end if the index is above the last one; unchanged if
+	 * the element is there already or if the list does not hold it. The given list does not change
 	 *
 	 * @param description
 	 *            the name of the case
@@ -1085,16 +1085,16 @@ public class ListExtensionsTest
 	 *            the outcome of relocate
 	 */
 	@ParameterizedTest(name = "{0}", quoteTextArguments = false)
-	@CsvSource(value = { "a to -1 | a | -1 | throws | false | throws:b c",
+	@CsvSource(value = { "a to -1 | a | -1 | throws | false | throws:a b c",
 			"a to 0, its index | a | 0 | a b c | true | a b c",
 			"a to 1 | a | 1 | b a c | false | b a c",
 			"a to 2, the last index | a | 2 | b c a | false | b c a",
-			"a to 3, the size | a | 3 | a b c | true | b c a",
-			"a to 4, above the size | a | 4 | throws | false | b c a",
-			"c to -1, the last element | c | -1 | throws | false | throws:a b",
+			"a to 3, the size | a | 3 | b c a | false | b c a",
+			"a to 4, above the size | a | 4 | b c a | false | b c a",
+			"c to -1, the last element | c | -1 | throws | false | throws:a b c",
 			"c to 2, its index, the last | c | 2 | a b c | true | a b c",
 			"c to 3, the size, the last element | c | 3 | a b c | true | a b c",
-			"c to 4, above the size, the last element | c | 4 | throws | false | a b c",
+			"c to 4, above the size, the last element | c | 4 | a b c | true | a b c",
 			"x, not in the list, to -1 | x | -1 | a b c | true | a b c",
 			"x, not in the list, to 4 | x | 4 | a b c | true | a b c" }, delimiter = '|')
 	public void testRearrangeAndRelocateAtTheEnds(final String description, final String element,
@@ -1132,14 +1132,14 @@ public class ListExtensionsTest
 
 	/**
 	 * Test method for {@link ListExtensions#relocate(List, Object, int)}: the last element of an
-	 * unmodifiable list to the size
+	 * unmodifiable list to the size, where nothing moves
 	 */
 	@Test
 	public void testRelocateTheLastElementToTheSizeOfAnUnmodifiableList()
 	{
 		final List<String> list = Collections.unmodifiableList(elements("a b c"));
-		assertThrows(UnsupportedOperationException.class,
-			() -> ListExtensions.relocate(list, "c", 3));
+		ListExtensions.relocate(list, "c", 3);
+		assertEquals(elements("a b c"), list);
 	}
 
 	/**

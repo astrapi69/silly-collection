@@ -489,7 +489,10 @@ public final class ListExtensions
 	}
 
 	/**
-	 * Rearrange the order from the given {@link List} to the given rearranged index
+	 * Rearranges the given element of the given {@link List} to the given index: an index at or
+	 * above the last index moves the element to the end. Returns a new list, or the given list
+	 * itself if nothing moves (the list does not hold the element or the element is at the target
+	 * position already); the given list does not change.
 	 *
 	 * @param <T>
 	 *            the generic type of the elements
@@ -500,25 +503,35 @@ public final class ListExtensions
 	 * @param rearrangeToIndex
 	 *            the index to rearrange
 	 * @return the rearranged {@link List}
+	 * @throws IndexOutOfBoundsException
+	 *             if the list holds the element and the index is negative
 	 */
 	public static <T> List<T> rearrange(List<T> listToResort, T element, int rearrangeToIndex)
 	{
 		Argument.notNull(element, "element");
 		Argument.notNull(listToResort, "listToResort");
 		int index = listToResort.indexOf(element);
-		if (index < 0 || index == rearrangeToIndex || listToResort.size() == rearrangeToIndex)
+		if (index < 0)
+		{
+			return listToResort;
+		}
+		final int targetIndex = targetIndex(listToResort, rearrangeToIndex);
+		if (index == targetIndex)
 		{
 			return listToResort;
 		}
 		List<T> resortedList;
 		resortedList = ListFactory.newArrayList(listToResort);
 		resortedList.remove(index);
-		resortedList.add(rearrangeToIndex, element);
+		resortedList.add(targetIndex, element);
 		return resortedList;
 	}
 
 	/**
-	 * Relocated the given element in the given {@link List} to the given index
+	 * Relocates the given element in the given {@link List} to the given index: an index at or
+	 * above the last index moves the element to the end. The list does not change if it does not
+	 * hold the element, if the element is at the target position already, or if the index is
+	 * negative and the list throws.
 	 *
 	 * @param <T>
 	 *            the generic type of the elements
@@ -528,25 +541,49 @@ public final class ListExtensions
 	 *            the element to relocated
 	 * @param newIndex
 	 *            the new index to relocated
+	 * @throws IndexOutOfBoundsException
+	 *             if the list holds the element and the index is negative; the list is not changed
+	 *             then
 	 */
 	public static <T> void relocate(List<T> list, T element, int newIndex)
 	{
 		Argument.notNull(element, "element");
 		Argument.notNull(list, "list");
 		int index = list.indexOf(element);
-		if (index < 0 || index == newIndex)
+		if (index < 0)
+		{
+			return;
+		}
+		final int targetIndex = targetIndex(list, newIndex);
+		if (index == targetIndex)
 		{
 			return;
 		}
 		list.remove(index);
-		if (list.size() <= newIndex)
+		list.add(targetIndex, element);
+	}
+
+	/**
+	 * Gets the index an element is moved to: the given index, or the last index of the given
+	 * {@link List} if the given index is above it
+	 *
+	 * @param <T>
+	 *            the generic type of the elements
+	 * @param list
+	 *            the list
+	 * @param index
+	 *            the wanted index
+	 * @return the index to move to
+	 * @throws IndexOutOfBoundsException
+	 *             if the given index is negative
+	 */
+	private static <T> int targetIndex(final List<T> list, final int index)
+	{
+		if (index < 0)
 		{
-			list.add(element);
+			throw new IndexOutOfBoundsException("Index: " + index + ", Size: " + list.size());
 		}
-		else
-		{
-			list.add(newIndex, element);
-		}
+		return Math.min(index, list.size() - 1);
 	}
 
 	/**
