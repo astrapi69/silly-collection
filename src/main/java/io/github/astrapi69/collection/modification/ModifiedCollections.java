@@ -62,17 +62,22 @@ public class ModifiedCollections<T>
 	}
 
 	/**
-	 * Gets the modified lists.
+	 * Finds the elements of next that previous does not hold (added) and those of previous that
+	 * next does not hold (removed), each in the order of its collection; the result of an earlier
+	 * call is replaced.
 	 *
 	 * @param previous
 	 *            the previous
 	 * @param next
 	 *            the next
-	 * @return the modified lists
+	 * @return this object, holding the modified elements of the two given collections
 	 */
 	public ModifiedCollections<T> getModifiedLists(final Collection<T> previous,
 		final Collection<T> next)
 	{
+		// each call answers for its own two collections only
+		this.addedElements.clear();
+		this.removedElements.clear();
 		// find the elements that are new...
 		for (final T added : next)
 		{

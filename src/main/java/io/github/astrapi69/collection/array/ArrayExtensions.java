@@ -696,20 +696,23 @@ public final class ArrayExtensions
 	}
 
 	/**
-	 * Checks if the given element is the first in the given array
+	 * Checks if the given element is the first in the given array. The element is compared with the
+	 * first element of the array with {@link Objects#equals(Object, Object)}, so an element that is
+	 * also at an index after the first is the first too, and null is the first of an array that
+	 * starts with null. An empty array and null have no first element
 	 *
 	 * @param <T>
 	 *            the generic type
 	 * @param array
-	 *            the array
+	 *            the array, may be null
 	 * @param element
-	 *            the element
-	 * @return true if the given element is the first otherwise false
+	 *            the element, may be null
+	 * @return true if the given element is the first otherwise false, also if the array is empty or
+	 *         null
 	 */
 	public static <T> boolean isFirst(final T[] array, final T element)
 	{
-		final int indexOfElement = Arrays.asList(array).indexOf(element);
-		return indexOfElement == 0;
+		return array != null && array.length != 0 && Objects.equals(array[0], element);
 	}
 
 	/**
