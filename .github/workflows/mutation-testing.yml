@@ -84,7 +84,7 @@ jobs:
             https://raw.githubusercontent.com/awesome-references/awesome-well-tested/3d1258db8b54a1ad239229869eec9d57c527991c/scripts/mutation_context.py
           python3 /tmp/mutation_context.py --pit build/reports/pitest/mutations.xml \
             --tool-version "$(grep -oP '^pitest-version = "\K[^"]+' gradle/libs.versions.toml)" \
-            --mutators DEFAULTS --target 'io.github.astrapi69.collection.*' \
+            --mutators DEFAULTS,STRONGER --target 'io.github.astrapi69.collection.*' \
             --out build/reports/pitest/mutation-context.json
           cat build/reports/pitest/mutation-context.json
       - name: Keep the mutation context

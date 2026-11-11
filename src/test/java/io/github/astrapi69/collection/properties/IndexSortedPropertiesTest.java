@@ -26,6 +26,7 @@ package io.github.astrapi69.collection.properties;
 
 import static org.junit.jupiter.api.Assertions.assertEquals;
 import static org.junit.jupiter.api.Assertions.assertNull;
+import static org.junit.jupiter.api.Assertions.assertThrows;
 import static org.junit.jupiter.api.Assertions.assertTrue;
 
 import java.io.IOException;
@@ -45,6 +46,7 @@ import java.util.stream.Stream;
 import org.junit.jupiter.api.Test;
 import org.junit.jupiter.params.ParameterizedTest;
 import org.junit.jupiter.params.provider.Arguments;
+import org.junit.jupiter.params.provider.CsvSource;
 import org.junit.jupiter.params.provider.MethodSource;
 
 import io.github.astrapi69.collection.list.ListFactory;
@@ -671,6 +673,60 @@ public class IndexSortedPropertiesTest
 		assertEquals("2", properties.getProperty(1));
 		assertEquals("1", properties.getProperty(2));
 		assertEquals(ListFactory.newArrayList(true), calls);
+	}
+
+	/**
+	 * Test for the methods {@link IndexSortedProperties#get(int)},
+	 * {@link IndexSortedProperties#getProperty(int)} and
+	 * {@link IndexSortedProperties#indexOf(Object)} on properties of the entries a = x, 1 = y and b
+	 * = 2, whose index in the order of the string form of the keys is 1, 0 and 2: an entry whose
+	 * key is not a String has no property, so the index methods give null for it and skip it, as
+	 * {@link Properties#getProperty(String)} and {@link Properties#stringPropertyNames()} do
+	 * (#148); a value that is not a String is not found, as before
+	 *
+	 * @param description
+	 *            the name of the case
+	 * @param call
+	 *            the method
+	 * @param argument
+	 *            the index or the object
+	 * @param expected
+	 *            what the call gives, nothing for null, or the simple name of its exception
+	 */
+	@ParameterizedTest(name = "{0}", quoteTextArguments = false)
+	@CsvSource(value = { "get(0), the key 1 is an Integer: null | get | 0 | ",
+			"get(1), the key a: x | get | 1 | x", "get(2), the value 2 is an Integer | get | 2 | ",
+			"getProperty(0), the key 1 is an Integer: null | getProperty | 0 | ",
+			"getProperty(1), the key a: x | getProperty | 1 | x",
+			"getProperty(2), the value 2 is an Integer | getProperty | 2 | ",
+			"indexOf(x), which key a holds, after the key 1: its index 1 | indexOf | x | 1",
+			"indexOf(y), which the key 1 holds: skipped, -1 | indexOf | y | -1",
+			"indexOf(2), the value of the key b is an Integer: -1 | indexOf | 2 | -1" }, delimiter = '|')
+	public void testNonStringEntries(final String description, final String call,
+		final String argument, final String expected)
+	{
+		final IndexSortedProperties properties = new IndexSortedProperties();
+		properties.setProperty("a", "x");
+		properties.put(1, "y");
+		properties.put("b", 2);
+		final Supplier<Object> read = switch (call)
+		{
+			case "get" -> () -> properties.get(Integer.parseInt(argument));
+			case "getProperty" -> () -> properties.getProperty(Integer.parseInt(argument));
+			case "indexOf" -> () -> "2".equals(argument)
+				? properties.indexOf(2)
+				: properties.indexOf(argument);
+			default -> throw new IllegalArgumentException("no call " + call);
+		};
+		if (expected != null && expected.endsWith("Exception"))
+		{
+			assertEquals(expected,
+				assertThrows(RuntimeException.class, read::get).getClass().getSimpleName());
+		}
+		else
+		{
+			assertEquals(expected, read.get() == null ? null : read.get().toString());
+		}
 	}
 
 }

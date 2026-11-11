@@ -63,6 +63,9 @@ public final class CollectionExtensions
 	 *            the objects for check if there are containing in the given collection
 	 * @return <code>true</code> if the given {@link Collection} contains at least one object of the
 	 *         given objects otherwise it returns <code>false</code>.
+	 * @throws NullPointerException
+	 *             if the objects are null, or if the collection is null and at least one object is
+	 *             given
 	 */
 	@SafeVarargs
 	public static <T> boolean containsAtLeastOne(Collection<T> collection, T... objects)
@@ -125,9 +128,10 @@ public final class CollectionExtensions
 	 * @param <T>
 	 *            the generic type
 	 * @param toIntersect
-	 *            the to intersect
-	 * @return the result of the intersection. This will be the first collection that contains the
-	 *         result.
+	 *            the collections to intersect
+	 * @return the first collection, after {@link Collection#retainAll(Collection)} with each of the
+	 *         others, so it keeps its duplicates and the caller's first collection is changed, or
+	 *         null if fewer than two collections are given
 	 */
 	@SafeVarargs
 	public static <T> Collection<T> intersection(final Collection<T>... toIntersect)
