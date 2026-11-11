@@ -503,10 +503,14 @@ public final class ArrayExtensions
 	 * @param element
 	 *            the element
 	 * @param count
-	 *            the count, 0 gives an empty array, and it may be longer than the array
-	 * @return the next indexes, or null if the element is null or not in the array
+	 *            the count; it may be longer than the array, and 0 gives an empty array for an
+	 *            element that is in the array
+	 * @return the next indexes, or null if the element is null or not in the array, whatever the
+	 *         count
 	 * @throws IllegalArgumentException
 	 *             if {@code count < 0} and the element is not null
+	 * @throws NullPointerException
+	 *             if the array is null and the element is not, also for a count of 0
 	 */
 	public static <T> int[] getNextIndexes(final T[] array, final T element, final int count)
 	{
@@ -571,10 +575,14 @@ public final class ArrayExtensions
 	 * @param element
 	 *            the element
 	 * @param count
-	 *            the count, 0 gives an empty array, and it may be longer than the array
-	 * @return the previous indexes, or null if the element is null or not in the array
+	 *            the count; it may be longer than the array, and 0 gives an empty array for an
+	 *            element that is in the array
+	 * @return the previous indexes, or null if the element is null or not in the array, whatever
+	 *         the count
 	 * @throws IllegalArgumentException
 	 *             if {@code count < 0} and the element is not null
+	 * @throws NullPointerException
+	 *             if the array is null and the element is not, also for a count of 0
 	 */
 	public static <T> int[] getPreviousIndexes(final T[] array, final T element, final int count)
 	{
