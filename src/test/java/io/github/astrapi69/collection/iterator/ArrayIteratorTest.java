@@ -39,6 +39,8 @@ import org.junit.jupiter.params.ParameterizedTest;
 import org.junit.jupiter.params.provider.CsvSource;
 import org.meanbean.test.BeanTester;
 
+import io.github.astrapi69.collection.test.Elements;
+
 /**
  * The unit test class for the class {@link ArrayIterator}.
  *
@@ -88,12 +90,12 @@ public class ArrayIteratorTest
 	public void testSteps(final String description, final String array, final String steps,
 		final String results, final String arrayAfterwards)
 	{
-		final String[] elements = IteratorSteps.elementsWithNull(array).toArray(new String[0]);
+		final String[] elements = Elements.listWithNull(array).toArray(new String[0]);
 		final ArrayIterator<String> iterator = new ArrayIterator<>(elements);
 		assertSame(elements, iterator.getArray());
-		assertEquals(IteratorSteps.elements(results), IteratorSteps.run(iterator, steps));
-		assertArrayEquals(IteratorSteps.elementsWithNull(arrayAfterwards).toArray(new String[0]),
-			elements, () -> "the array afterwards " + Arrays.toString(elements));
+		assertEquals(Elements.list(results), IteratorSteps.run(iterator, steps));
+		assertArrayEquals(Elements.listWithNull(arrayAfterwards).toArray(new String[0]), elements,
+			() -> "the array afterwards " + Arrays.toString(elements));
 	}
 
 	/**
@@ -114,7 +116,7 @@ public class ArrayIteratorTest
 		final int nextCalls)
 	{
 		final ArrayIterator<String> iterator = new ArrayIterator<>(
-			IteratorSteps.elements(array).toArray(new String[0]));
+			Elements.list(array).toArray(new String[0]));
 		for (int i = 0; i < nextCalls; i++)
 		{
 			iterator.next();
