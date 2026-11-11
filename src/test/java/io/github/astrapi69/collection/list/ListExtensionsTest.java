@@ -1339,13 +1339,15 @@ public class ListExtensionsTest
 	 *            the expected outcome
 	 */
 	@ParameterizedTest(name = "{0}", quoteTextArguments = false)
-	@CsvSource(value = { "5 elements in parts of -2 | 5 | -2 | [[1, 2, 3, 4, 5]]",
-			"3 elements in parts of -1 | 3 | -1 | [[1, 2, 3]]",
-			"3 elements in parts of 0: an empty first part | 3 | 0 | [[], [1, 2, 3]]",
+	@CsvSource(value = {
+			"5 elements in parts of -2 | 5 | -2 | IllegalArgumentException: The size must be at least 1, but is -2",
+			"3 elements in parts of -1 | 3 | -1 | IllegalArgumentException: The size must be at least 1, but is -1",
+			"3 elements in parts of 0 | 3 | 0 | IllegalArgumentException: The size must be at least 1, but is 0",
 			"3 elements in parts of 1 | 3 | 1 | [[1], [2], [3]]",
 			"3 elements in parts of 3, the length | 3 | 3 | [[1, 2, 3]]",
 			"3 elements in parts of 4, above the length | 3 | 4 | [[1, 2, 3]]",
-			"no elements in parts of -1 | 0 | -1 | []", "no elements in parts of 0 | 0 | 0 | []",
+			"no elements in parts of -1 | 0 | -1 | IllegalArgumentException: The size must be at least 1, but is -1",
+			"no elements in parts of 0 | 0 | 0 | IllegalArgumentException: The size must be at least 1, but is 0",
 			"no elements in parts of 2 | 0 | 2 | []" }, delimiter = '|')
 	public void testSplitToPartsOfSizeBelowOneAndOfNoElements(final String description,
 		final int count, final int size, final String outcome)

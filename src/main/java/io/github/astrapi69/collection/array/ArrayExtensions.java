@@ -954,16 +954,28 @@ public final class ArrayExtensions
 	}
 
 	/**
-	 * Split the given byte array in to new arrays with the chunk size
+	 * Splits the given byte array in to consecutive chunks of the given size, in the order of the
+	 * bytes; the last chunk may be smaller. An empty array gives no chunk.
 	 *
 	 * @param bytes
 	 *            the bytes
 	 * @param chunkSize
 	 *            the chunk size
-	 * @return the byte[][]
+	 * @return the chunks
+	 * @throws IllegalArgumentException
+	 *             if the chunk size is less than 1
 	 */
 	public static byte[][] splitInChunks(final byte[] bytes, final int chunkSize)
 	{
+		if (chunkSize < 1)
+		{
+			throw new IllegalArgumentException(
+				"The chunk size must be at least 1, but is " + chunkSize);
+		}
+		if (bytes.length == 0)
+		{
+			return new byte[0][];
+		}
 		final int size = ((bytes.length - 1) / chunkSize) + 1;
 		final byte[][] dataChunks = new byte[size][];
 		int to = bytes.length;

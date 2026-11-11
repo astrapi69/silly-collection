@@ -1275,16 +1275,17 @@ public class ArrayExtensionsTest
 	 *            the expected outcome
 	 */
 	@ParameterizedTest(name = "{0}", quoteTextArguments = false)
-	@CsvSource(value = { "3 bytes in chunks of -2: no chunk, the bytes are lost; abc; -2; 0:",
-			"3 bytes in chunks of -1; abc; -1; NegativeArraySizeException: -1",
-			"3 bytes in chunks of 0; abc; 0; ArithmeticException: / by zero",
+	@CsvSource(value = {
+			"3 bytes in chunks of -2; abc; -2; IllegalArgumentException: The chunk size must be at least 1, but is -2",
+			"3 bytes in chunks of -1; abc; -1; IllegalArgumentException: The chunk size must be at least 1, but is -1",
+			"3 bytes in chunks of 0; abc; 0; IllegalArgumentException: The chunk size must be at least 1, but is 0",
 			"3 bytes in chunks of 1; abc; 1; 3:a|b|c",
 			"3 bytes in chunks of 3, the length; abc; 3; 1:abc",
 			"3 bytes in chunks of 4, above the length; abc; 4; 1:abc",
-			"no bytes in chunks of -1; ''; -1; ArrayIndexOutOfBoundsException: arraycopy: source index -1 out of bounds for byte[0]",
-			"no bytes in chunks of 0; ''; 0; ArithmeticException: / by zero",
+			"no bytes in chunks of -1; ''; -1; IllegalArgumentException: The chunk size must be at least 1, but is -1",
+			"no bytes in chunks of 0; ''; 0; IllegalArgumentException: The chunk size must be at least 1, but is 0",
 			"no bytes in chunks of 1: no chunk; ''; 1; 0:",
-			"no bytes in chunks of 3: one empty chunk; ''; 3; 1:" }, delimiter = ';')
+			"no bytes in chunks of 3: no chunk; ''; 3; 0:" }, delimiter = ';')
 	public void testSplitInChunksOfSizeBelowOneAndOfNoBytes(final String description,
 		final String text, final int chunkSize, final String outcome)
 	{
