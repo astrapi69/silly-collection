@@ -707,6 +707,37 @@ public class ArrayExtensionsTest
 	}
 
 	/**
+	 * Test for method {@link ArrayExtensions#isFirst(Object[], Object)} with a null array or null
+	 * as an element: the answer (#143)
+	 *
+	 * @param description
+	 *            the name of the case
+	 * @param array
+	 *            the array, its elements separated by a space, 'null' for a null element, '' for an
+	 *            empty array, empty for null
+	 * @param element
+	 *            the element, may be null
+	 * @param expected
+	 *            the answer of isFirst
+	 */
+	@ParameterizedTest(name = "{0}", quoteTextArguments = false)
+	@CsvSource({ "x in a null array: not first (#143), , x, false",
+			"null in a null array: not first (#143), , , false",
+			"null at the start of null a: first, null a, , true",
+			"null at the end of a null: not first, a null, , false",
+			"a at the start of a null a: first, a null a, a, true",
+			"a also at the end of a b a: first, a b a, a, true" })
+	public void testIsFirstWithNull(final String description, final String array,
+		final String element, final boolean expected)
+	{
+		final String[] elements = array == null
+			? null
+			: Arrays.stream(elements(array)).map(each -> "null".equals(each) ? null : each)
+				.toArray(String[]::new);
+		assertEquals(expected, ArrayExtensions.isFirst(elements, element));
+	}
+
+	/**
 	 * Test for method {@link ArrayExtensions#isLast(Object[], Object)}: the element is compared
 	 * with the last element, so an element twice at the end is last, and an empty array and null
 	 * have no last element (#114)
@@ -859,7 +890,10 @@ public class ArrayExtensionsTest
 			"from 8, not in the array: null | 1 2 3 4 5 6 7 | 8 | 2 | | ",
 			"from null: null | 1 2 3 4 5 6 7 | | 2 | | ",
 			"from 7 in an empty array: null | '' | 7 | 2 | | ",
-			"from null in an empty array: null | '' | | 2 | | " }, delimiter = '|')
+			"from null in an empty array: null | '' | | 2 | | ",
+			"from the repeated 2 of 1 2 2 3, 3 indexes: counted from the first 2 | 1 2 2 3 | 2 | 3 | 2 3 0 | 0 3 2",
+			"from 3 of 1 2 2 3, 6 indexes: every index, around the ends | 1 2 2 3 | 3 | 6 | 0 1 2 3 0 1 | 2 1 0 3 2 1",
+			"from 1 of 1 2 2 3, 4 indexes: every index | 1 2 2 3 | 1 | 4 | 1 2 3 0 | 3 2 1 0" }, delimiter = '|')
 	public void testGetNextAndPreviousIndexes(final String description, final String array,
 		final String element, final int count, final String next, final String previous)
 	{
