@@ -49,6 +49,7 @@ import org.apache.commons.collections4.map.LazyMap;
 import org.junit.jupiter.api.Test;
 import org.junit.jupiter.params.ParameterizedTest;
 import org.junit.jupiter.params.provider.Arguments;
+import org.junit.jupiter.params.provider.CsvSource;
 import org.junit.jupiter.params.provider.MethodSource;
 import org.meanbean.test.BeanTester;
 
@@ -601,6 +602,40 @@ public class MapFactoryTest
 	public void testCounterMap(final Counter counter)
 	{
 		assertEquals(counter.expected(), counter.counter().get());
+	}
+
+	/**
+	 * Test for the methods {@code newCounterMap(Map, Collection)} and
+	 * {@code newCounterMap(Map, Collection, boolean)}: they count the elements into the given map
+	 * and return that same map, not a new one, which keeps the counts it held
+	 *
+	 * @param description
+	 *            the name of the case
+	 * @param startByZero
+	 *            the flag startByZero, null for the method without the flag
+	 * @param expected
+	 *            the counts of the given map afterwards
+	 */
+	@ParameterizedTest(name = "{0}", quoteTextArguments = false)
+	@CsvSource(value = { "newCounterMap(map of 9 counted 5, 1 to 2 and 2 again) | | 9=5 1=0 2=1",
+			"newCounterMap(map of 9 counted 5, 1 to 2 and 2 again, true) | true | 9=5 1=0 2=1",
+			"newCounterMap(map of 9 counted 5, 1 to 2 and 2 again, false) | false | 9=5 1=1 2=2" }, delimiter = '|')
+	public void testCounterMapReturnsTheGivenMap(final String description,
+		final Boolean startByZero, final String expected)
+	{
+		final Map<Integer, Integer> given = new HashMap<>(Map.of(9, 5));
+		final List<Integer> elements = List.of(1, 2, 2);
+		final Map<Integer, Integer> returned = startByZero == null
+			? MapFactory.newCounterMap(given, elements)
+			: MapFactory.newCounterMap(given, elements, startByZero);
+		assertSame(given, returned);
+		final Map<Integer, Integer> counts = new HashMap<>();
+		for (final String entry : expected.split(" "))
+		{
+			final String[] keyAndCount = entry.split("=");
+			counts.put(Integer.valueOf(keyAndCount[0]), Integer.valueOf(keyAndCount[1]));
+		}
+		assertEquals(counts, returned);
 	}
 
 	/**
