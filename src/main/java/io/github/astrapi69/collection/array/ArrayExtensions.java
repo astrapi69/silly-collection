@@ -669,7 +669,11 @@ public final class ArrayExtensions
 	}
 
 	/**
-	 * Intersection of the given two arrays
+	 * Intersection of the given two arrays: the elements of the first array that the other array
+	 * holds, in the order of the first array and with its duplicates, as
+	 * {@link java.util.Collection#retainAll(java.util.Collection)} keeps them, so {a, a, b} and {a}
+	 * give {a, a} and {a} and {a, a} give {a}. It is not the intersection of Commons Collections'
+	 * {@code CollectionUtils#intersection}, which gives the minimum cardinality of each element
 	 *
 	 * @param <T>
 	 *            the generic type
@@ -677,7 +681,10 @@ public final class ArrayExtensions
 	 *            the first array
 	 * @param other
 	 *            the other array
-	 * @return the result of the intersection
+	 * @return a new array of the component type of the first array with the elements of the first
+	 *         array that the other array holds
+	 * @throws IllegalArgumentException
+	 *             if one of the arrays is null
 	 */
 	public static <T> T[] intersection(final T[] one, final T[] other)
 	{
