@@ -39,7 +39,17 @@ import io.github.astrapi69.collection.list.ListFactory;
 import io.github.astrapi69.collection.set.SetFactory;
 
 /**
- * The class {@link ArrayExtensions} is an extensions class for use with array objects
+ * The class {@link ArrayExtensions} is an extensions class for use with array objects.
+ * <p>
+ * The methods of this class throw a {@link NullPointerException} if the given array is null, except
+ * where noted: {@link #hasNext(Object[], Object)}, {@link #hasPrevious(Object[], Object)},
+ * {@link #getNextElement(Object[], Object)}, {@link #getPreviousElement(Object[], Object)} and
+ * {@link #intersection(Object[], Object[])} throw an {@link IllegalArgumentException}, and
+ * {@link #getLastIndex(Object[])}, {@link #isFirst(Object[], Object)},
+ * {@link #isLast(Object[], Object)}, {@link #getFirst(Object[])}, {@link #getLast(Object[])}, their
+ * {@link Optional} variants and {@link #arraycopyWithSystem(Object[], Object[])} answer -1, false,
+ * null or an empty {@link Optional} for a null array, as their own Javadoc says.
+ * </p>
  */
 public final class ArrayExtensions
 {
@@ -71,7 +81,7 @@ public final class ArrayExtensions
 	 *            the source
 	 * @param destination
 	 *            the destination
-	 * @return the t[]
+	 * @return the destination array with the elements of the source, or null if the source is null
 	 */
 	public static <T> T[] arraycopyWithSystem(T[] source, T[] destination)
 	{
@@ -201,6 +211,9 @@ public final class ArrayExtensions
 	 *            the elements to check if it is containing in the given array
 	 * @return <code>true</code> if at least one of given elements is in the given array otherwise
 	 *         <code>false</code>
+	 * @throws NullPointerException
+	 *             if the elements are null, or if the array is null and at least one element is
+	 *             given
 	 */
 	@SafeVarargs
 	public static <T> boolean containsAtLeastOne(final T[] array, final T... elements)
@@ -259,7 +272,9 @@ public final class ArrayExtensions
 	 *            the array
 	 * @param element
 	 *            the element
-	 * @return the int
+	 * @return the index of the first occurrence of the element, or -1 if the array does not hold it
+	 * @throws NullPointerException
+	 *             if the array is null
 	 */
 	public static <T> int getIndex(final T[] array, final T element)
 	{
@@ -609,7 +624,9 @@ public final class ArrayExtensions
 	 *            the array
 	 * @param element
 	 *            the element
-	 * @return true, if successful
+	 * @return true if the array holds the element and it is not the last, otherwise false
+	 * @throws IllegalArgumentException
+	 *             if the array is null
 	 */
 	public static <T> boolean hasNext(final T[] array, final T element)
 	{
@@ -633,7 +650,9 @@ public final class ArrayExtensions
 	 *            the array
 	 * @param element
 	 *            the element
-	 * @return true, if successful
+	 * @return true if the array holds the element and it is not the first, otherwise false
+	 * @throws IllegalArgumentException
+	 *             if the array is null
 	 */
 	public static <T> boolean hasPrevious(final T[] array, final T element)
 	{
@@ -655,6 +674,8 @@ public final class ArrayExtensions
 	 *            the element
 	 * @return an {@link Optional} with the previous element from the given array or an empty
 	 *         {@link Optional} if the array has no previous element
+	 * @throws IllegalArgumentException
+	 *             if the array is null
 	 */
 	public static <T> Optional<T> getPreviousElement(final T[] array, final T element)
 	{
@@ -681,6 +702,8 @@ public final class ArrayExtensions
 	 *            the element
 	 * @return an {@link Optional} with the next element from the given array or an empty
 	 *         {@link Optional} if the array has no next element
+	 * @throws IllegalArgumentException
+	 *             if the array is null
 	 */
 	public static <T> Optional<T> getNextElement(final T[] array, final T element)
 	{
@@ -702,7 +725,9 @@ public final class ArrayExtensions
 	 *            the array
 	 * @param element
 	 *            the element
-	 * @return the int
+	 * @return the index of the first occurrence of the element, or -1 if the array does not hold it
+	 * @throws NullPointerException
+	 *             if the array is null
 	 */
 	public static <T> int indexOf(final T[] array, final T element)
 	{
@@ -1012,9 +1037,13 @@ public final class ArrayExtensions
 	 *            the bytes
 	 * @param chunkSize
 	 *            the chunk size
-	 * @return the chunks
+	 * @return the chunks in the order of the bytes, each of the chunk size but the last, which is
+	 *         shorter if the length of the bytes is not a multiple of the chunk size; no chunk for
+	 *         an empty array
 	 * @throws IllegalArgumentException
 	 *             if the chunk size is less than 1
+	 * @throws NullPointerException
+	 *             if the bytes are null and the chunk size is at least 1
 	 */
 	public static byte[][] splitInChunks(final byte[] bytes, final int chunkSize)
 	{

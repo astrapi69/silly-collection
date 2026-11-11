@@ -63,6 +63,9 @@ public final class CollectionExtensions
 	 *            the objects for check if there are containing in the given collection
 	 * @return <code>true</code> if the given {@link Collection} contains at least one object of the
 	 *         given objects otherwise it returns <code>false</code>.
+	 * @throws NullPointerException
+	 *             if the objects are null, or if the collection is null and at least one object is
+	 *             given
 	 */
 	@SafeVarargs
 	public static <T> boolean containsAtLeastOne(Collection<T> collection, T... objects)
