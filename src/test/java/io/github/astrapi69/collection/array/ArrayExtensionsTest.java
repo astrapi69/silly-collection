@@ -860,9 +860,9 @@ public class ArrayExtensionsTest
 			"from null: null | 1 2 3 4 5 6 7 | | 2 | | ",
 			"from 7 in an empty array: null | '' | 7 | 2 | | ",
 			"from null in an empty array: null | '' | | 2 | | ",
-			"from the repeated 2 of 1 2 2 3, 3 indexes: back to the first index of the 2 | 1 2 2 3 | 2 | 3 | 2 2 2 | 0 3 2",
-			"from 3 of 1 2 2 3, 6 indexes: stuck on the repeated 2 | 1 2 2 3 | 3 | 6 | 0 1 2 2 2 2 | 2 0 3 2 0 3",
-			"from 1 of 1 2 2 3, 4 indexes: stuck on the repeated 2 | 1 2 2 3 | 1 | 4 | 1 2 2 2 | 3 2 0 3" }, delimiter = '|')
+			"from the repeated 2 of 1 2 2 3, 3 indexes: counted from the first 2 | 1 2 2 3 | 2 | 3 | 2 3 0 | 0 3 2",
+			"from 3 of 1 2 2 3, 6 indexes: every index, around the ends | 1 2 2 3 | 3 | 6 | 0 1 2 3 0 1 | 2 1 0 3 2 1",
+			"from 1 of 1 2 2 3, 4 indexes: every index | 1 2 2 3 | 1 | 4 | 1 2 3 0 | 3 2 1 0" }, delimiter = '|')
 	public void testGetNextAndPreviousIndexes(final String description, final String array,
 		final String element, final int count, final String next, final String previous)
 	{
