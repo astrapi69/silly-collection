@@ -28,6 +28,7 @@ import java.lang.reflect.Array;
 import java.util.ArrayList;
 import java.util.Arrays;
 import java.util.Collection;
+import java.util.LinkedHashMap;
 import java.util.List;
 import java.util.Optional;
 import java.util.concurrent.atomic.AtomicInteger;
@@ -96,7 +97,9 @@ public final class CollectionExtensions
 	}
 
 	/**
-	 * Returns a hash code based on the contents of the collection that contains array objects.
+	 * Returns a hash code based on the contents of the collection that contains array objects: the
+	 * hash code of {@link java.util.List#hashCode()}, with {@link Arrays#hashCode(Object[])} for
+	 * each array, in the iteration order of the collection.
 	 *
 	 * @param <T>
 	 *            the generic type of the array objects
@@ -110,7 +113,7 @@ public final class CollectionExtensions
 		int hashCode = 1;
 		for (T[] arrayObject : arrayObjects)
 		{
-			hashCode = 31 * hashCode * Arrays.hashCode(arrayObject);
+			hashCode = 31 * hashCode + Arrays.hashCode(arrayObject);
 		}
 		return hashCode;
 	}
@@ -194,7 +197,8 @@ public final class CollectionExtensions
 	}
 
 	/**
-	 * Groups the given {@link Collection} to parts from the specified size.
+	 * Groups the given {@link Collection} to consecutive parts of the specified size, in the order
+	 * of the collection; the last part may be smaller.
 	 *
 	 * @param <T>
 	 *            the generic type
@@ -202,14 +206,16 @@ public final class CollectionExtensions
 	 *            the collection
 	 * @param size
 	 *            the size
-	 * @return the collection
+	 * @return the parts, in the order of the collection
 	 */
 	public static <T> Collection<List<T>> partition(Collection<T> collection, int size)
 	{
 		final AtomicInteger counter = new AtomicInteger(0);
 
 		return collection.stream()
-			.collect(Collectors.groupingBy(it -> counter.getAndIncrement() / size)).values();
+			.collect(Collectors.groupingBy(it -> counter.getAndIncrement() / size,
+				LinkedHashMap::new, Collectors.toList()))
+			.values();
 	}
 
 	/**
