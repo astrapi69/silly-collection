@@ -824,6 +824,10 @@ public class ArrayExtensionsTest
 				npe),
 			new NullArrayCall("getPreviousIndexes",
 				() -> ArrayExtensions.getPreviousIndexes(none, "a", 1), npe),
+			new NullArrayCall("getNextIndexes, count 0",
+				() -> ArrayExtensions.getNextIndexes(none, "a", 0), npe),
+			new NullArrayCall("getPreviousIndexes, count 0",
+				() -> ArrayExtensions.getPreviousIndexes(none, "a", 0), npe),
 			new NullArrayCall("hasNext", () -> ArrayExtensions.hasNext(none, "a"), iae),
 			new NullArrayCall("hasPrevious", () -> ArrayExtensions.hasPrevious(none, "a"), iae),
 			new NullArrayCall("getNextElement", () -> ArrayExtensions.getNextElement(none, "a"),
@@ -1003,8 +1007,8 @@ public class ArrayExtensionsTest
 
 	/**
 	 * Test for the methods {@link ArrayExtensions#getNextIndexes(Object[], Object, int)} and
-	 * {@link ArrayExtensions#getPreviousIndexes(Object[], Object, int)} on a, b and c with a
-	 * negative count: what they return, or the simple name of the exception they throw (#139)
+	 * {@link ArrayExtensions#getPreviousIndexes(Object[], Object, int)} on a, b and c with a count
+	 * below 1: what they return, or the simple name of the exception they throw (#139)
 	 *
 	 * @param description
 	 *            the name of the case
@@ -1013,19 +1017,29 @@ public class ArrayExtensionsTest
 	 * @param count
 	 *            the count of indexes
 	 * @param expected
-	 *            'null', or the simple name of the exception
+	 *            'null', 'empty' for an empty array, or the simple name of the exception
 	 */
 	@ParameterizedTest(name = "{0}", quoteTextArguments = false)
 	@CsvSource({
 			"b in a b c with -1 indexes: IllegalArgumentException, b, -1, IllegalArgumentException",
 			"b in a b c with -5 indexes: IllegalArgumentException, b, -5, IllegalArgumentException",
 			"x not in a b c with -1 indexes: IllegalArgumentException, x, -1, IllegalArgumentException",
-			"null with -1 indexes: null, , -1, null" })
-	public void testGetNextAndPreviousIndexesWithNegativeCount(final String description,
+			"null with -1 indexes: null, , -1, null",
+			"b in a b c with 0 indexes: an empty array, b, 0, empty",
+			"x not in a b c with 0 indexes: null, x, 0, null",
+			"null with 0 indexes: null, , 0, null" })
+	public void testGetNextAndPreviousIndexesWithCountBelowOne(final String description,
 		final String element, final int count, final String expected)
 	{
 		final String[] abc = { "a", "b", "c" };
-		if ("null".equals(expected))
+		if ("empty".equals(expected))
+		{
+			assertArrayEquals(new int[0], ArrayExtensions.getNextIndexes(abc, element, count),
+				"getNextIndexes");
+			assertArrayEquals(new int[0], ArrayExtensions.getPreviousIndexes(abc, element, count),
+				"getPreviousIndexes");
+		}
+		else if ("null".equals(expected))
 		{
 			assertNull(ArrayExtensions.getNextIndexes(abc, element, count), "getNextIndexes");
 			assertNull(ArrayExtensions.getPreviousIndexes(abc, element, count),
