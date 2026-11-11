@@ -505,6 +505,56 @@ public class PropertiesExtensionsTest
 	}
 
 	/**
+	 * Test for method {@link PropertiesExtensions#findRedundantValues(Properties)} with an entry
+	 * whose key or value is not a String: it is left out, as
+	 * {@link Properties#stringPropertyNames()} does (#148), and the others are checked
+	 *
+	 * @param description
+	 *            the name of the case
+	 * @param properties
+	 *            the properties
+	 * @param expected
+	 *            the redundant values and their keys, or the class of the exception
+	 */
+	@ParameterizedTest(name = "{0}", quoteTextArguments = false)
+	@MethodSource("redundantValuesOfNonStrings")
+	public void testFindRedundantValuesWithNonStringEntries(final String description,
+		final Properties properties, final Object expected)
+	{
+		if (expected instanceof Class<?> exception)
+		{
+			assertThrows(exception.asSubclass(Throwable.class),
+				() -> PropertiesExtensions.findRedundantValues(properties));
+		}
+		else
+		{
+			assertEquals(expected, sorted(PropertiesExtensions.findRedundantValues(properties)));
+		}
+	}
+
+	/**
+	 * The cases of {@link #testFindRedundantValuesWithNonStringEntries(String, Properties, Object)}
+	 *
+	 * @return the name of the case, the properties and the redundant values
+	 */
+	static Stream<Arguments> redundantValuesOfNonStrings()
+	{
+		final Properties integerKey = propertiesOf("a", "x", "b", "x");
+		integerKey.put(1, "x");
+		final Properties integerValue = propertiesOf("c", "x", "d", "x");
+		integerValue.put("a", 1);
+		integerValue.put("b", 1);
+		final Properties both = propertiesOf("a", "x", "b", "x");
+		both.put(1, 2);
+		return Stream.of(
+			Arguments.of("the key 1 is an Integer", integerKey, ClassCastException.class),
+			Arguments.of("the values of a and b are Integers", integerValue,
+				ClassCastException.class),
+			Arguments.of("the key and the value of 1 are Integers", both,
+				ClassCastException.class));
+	}
+
+	/**
 	 * Test for method {@link PropertiesExtensions#getMatchedPrefixLists(Properties)}: each prefix
 	 * in front of the last dot of a key, with all keys of this prefix; a key whose last dot is its
 	 * first character, or that has no dot, is its own prefix
