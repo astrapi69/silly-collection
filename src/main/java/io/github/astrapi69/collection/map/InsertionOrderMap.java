@@ -34,6 +34,9 @@ import java.util.function.BiFunction;
  * "encounter order is not affected if a key is re-inserted into the map with the put method", in
  * that a key that is written again comes last; and from its access order, which moves a key also
  * when it is read ({@link #get(Object)}, <code>getOrDefault</code>), in that a read moves nothing.
+ * That holds for every map of this class but one made with <code>accessOrder</code> true by
+ * {@link #InsertionOrderMap(int, float, boolean)}: that map is in the access order of
+ * <code>LinkedHashMap</code>, so a read moves the key to the end as well.
  * <p>
  * A write is any call that stores a value for the key, also the value it already has:
  * {@link #put(Object, Object)}, {@link #putAll(Map)} (which calls put for each mapping),
@@ -135,8 +138,10 @@ public class InsertionOrderMap<K, V> extends LinkedHashMap<K, V>
 	 * @param loadFactor
 	 *            the load factor.
 	 * @param accessOrder
-	 *            the ordering mode - <code>true</code> for access-order, <code>false</code> for
-	 *            insertion-order.
+	 *            the ordering mode - <code>true</code> for access-order, in which a read moves the
+	 *            key to the end too ({@link #get(Object)}, <code>getOrDefault</code>), as in
+	 *            <code>LinkedHashMap</code>; <code>false</code> for insertion-order, in which only
+	 *            a write moves it.
 	 * @throws IllegalArgumentException
 	 *             if the initial capacity is negative or the load factor is nonpositive.
 	 */
