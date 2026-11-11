@@ -29,20 +29,35 @@ import java.util.Map;
 import java.util.function.BiFunction;
 
 /**
- * The class {@link InsertionOrderMap} overwrites the put-method from the
- * <code>LinkedHashMap</code>. That inserts the value to the right order it was inserted in the Map.
- * Note that the difference in the LinkedHashMap is the order does not change if we put the same key
- * with a new value. In this class the order changes when we put a new value with the same key, with
- * {@link #put(Object, Object)} and with {@link #putAll(Map)}, which calls put for each mapping. The
- * methods {@link #merge(Object, Object, BiFunction)}, {@link #compute(Object, BiFunction)},
- * {@link #computeIfPresent(Object, BiFunction)}, {@link #replace(Object, Object)} and
- * {@link #replace(Object, Object, Object)} do the same for a key that is there and takes a new
- * value, as the default implementations of {@link Map} specify them in terms of put. So do
+ * The class {@link InsertionOrderMap} is a <code>LinkedHashMap</code> in which every write moves
+ * the key to the end. It differs from the insertion order of <code>LinkedHashMap</code>, where
+ * "encounter order is not affected if a key is re-inserted into the map with the put method", in
+ * that a key that is written again comes last; and from its access order, which moves a key also
+ * when it is read ({@link #get(Object)}, <code>getOrDefault</code>), in that a read moves nothing.
+ * <p>
+ * A write is any call that stores a value for the key, also the value it already has:
+ * {@link #put(Object, Object)}, {@link #putAll(Map)} (which calls put for each mapping),
  * {@link #putIfAbsent(Object, Object)} and
- * {@link #computeIfAbsent(Object, java.util.function.Function)}, which write a new key, or a key
- * that is mapped to null: that key comes last, as with put; a function that gives null changes
- * nothing. A key that keeps its place: the one of {@link #replaceAll(BiFunction)} and of
- * {@link java.util.Map.Entry#setValue(Object)}.
+ * {@link #computeIfAbsent(Object, java.util.function.Function)} (which store for a new key or a key
+ * that is mapped to null), {@link #compute(Object, BiFunction)},
+ * {@link #computeIfPresent(Object, BiFunction)}, {@link #merge(Object, Object, BiFunction)},
+ * {@link #replace(Object, Object)}, {@link #replace(Object, Object, Object)} (when it replaces) and
+ * {@link #replaceAll(BiFunction)}. The key moves to the end. A call that stores nothing moves
+ * nothing: <code>putIfAbsent</code> and <code>computeIfAbsent</code> of a key with a value, a
+ * <code>replace</code> whose old value does not match, <code>computeIfPresent</code> of a key that
+ * is not there or is mapped to null. A function that gives null removes the key
+ * (<code>compute</code>, <code>computeIfPresent</code>, <code>merge</code>) or stores nothing
+ * (<code>computeIfAbsent</code>). <code>replaceAll</code> writes every entry, so every key moves to
+ * the end in turn, and the order stays as it was, also if the function changes only some values.
+ * </p>
+ * <p>
+ * Not writes in this sense: {@link java.util.Map.Entry#setValue(Object)} of an entry of
+ * {@link #entrySet()} changes the value without moving the key, as moving during an iteration would
+ * break it; <code>putFirst</code> and <code>putLast</code> of <code>SequencedMap</code> position
+ * the key explicitly, first and last; the writes through <code>reversed()</code> are the writes of
+ * this map, so the key moves to the end of this map, which is the first of the reversed view; the
+ * views {@link #keySet()} and {@link #values()} take no writes but removals.
+ * </p>
  * 
  * @author Asterios Raptis
  * @version 1.0
