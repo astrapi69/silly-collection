@@ -36,6 +36,7 @@ import static org.junit.jupiter.api.Assertions.assertTrue;
 import java.util.ArrayList;
 import java.util.Arrays;
 import java.util.Collection;
+import java.util.Collections;
 import java.util.List;
 import java.util.function.Supplier;
 import java.util.stream.Collectors;
@@ -491,7 +492,7 @@ public class CollectionExtensionsTest
 	 * @param expected
 	 *            the hash code
 	 */
-	record HashCodeCase(String description, Supplier<Collection<String[]>> lines, int expected) {
+	record HashCodeCase(String description, Supplier<Collection<Object[]>> lines, int expected) {
 		@Override
 		public String toString()
 		{
@@ -508,17 +509,32 @@ public class CollectionExtensionsTest
 	static Stream<HashCodeCase> hashCodes()
 	{
 		return Stream.of(
-			new HashCodeCase("three lines of numbers: -1269378556",
+			new HashCodeCase("three lines of numbers: 125802086",
 				() -> ListFactory.newArrayList(ArrayFactory.newArray("1", "23", "3"),
 					ArrayFactory.newArray("4", "25", "9"), ArrayFactory.newArray("6", "21", "8")),
-				-1269378556),
-			new HashCodeCase("three lines of names, ages and genders: -1124541430",
+				125802086),
+			new HashCodeCase("three lines of names, ages and genders: 970861061",
 				() -> ListFactory.newArrayList(ArrayFactory.newArray("John", "23", "male"),
 					ArrayFactory.newArray("Jim", "25", "male"),
 					ArrayFactory.newArray("Mary", "21", "female")),
-				-1124541430),
+				970861061),
 			new HashCodeCase("no lines: 1, as the hash code of an empty List",
-				() -> ListFactory.newArrayList(), 1));
+				() -> ListFactory.newArrayList(), 1),
+			new HashCodeCase("the lines a and b: 5058",
+				() -> ListFactory.newArrayList(ArrayFactory.newArray("a"),
+					ArrayFactory.newArray("b")),
+				5058),
+			new HashCodeCase("the lines b and a, another hash code than a and b: 5088",
+				() -> ListFactory.newArrayList(ArrayFactory.newArray("b"),
+					ArrayFactory.newArray("a")),
+				5088),
+			new HashCodeCase("a null line after two others: 113181",
+				() -> Arrays.asList(ArrayFactory.newArray("5"), ArrayFactory.newArray("7"), null),
+				113181),
+			new HashCodeCase("a null line only: 31",
+				() -> Collections.<Object[]> singletonList(null), 31),
+			new HashCodeCase("a line whose Arrays.hashCode is 0: 31",
+				() -> Collections.<Object[]> singletonList(new Integer[] { -31 }), 31));
 	}
 
 	/**
