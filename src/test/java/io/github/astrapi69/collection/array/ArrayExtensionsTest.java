@@ -708,6 +708,37 @@ public class ArrayExtensionsTest
 	}
 
 	/**
+	 * Test for method {@link ArrayExtensions#isFirst(Object[], Object)} with a null array or null
+	 * as an element: the answer (#143)
+	 *
+	 * @param description
+	 *            the name of the case
+	 * @param array
+	 *            the array, its elements separated by a space, 'null' for a null element, '' for an
+	 *            empty array, empty for null
+	 * @param element
+	 *            the element, may be null
+	 * @param expected
+	 *            the answer of isFirst
+	 */
+	@ParameterizedTest(name = "{0}", quoteTextArguments = false)
+	@CsvSource({ "x in a null array: not first (#143), , x, false",
+			"null in a null array: not first (#143), , , false",
+			"null at the start of null a: first, null a, , true",
+			"null at the end of a null: not first, a null, , false",
+			"a at the start of a null a: first, a null a, a, true",
+			"a also at the end of a b a: first, a b a, a, true" })
+	public void testIsFirstWithNull(final String description, final String array,
+		final String element, final boolean expected)
+	{
+		final String[] elements = array == null
+			? null
+			: Arrays.stream(elements(array)).map(each -> "null".equals(each) ? null : each)
+				.toArray(String[]::new);
+		assertEquals(expected, ArrayExtensions.isFirst(elements, element));
+	}
+
+	/**
 	 * Test for method {@link ArrayExtensions#isLast(Object[], Object)}: the element is compared
 	 * with the last element, so an element twice at the end is last, and an empty array and null
 	 * have no last element (#114)
@@ -1311,6 +1342,51 @@ public class ArrayExtensionsTest
 			.map(chunk -> chunk.getBytes(StandardCharsets.US_ASCII)).toArray(byte[][]::new);
 		assertArrayEquals(expected,
 			ArrayExtensions.splitInChunks(text.getBytes(StandardCharsets.US_ASCII), chunkSize));
+	}
+
+	/**
+	 * Test for method {@link ArrayExtensions#splitInChunks(byte[], int)}: the outcome for chunk
+	 * sizes below 1 and for an empty array, as the number of chunks, a colon and the chunks
+	 * separated by a '|', or as the exception, its class and its message
+	 *
+	 * @param description
+	 *            the name of the case
+	 * @param text
+	 *            the text whose bytes are split
+	 * @param chunkSize
+	 *            the chunk size
+	 * @param outcome
+	 *            the expected outcome
+	 */
+	@ParameterizedTest(name = "{0}", quoteTextArguments = false)
+	@CsvSource(value = {
+			"3 bytes in chunks of -2; abc; -2; IllegalArgumentException: The chunk size must be at least 1, but is -2",
+			"3 bytes in chunks of -1; abc; -1; IllegalArgumentException: The chunk size must be at least 1, but is -1",
+			"3 bytes in chunks of 0; abc; 0; IllegalArgumentException: The chunk size must be at least 1, but is 0",
+			"3 bytes in chunks of 1; abc; 1; 3:a|b|c",
+			"3 bytes in chunks of 3, the length; abc; 3; 1:abc",
+			"3 bytes in chunks of 4, above the length; abc; 4; 1:abc",
+			"no bytes in chunks of -1; ''; -1; IllegalArgumentException: The chunk size must be at least 1, but is -1",
+			"no bytes in chunks of 0; ''; 0; IllegalArgumentException: The chunk size must be at least 1, but is 0",
+			"no bytes in chunks of 1: no chunk; ''; 1; 0:",
+			"no bytes in chunks of 3: no chunk; ''; 3; 0:" }, delimiter = ';')
+	public void testSplitInChunksOfSizeBelowOneAndOfNoBytes(final String description,
+		final String text, final int chunkSize, final String outcome)
+	{
+		String actual;
+		try
+		{
+			final byte[][] chunks = ArrayExtensions
+				.splitInChunks(text.getBytes(StandardCharsets.US_ASCII), chunkSize);
+			actual = chunks.length + ":"
+				+ Arrays.stream(chunks).map(chunk -> new String(chunk, StandardCharsets.US_ASCII))
+					.collect(Collectors.joining("|"));
+		}
+		catch (final RuntimeException e)
+		{
+			actual = e.getClass().getSimpleName() + ": " + e.getMessage();
+		}
+		assertEquals(outcome, actual);
 	}
 
 	/**

@@ -737,20 +737,23 @@ public final class ArrayExtensions
 	}
 
 	/**
-	 * Checks if the given element is the first in the given array
+	 * Checks if the given element is the first in the given array. The element is compared with the
+	 * first element of the array with {@link Objects#equals(Object, Object)}, so an element that is
+	 * also at an index after the first is the first too, and null is the first of an array that
+	 * starts with null. An empty array and null have no first element
 	 *
 	 * @param <T>
 	 *            the generic type
 	 * @param array
-	 *            the array
+	 *            the array, may be null
 	 * @param element
-	 *            the element
-	 * @return true if the given element is the first otherwise false
+	 *            the element, may be null
+	 * @return true if the given element is the first otherwise false, also if the array is empty or
+	 *         null
 	 */
 	public static <T> boolean isFirst(final T[] array, final T element)
 	{
-		final int indexOfElement = Arrays.asList(array).indexOf(element);
-		return indexOfElement == 0;
+		return array != null && array.length != 0 && Objects.equals(array[0], element);
 	}
 
 	/**
@@ -995,16 +998,28 @@ public final class ArrayExtensions
 	}
 
 	/**
-	 * Split the given byte array in to new arrays with the chunk size
+	 * Splits the given byte array in to consecutive chunks of the given size, in the order of the
+	 * bytes; the last chunk may be smaller. An empty array gives no chunk.
 	 *
 	 * @param bytes
 	 *            the bytes
 	 * @param chunkSize
 	 *            the chunk size
-	 * @return the byte[][]
+	 * @return the chunks
+	 * @throws IllegalArgumentException
+	 *             if the chunk size is less than 1
 	 */
 	public static byte[][] splitInChunks(final byte[] bytes, final int chunkSize)
 	{
+		if (chunkSize < 1)
+		{
+			throw new IllegalArgumentException(
+				"The chunk size must be at least 1, but is " + chunkSize);
+		}
+		if (bytes.length == 0)
+		{
+			return new byte[0][];
+		}
 		final int size = ((bytes.length - 1) / chunkSize) + 1;
 		final byte[][] dataChunks = new byte[size][];
 		int to = bytes.length;
@@ -1021,8 +1036,10 @@ public final class ArrayExtensions
 	}
 
 	/**
-	 * Decorates the <code>Arrays#copyOfRange</code> method.
-	 * 
+	 * Decorates the <code>Arrays#copyOfRange</code> method: an end index past the array fills the
+	 * rest of the result with null, unlike {@link ArrayFactory#newSubArray(Object[], int, int)},
+	 * which refuses a range that does not lie inside the array.
+	 *
 	 * @see Arrays#copyOfRange(Object[], int, int)
 	 * @param <T>
 	 *            the type of elements in the array
@@ -1033,6 +1050,12 @@ public final class ArrayExtensions
 	 * @param end
 	 *            the end index
 	 * @return a new array from the specified start and end point
+	 * @throws ArrayIndexOutOfBoundsException
+	 *             if {@code start < 0} or {@code start > original.length}
+	 * @throws IllegalArgumentException
+	 *             if {@code start > end}
+	 * @throws NullPointerException
+	 *             if the original array is null
 	 */
 	public static <T> T[] subArray(T[] original, int start, int end)
 	{
