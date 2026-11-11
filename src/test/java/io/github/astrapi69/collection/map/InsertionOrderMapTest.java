@@ -298,4 +298,47 @@ public class InsertionOrderMapTest
 		assertEquals(value, map.get(key));
 	}
 
+	/**
+	 * Test for {@code putIfAbsent} and {@code computeIfAbsent} of {@link InsertionOrderMap} on a
+	 * map of a = null, b = 2 (#147): as {@link Map} specifies them, they also write a key that is
+	 * mapped to null, which then takes a new value like put does; a function that gives null, or a
+	 * key with a value, changes nothing
+	 *
+	 * @param description
+	 *            the name of the case
+	 * @param call
+	 *            the call on the key a, or on b
+	 * @param result
+	 *            what the call gives, nothing for null
+	 * @param keys
+	 *            the order of the keys afterwards, separated by a space
+	 * @param value
+	 *            the value of the key a afterwards, nothing for null
+	 */
+	@ParameterizedTest(name = "{0}", quoteTextArguments = false)
+	@CsvSource(value = { "putIfAbsent(a, 3), a mapped to null | putIfAbsent | | a b | 3",
+			"computeIfAbsent(a, 3), a mapped to null | computeIfAbsent | 3 | a b | 3",
+			"computeIfAbsent(a, null), a mapped to null | computeIfAbsentToNull | | a b | ",
+			"putIfAbsent(b, 3), b has the value 2 | putIfAbsentOfB | 2 | a b | ",
+			"computeIfAbsent(b, 3), b has the value 2 | computeIfAbsentOfB | 2 | a b | " }, delimiter = '|')
+	public void testAbsentWritesOfAKeyMappedToNull(final String description, final String call,
+		final String result, final String keys, final String value)
+	{
+		final Map<String, String> map = new InsertionOrderMap<>();
+		map.put("a", null);
+		map.put("b", "2");
+		final String actual = switch (call)
+		{
+			case "putIfAbsent" -> map.putIfAbsent("a", "3");
+			case "computeIfAbsent" -> map.computeIfAbsent("a", k -> "3");
+			case "computeIfAbsentToNull" -> map.computeIfAbsent("a", k -> null);
+			case "putIfAbsentOfB" -> map.putIfAbsent("b", "3");
+			case "computeIfAbsentOfB" -> map.computeIfAbsent("b", k -> "3");
+			default -> throw new IllegalArgumentException("no call " + call);
+		};
+		assertEquals(result, actual);
+		assertEquals(Arrays.asList(keys.split(" ")), new ArrayList<>(map.keySet()));
+		assertEquals(value, map.get("a"));
+	}
+
 }
