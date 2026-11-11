@@ -32,7 +32,6 @@ import java.util.Comparator;
 import java.util.Iterator;
 import java.util.LinkedList;
 import java.util.List;
-import java.util.Map;
 import java.util.Vector;
 import java.util.stream.Collectors;
 
@@ -40,7 +39,8 @@ import io.github.astrapi69.collection.CollectionExtensions;
 import io.github.astrapi69.collection.array.ArrayFactory;
 
 /**
- * The factory class {@link ListFactory} provides factory methods for create new {@link Map} objects
+ * The factory class {@link ListFactory} provides factory methods for create new {@link List}
+ * objects
  *
  * @version 1.0
  * @author Asterios Raptis
@@ -496,8 +496,11 @@ public final class ListFactory
 	 * @param start
 	 *            The number to start
 	 * @param end
-	 *            The number to end minus one
+	 *            The number to end, inclusive
 	 * @return the generated {@link Integer} List
+	 * @throws IllegalArgumentException
+	 *             if end is less than start, or if the range holds more than
+	 *             {@link Integer#MAX_VALUE} numbers
 	 */
 	public static List<Integer> newRangeList(final int start, final int end)
 	{

@@ -102,7 +102,7 @@ public class ArrayIterator<E> implements Iterator<E>
 	{
 		if (!hasNext())
 		{
-			throw new NoSuchElementException("");
+			throw new NoSuchElementException();
 		}
 		this.lastReturned = this.pos;
 		this.pos = this.pos + 1;

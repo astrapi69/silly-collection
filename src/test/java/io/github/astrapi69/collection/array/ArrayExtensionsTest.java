@@ -27,6 +27,7 @@ package io.github.astrapi69.collection.array;
 import static org.junit.jupiter.api.Assertions.assertArrayEquals;
 import static org.junit.jupiter.api.Assertions.assertEquals;
 import static org.junit.jupiter.api.Assertions.assertNotSame;
+import static org.junit.jupiter.api.Assertions.assertNull;
 import static org.junit.jupiter.api.Assertions.assertSame;
 import static org.junit.jupiter.api.Assertions.assertThrows;
 
@@ -707,6 +708,37 @@ public class ArrayExtensionsTest
 	}
 
 	/**
+	 * Test for method {@link ArrayExtensions#isFirst(Object[], Object)} with a null array or null
+	 * as an element: the answer (#143)
+	 *
+	 * @param description
+	 *            the name of the case
+	 * @param array
+	 *            the array, its elements separated by a space, 'null' for a null element, '' for an
+	 *            empty array, empty for null
+	 * @param element
+	 *            the element, may be null
+	 * @param expected
+	 *            the answer of isFirst
+	 */
+	@ParameterizedTest(name = "{0}", quoteTextArguments = false)
+	@CsvSource({ "x in a null array: not first (#143), , x, false",
+			"null in a null array: not first (#143), , , false",
+			"null at the start of null a: first, null a, , true",
+			"null at the end of a null: not first, a null, , false",
+			"a at the start of a null a: first, a null a, a, true",
+			"a also at the end of a b a: first, a b a, a, true" })
+	public void testIsFirstWithNull(final String description, final String array,
+		final String element, final boolean expected)
+	{
+		final String[] elements = array == null
+			? null
+			: Arrays.stream(elements(array)).map(each -> "null".equals(each) ? null : each)
+				.toArray(String[]::new);
+		assertEquals(expected, ArrayExtensions.isFirst(elements, element));
+	}
+
+	/**
 	 * Test for method {@link ArrayExtensions#isLast(Object[], Object)}: the element is compared
 	 * with the last element, so an element twice at the end is last, and an empty array and null
 	 * have no last element (#114)
@@ -888,7 +920,11 @@ public class ArrayExtensionsTest
 			new Neighbours("Anton in an empty array: none, -1", new String[0], "Anton", -1, -1,
 				null, null),
 			new Neighbours("null in an empty array: none, -1", new String[0], null, -1, -1, null,
-				null));
+				null),
+			new Neighbours("2 twice in 1 2 2 3: counted from the first 2, next 2, previous 1",
+				new String[] { "1", "2", "2", "3" }, "2", 2, 0, "2", "1"),
+			new Neighbours("3 in 1 2 2 3, the last: no next, next index wraps to 0, previous 2",
+				new String[] { "1", "2", "2", "3" }, "3", 0, 2, null, "2"));
 	}
 
 	/**
@@ -949,7 +985,10 @@ public class ArrayExtensionsTest
 			"from 8, not in the array: null | 1 2 3 4 5 6 7 | 8 | 2 | | ",
 			"from null: null | 1 2 3 4 5 6 7 | | 2 | | ",
 			"from 7 in an empty array: null | '' | 7 | 2 | | ",
-			"from null in an empty array: null | '' | | 2 | | " }, delimiter = '|')
+			"from null in an empty array: null | '' | | 2 | | ",
+			"from the repeated 2 of 1 2 2 3, 3 indexes: counted from the first 2 | 1 2 2 3 | 2 | 3 | 2 3 0 | 0 3 2",
+			"from 3 of 1 2 2 3, 6 indexes: every index, around the ends | 1 2 2 3 | 3 | 6 | 0 1 2 3 0 1 | 2 1 0 3 2 1",
+			"from 1 of 1 2 2 3, 4 indexes: every index | 1 2 2 3 | 1 | 4 | 1 2 3 0 | 3 2 1 0" }, delimiter = '|')
 	public void testGetNextAndPreviousIndexes(final String description, final String array,
 		final String element, final int count, final String next, final String previous)
 	{
@@ -958,6 +997,51 @@ public class ArrayExtensionsTest
 			"getNextIndexes");
 		assertArrayEquals(indexes(previous),
 			ArrayExtensions.getPreviousIndexes(elements, element, count), "getPreviousIndexes");
+	}
+
+	/**
+	 * Test for the methods {@link ArrayExtensions#getNextIndexes(Object[], Object, int)} and
+	 * {@link ArrayExtensions#getPreviousIndexes(Object[], Object, int)} on a, b and c with a
+	 * negative count: what they return, or the simple name of the exception they throw (#139)
+	 *
+	 * @param description
+	 *            the name of the case
+	 * @param element
+	 *            the element, may be null
+	 * @param count
+	 *            the count of indexes
+	 * @param expected
+	 *            'null', or the simple name of the exception
+	 */
+	@ParameterizedTest(name = "{0}", quoteTextArguments = false)
+	@CsvSource({
+			"b in a b c with -1 indexes: IllegalArgumentException, b, -1, IllegalArgumentException",
+			"b in a b c with -5 indexes: IllegalArgumentException, b, -5, IllegalArgumentException",
+			"x not in a b c with -1 indexes: IllegalArgumentException, x, -1, IllegalArgumentException",
+			"null with -1 indexes: null, , -1, null" })
+	public void testGetNextAndPreviousIndexesWithNegativeCount(final String description,
+		final String element, final int count, final String expected)
+	{
+		final String[] abc = { "a", "b", "c" };
+		if ("null".equals(expected))
+		{
+			assertNull(ArrayExtensions.getNextIndexes(abc, element, count), "getNextIndexes");
+			assertNull(ArrayExtensions.getPreviousIndexes(abc, element, count),
+				"getPreviousIndexes");
+		}
+		else
+		{
+			assertEquals(expected,
+				assertThrows(RuntimeException.class,
+					() -> ArrayExtensions.getNextIndexes(abc, element, count)).getClass()
+						.getSimpleName(),
+				"getNextIndexes");
+			assertEquals(expected,
+				assertThrows(RuntimeException.class,
+					() -> ArrayExtensions.getPreviousIndexes(abc, element, count)).getClass()
+						.getSimpleName(),
+				"getPreviousIndexes");
+		}
 	}
 
 	/**
@@ -998,7 +1082,10 @@ public class ArrayExtensionsTest
 			"in the order of the first array | c b a | a b | b a",
 			"nothing in common: empty | a b | c | ''",
 			"an empty other array: empty | a b | '' | ''",
-			"an empty first array: empty | '' | a b | ''" }, delimiter = '|')
+			"an empty first array: empty | '' | a b | ''",
+			"a twice in the first array: both stay, as retainAll keeps them (#140) | a a b | a | a a",
+			"a twice in the other array: once, from the first array (#140) | a | a a | a",
+			"a twice in both arrays: both stay (#140) | a a | a a | a a" }, delimiter = '|')
 	public void testIntersection(final String description, final String one, final String other,
 		final String expected)
 	{
@@ -1348,6 +1435,51 @@ public class ArrayExtensionsTest
 			.map(chunk -> chunk.getBytes(StandardCharsets.US_ASCII)).toArray(byte[][]::new);
 		assertArrayEquals(expected,
 			ArrayExtensions.splitInChunks(text.getBytes(StandardCharsets.US_ASCII), chunkSize));
+	}
+
+	/**
+	 * Test for method {@link ArrayExtensions#splitInChunks(byte[], int)}: the outcome for chunk
+	 * sizes below 1 and for an empty array, as the number of chunks, a colon and the chunks
+	 * separated by a '|', or as the exception, its class and its message
+	 *
+	 * @param description
+	 *            the name of the case
+	 * @param text
+	 *            the text whose bytes are split
+	 * @param chunkSize
+	 *            the chunk size
+	 * @param outcome
+	 *            the expected outcome
+	 */
+	@ParameterizedTest(name = "{0}", quoteTextArguments = false)
+	@CsvSource(value = {
+			"3 bytes in chunks of -2; abc; -2; IllegalArgumentException: The chunk size must be at least 1, but is -2",
+			"3 bytes in chunks of -1; abc; -1; IllegalArgumentException: The chunk size must be at least 1, but is -1",
+			"3 bytes in chunks of 0; abc; 0; IllegalArgumentException: The chunk size must be at least 1, but is 0",
+			"3 bytes in chunks of 1; abc; 1; 3:a|b|c",
+			"3 bytes in chunks of 3, the length; abc; 3; 1:abc",
+			"3 bytes in chunks of 4, above the length; abc; 4; 1:abc",
+			"no bytes in chunks of -1; ''; -1; IllegalArgumentException: The chunk size must be at least 1, but is -1",
+			"no bytes in chunks of 0; ''; 0; IllegalArgumentException: The chunk size must be at least 1, but is 0",
+			"no bytes in chunks of 1: no chunk; ''; 1; 0:",
+			"no bytes in chunks of 3: no chunk; ''; 3; 0:" }, delimiter = ';')
+	public void testSplitInChunksOfSizeBelowOneAndOfNoBytes(final String description,
+		final String text, final int chunkSize, final String outcome)
+	{
+		String actual;
+		try
+		{
+			final byte[][] chunks = ArrayExtensions
+				.splitInChunks(text.getBytes(StandardCharsets.US_ASCII), chunkSize);
+			actual = chunks.length + ":"
+				+ Arrays.stream(chunks).map(chunk -> new String(chunk, StandardCharsets.US_ASCII))
+					.collect(Collectors.joining("|"));
+		}
+		catch (final RuntimeException e)
+		{
+			actual = e.getClass().getSimpleName() + ": " + e.getMessage();
+		}
+		assertEquals(outcome, actual);
 	}
 
 	/**
