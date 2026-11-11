@@ -6,12 +6,12 @@ Version 29.2
 
 29.2 fixes what a review of 29.1 found where the code did not do what its name, its Javadoc or the contract of the
 interface it implements promise, without a change or removal of a public signature (`InsertionOrderMap` declares seven
-methods it inherited from `LinkedHashMap`); each change that a caller can notice carries a **Note**. The tests now check the contracts of `List`, `Set`, `Map` and `Iterator` with the suites of Apache Commons
-Collections (#157), PIT runs its STRONGER mutators next to its defaults (#157), and a lost `requires transitive` fails
-the build (#134). Measured by the release gate (Temurin 25.0.5+8, the JDK `.sdkmanrc` names; the tree of
-`RELEASE-29.2`): 2029 tests in 38 test classes, 3 skipped; 1575 of 1575 lines and 680 of 682 branches covered (JaCoCo,
-floors 98% and 95%); 1315 of 1347 mutants detected, 98% (PIT 1.30.1, DEFAULTS and STRONGER, floor 95%, in the
-workflow "Mutation testing" on GitHub).
+methods it inherited from `LinkedHashMap`); each change that a caller can notice carries a **Note**. The tests now check
+the contracts of `List`, `Set`, `Map` and `Iterator` with the suites of Apache Commons Collections (#157), PIT runs its
+STRONGER mutators next to its defaults (#157), and a lost `requires transitive` fails the build (#134). Measured by the
+release gate (Temurin 25.0.5+8, the JDK `.sdkmanrc` names; the tree of `RELEASE-29.2`): 2029 tests in 38 test classes, 3
+skipped; 1575 of 1575 lines and 680 of 682 branches covered (JaCoCo, floors 98% and 95%); 1315 of 1347 mutants detected,
+98% (PIT 1.30.1, DEFAULTS and STRONGER, floor 95%, in the workflow "Mutation testing" on GitHub).
 
 CHANGED:
 
