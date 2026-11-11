@@ -1007,8 +1007,7 @@ public class ListExtensionsTest
 	@ParameterizedTest(name = "{0}", quoteTextArguments = false)
 	@CsvSource(value = {
 			"no list: refused | none | IllegalArgumentException: Given argument 'list' may not be null.",
-			"an empty list: refused | '' | IllegalArgumentException: Given collection 'list' may not be empty.",
-			"one element a | a | {0=a}",
+			"an empty list: the empty map | '' | {}", "one element a | a | {0=a}",
 			"a and a null element | a null | {0=a, 1=null}" }, delimiter = '|')
 	public void testToIndexMapOfNoListAndOfAnEmptyList(final String description,
 		final String elements, final String outcome)
