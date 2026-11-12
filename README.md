@@ -57,11 +57,11 @@ larger and used almost everywhere.
 
 **JDK 25 or newer**, at build and at runtime: from 29.0 on its jar holds Java 25 bytecode and does
 not load on an older JVM. **28.3 is the last release for Java 17**; a project below Java 25 stays on
-it (see [Upgrading from 28.x](#upgrading-from-28x)). The dependencies are Apache Commons Collections 4.6.0, and jobj-core, silly-bean and
-comparator-extensions of this family, which run on Java 17 and 25 alike. silly-bean is an API
-dependency: `MapFactory` takes its `KeyValuePair`, so the module requires it `transitive`, and the
-pom and the Gradle module metadata put it on the compile class path of a project that declares this
-library. The other three are for the runtime only.
+it (see [Upgrading from 28.x](#upgrading-from-28x)). The dependencies are Apache Commons Collections 4.6.0, and jobj-core and
+comparator-extensions of this family, which run on Java 17 and 25 alike. All three are for the
+runtime only: no type of theirs is in a public signature of this library. From 30.0 on `MapFactory`
+takes `Map.Entry` (`Map.entry(k, v)`, or `new AbstractMap.SimpleEntry<>(k, v)` for a null key or value)
+instead of silly-bean's `KeyValuePair`, and silly-bean is no dependency any more.
 
 ## Installation
 
@@ -104,11 +104,6 @@ dependencies {
 ```
 
 The module name is `io.github.astrapisixtynine.silly.collection`.
-
-29.0 publishes silly-bean for the runtime only (#95): a project on 29.0 that calls `MapFactory`
-declares `io.github.astrapi69:silly-bean:3.0` beside it, and a module that names `KeyValuePair`
-requires `io.github.astrapisixtynine.silly.bean` as well. From 29.1 on the declaration above is
-enough.
 
 ## Upgrading from 28.x
 

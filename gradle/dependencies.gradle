@@ -1,9 +1,5 @@
 dependencies {
     // Note: use of bundles...
-    // api, not implementation: MapFactory takes its KeyValuePair in ten public signatures, and the module requires it
-    // transitive, so a consumer's compiler needs it; the pom gives it the compile scope, the module metadata lists it in
-    // apiElements (#95)
-    api libs.silly.bean
     implementation libs.bundles.core.dependencies
     testImplementation libs.bundles.unit.testing
     // The contract suites of Commons Collections (AbstractListTest, AbstractSetTest, ...), published as the tests

@@ -15,7 +15,6 @@ meanbean-version = "3.0.0-M9"
 mockito-core-version = "5.24.0"
 pitest-junit5-plugin-version = "1.2.3"
 pitest-version = "1.30.1"
-silly-bean-version = "3.0"
 silly-io-version = "5.0"
 test-object-version = "9.1"
 vintage-time-version = "6"
@@ -32,14 +31,13 @@ junit-jupiter-params = { module = "org.junit.jupiter:junit-jupiter-params", vers
 junit-platform-launcher = { module = "org.junit.platform:junit-platform-launcher" }
 meanbean = { module = "com.github.meanbeanlib:meanbean", version.ref = "meanbean-version" }
 mockito-core = { module = "org.mockito:mockito-core", version.ref = "mockito-core-version" }
-silly-bean = { module = "io.github.astrapi69:silly-bean", version.ref = "silly-bean-version" }
 silly-io = { module = "io.github.astrapi69:silly-io", version.ref = "silly-io-version" }
 test-object = { module = "io.github.astrapi69:test-object", version.ref = "test-object-version" }
 vintage-time = { module = "io.github.astrapi69:vintage-time", version.ref = "vintage-time-version" }
 
 [bundles]
 # The core dependencies, for the runtime of a consumer only: no type of theirs is in a public signature of this
-# library. silly-bean is not among them, it is an api dependency (gradle/dependencies.gradle, #95)
+# library, so none of them is an api dependency (#158)
 core-dependencies = [
     "commons-collections4",
     "comparator-extensions",
