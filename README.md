@@ -60,12 +60,13 @@ not load on an older JVM. **28.3 is the last release for Java 17**; a project be
 it (see [Upgrading from 28.x](#upgrading-from-28x)). The dependencies are Apache Commons Collections 4.6.0, and jobj-core and
 comparator-extensions of this family, which run on Java 17 and 25 alike. All three are for the
 runtime only: no type of theirs is in a public signature of this library. From 30.0 on `MapFactory`
-takes `Map.Entry` (`Map.entry(k, v)`, or `new AbstractMap.SimpleEntry<>(k, v)` for a null key or value)
-instead of silly-bean's `KeyValuePair`, and silly-bean is no dependency any more.
+takes `Map.Entry` (`Map.entry(k, v)`, or `new AbstractMap.SimpleEntry<>(k, v)` for a null key or value;
+`newTreeMap` without a comparator refuses a null key, as `TreeMap` does) instead of silly-bean's
+`KeyValuePair`, and silly-bean is no dependency any more.
 
 ## Installation
 
-Latest release on Maven Central: 29.2, for Java 25 (for Java 17: 28.3)
+Latest release on Maven Central: 30.0, for Java 25 (for Java 17: 28.3)
 
 [![Maven Central](https://img.shields.io/maven-central/v/io.github.astrapi69/silly-collection.svg?label=Maven%20Central)](https://central.sonatype.com/artifact/io.github.astrapi69/silly-collection)
 
@@ -73,7 +74,7 @@ Latest release on Maven Central: 29.2, for Java 25 (for Java 17: 28.3)
 
 ```toml
 [versions]
-silly-collection-version = "29.2"
+silly-collection-version = "30.0"
 
 [libraries]
 silly-collection = { module = "io.github.astrapi69:silly-collection", version.ref = "silly-collection-version" }
@@ -89,7 +90,7 @@ dependencies {
 
 ```groovy
 dependencies {
-    implementation "io.github.astrapi69:silly-collection:29.2"
+    implementation "io.github.astrapi69:silly-collection:30.0"
 }
 ```
 
@@ -99,7 +100,7 @@ dependencies {
 <dependency>
     <groupId>io.github.astrapi69</groupId>
     <artifactId>silly-collection</artifactId>
-    <version>29.2</version>
+    <version>30.0</version>
 </dependency>
 ```
 
@@ -242,13 +243,13 @@ The [Javadoc](https://www.javadoc.io/doc/io.github.astrapi69/silly-collection) h
 
 ## Quality
 
-As of 29.2, measured by its release gate (Temurin 25.0.5+8, the JDK `.sdkmanrc` names; the tree of
-`RELEASE-29.2`); each release takes the numbers of its own gate:
+As of 30.0, measured by its release gate (Temurin 25.0.5+8, the JDK `.sdkmanrc` names; the tree of
+`RELEASE-30.0`); each release takes the numbers of its own gate:
 
 | | |
 |---|---|
-| tests | 2029 in 38 test classes, from 117 `@Test` and 154 `@ParameterizedTest` methods (#92), the contract suites of Apache Commons Collections for `List`, `Set`, `Map` and `Iterator` among them (#157); 3 are skipped: two `BeanTester` tests that wait for a factory method, and a benchmark |
-| line and branch coverage (JaCoCo) | 1575 of 1575 lines, 680 of 682 branches; the build fails below 98% of the lines or 95% of the branches (`jacocoTestCoverageVerification` in `gradle/testing.gradle`) |
+| tests | 3987 in 42 test classes, from 128 `@Test` and 190 `@ParameterizedTest` methods of its own (#92) and the methods it inherits from the contract suites of Apache Commons Collections for `List`, `Set`, `Map` and `Iterator` (#157), the properties of `ArrayFactory`, `ArrayExtensions`, `ListFactory`, `ListExtensions` and `MapExtensions` over shared edge-case inputs (#179) among them; 3 are skipped: two `BeanTester` tests that wait for a factory method, and a benchmark |
+| line and branch coverage (JaCoCo) | 1571 of 1571 lines, 678 of 680 branches; the build fails below 98% of the lines or 95% of the branches (`jacocoTestCoverageVerification` in `gradle/testing.gradle`) |
 | mutation score (PIT) | 1315 of 1347 mutants detected, 98%, with PIT's STRONGER mutators next to its defaults (#157); the run fails below 95% (`mutationThreshold` in `build.gradle`). The 32 survivors are equivalent, each argued in #186: conditions whose edge case gives the same result either way, such as `0 < elements.length` before adding no elements or `comparator != null` before a constructor that takes null as the natural ordering, a cache that is rebuilt more often, and the `return true` of `UniqueList.add`, which returns what `ArrayList.add` returns, always true |
 | reproducible | two builds of the same commit give the same bytes for all five artifacts (`scripts/check-reproducible.sh`, #99) |
 
@@ -276,7 +277,7 @@ subkey, is on keys.openpgp.org. Fetch it once, then verify the signature next to
 
 ```sh
 gpg --keyserver hkps://keys.openpgp.org --recv-keys 5B2FA6B11E298BC09287F423D8C403518C49CA75
-gpg --verify silly-collection-29.2.jar.asc silly-collection-29.2.jar
+gpg --verify silly-collection-30.0.jar.asc silly-collection-30.0.jar
 ```
 
 gpg answers `Good signature` and prints the `Primary key fingerprint`, and for a release signed by
@@ -366,7 +367,7 @@ guidelines, `<major>.<minor>.<patch>`. Questions, bug reports and feature reques
 ## How this project is made
 
 silly-collection was written by its maintainer over many years, since 2015, before there were AI
-tools; releases 28.3, 29.0, 29.1 and 29.2 were implemented mostly by AI agents, under the maintainer's review
+tools; releases 28.3, 29.0, 29.1, 29.2 and 30.0 were implemented mostly by AI agents, under the maintainer's review
 and with the maintainer's decision on every change of behaviour. How AI is used in the projects of
 this profile: [AI_USAGE.md](https://github.com/astrapi69/astrapi69/blob/main/AI_USAGE.md).
 
