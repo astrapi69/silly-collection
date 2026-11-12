@@ -35,10 +35,12 @@ import org.junit.jupiter.params.provider.Arguments;
  * example {@code @MethodSource("io.github.astrapi69.collection.test.EdgeCases#ints")}; each call of
  * a source makes new collections, so a test may change what it gets (#179)
  * <p>
- * The {@code int} edge cases are those that jqwik lists for {@code Arbitraries.integers()}: "It's
- * well-known that many programming bugs and specification gaps happen at the border of allowed
- * value ranges. For example, in the domain of integer numbers the minimum (Integer.MIN_VALUE) and
- * maximum (Integer.MAX_VALUE) belong in the set of those edge cases", see the user guide <a href=
+ * The {@code int} edge cases are those that jqwik lists for {@code Arbitraries.integers()}, and
+ * {@link Integer#MIN_VALUE} + 1, which jqwik does not list, as the counterpart of
+ * {@link Integer#MAX_VALUE} - 1: "It's well-known that many programming bugs and specification gaps
+ * happen at the border of allowed value ranges. For example, in the domain of integer numbers the
+ * minimum (Integer.MIN_VALUE) and maximum (Integer.MAX_VALUE) belong in the set of those edge
+ * cases", see the user guide <a href=
  * "https://jqwik.net/docs/current/user-guide.html">https://jqwik.net/docs/current/user-guide.html</a>,
  * "Generation of Edge Cases". The library itself is not used: it asks not to be used by AI coding
  * agents, and the family's randomizer 10.7 depends on silly-collection 28.1, an old copy of this

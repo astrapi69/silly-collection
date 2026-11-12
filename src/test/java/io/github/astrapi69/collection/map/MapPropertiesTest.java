@@ -41,8 +41,8 @@ import io.github.astrapi69.collection.test.EdgeCases;
 /**
  * Properties of the methods of {@link MapExtensions} that their Javadoc promises, checked for the
  * inputs of {@link EdgeCases} (#179), as #116 (a key that appears n times counted 2n - 1 times)
- * needed. {@code MapFactory}'s {@code KeyValuePair} methods are not tested here: they leave the API
- * in 30.0 (#158)
+ * needed. {@code MapFactory}'s factory methods of entries are not tested here: their tables in
+ * {@code MapFactoryTest} pin the order, a key given twice and null (#158)
  */
 public class MapPropertiesTest
 {

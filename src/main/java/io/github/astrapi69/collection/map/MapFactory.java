@@ -693,10 +693,11 @@ public final class MapFactory
 
 	/**
 	 * Factory method for create a new {@link TreeMap} of the given entries, put one by one in the
-	 * natural order of the keys. A key given more than once takes the value of its last entry. A
-	 * key that is null throws a {@link NullPointerException}, as
-	 * {@link TreeMap#put(Object, Object)} does without a comparator; a value may be null. A null
-	 * entry throws a {@link NullPointerException}
+	 * given order; the map holds them in the natural order of the keys. A key given more than once,
+	 * in the sense of {@link Comparable#compareTo(Object)}, keeps the key of its first entry and
+	 * takes the value of its last, as {@link TreeMap#put(Object, Object)} does. A key that is null
+	 * throws a {@link NullPointerException}, as {@link TreeMap#put(Object, Object)} does without a
+	 * comparator; a value may be null. A null entry throws a {@link NullPointerException}
 	 *
 	 * @param <K>
 	 *            the generic type of the key
@@ -734,9 +735,10 @@ public final class MapFactory
 
 	/**
 	 * Factory method for create a new {@link TreeMap} of the given entries, put one by one in the
-	 * order of the given comparator. A key given more than once, in the sense of the comparator,
-	 * takes the value of its last entry. A null key is possible if the comparator allows it; a
-	 * value may be null. A null entry throws a {@link NullPointerException}
+	 * given order; the map holds them in the order of the given comparator. A key given more than
+	 * once, in the sense of the comparator, keeps the key of its first entry and takes the value of
+	 * its last, as {@link TreeMap#put(Object, Object)} does. A null key is possible if the
+	 * comparator allows it; a value may be null. A null entry throws a {@link NullPointerException}
 	 *
 	 * @param <K>
 	 *            the generic type of the key
