@@ -50,17 +50,17 @@ import org.junit.jupiter.params.provider.MethodSource;
 
 /**
  * Test that a consumer that declares this library alone compiles against it: a module on the module
- * path that requires this module alone, and a class on the class path (#95). {@code MapFactory}
- * takes {@code KeyValuePair} of silly-bean, so the compiler of every consumer that calls
- * {@code MapFactory} needs silly-bean, also one that never names {@code KeyValuePair}: javac reads
- * the class file of every overload when it resolves a call. A consumer module that names
- * {@code KeyValuePair} needs more: this module has to require silly-bean {@code transitive}, or
- * javac reports that the module of the consumer does not read it. Gradle's test task hands over
- * what such a consumer compiles against in the system property
- * {@value #CONSUMER_COMPILE_CLASSPATH_PROPERTY}: this project resolved as a consumer's compile
- * class path resolves it, its apiElements, that is the built jar and the api dependencies
- * (gradle/testing.gradle). silly-bean is an api dependency, so it is on that path; as an
- * implementation dependency it was not, and no consumer compiled (#95)
+ * path that requires this module alone, and a class on the class path (#95). Up to 29.x
+ * {@code MapFactory} took {@code KeyValuePair} of silly-bean, so the compiler of every consumer
+ * that called {@code MapFactory} needed silly-bean: javac reads the class file of every overload
+ * when it resolves a call, and a consumer module that named {@code KeyValuePair} needed this module
+ * to require silly-bean {@code transitive}. Since 30.0 no public signature names a type of a
+ * dependency (#158): the consumers compile with this library alone, the module requires nothing
+ * {@code transitive}. Gradle's test task hands over what such a consumer compiles against in the
+ * system property {@value #CONSUMER_COMPILE_CLASSPATH_PROPERTY}: this project resolved as a
+ * consumer's compile class path resolves it, its apiElements, that is the built jar and its api
+ * dependencies, of which there is none (gradle/testing.gradle); a signature that names a type of a
+ * dependency is reported by the module lint -Xlint:exports (build.gradle)
  */
 public class ModulePathTest
 {
@@ -97,22 +97,19 @@ public class ModulePathTest
 	}
 
 	/**
-	 * The consumers, on the module path and on the class path each: one that names
-	 * {@code KeyValuePair} to build a map with {@code MapFactory}, and one that calls
-	 * {@code MapFactory} as {@code SplitStringExtensions} of silly-strings does, without naming
-	 * {@code KeyValuePair}, the case of #95
+	 * The consumers, on the module path and on the class path each: one that builds a map of
+	 * {@code Map.Entry} with {@code MapFactory}, and one that calls {@code MapFactory} as
+	 * {@code SplitStringExtensions} of silly-strings does, the case of #95
 	 *
 	 * @return the consumers
 	 */
 	static Stream<Consumer> consumers()
 	{
-		final String namesKeyValuePair = String.join("\n", "package consumer.check;", "",
+		final String buildsFromEntries = String.join("\n", "package consumer.check;", "",
 			"import java.util.List;", "import java.util.Map;", "",
-			"import io.github.astrapi69.collection.map.MapFactory;",
-			"import io.github.astrapi69.collection.pair.KeyValuePair;", "", "public class Pairs",
-			"{", "	public static Map<String, Integer> map()", "	{",
-			"		return MapFactory.newHashMap(List.of(new KeyValuePair<>(\"a\", 1)));", "	}",
-			"}", "");
+			"import io.github.astrapi69.collection.map.MapFactory;", "", "public class Pairs", "{",
+			"	public static Map<String, Integer> map()", "	{",
+			"		return MapFactory.newHashMap(List.of(Map.entry(\"a\", 1)));", "	}", "}", "");
 		final String callsAsSillyStrings = String.join("\n", "package consumer.check;", "",
 			"import java.util.List;", "import java.util.Map;", "",
 			"import io.github.astrapi69.collection.map.MapFactory;", "", "public class Words", "{",
@@ -120,14 +117,14 @@ public class ModulePathTest
 			"		return MapFactory.newCounterMap(MapFactory.newHashMap(), List.of(\"a\", \"b\", \"a\"),",
 			"			false);", "	}", "}", "");
 		return Stream.of(
-			new Consumer("a module that names KeyValuePair", "--module-path",
+			new Consumer("a module that builds a map of entries", "--module-path",
 				Map.of("module-info.java", CONSUMER_MODULE_INFO, "consumer/check/Pairs.java",
-					namesKeyValuePair)),
+					buildsFromEntries)),
 			new Consumer("a module that calls MapFactory as silly-strings does", "--module-path",
 				Map.of("module-info.java", CONSUMER_MODULE_INFO, "consumer/check/Words.java",
 					callsAsSillyStrings)),
-			new Consumer("a class on the class path that names KeyValuePair", "--class-path",
-				Map.of("consumer/check/Pairs.java", namesKeyValuePair)),
+			new Consumer("a class on the class path that builds a map of entries", "--class-path",
+				Map.of("consumer/check/Pairs.java", buildsFromEntries)),
 			new Consumer("a class on the class path that calls MapFactory as silly-strings does",
 				"--class-path", Map.of("consumer/check/Words.java", callsAsSillyStrings)));
 	}
@@ -164,8 +161,8 @@ public class ModulePathTest
 	}
 
 	/**
-	 * Test that a consumer that declares this library alone compiles against it, as silly-bean is
-	 * on its compile class path and this module requires it {@code transitive} (#95)
+	 * Test that a consumer that declares this library alone compiles against it, with no dependency
+	 * of it on its compile class path (#95, #158)
 	 *
 	 * @param consumer
 	 *            the consumer
