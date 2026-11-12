@@ -1,6 +1,48 @@
 ## Change log
 ----------------------
 
+Version 30.0
+-------------
+
+30.0 is a major release: `MapFactory` takes the JDK's `Map.Entry` where it took silly-bean's `KeyValuePair`, and
+silly-bean, archived since 4.0 (astrapi69/silly-bean#37), is no dependency any more (#158). Nothing else in the public
+API changes. The tests check the factories and extensions of `array` and `list` and the extensions of `map` over shared
+edge-case inputs (#179), and the build's check that every test class left a result also expects the classes that inherit
+all their tests (#192). Measured by the release gate (Temurin 25.0.5+8, the JDK `.sdkmanrc` names; the tree of
+`RELEASE-30.0`): 3987 tests in 42 test classes, 3 skipped; 1571 of 1571 lines and 678 of 680 branches covered (JaCoCo,
+floors 98% and 95%); 1315 of 1347 mutants detected, 98% (PIT 1.30.1, DEFAULTS and STRONGER, floor 95%, in the workflow
+"Mutation testing" on GitHub).
+
+BREAKING CHANGES:
+
+- `MapFactory` takes `Map.Entry<? extends K, ? extends V>` instead of silly-bean's `KeyValuePair` in ten methods:
+  `newHashMap`, `newInsertionOrderMap`, `newLinkedHashMap`, `newTreeMap` and `newTreeMap(Comparator, ...)`, each as a
+  collection and as varargs (the collections as `Collection<? extends Map.Entry<? extends K, ? extends V>>`, so
+  `map.entrySet()` fits). Each puts every entry with `put` in the given order: a key given twice takes the last value
+  (where `Map.ofEntries` throws an `IllegalArgumentException`), and a null entry throws a `NullPointerException`, as
+  `Map.ofEntries` does (#158). **Note:** replace `KeyValuePair` with `Map.entry(k, v)`, or with
+  `new AbstractMap.SimpleEntry<>(k, v)` where the key or the value is null (`Map.entry` refuses null; `newTreeMap`
+  without a comparator refuses a null key, as `TreeMap` does). `newTreeMap` puts the entries into the `TreeMap`
+  itself, where 29.2 went through a `HashMap` first, so of two keys equal by `compareTo` but not by `equals`, such as
+  `BigDecimal` 1.00 and 1.0, the key of the first entry stays with the value of the last
+
+REMOVED:
+
+- the dependency on silly-bean, from the pom, the Gradle module metadata and `module-info.java`
+  (`requires transitive io.github.astrapisixtynine.silly.bean`) (#158). **Note:** a project or module that names
+  `KeyValuePair` or another silly-bean type for other purposes, and got silly-bean through this library, declares or
+  requires it itself from now on
+
+CHANGED:
+
+- the tests take shared edge-case inputs (the edge cases of an `int` that jqwik's user guide lists, and
+  `Integer.MIN_VALUE + 1`; empty, one element, a null element, a duplicate and the reversed order of a collection; and
+  seeded random values from the JDK) and check properties from the Javadoc of `ArrayFactory`, `ArrayExtensions`,
+  `ListFactory`, `ListExtensions` and `MapExtensions` over them, without a new dependency (#179); the build's check
+  that every test class left a result also expects a class that inherits all its tests, such as the contract suites
+  of #157, as Gradle's test detection for JUnit 4 describes it ("a super class does", user guide 9.8.2, "Test
+  detection") (#192)
+
 Version 29.2
 -------------
 
