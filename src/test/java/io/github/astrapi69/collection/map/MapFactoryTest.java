@@ -32,6 +32,7 @@ import static org.junit.jupiter.api.Assertions.assertSame;
 import static org.junit.jupiter.api.Assertions.assertThrows;
 import static org.junit.jupiter.api.Assertions.assertTrue;
 
+import java.math.BigDecimal;
 import java.util.AbstractMap;
 import java.util.ArrayList;
 import java.util.Arrays;
@@ -568,7 +569,21 @@ public class MapFactoryTest
 		nullKey.put(null, "a");
 		nullKey.put("b", "x");
 		final List<Class<?>> classesByName = List.of(Integer.class, String.class);
-		return Stream.of(
+		// 1.00 and 1.0 are equal by compareTo, not by equals: put in the given order, TreeMap keeps
+		// the first key and takes the last value
+		final BigDecimal oneScaleTwo = new BigDecimal("1.00");
+		final BigDecimal oneScaleOne = new BigDecimal("1.0");
+		final Map<BigDecimal, String> firstKeyLastValue = Map.of(oneScaleTwo, "last");
+		return Stream.of(new TreeFactory(
+			"newTreeMap(collection of entries 1.00 then 1.0, equal by compareTo): the first key with the last value",
+			() -> MapFactory.newTreeMap(
+				ListFactory.newArrayList(entry(oneScaleTwo, "first"), entry(oneScaleOne, "last"))),
+			null, firstKeyLastValue, List.of(oneScaleTwo)),
+			new TreeFactory(
+				"newTreeMap(entries... 1.00 then 1.0, equal by compareTo): the first key with the last value",
+				() -> MapFactory.newTreeMap(entry(oneScaleTwo, "first"),
+					entry(oneScaleOne, "last")),
+				null, firstKeyLastValue, List.of(oneScaleTwo)),
 			new TreeFactory("newTreeMap(): empty, the natural order", MapFactory::newTreeMap, null,
 				Map.of(), List.of()),
 			new TreeFactory("newTreeMap(map): its entries in the natural order",
