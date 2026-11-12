@@ -24,6 +24,7 @@
  */
 package io.github.astrapi69.collection.map;
 
+import java.util.Arrays;
 import java.util.Collection;
 import java.util.Comparator;
 import java.util.HashMap;
@@ -39,7 +40,6 @@ import org.apache.commons.collections4.map.LazyMap;
 
 import io.github.astrapi69.check.Argument;
 import io.github.astrapi69.collection.list.ListFactory;
-import io.github.astrapi69.collection.pair.KeyValuePair;
 
 /**
  * The factory class {@link MapFactory} provides factory methods for create new {@link Map} objects
@@ -238,20 +238,27 @@ public final class MapFactory
 	}
 
 	/**
-	 * Factory method for create a new {@link HashMap}
+	 * Factory method for create a new {@link HashMap} of the given entries, put one by one with
+	 * {@link HashMap#put(Object, Object)}. A key given more than once takes the value of its last
+	 * entry, and the map keeps no order. An entry may have a null key or a null value; a null entry
+	 * throws a {@link NullPointerException}. Pass {@link Map#entry(Object, Object)}, or
+	 * {@link java.util.AbstractMap.SimpleEntry} where the key or the value is null
 	 *
 	 * @param <K>
 	 *            the generic type of the key
 	 * @param <V>
 	 *            the generic type of the value
-	 * @param keyValuePairs
-	 *            the collection with the key value pairs
+	 * @param entries
+	 *            the collection with the entries
 	 * @return The new {@link HashMap}
+	 * @throws IllegalArgumentException
+	 *             if the collection is null
 	 */
-	public static <K, V> Map<K, V> newHashMap(final Collection<KeyValuePair<K, V>> keyValuePairs)
+	public static <K, V> Map<K, V> newHashMap(
+		final Collection<? extends Map.Entry<? extends K, ? extends V>> entries)
 	{
-		Argument.notNull(keyValuePairs, "keyValuePairs");
-		return newHashMap(KeyValuePair.toMap(keyValuePairs));
+		Argument.notNull(entries, "entries");
+		return putAll(new HashMap<>(), entries);
 	}
 
 	/**
@@ -271,21 +278,24 @@ public final class MapFactory
 	}
 
 	/**
-	 * Factory method for create a new {@link HashMap}
+	 * Factory method for create a new {@link HashMap} of the given entries, as
+	 * {@link #newHashMap(Collection)} does
 	 *
 	 * @param <K>
 	 *            the generic type of the key
 	 * @param <V>
 	 *            the generic type of the value
-	 * @param keyValuePairs
-	 *            the key value pairs to add in the new {@link HashMap}
+	 * @param entries
+	 *            the entries to add in the new {@link HashMap}
 	 * @return The new {@link HashMap}
+	 * @throws IllegalArgumentException
+	 *             if the array is null
 	 */
 	@SafeVarargs
-	public static <K, V> Map<K, V> newHashMap(final KeyValuePair<K, V>... keyValuePairs)
+	public static <K, V> Map<K, V> newHashMap(final Map.Entry<? extends K, ? extends V>... entries)
 	{
-		Argument.notNull(keyValuePairs, "keyValuePairs");
-		return newHashMap(ListFactory.newArrayList(keyValuePairs));
+		Argument.notNull(entries, "entries");
+		return newHashMap(Arrays.asList(entries));
 	}
 
 	/**
@@ -351,24 +361,27 @@ public final class MapFactory
 	}
 
 	/**
-	 * Factory method for create a new {@link InsertionOrderMap} of the given key value pairs, put
-	 * one by one in their order, so the map holds its keys in the order of the pairs. A key given
-	 * more than once takes the value and the place of its last pair, as
-	 * {@link InsertionOrderMap#put(Object, Object)} does
+	 * Factory method for create a new {@link InsertionOrderMap} of the given entries, put one by
+	 * one in their order, so the map holds its keys in the order of the entries. A key given more
+	 * than once takes the value and the place of its last entry, as
+	 * {@link InsertionOrderMap#put(Object, Object)} does. An entry may have a null key or a null
+	 * value; a null entry throws a {@link NullPointerException}
 	 *
 	 * @param <K>
 	 *            the generic type of the key
 	 * @param <V>
 	 *            the generic type of the value
-	 * @param keyValuePairs
-	 *            the collection with the key value pairs, in the order the map takes
+	 * @param entries
+	 *            the collection with the entries, in the order the map takes
 	 * @return The new {@link InsertionOrderMap}
+	 * @throws IllegalArgumentException
+	 *             if the collection is null
 	 */
 	public static <K, V> Map<K, V> newInsertionOrderMap(
-		final Collection<KeyValuePair<K, V>> keyValuePairs)
+		final Collection<? extends Map.Entry<? extends K, ? extends V>> entries)
 	{
-		Argument.notNull(keyValuePairs, "keyValuePairs");
-		return putAll(new InsertionOrderMap<>(), keyValuePairs);
+		Argument.notNull(entries, "entries");
+		return putAll(new InsertionOrderMap<>(), entries);
 	}
 
 	/**
@@ -389,23 +402,26 @@ public final class MapFactory
 	}
 
 	/**
-	 * Factory method for create a new {@link InsertionOrderMap} of the given key value pairs, put
-	 * one by one in their order, as {@link #newInsertionOrderMap(Collection)} does
+	 * Factory method for create a new {@link InsertionOrderMap} of the given entries, put one by
+	 * one in their order, as {@link #newInsertionOrderMap(Collection)} does
 	 *
 	 * @param <K>
 	 *            the generic type of the key
 	 * @param <V>
 	 *            the generic type of the value
-	 * @param keyValuePairs
-	 *            the key value pairs to add in the new {@link InsertionOrderMap}, in the order the
-	 *            map takes
+	 * @param entries
+	 *            the entries to add in the new {@link InsertionOrderMap}, in the order the map
+	 *            takes
 	 * @return The new {@link InsertionOrderMap}
+	 * @throws IllegalArgumentException
+	 *             if the array is null
 	 */
 	@SafeVarargs
-	public static <K, V> Map<K, V> newInsertionOrderMap(final KeyValuePair<K, V>... keyValuePairs)
+	public static <K, V> Map<K, V> newInsertionOrderMap(
+		final Map.Entry<? extends K, ? extends V>... entries)
 	{
-		Argument.notNull(keyValuePairs, "keyValuePairs");
-		return newInsertionOrderMap(ListFactory.newArrayList(keyValuePairs));
+		Argument.notNull(entries, "entries");
+		return newInsertionOrderMap(Arrays.asList(entries));
 	}
 
 	/**
@@ -547,24 +563,27 @@ public final class MapFactory
 	}
 
 	/**
-	 * Factory method for create a new {@link LinkedHashMap} of the given key value pairs, put one
-	 * by one in their order, so the map holds its keys in the order of the pairs. A key given more
-	 * than once takes the value of its last pair and keeps the place of its first one, as the
-	 * insertion order of a {@link LinkedHashMap} is not affected if a key is re-inserted
+	 * Factory method for create a new {@link LinkedHashMap} of the given entries, put one by one in
+	 * their order, so the map holds its keys in the order of the entries. A key given more than
+	 * once takes the value of its last entry and keeps the place of its first one, as the insertion
+	 * order of a {@link LinkedHashMap} is not affected if a key is re-inserted. An entry may have a
+	 * null key or a null value; a null entry throws a {@link NullPointerException}
 	 *
 	 * @param <K>
 	 *            the generic type of the key
 	 * @param <V>
 	 *            the generic type of the value
-	 * @param keyValuePairs
-	 *            the collection with the key value pairs, in the order the map takes
+	 * @param entries
+	 *            the collection with the entries, in the order the map takes
 	 * @return The new {@link LinkedHashMap}
+	 * @throws IllegalArgumentException
+	 *             if the collection is null
 	 */
 	public static <K, V> Map<K, V> newLinkedHashMap(
-		final Collection<KeyValuePair<K, V>> keyValuePairs)
+		final Collection<? extends Map.Entry<? extends K, ? extends V>> entries)
 	{
-		Argument.notNull(keyValuePairs, "keyValuePairs");
-		return putAll(new LinkedHashMap<>(), keyValuePairs);
+		Argument.notNull(entries, "entries");
+		return putAll(new LinkedHashMap<>(), entries);
 	}
 
 	/**
@@ -585,23 +604,25 @@ public final class MapFactory
 	}
 
 	/**
-	 * Factory method for create a new {@link LinkedHashMap} of the given key value pairs, put one
-	 * by one in their order, as {@link #newLinkedHashMap(Collection)} does
+	 * Factory method for create a new {@link LinkedHashMap} of the given entries, put one by one in
+	 * their order, as {@link #newLinkedHashMap(Collection)} does
 	 *
 	 * @param <K>
 	 *            the generic type of the key
 	 * @param <V>
 	 *            the generic type of the value
-	 * @param keyValuePairs
-	 *            the key value pairs to add in the new {@link LinkedHashMap}, in the order the map
-	 *            takes
+	 * @param entries
+	 *            the entries to add in the new {@link LinkedHashMap}, in the order the map takes
 	 * @return The new {@link LinkedHashMap}
+	 * @throws IllegalArgumentException
+	 *             if the array is null
 	 */
 	@SafeVarargs
-	public static <K, V> Map<K, V> newLinkedHashMap(final KeyValuePair<K, V>... keyValuePairs)
+	public static <K, V> Map<K, V> newLinkedHashMap(
+		final Map.Entry<? extends K, ? extends V>... entries)
 	{
-		Argument.notNull(keyValuePairs, "keyValuePairs");
-		return newLinkedHashMap(ListFactory.newArrayList(keyValuePairs));
+		Argument.notNull(entries, "entries");
+		return newLinkedHashMap(Arrays.asList(entries));
 	}
 
 	/**
@@ -671,20 +692,28 @@ public final class MapFactory
 	}
 
 	/**
-	 * Factory method for create a new {@link TreeMap}
+	 * Factory method for create a new {@link TreeMap} of the given entries, put one by one in the
+	 * given order; the map holds them in the natural order of the keys. A key given more than once,
+	 * in the sense of {@link Comparable#compareTo(Object)}, keeps the key of its first entry and
+	 * takes the value of its last, as {@link TreeMap#put(Object, Object)} does. A key that is null
+	 * throws a {@link NullPointerException}, as {@link TreeMap#put(Object, Object)} does without a
+	 * comparator; a value may be null. A null entry throws a {@link NullPointerException}
 	 *
 	 * @param <K>
 	 *            the generic type of the key
 	 * @param <V>
 	 *            the generic type of the value
-	 * @param keyValuePairs
-	 *            the collection with the key value pairs
+	 * @param entries
+	 *            the collection with the entries
 	 * @return The new {@link TreeMap}
+	 * @throws IllegalArgumentException
+	 *             if the collection is null
 	 */
-	public static <K, V> Map<K, V> newTreeMap(final Collection<KeyValuePair<K, V>> keyValuePairs)
+	public static <K, V> Map<K, V> newTreeMap(
+		final Collection<? extends Map.Entry<? extends K, ? extends V>> entries)
 	{
-		Argument.notNull(keyValuePairs, "keyValuePairs");
-		return newTreeMap(KeyValuePair.toMap(keyValuePairs));
+		Argument.notNull(entries, "entries");
+		return putAll(new TreeMap<>(), entries);
 	}
 
 	/**
@@ -705,7 +734,11 @@ public final class MapFactory
 	}
 
 	/**
-	 * Factory method for create a new {@link TreeMap}
+	 * Factory method for create a new {@link TreeMap} of the given entries, put one by one in the
+	 * given order; the map holds them in the order of the given comparator. A key given more than
+	 * once, in the sense of the comparator, keeps the key of its first entry and takes the value of
+	 * its last, as {@link TreeMap#put(Object, Object)} does. A null key is possible if the
+	 * comparator allows it; a value may be null. A null entry throws a {@link NullPointerException}
 	 *
 	 * @param <K>
 	 *            the generic type of the key
@@ -713,25 +746,23 @@ public final class MapFactory
 	 *            the generic type of the value
 	 * @param comparator
 	 *            the comparator
-	 * @param keyValuePairs
-	 *            the key value pairs
+	 * @param entries
+	 *            the collection with the entries
 	 * @return The new {@link TreeMap}
+	 * @throws IllegalArgumentException
+	 *             if the comparator or the collection is null
 	 */
 	public static <K, V> Map<K, V> newTreeMap(final Comparator<? super K> comparator,
-		final Collection<KeyValuePair<K, V>> keyValuePairs)
+		final Collection<? extends Map.Entry<? extends K, ? extends V>> entries)
 	{
 		Argument.notNull(comparator, "comparator");
-		Argument.notNull(keyValuePairs, "keyValuePairs");
-		TreeMap<K, V> treeMap = new TreeMap<>(comparator);
-		for (final KeyValuePair<K, V> keyValuePair : keyValuePairs)
-		{
-			treeMap.put(keyValuePair.getKey(), keyValuePair.getValue());
-		}
-		return treeMap;
+		Argument.notNull(entries, "entries");
+		return putAll(new TreeMap<>(comparator), entries);
 	}
 
 	/**
-	 * Factory method for create a new {@link TreeMap}
+	 * Factory method for create a new {@link TreeMap} of the given entries, as
+	 * {@link #newTreeMap(Comparator, Collection)} does
 	 *
 	 * @param <K>
 	 *            the generic type of the key
@@ -739,35 +770,40 @@ public final class MapFactory
 	 *            the generic type of the value
 	 * @param comparator
 	 *            the comparator
-	 * @param keyValuePairs
-	 *            the key value pairs to add in the new {@link TreeMap}
+	 * @param entries
+	 *            the entries to add in the new {@link TreeMap}
 	 * @return The new {@link TreeMap}
+	 * @throws IllegalArgumentException
+	 *             if the comparator or the array is null
 	 */
 	@SafeVarargs
 	public static <K, V> Map<K, V> newTreeMap(final Comparator<? super K> comparator,
-		final KeyValuePair<K, V>... keyValuePairs)
+		final Map.Entry<? extends K, ? extends V>... entries)
 	{
 		Argument.notNull(comparator, "comparator");
-		Argument.notNull(keyValuePairs, "keyValuePairs");
-		return newTreeMap(comparator, ListFactory.newArrayList(keyValuePairs));
+		Argument.notNull(entries, "entries");
+		return newTreeMap(comparator, Arrays.asList(entries));
 	}
 
 	/**
-	 * Factory method for create a new {@link TreeMap}
+	 * Factory method for create a new {@link TreeMap} of the given entries, as
+	 * {@link #newTreeMap(Collection)} does
 	 *
 	 * @param <K>
 	 *            the generic type of the key
 	 * @param <V>
 	 *            the generic type of the value
-	 * @param keyValuePairs
-	 *            the key value pairs to add in the new {@link TreeMap}
+	 * @param entries
+	 *            the entries to add in the new {@link TreeMap}
 	 * @return The new {@link TreeMap}
+	 * @throws IllegalArgumentException
+	 *             if the array is null
 	 */
 	@SafeVarargs
-	public static <K, V> Map<K, V> newTreeMap(final KeyValuePair<K, V>... keyValuePairs)
+	public static <K, V> Map<K, V> newTreeMap(final Map.Entry<? extends K, ? extends V>... entries)
 	{
-		Argument.notNull(keyValuePairs, "keyValuePairs");
-		return newTreeMap(ListFactory.newArrayList(keyValuePairs));
+		Argument.notNull(entries, "entries");
+		return newTreeMap(Arrays.asList(entries));
 	}
 
 	/**
@@ -788,25 +824,27 @@ public final class MapFactory
 	}
 
 	/**
-	 * Puts the given key value pairs into the given map one by one, in their order, so a map that
-	 * keeps the order of its puts keeps the order of the pairs (#115)
+	 * Puts the given entries into the given map one by one, in their order, so a map that keeps the
+	 * order of its puts keeps the order of the entries (#115)
 	 *
 	 * @param <K>
 	 *            the generic type of the key
 	 * @param <V>
 	 *            the generic type of the value
 	 * @param map
-	 *            the map to put the pairs in
-	 * @param keyValuePairs
-	 *            the key value pairs
+	 *            the map to put the entries in
+	 * @param entries
+	 *            the entries
+	 * @param <M>
+	 *            the type of the map
 	 * @return the given map
 	 */
-	private static <K, V> Map<K, V> putAll(final Map<K, V> map,
-		final Collection<KeyValuePair<K, V>> keyValuePairs)
+	private static <K, V, M extends Map<K, V>> M putAll(final M map,
+		final Collection<? extends Map.Entry<? extends K, ? extends V>> entries)
 	{
-		for (final KeyValuePair<K, V> keyValuePair : keyValuePairs)
+		for (final Map.Entry<? extends K, ? extends V> entry : entries)
 		{
-			map.put(keyValuePair.getKey(), keyValuePair.getValue());
+			map.put(entry.getKey(), entry.getValue());
 		}
 		return map;
 	}
