@@ -33,6 +33,7 @@ import static org.junit.jupiter.api.Assertions.assertThrows;
 import static org.junit.jupiter.api.Assertions.assertTrue;
 
 import java.util.ArrayList;
+import java.util.Arrays;
 import java.util.Comparator;
 import java.util.HashMap;
 import java.util.LinkedHashMap;
@@ -47,6 +48,7 @@ import java.util.stream.Stream;
 
 import org.apache.commons.collections4.map.LazyMap;
 import org.junit.jupiter.api.Test;
+import org.junit.jupiter.api.function.Executable;
 import org.junit.jupiter.params.ParameterizedTest;
 import org.junit.jupiter.params.provider.Arguments;
 import org.junit.jupiter.params.provider.CsvSource;
@@ -104,6 +106,30 @@ public class MapFactoryTest
 	}
 
 	/**
+	 * Key value pairs with a null key and a null value: null = a, b = null, c = d, in this order
+	 *
+	 * @return a new list of the pairs
+	 */
+	static List<KeyValuePair<String, String>> nullPairs()
+	{
+		return ListFactory.newArrayList(pair(null, "a"), pair("b", null), pair("c", "d"));
+	}
+
+	/**
+	 * The pairs of {@link #nullPairs()} as a map, in the same order
+	 *
+	 * @return a new {@link LinkedHashMap} of the entries
+	 */
+	static Map<String, String> nullEntries()
+	{
+		final Map<String, String> map = new LinkedHashMap<>();
+		map.put(null, "a");
+		map.put("b", null);
+		map.put("c", "d");
+		return map;
+	}
+
+	/**
 	 * The entries of {@link #given()} as an array of key value pairs, in the same order
 	 *
 	 * @return a new array of the pairs
@@ -112,6 +138,19 @@ public class MapFactoryTest
 	static KeyValuePair<String, String>[] pairArray()
 	{
 		return pairs().toArray(new KeyValuePair[0]);
+	}
+
+	/**
+	 * A list of key value pairs as an array
+	 *
+	 * @param pairs
+	 *            the pairs
+	 * @return a new array of the pairs
+	 */
+	@SuppressWarnings("unchecked")
+	static KeyValuePair<String, String>[] array(final List<KeyValuePair<String, String>> pairs)
+	{
+		return pairs.toArray(new KeyValuePair[0]);
 	}
 
 	/**
@@ -194,6 +233,20 @@ public class MapFactoryTest
 				() -> MapFactory.newHashMap(pairs()), HashMap.class, entries, null),
 			new Factory("newHashMap(pairs...): the pairs", () -> MapFactory.newHashMap(pairArray()),
 				HashMap.class, entries, null),
+			new Factory("newHashMap(collection of pairs 3, 5, 1, 3 again): the last value of 3",
+				() -> MapFactory.newHashMap(repeatedPairs()), HashMap.class, repeated, null),
+			new Factory("newHashMap(pairs... 3, 5, 1, 3 again): the last value of 3",
+				() -> MapFactory.newHashMap(array(repeatedPairs())), HashMap.class, repeated, null),
+			new Factory("newHashMap(collection of pairs with null key and null value): the pairs",
+				() -> MapFactory.newHashMap(nullPairs()), HashMap.class, nullEntries(), null),
+			new Factory("newHashMap(pairs... with null key and null value): the pairs",
+				() -> MapFactory.newHashMap(array(nullPairs())), HashMap.class, nullEntries(),
+				null),
+			new Factory("newHashMap(no pairs in a collection): empty",
+				() -> MapFactory.newHashMap(List.<KeyValuePair<String, String>> of()),
+				HashMap.class, Map.of(), null),
+			new Factory("newHashMap(no pairs in an array): empty",
+				() -> MapFactory.newHashMap(array(List.of())), HashMap.class, Map.of(), null),
 			new Factory("newHashMap(keys 1 to 4, values one to four): the pairs",
 				() -> MapFactory.newHashMap(List.of(1, 2, 3, 4),
 					List.of("one", "two", "three", "four")),
@@ -218,6 +271,21 @@ public class MapFactoryTest
 				"newInsertionOrderMap(pairs 3, 5, 1, 3 again): the last value of 3, at the place of its last pair (#115)",
 				() -> MapFactory.newInsertionOrderMap(repeatedPairs()), InsertionOrderMap.class,
 				repeated, List.of("5", "1", "3")),
+			new Factory(
+				"newInsertionOrderMap(pairs... 3, 5, 1, 3 again): the last value of 3, at the place of its last pair (#115)",
+				() -> MapFactory.newInsertionOrderMap(array(repeatedPairs())),
+				InsertionOrderMap.class, repeated, List.of("5", "1", "3")),
+			new Factory(
+				"newInsertionOrderMap(collection of pairs with null key and null value): the pairs in their order",
+				() -> MapFactory.newInsertionOrderMap(nullPairs()), InsertionOrderMap.class,
+				nullEntries(), Arrays.asList(null, "b", "c")),
+			new Factory(
+				"newInsertionOrderMap(pairs... with null key and null value): the pairs in their order",
+				() -> MapFactory.newInsertionOrderMap(array(nullPairs())), InsertionOrderMap.class,
+				nullEntries(), Arrays.asList(null, "b", "c")),
+			new Factory("newInsertionOrderMap(no pairs in an array): empty",
+				() -> MapFactory.newInsertionOrderMap(array(List.of())), InsertionOrderMap.class,
+				Map.of(), List.of()),
 			new Factory("newInsertionOrderMap(no pairs): empty",
 				() -> MapFactory.newInsertionOrderMap(List.<KeyValuePair<String, String>> of()),
 				InsertionOrderMap.class, Map.of(), List.of()),
@@ -238,6 +306,21 @@ public class MapFactoryTest
 				"newLinkedHashMap(pairs 3, 5, 1, 3 again): the last value of 3, at the place of its first pair (#115)",
 				() -> MapFactory.newLinkedHashMap(repeatedPairs()), LinkedHashMap.class, repeated,
 				List.of("3", "5", "1")),
+			new Factory(
+				"newLinkedHashMap(pairs... 3, 5, 1, 3 again): the last value of 3, at the place of its first pair (#115)",
+				() -> MapFactory.newLinkedHashMap(array(repeatedPairs())), LinkedHashMap.class,
+				repeated, List.of("3", "5", "1")),
+			new Factory(
+				"newLinkedHashMap(collection of pairs with null key and null value): the pairs in their order",
+				() -> MapFactory.newLinkedHashMap(nullPairs()), LinkedHashMap.class, nullEntries(),
+				Arrays.asList(null, "b", "c")),
+			new Factory(
+				"newLinkedHashMap(pairs... with null key and null value): the pairs in their order",
+				() -> MapFactory.newLinkedHashMap(array(nullPairs())), LinkedHashMap.class,
+				nullEntries(), Arrays.asList(null, "b", "c")),
+			new Factory("newLinkedHashMap(no pairs in an array): empty",
+				() -> MapFactory.newLinkedHashMap(array(List.of())), LinkedHashMap.class, Map.of(),
+				List.of()),
 			new Factory("newLinkedHashMap(no pairs): empty",
 				() -> MapFactory.newLinkedHashMap(List.<KeyValuePair<String, String>> of()),
 				LinkedHashMap.class, Map.of(), List.of()));
@@ -301,6 +384,84 @@ public class MapFactoryTest
 	}
 
 	/**
+	 * A call of a factory method that has to throw
+	 *
+	 * @param description
+	 *            the name of the case
+	 * @param call
+	 *            the call
+	 * @param expected
+	 *            the type of the exception
+	 */
+	record Refused(String description, Executable call, Class<? extends Throwable> expected) {
+		@Override
+		public String toString()
+		{
+			return description;
+		}
+	}
+
+	/**
+	 * The cases of {@link #testRefused(Refused)}
+	 *
+	 * @return the cases
+	 */
+	static Stream<Refused> refusals()
+	{
+		final Class<IllegalArgumentException> iae = IllegalArgumentException.class;
+		final Comparator<String> descending = Comparator.reverseOrder();
+		final List<KeyValuePair<String, String>> noPairs = null;
+		final KeyValuePair<String, String>[] noArray = null;
+		return Stream.of(
+			new Refused("newHashMap(null collection): IllegalArgumentException",
+				() -> MapFactory.newHashMap(noPairs), iae),
+			new Refused("newHashMap(null array): IllegalArgumentException",
+				() -> MapFactory.newHashMap(noArray), iae),
+			new Refused("newInsertionOrderMap(null collection): IllegalArgumentException",
+				() -> MapFactory.newInsertionOrderMap(noPairs), iae),
+			new Refused("newInsertionOrderMap(null array): IllegalArgumentException",
+				() -> MapFactory.newInsertionOrderMap(noArray), iae),
+			new Refused("newLinkedHashMap(null collection): IllegalArgumentException",
+				() -> MapFactory.newLinkedHashMap(noPairs), iae),
+			new Refused("newLinkedHashMap(null array): IllegalArgumentException",
+				() -> MapFactory.newLinkedHashMap(noArray), iae),
+			new Refused("newTreeMap(null collection): IllegalArgumentException",
+				() -> MapFactory.newTreeMap(noPairs), iae),
+			new Refused("newTreeMap(null array): IllegalArgumentException",
+				() -> MapFactory.newTreeMap(noArray), iae),
+			new Refused("newTreeMap(comparator, null collection): IllegalArgumentException",
+				() -> MapFactory.newTreeMap(descending, noPairs), iae),
+			new Refused("newTreeMap(comparator, null array): IllegalArgumentException",
+				() -> MapFactory.newTreeMap(descending, noArray), iae),
+			new Refused(
+				"newTreeMap(null comparator, collection of pairs): IllegalArgumentException",
+				() -> MapFactory.newTreeMap((Comparator<String>)null, pairs()), iae),
+			new Refused("newTreeMap(null comparator, pairs...): IllegalArgumentException",
+				() -> MapFactory.newTreeMap((Comparator<String>)null, pairArray()), iae),
+			new Refused(
+				"newTreeMap(collection of pairs with a null key): NullPointerException, as TreeMap.put",
+				() -> MapFactory.newTreeMap(nullPairs()), NullPointerException.class),
+			new Refused(
+				"newTreeMap(pairs... with a null key): NullPointerException, as TreeMap.put",
+				() -> MapFactory.newTreeMap(array(nullPairs())), NullPointerException.class));
+	}
+
+	/**
+	 * Test for the factory methods that take key value pairs: a null collection, array or
+	 * comparator is refused, and a null key in a {@link TreeMap} without a comparator that allows
+	 * it
+	 *
+	 * @param refused
+	 *            the call and the exception it throws
+	 */
+	@ParameterizedTest(name = "{0}")
+	@MethodSource("refusals")
+	public void testRefused(final Refused refused)
+	{
+		assertThrows(refused.expected(), refused.call());
+	}
+
+	/**
 	 * A call of a factory method of a {@link TreeMap}, and the map it makes
 	 *
 	 * @param description
@@ -336,6 +497,14 @@ public class MapFactoryTest
 		final Comparator<Class<?>> byName = Comparator.comparing(Class::getName);
 		final Map<Class<?>, String> classes = Map.of(Integer.class, "integer", String.class,
 			"string");
+		final Map<String, String> repeated = Map.of("3", "d", "5", "b", "1", "c");
+		final Comparator<String> nullsFirst = Comparator.nullsFirst(Comparator.naturalOrder());
+		final Map<String, String> nullValue = new HashMap<>();
+		nullValue.put("a", "x");
+		nullValue.put("b", null);
+		final Map<String, String> nullKey = new HashMap<>();
+		nullKey.put(null, "a");
+		nullKey.put("b", "x");
 		final List<Class<?>> classesByName = List.of(Integer.class, String.class);
 		return Stream.of(
 			new TreeFactory("newTreeMap(): empty, the natural order", MapFactory::newTreeMap, null,
@@ -346,6 +515,46 @@ public class MapFactoryTest
 				() -> MapFactory.newTreeMap(pairs()), null, entries, ascending),
 			new TreeFactory("newTreeMap(pairs...): the pairs in the natural order",
 				() -> MapFactory.newTreeMap(pairArray()), null, entries, ascending),
+			new TreeFactory("newTreeMap(collection of pairs 3, 5, 1, 3 again): the last value of 3",
+				() -> MapFactory.newTreeMap(repeatedPairs()), null, repeated,
+				List.of("1", "3", "5")),
+			new TreeFactory("newTreeMap(pairs... 3, 5, 1, 3 again): the last value of 3",
+				() -> MapFactory.newTreeMap(array(repeatedPairs())), null, repeated,
+				List.of("1", "3", "5")),
+			new TreeFactory(
+				"newTreeMap(comparator, collection of pairs 3, 5, 1, 3 again): the last value of 3",
+				() -> MapFactory.newTreeMap(descending, repeatedPairs()), descending, repeated,
+				List.of("5", "3", "1")),
+			new TreeFactory(
+				"newTreeMap(comparator, pairs... 3, 5, 1, 3 again): the last value of 3",
+				() -> MapFactory.newTreeMap(descending, array(repeatedPairs())), descending,
+				repeated, List.of("5", "3", "1")),
+			new TreeFactory("newTreeMap(collection of pairs with a null value): the null value",
+				() -> MapFactory
+					.newTreeMap(ListFactory.newArrayList(pair("b", null), pair("a", "x"))),
+				null, nullValue, List.of("a", "b")),
+			new TreeFactory("newTreeMap(pairs... with a null value): the null value",
+				() -> MapFactory.newTreeMap(pair("b", null), pair("a", "x")), null, nullValue,
+				List.of("a", "b")),
+			new TreeFactory(
+				"newTreeMap(comparator, collection of pairs with a null key): the null key, first",
+				() -> MapFactory.newTreeMap(nullsFirst,
+					ListFactory.newArrayList(pair("b", "x"), pair(null, "a"))),
+				nullsFirst, nullKey, Arrays.asList(null, "b")),
+			new TreeFactory("newTreeMap(comparator, pairs... with a null key): the null key, first",
+				() -> MapFactory.newTreeMap(nullsFirst, pair("b", "x"), pair(null, "a")),
+				nullsFirst, nullKey, Arrays.asList(null, "b")),
+			new TreeFactory("newTreeMap(no pairs in a collection): empty, the natural order",
+				() -> MapFactory.newTreeMap(List.<KeyValuePair<String, String>> of()), null,
+				Map.of(), List.of()),
+			new TreeFactory("newTreeMap(no pairs in an array): empty, the natural order",
+				() -> MapFactory.newTreeMap(array(List.of())), null, Map.of(), List.of()),
+			new TreeFactory("newTreeMap(comparator, no pairs in a collection): empty",
+				() -> MapFactory.newTreeMap(descending, List.<KeyValuePair<String, String>> of()),
+				descending, Map.of(), List.of()),
+			new TreeFactory("newTreeMap(comparator, no pairs in an array): empty",
+				() -> MapFactory.newTreeMap(descending, array(List.of())), descending, Map.of(),
+				List.of()),
 			new TreeFactory("newTreeMap(comparator): empty, the order of the comparator",
 				() -> MapFactory.newTreeMap(descending), descending, Map.of(), List.of()),
 			new TreeFactory(
