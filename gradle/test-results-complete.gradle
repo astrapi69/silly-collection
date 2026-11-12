@@ -3,8 +3,14 @@
 // A test that ends the test JVM - System.exit(0), as awt-extensions' CloseWindow does when its window is closed -
 // leaves every class after it without a result, and Gradle still reports the task green, because the worker
 // exited with 0 (astrapi69/swing-components#34; the same in astrapi69/mystic-crypt-ui#288). So after each Test task,
-// every concrete compiled class that refers to a JUnit Jupiter, JUnit 4 or TestNG test annotation must have left a
-// result in the task's JUnit XML directory; otherwise the build fails and names the classes.
+// every concrete compiled class that declares or inherits a JUnit Jupiter, JUnit 4 or TestNG test annotation must
+// have left a result in the task's JUnit XML directory; otherwise the build fails and names the classes.
+//
+// A class declares one when its class file refers to such an annotation, and inherits one when a class of its
+// superclass chain does. Like Gradle's own test detection ("Contains a method annotated with @Test or a super class
+// does"; "Gradle scans up the inheritance tree into jar files on the test classpath", user guide, Test detection),
+// the chain is followed through the task's test classpath, class directories and jars, read as class files and never
+// loaded, up to java/lang/Object or a class that is not on the classpath. Interfaces are not followed.
 //
 // A result is recognised by the file name, the <testsuite> name or the classname of its test cases: none of them
 // alone is reliable (Gradle shortens long file names to a hash, a class-level @DisplayName becomes the suite name).
@@ -19,6 +25,7 @@
 def declaredWithoutResult = (project.findProperty('testClassesWithoutResult') ?: [:]) as Map<String, String>
 tasks.withType(Test).configureEach { Test testTask ->
     def candidates = testTask.candidateClassFiles
+    def testClasspath = testTask.classpath
     def resultsDir = testTask.reports.junitXml.outputLocation
     def declared = new TreeMap<String, String>(declaredWithoutResult)
     testTask.doLast { Test task ->
@@ -32,39 +39,107 @@ tasks.withType(Test).configureEach { Test testTask ->
         def markers = ['org/junit/jupiter/api/Test', 'org/junit/jupiter/params/ParameterizedTest',
                        'org/junit/jupiter/api/TestFactory', 'org/junit/jupiter/api/RepeatedTest',
                        'org/junit/jupiter/api/TestTemplate', 'org/junit/Test', 'org/testng/annotations/Test']
-        def expected = [] as Set
-        candidates.visit { details ->
-            def f = details.file
-            if (details.directory || !f.name.endsWith('.class') || f.name.contains('$')) {
-                return
-            }
-            def bytes = f.bytes
-            def text = new String(bytes, 'ISO-8859-1')
-            if (!markers.any { text.contains(it) }) {
-                return
-            }
-            // the class's access flags follow the constant pool: walk it, then leave out abstract classes and
-            // interfaces, which never run on their own
+        // the constant pool is walked for the names; the class's access flags and super_class follow it
+        def parse = { byte[] bytes, Object origin ->
             def input = new DataInputStream(new ByteArrayInputStream(bytes))
             input.readInt(); input.readUnsignedShort(); input.readUnsignedShort()
             int count = input.readUnsignedShort()
+            def utf8 = [:]
+            def classNameIndex = [:]
             for (int i = 1; i < count; i++) {
                 int tag = input.readUnsignedByte()
                 switch (tag) {
-                    case 1: input.skipBytes(input.readUnsignedShort()); break
+                    case 1: utf8[i] = input.readUTF(); break
                     case 3: case 4: input.skipBytes(4); break
                     case 5: case 6: input.skipBytes(8); i++; break
-                    case 7: case 8: case 16: case 19: case 20: input.skipBytes(2); break
+                    case 7: classNameIndex[i] = input.readUnsignedShort(); break
+                    case 8: case 16: case 19: case 20: input.skipBytes(2); break
                     case 9: case 10: case 11: case 12: case 17: case 18: input.skipBytes(4); break
                     case 15: input.skipBytes(3); break
-                    default: throw new GradleException("unknown constant pool tag ${tag} in ${f}")
+                    default: throw new GradleException("unknown constant pool tag ${tag} in ${origin}")
                 }
             }
             int access = input.readUnsignedShort()
-            if ((access & 0x0400) != 0 || (access & 0x0200) != 0) {
-                return
+            input.readUnsignedShort()
+            int superIndex = input.readUnsignedShort()
+            [access: access, superName: superIndex == 0 ? null : utf8[classNameIndex[superIndex]]]
+        }
+        def refersToMarker = { byte[] bytes ->
+            def text = new String(bytes, 'ISO-8859-1')
+            markers.any { text.contains(it) }
+        }
+        // the test classpath as an index of class name to class file or jar entry, built on first use; every jar
+        // is opened once and closed at the end
+        def openJars = []
+        def index = null
+        def readFromClasspath = { String className ->
+            if (index == null) {
+                index = [:]
+                testClasspath.files.each { File element ->
+                    if (element.isDirectory()) {
+                        def base = element.toPath()
+                        element.eachFileRecurse(groovy.io.FileType.FILES) { File file ->
+                            if (file.name.endsWith('.class')) {
+                                def name = base.relativize(file.toPath()).toString().replace(File.separator, '/')
+                                index.putIfAbsent(name.substring(0, name.length() - 6), file)
+                            }
+                        }
+                    } else if (element.isFile()) {
+                        try {
+                            def jar = new java.util.zip.ZipFile(element)
+                            openJars << jar
+                            jar.entries().each { entry ->
+                                if (!entry.directory && entry.name.endsWith('.class')) {
+                                    index.putIfAbsent(entry.name.substring(0, entry.name.length() - 6), [jar, entry])
+                                }
+                            }
+                        } catch (java.util.zip.ZipException | IOException ignored) {
+                            // not a jar: nothing to read from it
+                        }
+                    }
+                }
             }
-            expected << (details.relativePath.pathString - ~/\.class$/).replace('/', '.')
+            def source = index[className]
+            if (source == null) {
+                return null
+            }
+            source instanceof File ? source.bytes : source[0].getInputStream(source[1]).withCloseable { it.readAllBytes() }
+        }
+        // the answer for a superclass is kept, so a class is read once however many test classes extend it
+        def inheritsTest = [:]
+        def inherits
+        inherits = { String className ->
+            if (className == null || className == 'java/lang/Object') {
+                return false
+            }
+            if (!inheritsTest.containsKey(className)) {
+                inheritsTest[className] = false // a cycle ends here
+                def bytes = readFromClasspath(className)
+                inheritsTest[className] = bytes != null && (refersToMarker(bytes)
+                    || inherits(parse(bytes, className).superName))
+            }
+            inheritsTest[className]
+        }
+        def expected = [] as Set
+        try {
+            candidates.visit { details ->
+                def f = details.file
+                if (details.directory || !f.name.endsWith('.class') || f.name.contains('$')) {
+                    return
+                }
+                def bytes = f.bytes
+                def info = parse(bytes, f)
+                // abstract classes and interfaces never run on their own
+                if ((info.access & 0x0400) != 0 || (info.access & 0x0200) != 0) {
+                    return
+                }
+                if (!refersToMarker(bytes) && !inherits(info.superName)) {
+                    return
+                }
+                expected << (details.relativePath.pathString - ~/\.class$/).replace('/', '.')
+            }
+        } finally {
+            openJars.each { it.close() }
         }
         def dir = resultsDir.get().asFile
         def files = (dir.listFiles() ?: [] as File[]).findAll { it.name.startsWith('TEST-') && it.name.endsWith('.xml') }
