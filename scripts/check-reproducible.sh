@@ -28,8 +28,10 @@ build()
 	local n="$1" jdk="${2:-}" args=()
 	if [[ -n "$jdk" ]]; then
 		[[ -x "$jdk/bin/javac" ]] || { echo "no JDK at $jdk" >&2; exit 2; }
-		args=(-Porg.gradle.java.installations.auto-detect=false -Porg.gradle.java.installations.auto-download=false
-			"-Porg.gradle.java.installations.paths=$jdk")
+		# Gradle properties, not project properties: Gradle 9 reports -P for these as deprecated and Gradle 10
+		# removes it (upgrading guide 9, "toolchain-project-properties")
+		args=(-Dorg.gradle.java.installations.auto-detect=false -Dorg.gradle.java.installations.auto-download=false
+			"-Dorg.gradle.java.installations.paths=$jdk")
 	fi
 	echo "build $n${jdk:+ on $jdk}"
 	# Gradle prefers the JVM it runs on as the toolchain when it matches, so the build runs on that JDK as well
