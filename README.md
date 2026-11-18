@@ -325,6 +325,10 @@ What a release consists of, in the order it is run:
    pushed. Never a force push: `master` is always the latest release, nothing else.
 8. **Open the next cycle**: `projectVersion` to the next `-SNAPSHOT`, by a pull request, as
    `develop` takes no direct push.
+9. **Bump drafts in the consumers** (RL-127): in every repository of the family that declares
+   silly-collection, a draft pull request that raises it to the release and shows the build before and
+   after it, so that a break shows the day the release appears; each is merged by RL-065, a runtime
+   major in a session of its own.
 
 ## Contributing
 
