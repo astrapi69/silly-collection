@@ -57,8 +57,9 @@ larger and used almost everywhere.
 
 **JDK 25 or newer**, at build and at runtime: from 29.0 on its jar holds Java 25 bytecode and does
 not load on an older JVM. **28.3 is the last release for Java 17**; a project below Java 25 stays on
-it (see [Upgrading from 28.x](#upgrading-from-28x)). The dependencies are Apache Commons Collections 4.6.0, and jobj-core and
-comparator-extensions of this family, which run on Java 17 and 25 alike. All three are for the
+it (see [Upgrading from 28.x](#upgrading-from-28x)). The dependencies are Apache Commons Collections 4.6.0, and jobj-core 10.0 and
+comparator-extensions 2 of this family: jobj-core 10.0 needs Java 25 as this library does, comparator-extensions
+runs on Java 17 and 25 alike. All three are for the
 runtime only: no type of theirs is in a public signature of this library. From 30.0 on `MapFactory`
 takes `Map.Entry` (`Map.entry(k, v)`, or `new AbstractMap.SimpleEntry<>(k, v)` for a null key or value;
 `newTreeMap` without a comparator refuses a null key, as `TreeMap` does) instead of silly-bean's
