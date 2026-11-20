@@ -33,11 +33,11 @@ jobs:
 
     steps:
       - name: Checkout sources
-        uses: actions/checkout@v4
+        uses: actions/checkout@3d3c42e5aac5ba805825da76410c181273ba90b1 # v7.0.1
       # The JDK .sdkmanrc names, as the full semver of Adoptium: with '25' or '25.0.5' setup-java takes whatever
       # matches first, such as a later patch release from the runner image (#99, as astrapi69/silly-strings#14)
       - name: Setup Java
-        uses: actions/setup-java@v4
+        uses: actions/setup-java@77dd5b2ce225ea11469928ac317850245a74ae78 # v6.2.0
         with:
           java-version: '25.0.5+8.0.LTS'
           distribution: 'temurin'
@@ -53,7 +53,10 @@ jobs:
           echo ".sdkmanrc names $candidate-tem, that is $want; set up: $vendor $have"
           [ -n "$candidate" ] && [ "$have" = "$want" ] && [ "$vendor" = "Eclipse Adoptium" ]
       - name: Setup Gradle
-        uses: gradle/actions/setup-gradle@v3
+        # v5.0.2, not v6: from v6 the action bundles a proprietary caching component (the maintainer's decision F2, 2026-11-20).
+        # v5.0.2 lies in the range of GHSA-chpw-2mqm-95cc (fixed in 6.4.1), which affects only the two-workflow
+        # download-and-submit setup; this workflow generates and submits in one job. Do not switch to download-and-submit.
+        uses: gradle/actions/setup-gradle@0723195856401067f7a2779048b490ace7a47d7c # v5.0.2
       - name: Mutation testing (PIT, fails below mutationThreshold in build.gradle)
         run: ./gradlew pitest
       - name: Summary of the run
@@ -64,7 +67,7 @@ jobs:
             | tee -a "$GITHUB_STEP_SUMMARY"
       - name: Keep the PIT report
         if: always()
-        uses: actions/upload-artifact@v7
+        uses: actions/upload-artifact@cf430e030ddbb5b0abf93d22962f4752f3646cd9 # v7.0.2
         with:
           name: pitest-report
           path: build/reports/pitest/
@@ -89,7 +92,7 @@ jobs:
           cat build/reports/pitest/mutation-context.json
       - name: Keep the mutation context
         if: always()
-        uses: actions/upload-artifact@v7
+        uses: actions/upload-artifact@cf430e030ddbb5b0abf93d22962f4752f3646cd9 # v7.0.2
         with:
           name: mutation-context
           path: build/reports/pitest/mutation-context.json
@@ -104,7 +107,7 @@ jobs:
           "$RUNNER_TEMP/badges/mutation-score-$GITHUB_REF_NAME.json"
       - name: Hand the badge to publish-badges
         if: ${{ !cancelled() && steps.badge.outcome == 'success' }}
-        uses: actions/upload-artifact@v7
+        uses: actions/upload-artifact@cf430e030ddbb5b0abf93d22962f4752f3646cd9 # v7.0.2
         with:
           name: badges
           path: ${{ runner.temp }}/badges/
@@ -135,9 +138,9 @@ jobs:
 
     steps:
       - name: Checkout sources
-        uses: actions/checkout@v4
+        uses: actions/checkout@3d3c42e5aac5ba805825da76410c181273ba90b1 # v7.0.1
       - name: Take the badge of the pitest job
-        uses: actions/download-artifact@v8
+        uses: actions/download-artifact@9000827ccba6bdab643e8b6fd33ac0654aef8333 # v8.0.2
         with:
           name: badges
           path: ${{ runner.temp }}/badges
