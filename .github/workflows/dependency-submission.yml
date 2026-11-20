@@ -25,7 +25,7 @@ jobs:
       # The JDK .sdkmanrc names, as the full semver of Adoptium: with '25' or '25.0.5' setup-java takes whatever
       # matches first, such as a later patch release from the runner image (#106, as astrapi69/silly-strings#14)
       - name: Setup Java
-        uses: actions/setup-java@b6effb05e454b25005698d916606bdc6ffcbf961 # v5.7.0
+        uses: actions/setup-java@77dd5b2ce225ea11469928ac317850245a74ae78 # v6.2.0
         with:
           java-version: '25.0.5+8.0.LTS'
           distribution: 'temurin'
@@ -41,8 +41,10 @@ jobs:
           echo ".sdkmanrc names $candidate-tem, that is $want; set up: $vendor $have"
           [ -n "$candidate" ] && [ "$have" = "$want" ] && [ "$vendor" = "Eclipse Adoptium" ]
       - name: Submit the dependency graph
-        # 6.4.1 fixes GHSA-chpw-2mqm-95cc, which concerns the two-workflow download-and-submit setup
-        uses: gradle/actions/dependency-submission@8da46b539cd8fe6ab27ca75128919a18d757604c # v6.4.1
+        # v5.0.2, not v6: from v6 the action bundles a proprietary caching component (the maintainer's decision F2, 2026-11-20).
+        # v5.0.2 lies in the range of GHSA-chpw-2mqm-95cc (fixed in 6.4.1), which affects only the two-workflow
+        # download-and-submit setup; this workflow generates and submits in one job. Do not switch to download-and-submit.
+        uses: gradle/actions/dependency-submission@0723195856401067f7a2779048b490ace7a47d7c # v5.0.2
         env:
           DEPENDENCY_GRAPH_RUNTIME_INCLUDE_CONFIGURATIONS: '^runtimeClasspath$'
         with:
